@@ -42,16 +42,25 @@ where the first parameter is the service, the second parameter is the method and
 
 ### Init Options
 
-#### logger (optional)
+#### logger
 
 Provide logger. E.g. [logplease](https://github.com/haadcode/logplease) or [lambda-rollbar](https://github.com/simlu/lambda-rollbar).
 
-#### config (optional)
+Type: `Logger`<br>
+Default: `null`
+
+#### config
+
+Type: `Object`<br>
+Default: `{}`
 
 AWS Config object used to initialize the service. Services are lazily initialized on first access.
 
 ### Call Options
 
-#### expectedErrorCodes (optional)
+#### expectedErrorCodes
 
-Provide list of expected AWS error codes. If an expected error code is risen by the call, the promise succeeds and an error code is returned.
+Type: `list`<br>
+Default: `[]`
+
+Provide list of expected AWS error codes (strings). If an expected error code is risen by the call, the promise succeeds and the matched error code is returned.
