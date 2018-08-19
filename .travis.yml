@@ -1,0 +1,18 @@
+language: node_js
+cache:
+  directories:
+    - ~/.npm
+notifications:
+  email: false
+before_install:
+  - npm install -g npm
+install:
+  - npm install
+node_js:
+  - '10'
+  - '8.10'
+script:
+  - npm test
+after_success:
+  - npm run coveralls
+  - npm run semantic-release
