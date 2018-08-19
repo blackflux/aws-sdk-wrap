@@ -33,7 +33,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
             requestParams: params
           });
         }
-        throw new AwsError(`Error in ${service}.${funcName}()`, { service, function: funcName });
+        throw new AwsError(`Error in ${service}.${funcName}()`, { service, function: funcName, error: e });
       });
     }
   };
