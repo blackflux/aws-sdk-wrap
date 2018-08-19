@@ -44,10 +44,10 @@ where the first parameter is the service, the second parameter is the method and
 
 #### logger
 
-Provide logger. E.g. [logplease](https://github.com/haadcode/logplease) or [lambda-rollbar](https://github.com/simlu/lambda-rollbar).
-
 Type: `Logger`<br>
 Default: `null`
+
+Provide logger. E.g. [logplease](https://github.com/haadcode/logplease) or [lambda-rollbar](https://github.com/simlu/lambda-rollbar).
 
 #### config
 
