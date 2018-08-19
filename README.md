@@ -69,4 +69,4 @@ AWS Config object used to initialize the service.
 Type: `list`<br>
 Default: `[]`
 
-Provide list of expected AWS error codes (strings). If expected error code is risen, promise succeeds with object of form `{ [errorCode]: error }`.
+Provide string list of expected AWS error codes. Promise succeeds on expected error with object of form `{ [errorCode]: error }`.
