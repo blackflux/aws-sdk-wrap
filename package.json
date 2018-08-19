@@ -39,7 +39,7 @@
     "js-gardener": "1.31.1",
     "nock": "9.6.1",
     "nyc": "12.0.2",
-    "semantic-release": "15.9.8"
+    "semantic-release": "15.9.9"
   },
   "peerDependencies": {
     "aws-sdk": "2.295.0"
