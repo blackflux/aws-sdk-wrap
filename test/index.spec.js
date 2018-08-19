@@ -25,7 +25,7 @@ describe("Testing index", () => {
   it("Testing Expected Exception", (done) => {
     nockBack('s3-putObject-fail-expected.json', async (nockDone) => {
       aws.call("s3", "putObject", {}, { expectedErrorCodes: ["MultipleValidationErrors"] }).then((code) => {
-        expect(Object.keys(code)).to.deep.equal([`MultipleValidationErrors`]);
+        expect(code).to.equal("MultipleValidationErrors");
         nockDone();
         done();
       }).catch(done.fail);
