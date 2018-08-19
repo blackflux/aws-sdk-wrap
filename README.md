@@ -15,7 +15,10 @@ Wrapper around [aws-sdk](https://www.npmjs.com/package/aws-sdk).
 
 When dealing with the aws-sdk a lot, some calls become very repetitive and achieving code coverage becomes tiresome. This wrapper abstracts some of the repetitive logic.
 
-Some examples of repetitive logic are having to call `.promise()` or handling of expected errors.
+Some examples of repetitive logic are:
+ - having to call `.promise()` 
+ - handling of expected errors
+ - logging of unexpected errors
 
 ## Install
 
@@ -31,7 +34,6 @@ Ensure required peer dependencies are available.
 ```js
 const aws = require('aws-sdk-wrap')();
 
-// sample usage
 aws
   .call("s3", "putObject", { /* ... */ })
   .then(/* ... */)
@@ -39,6 +41,8 @@ aws
 ```
 
 where the first parameter is the service, the second parameter is the method and the third parameter are the "params" passed into the call.
+
+Services are lazily initialized on first access.
 
 ### Init Options
 
@@ -49,12 +53,14 @@ Default: `null`
 
 Provide logger. E.g. [logplease](https://github.com/haadcode/logplease) or [lambda-rollbar](https://github.com/simlu/lambda-rollbar).
 
+If an unexpected error is risen, information is logged using `.error(...)`.
+
 #### config
 
 Type: `Object`<br>
 Default: `{}`
 
-AWS Config object used to initialize the service. Services are lazily initialized on first access.
+AWS Config object used to initialize the service.
 
 ### Call Options
 
@@ -63,4 +69,4 @@ AWS Config object used to initialize the service. Services are lazily initialize
 Type: `list`<br>
 Default: `[]`
 
-Provide list of expected AWS error codes (strings). If an expected error code is risen by the call, the promise succeeds and the matched error code is returned.
+Provide list of expected AWS error codes (strings). If expected error code is risen, promise succeeds with object of form `{ [errorCode]: error }`.
