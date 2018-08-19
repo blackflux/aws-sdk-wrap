@@ -9,7 +9,7 @@
 
 # AWS SDK Wrap
 
-Thin wrapper around aws-sdk
+Wrapper around [aws-sdk](https://www.npmjs.com/package/aws-sdk).
 
 ## Why
 
