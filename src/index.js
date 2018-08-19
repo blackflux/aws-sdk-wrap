@@ -23,7 +23,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
       }
       return services[service][funcName](params).promise().catch((e) => {
         if (expectedErrorCodes.indexOf(e.code) !== -1) {
-          return e.code;
+          return { [e.code]: e };
         }
         if (logger !== null) {
           logger.error({
