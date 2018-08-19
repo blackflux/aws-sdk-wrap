@@ -23,7 +23,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
       }
       return services[service][funcName](params).promise().catch((e) => {
         if (expectedErrorCodes.indexOf(e.code) !== -1) {
-          return { [e.code]: e };
+          return e.code;
         }
         if (logger !== null) {
           logger.error({
@@ -33,7 +33,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
             requestParams: params
           });
         }
-        throw new AwsError(`Error in ${service}.${funcName}()`, { service, function: funcName });
+        throw new AwsError(`Error in ${service}.${funcName}()`, { service, function: funcName, error: e });
       });
     }
   };

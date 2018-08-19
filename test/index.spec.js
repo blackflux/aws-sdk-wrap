@@ -15,7 +15,8 @@ describe("Testing index", () => {
     nockBack('s3-putObject-fail.json', async (nockDone) => {
       aws.call("s3", "putObject", {}).catch((e) => {
         expect(e.message).to.equal(`Error in s3.putObject()`);
-        expect(e.context).to.deep.equal({ service: "s3", function: "putObject" });
+        expect(Object.keys(e.context)).to.deep.equal(["service", "function", "error"]);
+        expect(e.context).to.deep.contain({ service: "s3", function: "putObject" });
         nockDone();
         done();
       }).then(done.fail);
@@ -25,7 +26,7 @@ describe("Testing index", () => {
   it("Testing Expected Exception", (done) => {
     nockBack('s3-putObject-fail-expected.json', async (nockDone) => {
       aws.call("s3", "putObject", {}, { expectedErrorCodes: ["MultipleValidationErrors"] }).then((code) => {
-        expect(Object.keys(code)).to.deep.equal([`MultipleValidationErrors`]);
+        expect(code).to.equal("MultipleValidationErrors");
         nockDone();
         done();
       }).catch(done.fail);
@@ -46,7 +47,8 @@ describe("Testing index", () => {
         }
       }).call("s3", "putObject", {}).catch((e) => {
         expect(e.message).to.equal(`Error in s3.putObject()`);
-        expect(e.context).to.deep.equal({ service: "s3", function: "putObject" });
+        expect(Object.keys(e.context)).to.deep.equal(["service", "function", "error"]);
+        expect(e.context).to.deep.contain({ service: "s3", function: "putObject" });
         nockDone();
         done();
       }).then(done.fail);
