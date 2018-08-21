@@ -42,7 +42,7 @@
     "semantic-release": "15.9.9"
   },
   "peerDependencies": {
-    "aws-sdk": "2.296.0"
+    "aws-sdk": "^2.296.0"
   },
   "nyc": {
     "tempDirectory": "./coverage/.nyc_output",
