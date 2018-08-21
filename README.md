@@ -53,7 +53,7 @@ Default: `null`
 
 Provide logger. E.g. [logplease](https://github.com/haadcode/logplease) or [lambda-rollbar](https://github.com/simlu/lambda-rollbar).
 
-If an unexpected error is risen, information is logged using `.error(...)`.
+When an unexpected error is risen, information is logged using `.error(...)`.
 
 #### config
 
