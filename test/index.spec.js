@@ -14,9 +14,11 @@ describe("Testing index", () => {
   it("Testing Exception", (done) => {
     nockBack('s3-putObject-fail.json', async (nockDone) => {
       aws.call("s3", "putObject", {}).catch((e) => {
-        expect(e.message).to.equal(`Error in s3.putObject()`);
-        expect(Object.keys(e.context)).to.deep.equal(["service", "function", "error"]);
-        expect(e.context).to.deep.contain({ service: "s3", function: "putObject" });
+        expect(e.message).to.equal(
+          `There were 2 validation errors:\n* MissingRequiredParameter: `
+          + `Missing required key 'Bucket' in params\n* MissingRequiredParameter: `
+          + `Missing required key 'Key' in params`
+        );
         nockDone();
         done();
       }).then(done.fail);
@@ -46,9 +48,11 @@ describe("Testing index", () => {
           }
         }
       }).call("s3", "putObject", {}).catch((e) => {
-        expect(e.message).to.equal(`Error in s3.putObject()`);
-        expect(Object.keys(e.context)).to.deep.equal(["service", "function", "error"]);
-        expect(e.context).to.deep.contain({ service: "s3", function: "putObject" });
+        expect(e.message).to.equal(
+          `There were 2 validation errors:\n* MissingRequiredParameter: `
+          + `Missing required key 'Bucket' in params\n* MissingRequiredParameter: `
+          + `Missing required key 'Key' in params`
+        );
         nockDone();
         done();
       }).then(done.fail);
