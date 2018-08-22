@@ -44,6 +44,8 @@ where the first parameter is the service, the second parameter is the method and
 
 Services are lazily initialized on first access.
 
+One can access an `aws-sdk` service directly by calling e.g. `aws.get('s3')`.
+
 ### Init Options
 
 #### logger

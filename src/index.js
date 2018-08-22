@@ -6,12 +6,17 @@ const serviceLookup = Object.keys(AWS)
 
 module.exports = ({ config = {}, logger = null } = {}) => {
   const services = {};
+
+  const getService = (service) => {
+    if (services[service] === undefined) {
+      services[service] = new AWS[serviceLookup[service]](config);
+    }
+    return services[service];
+  };
+
   return {
-    call: (service, funcName, params, { expectedErrorCodes = [] } = {}) => {
-      if (services[service] === undefined) {
-        services[service] = new AWS[serviceLookup[service]](config);
-      }
-      return services[service][funcName](params).promise().catch((e) => {
+    call: (service, funcName, params, { expectedErrorCodes = [] } = {}) => getService(service)[funcName](params)
+      .promise().catch((e) => {
         if (expectedErrorCodes.indexOf(e.code) !== -1) {
           return e.code;
         }
@@ -24,7 +29,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
           });
         }
         throw e;
-      });
-    }
+      }),
+    get: getService
   };
 };
