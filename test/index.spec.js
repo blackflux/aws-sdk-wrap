@@ -1,6 +1,7 @@
 const path = require("path");
 const expect = require("chai").expect;
 const nockBack = require("nock").back;
+const DocumentType = require("aws-sdk").DynamoDB.DocumentClient;
 const index = require("./../src/index");
 
 describe("Testing index", () => {
@@ -9,6 +10,10 @@ describe("Testing index", () => {
     aws = index();
     nockBack.setMode('record');
     nockBack.fixtures = path.join(__dirname, '__cassettes');
+  });
+
+  it("Testing nested get", () => {
+    expect(aws.get("DynamoDB.DocumentClient")).to.be.instanceof(DocumentType);
   });
 
   it("Testing Exception", (done) => {
