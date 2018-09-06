@@ -1,15 +1,21 @@
 const get = require('lodash.get');
 const AWS = require('aws-sdk');
 
-const serviceLookup = Object.keys(AWS)
-  .reduce((prev, cur) => Object.assign(prev, { [cur.toLowerCase()]: cur }), {});
+const lookupCache = new Map();
+const getAttr = (obj, key) => { // case insensitive lookup
+  if (!lookupCache.has(obj)) {
+    lookupCache.set(obj, Object.entries(obj)
+      .reduce((prev, [k, v]) => Object.assign(prev, { [k.toLowerCase()]: v }), {}));
+  }
+  return lookupCache.get(obj)[key.toLowerCase()];
+};
 
 module.exports = ({ config = {}, logger = null } = {}) => {
   const services = {};
 
   const getService = (service) => {
     if (services[service] === undefined) {
-      services[service] = new AWS[serviceLookup[service]](config);
+      services[service] = new (service.split('.').reduce(getAttr, AWS))(config);
     }
     return services[service];
   };
