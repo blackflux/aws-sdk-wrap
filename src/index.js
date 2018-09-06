@@ -14,10 +14,11 @@ module.exports = ({ config = {}, logger = null } = {}) => {
   const services = {};
 
   const getService = (service) => {
-    if (services[service] === undefined) {
-      services[service] = new (service.split('.').reduce(getAttr, AWS))(config);
+    const serviceLower = service.toLowerCase();
+    if (services[serviceLower] === undefined) {
+      services[serviceLower] = new (serviceLower.split('.').reduce(getAttr, AWS))(config);
     }
-    return services[service];
+    return services[serviceLower];
   };
 
   return {

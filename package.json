@@ -28,18 +28,18 @@
   },
   "homepage": "https://github.com/simlu/aws-sdk-wrap#readme",
   "devDependencies": {
-    "aws-sdk": "2.298.0",
+    "aws-sdk": "2.309.0",
     "babel-cli": "7.0.0-beta.3",
-    "babel-eslint": "8.2.6",
+    "babel-eslint": "9.0.0",
     "babel-plugin-transform-flow-comments": "7.0.0-beta.3",
     "babel-preset-flow": "7.0.0-beta.3",
     "babel-register": "7.0.0-beta.3",
     "chai": "4.1.2",
     "coveralls": "3.0.2",
-    "js-gardener": "1.31.1",
+    "js-gardener": "1.31.4",
     "nock": "9.6.1",
-    "nyc": "12.0.2",
-    "semantic-release": "15.9.9"
+    "nyc": "13.0.1",
+    "semantic-release": "15.9.12"
   },
   "peerDependencies": {
     "aws-sdk": "^2.296.0"
