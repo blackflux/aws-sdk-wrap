@@ -30,7 +30,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
         if (logger !== null) {
           logger.error({
             message: `Request failed for ${service}.${funcName}()`,
-            errorName: get(e, "constructor.name"),
+            errorName: get(e, 'constructor.name'),
             errorDetails: e,
             requestParams: params
           });
