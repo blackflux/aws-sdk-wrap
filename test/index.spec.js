@@ -14,6 +14,7 @@ describe('Testing index', () => {
 
   it('Testing nested get', () => {
     expect(aws.get('DynamoDB.DocumentClient')).to.be.instanceof(DocumentType);
+    expect(aws.get('DynamoDB.Converter')).to.be.a('object');
   });
 
   it('Testing Exception', (done) => {
