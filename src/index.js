@@ -16,7 +16,8 @@ module.exports = ({ config = {}, logger = null } = {}) => {
   const getService = (service) => {
     const serviceLower = service.toLowerCase();
     if (services[serviceLower] === undefined) {
-      services[serviceLower] = new (serviceLower.split('.').reduce(getAttr, AWS))(config);
+      const Service = serviceLower.split('.').reduce(getAttr, AWS);
+      services[serviceLower] = typeof Service === 'object' ? Service : new Service(config);
     }
     return services[serviceLower];
   };
@@ -30,7 +31,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
         if (logger !== null) {
           logger.error({
             message: `Request failed for ${service}.${funcName}()`,
-            errorName: get(e, "constructor.name"),
+            errorName: get(e, 'constructor.name'),
             errorDetails: e,
             requestParams: params
           });

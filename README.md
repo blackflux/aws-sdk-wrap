@@ -4,8 +4,8 @@
 [![Dependencies](https://david-dm.org/simlu/aws-sdk-wrap/status.svg)](https://david-dm.org/simlu/aws-sdk-wrap)
 [![NPM](https://img.shields.io/npm/v/aws-sdk-wrap.svg)](https://www.npmjs.com/package/aws-sdk-wrap)
 [![Downloads](https://img.shields.io/npm/dt/aws-sdk-wrap.svg)](https://www.npmjs.com/package/aws-sdk-wrap)
-[![Semantic-Release](https://github.com/simlu/js-gardener/blob/master/assets/icons/semver.svg)](https://github.com/semantic-release/semantic-release)
-[![Gardener](https://github.com/simlu/js-gardener/blob/master/assets/badge.svg)](https://github.com/simlu/js-gardener)
+[![Semantic-Release](https://github.com/blackflux/js-gardener/blob/master/assets/icons/semver.svg)](https://github.com/semantic-release/semantic-release)
+[![Gardener](https://github.com/blackflux/js-gardener/blob/master/assets/badge.svg)](https://github.com/blackflux/js-gardener)
 
 # AWS SDK Wrap
 
@@ -35,7 +35,7 @@ Ensure required peer dependencies are available.
 const aws = require('aws-sdk-wrap')();
 
 aws
-  .call("s3", "putObject", { /* ... */ })
+  .call('s3', 'putObject', { /* ... */ })
   .then(/* ... */)
   .catch(/* ... */);
 ```
