@@ -16,7 +16,8 @@ module.exports = ({ config = {}, logger = null } = {}) => {
   const getService = (service) => {
     const serviceLower = service.toLowerCase();
     if (services[serviceLower] === undefined) {
-      services[serviceLower] = new (serviceLower.split('.').reduce(getAttr, AWS))(config);
+      const Service = serviceLower.split('.').reduce(getAttr, AWS);
+      services[serviceLower] = typeof Service === 'object' ? Service : new Service(config);
     }
     return services[serviceLower];
   };
