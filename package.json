@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/simlu/aws-sdk-wrap#readme",
   "devDependencies": {
-    "aws-sdk": "2.394.0",
+    "aws-sdk": "2.396.0",
     "@babel/core": "7.2.2",
     "@babel/cli": "7.2.3",
     "babel-eslint": "10.0.1",
