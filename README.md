@@ -1,13 +1,13 @@
-[![Build Status](https://img.shields.io/travis/simlu/aws-sdk-wrap/master.svg)](https://travis-ci.org/simlu/aws-sdk-wrap)
-[![Test Coverage](https://img.shields.io/coveralls/simlu/aws-sdk-wrap/master.svg)](https://coveralls.io/github/simlu/aws-sdk-wrap?branch=master)
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=simlu/aws-sdk-wrap)](https://dependabot.com)
-[![Dependencies](https://david-dm.org/simlu/aws-sdk-wrap/status.svg)](https://david-dm.org/simlu/aws-sdk-wrap)
+# AWS SDK Wrap
+
+[![Build Status](https://circleci.com/gh/blackflux/aws-sdk-wrap.png?style=shield)](https://circleci.com/gh/blackflux/aws-sdk-wrap)
+[![Test Coverage](https://img.shields.io/coveralls/blackflux/aws-sdk-wrap/master.svg)](https://coveralls.io/github/blackflux/aws-sdk-wrap?branch=master)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=blackflux/aws-sdk-wrap)](https://dependabot.com)
+[![Dependencies](https://david-dm.org/blackflux/aws-sdk-wrap/status.svg)](https://david-dm.org/blackflux/aws-sdk-wrap)
 [![NPM](https://img.shields.io/npm/v/aws-sdk-wrap.svg)](https://www.npmjs.com/package/aws-sdk-wrap)
 [![Downloads](https://img.shields.io/npm/dt/aws-sdk-wrap.svg)](https://www.npmjs.com/package/aws-sdk-wrap)
 [![Semantic-Release](https://github.com/blackflux/js-gardener/blob/master/assets/icons/semver.svg)](https://github.com/semantic-release/semantic-release)
 [![Gardener](https://github.com/blackflux/js-gardener/blob/master/assets/badge.svg)](https://github.com/blackflux/js-gardener)
-
-# AWS SDK Wrap
 
 Wrapper around [aws-sdk](https://www.npmjs.com/package/aws-sdk).
 
@@ -53,7 +53,7 @@ One can access an `aws-sdk` service directly by calling e.g. `aws.get('s3')`.
 Type: `Logger`<br>
 Default: `null`
 
-Provide logger. E.g. [logplease](https://github.com/haadcode/logplease) or [lambda-rollbar](https://github.com/simlu/lambda-rollbar).
+Provide logger. E.g. [logplease](https://github.com/haadcode/logplease) or [lambda-rollbar](https://github.com/blackflux/lambda-rollbar).
 
 When an unexpected error is risen, information is logged using `.error(...)`.
 
