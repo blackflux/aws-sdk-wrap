@@ -11,6 +11,7 @@ const getAttr = (obj, key) => { // case insensitive lookup
 };
 
 module.exports = ({ config = {}, logger = null } = {}) => {
+  AWS.config.update(config);
   const services = {};
 
   const getService = (service) => {
