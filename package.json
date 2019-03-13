@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/blackflux/aws-sdk-wrap#readme",
   "devDependencies": {
-    "aws-sdk": "2.420.0",
+    "aws-sdk": "2.421.0",
     "@babel/core": "7.3.4",
     "@babel/cli": "7.2.3",
     "babel-eslint": "10.0.1",
