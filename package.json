@@ -29,7 +29,7 @@
   "homepage": "https://github.com/blackflux/aws-sdk-wrap#readme",
   "devDependencies": {
     "aws-sdk": "2.434.0",
-    "@babel/core": "7.4.0",
+    "@babel/core": "7.4.3",
     "@babel/cli": "7.4.3",
     "babel-eslint": "10.0.1",
     "@babel/plugin-transform-flow-comments": "7.4.0",
