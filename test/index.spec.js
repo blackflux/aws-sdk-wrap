@@ -19,7 +19,7 @@ describe('Testing index', () => {
 
   it('Testing Exception', (done) => {
     nockBack('s3-putObject-fail.json', async (nockDone) => {
-      aws.call('s3', 'putObject', {}).catch((e) => {
+      aws.call('s3:putObject', {}).catch((e) => {
         expect(e.message).to.equal(
           'There were 2 validation errors:\n* MissingRequiredParameter: '
           + 'Missing required key \'Bucket\' in params\n* MissingRequiredParameter: '
@@ -33,7 +33,7 @@ describe('Testing index', () => {
 
   it('Testing Expected Exception', (done) => {
     nockBack('s3-putObject-fail-expected.json', async (nockDone) => {
-      aws.call('s3', 'putObject', {}, { expectedErrorCodes: ['MultipleValidationErrors'] }).then((code) => {
+      aws.call('s3:putObject', {}, { expectedErrorCodes: ['MultipleValidationErrors'] }).then((code) => {
         expect(code).to.equal('MultipleValidationErrors');
         nockDone();
         done();
@@ -53,7 +53,7 @@ describe('Testing index', () => {
             });
           }
         }
-      }).call('s3', 'putObject', {}).catch((e) => {
+      }).call('s3:putObject', {}).catch((e) => {
         expect(e.message).to.equal(
           'There were 2 validation errors:\n* MissingRequiredParameter: '
           + 'Missing required key \'Bucket\' in params\n* MissingRequiredParameter: '
