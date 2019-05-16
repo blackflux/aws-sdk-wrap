@@ -1,3 +1,4 @@
+const assert = require('assert');
 const get = require('lodash.get');
 const AWS = require('aws-sdk');
 
@@ -24,8 +25,15 @@ module.exports = ({ config = {}, logger = null } = {}) => {
   };
 
   return {
-    call: (service, funcName, params, { expectedErrorCodes = [] } = {}) => getService(service)[funcName](params)
-      .promise().catch((e) => {
+    call: (action, params, { expectedErrorCodes = [] } = {}) => {
+      assert(typeof action === 'string');
+      assert(params instanceof Object && !Array.isArray(params));
+      assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every(e => typeof e === 'string'));
+      const splitIndex = action.indexOf(':');
+      assert(splitIndex !== -1, 'Bad Action Provided.');
+      const service = action.slice(0, splitIndex);
+      const funcName = action.slice(splitIndex + 1);
+      return getService(service)[funcName](params).promise().catch((e) => {
         if (expectedErrorCodes.indexOf(e.code) !== -1) {
           return e.code;
         }
@@ -38,7 +46,8 @@ module.exports = ({ config = {}, logger = null } = {}) => {
           });
         }
         throw e;
-      }),
+      });
+    },
     get: getService
   };
 };

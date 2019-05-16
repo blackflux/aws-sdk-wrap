@@ -35,7 +35,7 @@ Ensure required peer dependencies are available.
 const aws = require('aws-sdk-wrap')();
 
 aws
-  .call('s3', 'putObject', { /* ... */ })
+  .call('s3:putObject', { /* ... */ })
   .then(/* ... */)
   .catch(/* ... */);
 ```
