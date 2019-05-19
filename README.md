@@ -53,7 +53,9 @@ One can access an `aws-sdk` service directly by calling e.g. `aws.get('s3')`.
 The `action` is of the format `path.to.service:functionName`.
 
 Gets the service from the underlying `aws-sdk` and initialize it with the available config iff the service is not initialized yet.
-Then calls the function with the passed `params`. Options are detailed below 
+Then calls the function with the passed `params` (which needs to contain the appropriate parameters for the function). 
+
+The available call `options` are detailed below. 
 
 #### get(serviceName: String)
 
