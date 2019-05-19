@@ -46,6 +46,24 @@ Services are lazily initialized on first access.
 
 One can access an `aws-sdk` service directly by calling e.g. `aws.get('s3')`.
 
+### Methods
+
+#### call(action: String, params: Object = {}, options: Object = {})
+
+The `action` is of the format `path.to.service:functionName`.
+
+Gets the service from the underlying `aws-sdk` and initialize it with the available config iff the service is not initialized yet.
+Then calls the function with the passed `params`. Options are detailed below 
+
+#### get(serviceName: String)
+
+Get the service from the underlying `aws-sdk` without initializing it. Possible to access nested paths.
+
+#### updateGlobalConfig(config: Object)
+
+Updates the global aws config of the underlying `aws-sdk` via `AWS.config.update`.
+In most cases this should not be necessary to use.
+
 ### Init Options
 
 #### logger
@@ -63,6 +81,8 @@ Type: `Object`<br>
 Default: `{}`
 
 AWS Config object used to initialize the service.
+
+This only affects initialized services. To update the global AWS config use `updateGlobalConfig`.
 
 ### Call Options
 

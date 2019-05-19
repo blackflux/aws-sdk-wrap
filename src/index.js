@@ -24,6 +24,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
   };
 
   return {
+    updateGlobalConfig: cfg => AWS.config.update(cfg),
     call: (action, params, { expectedErrorCodes = [] } = {}) => {
       assert(typeof action === 'string');
       assert(params instanceof Object && !Array.isArray(params));
