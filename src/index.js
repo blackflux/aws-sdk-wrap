@@ -12,7 +12,6 @@ const getAttr = (obj, key) => { // case insensitive lookup
 };
 
 module.exports = ({ config = {}, logger = null } = {}) => {
-  AWS.config.update(config);
   const services = {};
 
   const getService = (service) => {
@@ -25,6 +24,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
   };
 
   return {
+    updateGlobalConfig: cfg => AWS.config.update(cfg),
     call: (action, params, { expectedErrorCodes = [] } = {}) => {
       assert(typeof action === 'string');
       assert(params instanceof Object && !Array.isArray(params));

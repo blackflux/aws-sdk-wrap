@@ -12,6 +12,10 @@ describe('Testing index', () => {
     nockBack.fixtures = path.join(__dirname, '__cassettes');
   });
 
+  it('Testing global configuration', () => {
+    expect(aws.updateGlobalConfig({})).to.equal(undefined);
+  });
+
   it('Testing nested get', () => {
     expect(aws.get('DynamoDB.DocumentClient')).to.be.instanceof(DocumentType);
     expect(aws.get('DynamoDB.Converter')).to.be.a('object');
