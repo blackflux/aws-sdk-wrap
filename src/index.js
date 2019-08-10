@@ -29,11 +29,11 @@ module.exports = ({ config = {}, logger = null } = {}) => {
   };
 
   return {
-    updateGlobalConfig: cfg => AWS.config.update(cfg),
+    updateGlobalConfig: (cfg) => AWS.config.update(cfg),
     call: (action, params, { expectedErrorCodes = [] } = {}) => {
       assert(typeof action === 'string');
       assert(params instanceof Object && !Array.isArray(params));
-      assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every(e => typeof e === 'string'));
+      assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every((e) => typeof e === 'string'));
       const splitIndex = action.indexOf(':');
       assert(splitIndex !== -1, 'Bad Action Provided.');
       const service = action.slice(0, splitIndex);

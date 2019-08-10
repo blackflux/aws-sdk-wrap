@@ -38,16 +38,16 @@
     "@babel/plugin-proposal-object-rest-spread": "7.5.5",
     "@babel/register": "7.5.5",
     "@blackflux/eslint-plugin-rules": "1.1.0",
-    "@blackflux/robo-config-plugin": "2.3.0",
-    "aws-sdk": "2.496.0",
+    "@blackflux/robo-config-plugin": "2.4.3",
+    "aws-sdk": "2.507.0",
     "babel-eslint": "10.0.2",
     "chai": "4.2.0",
-    "coveralls": "3.0.5",
+    "coveralls": "3.0.6",
     "eslint": "6.1.0",
-    "js-gardener": "2.0.52",
+    "js-gardener": "2.0.59",
     "nock": "10.0.6",
     "nyc": "14.1.1",
-    "semantic-release": "15.13.18"
+    "semantic-release": "15.13.19"
   },
   "peerDependencies": {
     "aws-sdk": "^2.296.0"
