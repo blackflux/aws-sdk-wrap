@@ -3749,11 +3749,6 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
   integrity sha512-s5kLOcnH0XqDO+FvuaLX8DDjZ18CGFk7VygH40QoKPUQhW4e2rvM0rwUq0t8IQDOwYSeLK01U90OjzBTme2QqA==
 
-lambda-monitor-logger@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/lambda-monitor-logger/-/lambda-monitor-logger-2.0.4.tgz#548c6a7697310aa0f765bb93b98788c56c4e5ac0"
-  integrity sha512-atupHrl682bSAomOW9440u5JSscTOXUDjz7ENGzaJ3ZCzyfG4sm8E2r29fxMeDQNPbrwkwqlCX0PdbMO1A5l1Q==
-
 latest-version@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/latest-version/-/latest-version-3.1.0.tgz#a205383fea322b33b5ae3b18abee0dc2f356ee15"

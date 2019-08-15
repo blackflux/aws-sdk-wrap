@@ -2,6 +2,7 @@ const assert = require('assert');
 const get = require('lodash.get');
 const AWS = require('aws-sdk');
 const sqs = require('./util/sqs');
+const errors = require('../src/resources/errors');
 
 const lookupCache = new Map();
 const getAttr = (obj, key) => { // case insensitive lookup
@@ -57,6 +58,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
     updateGlobalConfig: (cfg) => AWS.config.update(cfg),
     call,
     get: getService,
-    sqs: sqs(call)
+    sqs: sqs(call),
+    errors
   };
 };

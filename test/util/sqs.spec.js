@@ -3,6 +3,7 @@ const expect = require('chai').expect;
 const nockBack = require('nock').back;
 const index = require('./../../src/index');
 const helper = require('../helper');
+const { SendMessageBatchError } = require('../../src/resources/errors');
 
 describe('Testing sqs util', () => {
   let aws;
@@ -17,7 +18,7 @@ describe('Testing sqs util', () => {
 
   describe('Testing sendMessageBatch', () => {
     it('Testing send message success', (done) => {
-      nockBack('send-message-batch-success_recording.json', async (nockDone) => {
+      nockBack('sendMessageSuccess.json_recording.json', async (nockDone) => {
         const result = await aws.sqs.sendMessageBatch(
           [
             {
@@ -57,7 +58,7 @@ describe('Testing sqs util', () => {
     });
 
     it('Testing send message error retry', (done) => {
-      nockBack('send-message-batch-error-retry_recording.json', async (nockDone) => {
+      nockBack('sendMessageErrorRetry.json_recording.json', async (nockDone) => {
         const result = await aws.sqs.sendMessageBatch(
           [
             {
@@ -109,13 +110,37 @@ describe('Testing sqs util', () => {
     });
 
     it('Testing empty messages', () => {
-      nockBack('send-message-batch-no-messages_recording.json', async (nockDone) => {
+      nockBack('emptyMessages.json_recording.json', async (nockDone) => {
         const result = await aws.sqs.sendMessageBatch(
           [],
           process.env.QUEUE_URL
         );
         expect(result).to.deep.equal([]);
         nockDone();
+      });
+    });
+
+    it('Testing Send message batch error', (done) => {
+      nockBack('sendMessageBatchError.json_recording.json', async (nockDone) => {
+        try {
+          await aws.sqs.sendMessageBatch(
+            [
+              {
+                type: 'webhook',
+                url: 'https://some-url.com/path',
+                meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
+                event: {
+                  name: 'event_name'
+                }
+              }
+            ],
+            process.env.QUEUE_URL
+          );
+        } catch (err) {
+          expect(err).instanceof(SendMessageBatchError);
+          nockDone();
+          done();
+        }
       });
     });
   });

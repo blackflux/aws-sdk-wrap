@@ -1,8 +1,7 @@
-const assert = require('assert');
 const util = require('util');
 const chunk = require('lodash.chunk');
 const objectHash = require('object-hash');
-const { abbrev } = require('lambda-monitor-logger');
+const { SendMessageBatchError } = require('../resources/errors');
 
 const sleep = util.promisify(setTimeout);
 
@@ -35,12 +34,9 @@ module.exports = (call) => ({
   sendMessageBatch: async (msgs, queueUrl, batchSize = 10) => {
     const result = await Promise.all(chunk(msgs, batchSize)
       .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, call)));
-    assert(
-      msgs.length === result
-        .reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0),
-      `SendMessageBatch Error: ${abbrev(result)}\n`
-      + `Messages length: ${msgs.length}`
-    );
+    if (msgs.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
+      throw new SendMessageBatchError(result);
+    }
     return result;
   }
 });
