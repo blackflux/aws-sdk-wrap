@@ -66,6 +66,12 @@ Get the service from the underlying `aws-sdk` without initializing it. Possible 
 Updates the global aws config of the underlying `aws-sdk` via `AWS.config.update`.
 In most cases this should not be necessary to use.
 
+#### sendMessageBatch(msgs: Array, queueUrl: String, options: Object = {})
+
+Splits `msgs` into groups and calls `sqs.SendMessageBatch` for every group.
+Batch sizes can be modified by the `batchSize` option. Failed calls will be retried up to the `maxRetries` option.
+The available sendMessageBatch `options` are detailed below.
+
 ### Init Options
 
 #### logger
@@ -94,3 +100,23 @@ Type: `list`<br>
 Default: `[]`
 
 Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
+### SendMessageBatch Options
+
+#### batchSize
+Type: `integer`<br>
+Default: `10`
+
+Specify the size of each batch that will be sent.
+
+#### maxRetries
+Type: `integer`<br>
+Default: `10`
+
+Number of times to retry any failed requests.
+
+#### backoffFunction
+Type: `Function`<br>
+Default: `(count) => 30 * (count ** 2)`
+
+The length of time the function will wait after each failed request before retrying. 

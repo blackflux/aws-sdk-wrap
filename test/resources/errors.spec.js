@@ -1,7 +1,8 @@
 const expect = require('chai').expect;
+const { desc } = require('node-tdd');
 const { SendMessageBatchError } = require('../../src/resources/errors');
 
-describe('Testing errors.js', () => {
+desc('Testing errors.js', ({ it }) => {
   it('Testing SendMessageBatchError', () => {
     try {
       throw new SendMessageBatchError('Error Details');
