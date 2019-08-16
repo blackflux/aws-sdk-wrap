@@ -3,13 +3,13 @@ const { desc } = require('node-tdd');
 const index = require('./../../src/index');
 const { SendMessageBatchError } = require('../../src/resources/errors');
 
-desc('Testing sqs util', { useNock: true }, ({ before, it }) => {
+desc('Testing sqs util', { useNock: true }, ({ before }) => {
   let aws;
   before(() => {
     aws = index();
   });
 
-  describe('Testing sendMessageBatch', () => {
+  desc('Testing sendMessageBatch', ({ it }) => {
     it('Testing send message success', async () => {
       const result = await aws.sqs.sendMessageBatch(
         [
