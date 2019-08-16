@@ -5,7 +5,7 @@ const { SendMessageBatchError } = require('../resources/errors');
 
 const sleep = util.promisify(setTimeout);
 
-const sendBatch = async (sqsBatch, queueUrl, call) => {
+const sendBatch = async (sqsBatch, queueUrl, call, { maxRetries, backoffFunction }) => {
   const pending = sqsBatch.reduce((p, msg) => {
     const id = objectHash(msg);
     return Object.assign(p, {
@@ -16,9 +16,9 @@ const sendBatch = async (sqsBatch, queueUrl, call) => {
     });
   }, {});
   const response = [];
-  for (let count = 0; count < 10 && Object.keys(pending).length !== 0; count += 1) {
+  for (let count = 0; count < maxRetries && Object.keys(pending).length !== 0; count += 1) {
     // eslint-disable-next-line no-await-in-loop
-    await sleep(30 * (count ** 2));
+    await sleep(backoffFunction(count));
     // eslint-disable-next-line no-await-in-loop
     const result = await call('sqs:sendMessageBatch', {
       Entries: Object.values(pending),
@@ -31,9 +31,16 @@ const sendBatch = async (sqsBatch, queueUrl, call) => {
 };
 
 module.exports = (call) => ({
-  sendMessageBatch: async (msgs, queueUrl, batchSize = 10) => {
+  sendMessageBatch: async (msgs, queueUrl, {
+    batchSize = 10,
+    maxRetries = 10,
+    backoffFunction = (count) => 30 * (count ** 2)
+  } = {}) => {
     const result = await Promise.all(chunk(msgs, batchSize)
-      .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, call)));
+      .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, call, {
+        maxRetries,
+        backoffFunction
+      })));
     if (msgs.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
       throw new SendMessageBatchError(result);
     }
