@@ -3,7 +3,7 @@ const { desc } = require('node-tdd');
 const index = require('./../../src/index');
 const { SendMessageBatchError } = require('../../src/resources/errors');
 
-desc('Testing sqs util', { useNock: true }, () => {
+desc('Testing sqs util', { useNock: true }, ({ before, it }) => {
   let aws;
   before(() => {
     aws = index();
