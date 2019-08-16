@@ -1,0 +1,18 @@
+[
+  {
+    "scope": "https://sqs.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrl&SendMessageBatchRequestEntry.1.Id=d7967cdc826c420f2482b9bac6b10b73fb156efc&SendMessageBatchRequestEntry.1.MessageBody=%7B%22type%22%3A%22webhook%22%2C%22url%22%3A%22https%3A%2F%2Fsome-url.com%2Fpath%22%2C%22meta%22%3A%22c53be1ec6a664cb0820aa5fa8b9915ea%22%2C%22event%22%3A%7B%22name%22%3A%22event_name%22%7D%7D&Version=2012-11-05",
+    "status": 200,
+    "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><BatchResultErrorEntry><Id>d7967cdc826c420f2482b9bac6b10b73fb156efc</Id><SenderFault>false</SenderFault><Code>InternalError</Code></BatchResultErrorEntry></SendMessageBatchResult><ResponseMetadata><RequestId>b4f56dbc-037a-5147-8dcd-38068125b74b</RequestId></ResponseMetadata></SendMessageBatchResponse>"
+  },
+  {
+    "scope": "https://sqs.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrl&SendMessageBatchRequestEntry.1.Id=d7967cdc826c420f2482b9bac6b10b73fb156efc&SendMessageBatchRequestEntry.1.MessageBody=%7B%22type%22%3A%22webhook%22%2C%22url%22%3A%22https%3A%2F%2Fsome-url.com%2Fpath%22%2C%22meta%22%3A%22c53be1ec6a664cb0820aa5fa8b9915ea%22%2C%22event%22%3A%7B%22name%22%3A%22event_name%22%7D%7D&Version=2012-11-05",
+    "status": 200,
+    "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>d7967cdc826c420f2482b9bac6b10b73fb156efc</Id><MessageId>e555abcb-d677-41ce-a3cd-022e2d94cad4</MessageId><MD5OfMessageBody>90cfad0c5a2d7b4f32be02659214aaba</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>2f332d0a-9d78-594e-8e94-78b01f67a165</RequestId></ResponseMetadata></SendMessageBatchResponse>"
+  }
+]
