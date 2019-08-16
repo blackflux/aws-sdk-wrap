@@ -1,15 +1,15 @@
 const expect = require('chai').expect;
-const { desc } = require('node-tdd');
+const { describe } = require('node-tdd');
 const index = require('./../../src/index');
 const { SendMessageBatchError } = require('../../src/resources/errors');
 
-desc('Testing sqs util', { useNock: true }, ({ before }) => {
+describe('Testing sqs util', { useNock: true }, () => {
   let aws;
   before(() => {
     aws = index();
   });
 
-  desc('Testing sendMessageBatch', ({ it }) => {
+  describe('Testing sendMessageBatch', () => {
     it('Testing send message success', async () => {
       const result = await aws.sqs.sendMessageBatch([{
         type: 'discover',

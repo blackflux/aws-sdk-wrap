@@ -68,7 +68,7 @@ In most cases this should not be necessary to use.
 
 #### sendMessageBatch(msgs: Array, queueUrl: String, options: Object = {})
 
-Splits `msgs` into groups and calls `sqs.SendMessageBatch` for every group.
+Splits `msgs` into groups and calls [sqs.SendMessageBatch](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessageBatch-property) for every group.
 Batch sizes can be modified by the `batchSize` option. Failed calls will be retried up to the `maxRetries` option.
 The available sendMessageBatch `options` are detailed below.
 
@@ -107,7 +107,7 @@ Provide string list of expected AWS error codes. Promise succeeds on expected er
 Type: `integer`<br>
 Default: `10`
 
-Specify the size of each batch that will be sent.
+Specify the size of each batch that will be sent. Should never exceed 10.
 
 #### maxRetries
 Type: `integer`<br>
