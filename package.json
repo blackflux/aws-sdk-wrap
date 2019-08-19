@@ -44,7 +44,7 @@
     "eslint-plugin-import": "2.18.2",
     "eslint-plugin-mocha": "6.0.0",
     "js-gardener": "2.0.67",
-    "node-tdd": "1.12.1",
+    "node-tdd": "1.12.2",
     "nyc": "14.1.1",
     "semantic-release": "15.13.21",
     "eslint-plugin-jasmine": "2.10.1",
