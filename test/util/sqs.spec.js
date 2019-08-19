@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
-const index = require('./../../src/index');
+const index = require('../../src/index');
 const { SendMessageBatchError } = require('../../src/resources/errors');
 
 describe('Testing sqs util', { useNock: true }, () => {
