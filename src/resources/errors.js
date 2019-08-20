@@ -1,7 +1,7 @@
 class SendMessageBatchError extends Error {
   constructor(message) {
     super();
-    this.name = 'Send message batch error';
+    this.name = 'SendMessageBatchError';
     this.message = message;
   }
 }
