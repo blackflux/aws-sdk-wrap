@@ -53,7 +53,7 @@
     "js-gardener": "2.0.77",
     "node-tdd": "2.0.4",
     "nyc": "14.1.1",
-    "semantic-release": "15.13.21"
+    "semantic-release": "15.13.24"
   },
   "peerDependencies": {
     "aws-sdk": "^2.296.0"
