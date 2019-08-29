@@ -90,7 +90,7 @@ describe('Testing sqs util', { useNock: true }, () => {
         action: 'delete',
         type: 'collection',
         target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
-      }], process.env.QUEUE_URL, { maxDelaySeconds: 5 });
+      }], process.env.QUEUE_URL, { delaySeconds: 5 });
       expect(result).to.deep.equal([[{
         ResponseMetadata: {
           RequestId: '8d1d8e98-dc7e-5fc2-9c83-db8791125e19'

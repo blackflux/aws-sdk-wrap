@@ -121,7 +121,7 @@ Default: `(count) => 30 * (count ** 2)`
 
 The length of time the function will wait after each failed request before retrying.
 
-#### maxDelaySeconds
+#### delaySeconds
 Type: `integer`<br>
 Default: `null`
 
