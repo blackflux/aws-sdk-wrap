@@ -125,4 +125,4 @@ The length of time the function will wait after each failed request before retry
 Type: `integer`<br>
 Default: `null`
 
-Postpone the delivery of a message to the queue for a number of seconds. 
+Set [DelaySeconds](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.htmlhttps://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html) Option. 
