@@ -1,3 +1,4 @@
+const assert = require('assert');
 const util = require('util');
 const chunk = require('lodash.chunk');
 const objectHash = require('object-hash');
@@ -38,6 +39,7 @@ module.exports = (call) => ({
     backoffFunction = (count) => 30 * (count ** 2),
     delaySeconds = null
   } = {}) => {
+    assert(batchSize <= 10, 'AWS sqs:sendMessageBatch restriction');
     const result = await Promise.all(chunk(msgs, batchSize)
       .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, call, {
         maxRetries,
