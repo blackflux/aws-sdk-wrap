@@ -1,3 +1,4 @@
+const assert = require('assert');
 const util = require('util');
 const chunk = require('lodash.chunk');
 const objectHash = require('object-hash');
@@ -5,13 +6,14 @@ const { SendMessageBatchError } = require('../resources/errors');
 
 const sleep = util.promisify(setTimeout);
 
-const sendBatch = async (sqsBatch, queueUrl, call, { maxRetries, backoffFunction }) => {
+const sendBatch = async (sqsBatch, queueUrl, call, { maxRetries, backoffFunction, delaySeconds }) => {
   const pending = sqsBatch.reduce((p, msg) => {
     const id = objectHash(msg);
     return Object.assign(p, {
       [id]: {
         Id: id,
-        MessageBody: JSON.stringify(msg)
+        MessageBody: JSON.stringify(msg),
+        ...(delaySeconds === null ? {} : { DelaySeconds: delaySeconds })
       }
     });
   }, {});
@@ -34,12 +36,15 @@ module.exports = (call) => ({
   sendMessageBatch: async (msgs, queueUrl, {
     batchSize = 10,
     maxRetries = 10,
-    backoffFunction = (count) => 30 * (count ** 2)
+    backoffFunction = (count) => 30 * (count ** 2),
+    delaySeconds = null
   } = {}) => {
+    assert(batchSize <= 10, 'AWS sqs:sendMessageBatch restriction');
     const result = await Promise.all(chunk(msgs, batchSize)
       .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, call, {
         maxRetries,
-        backoffFunction
+        backoffFunction,
+        delaySeconds
       })));
     if (msgs.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
       throw new SendMessageBatchError(result);
