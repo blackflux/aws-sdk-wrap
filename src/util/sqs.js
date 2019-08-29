@@ -5,13 +5,14 @@ const { SendMessageBatchError } = require('../resources/errors');
 
 const sleep = util.promisify(setTimeout);
 
-const sendBatch = async (sqsBatch, queueUrl, call, { maxRetries, backoffFunction }) => {
+const sendBatch = async (sqsBatch, queueUrl, call, { maxRetries, backoffFunction, maxDelaySeconds }) => {
   const pending = sqsBatch.reduce((p, msg) => {
     const id = objectHash(msg);
     return Object.assign(p, {
       [id]: {
         Id: id,
-        MessageBody: JSON.stringify(msg)
+        MessageBody: JSON.stringify(msg),
+        ...(maxDelaySeconds === null ? {} : { DelaySeconds: maxDelaySeconds })
       }
     });
   }, {});
@@ -34,12 +35,14 @@ module.exports = (call) => ({
   sendMessageBatch: async (msgs, queueUrl, {
     batchSize = 10,
     maxRetries = 10,
-    backoffFunction = (count) => 30 * (count ** 2)
+    backoffFunction = (count) => 30 * (count ** 2),
+    maxDelaySeconds = null
   } = {}) => {
     const result = await Promise.all(chunk(msgs, batchSize)
       .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, call, {
         maxRetries,
-        backoffFunction
+        backoffFunction,
+        maxDelaySeconds
       })));
     if (msgs.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
       throw new SendMessageBatchError(result);

@@ -84,5 +84,24 @@ describe('Testing sqs util', { useNock: true }, () => {
         expect(err).instanceof(SendMessageBatchError);
       }
     });
+
+    it('Testing maxDelaySeconds option', async () => {
+      const result = await aws.sqs.sendMessageBatch([{
+        action: 'delete',
+        type: 'collection',
+        target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
+      }], process.env.QUEUE_URL, { maxDelaySeconds: 5 });
+      expect(result).to.deep.equal([[{
+        ResponseMetadata: {
+          RequestId: '8d1d8e98-dc7e-5fc2-9c83-db8791125e19'
+        },
+        Successful: [{
+          Id: 'e6e5e4a0d0b12e1a085cd0d9b6388a0d0a0b2f79',
+          MessageId: '8085f0e3-a423-447e-9c89-3463acc149ef',
+          MD5OfMessageBody: '5e44aadb9678e3604d5dbee0be04c4e4'
+        }],
+        Failed: []
+      }]]);
+    });
   });
 });

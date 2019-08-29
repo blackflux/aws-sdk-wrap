@@ -119,4 +119,10 @@ Number of times to retry any failed requests.
 Type: `Function`<br>
 Default: `(count) => 30 * (count ** 2)`
 
-The length of time the function will wait after each failed request before retrying. 
+The length of time the function will wait after each failed request before retrying.
+
+#### maxDelaySeconds
+Type: `integer`<br>
+Default: `null`
+
+Postpone the delivery of a message to the queue for a number of seconds. 
