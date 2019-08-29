@@ -119,4 +119,10 @@ Number of times to retry any failed requests.
 Type: `Function`<br>
 Default: `(count) => 30 * (count ** 2)`
 
-The length of time the function will wait after each failed request before retrying. 
+The length of time the function will wait after each failed request before retrying.
+
+#### delaySeconds
+Type: `integer`<br>
+Default: `null`
+
+Set [DelaySeconds](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html) option. 
