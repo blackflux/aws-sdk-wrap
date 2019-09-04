@@ -64,7 +64,8 @@ describe('Testing sqs util', { useNock: true }, () => {
         Failed: []
       }]]);
       expect(recorder.get()).to.deep.equal([
-        'Failed to submit (some) message(s). Retrying: d7967cdc826c420f2482b9bac6b10b73fb156efc'
+        'Failed to submit (some) message(s). Retrying: '
+        + '[(Id=d7967cdc826c420f2482b9bac6b10b73fb156efc, MD5=90cfad0c5a2d7b4f32be02659214aaba)]'
       ]);
     });
 
