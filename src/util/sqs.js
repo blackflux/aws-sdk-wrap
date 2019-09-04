@@ -6,8 +6,13 @@ const { SendMessageBatchError } = require('../resources/errors');
 
 const sleep = util.promisify(setTimeout);
 
-const sendBatch = async (sqsBatch, queueUrl, call, {
-  maxRetries, backoffFunction, delaySeconds, logger
+const sendBatch = async (sqsBatch, queueUrl, {
+  call,
+  getService,
+  maxRetries,
+  backoffFunction,
+  delaySeconds,
+  logger
 }) => {
   const pending = sqsBatch.reduce((p, msg) => {
     const id = objectHash(msg);
@@ -31,13 +36,18 @@ const sendBatch = async (sqsBatch, queueUrl, call, {
     response.push(result);
     result.Successful.forEach((e) => delete pending[e.Id]);
     if (Object.keys(pending).length !== 0 && logger !== null) {
-      logger.warn(`Failed to submit (some) message(s). Retrying: ${Object.keys(pending).join(', ')}`);
+      logger.warn(`Failed to submit (some) message(s). Retrying: [${
+        Object
+          .values(pending)
+          .map(({ Id, MessageBody }) => `(Id=${Id}, MD5=${getService('util.crypto').md5(MessageBody, 'hex')})`)
+          .join(', ')
+      }]`);
     }
   }
   return response;
 };
 
-module.exports = ({ call, logger }) => ({
+module.exports = ({ call, getService, logger }) => ({
   sendMessageBatch: async (msgs, queueUrl, {
     batchSize = 10,
     maxRetries = 10,
@@ -46,7 +56,9 @@ module.exports = ({ call, logger }) => ({
   } = {}) => {
     assert(batchSize <= 10, 'AWS sqs:sendMessageBatch restriction');
     const result = await Promise.all(chunk(msgs, batchSize)
-      .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, call, {
+      .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, {
+        call,
+        getService,
         maxRetries,
         backoffFunction,
         delaySeconds,
