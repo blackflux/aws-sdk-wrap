@@ -6,7 +6,9 @@ const { SendMessageBatchError } = require('../resources/errors');
 
 const sleep = util.promisify(setTimeout);
 
-const sendBatch = async (sqsBatch, queueUrl, call, { maxRetries, backoffFunction, delaySeconds }) => {
+const sendBatch = async (sqsBatch, queueUrl, call, {
+  maxRetries, backoffFunction, delaySeconds, logger
+}) => {
   const pending = sqsBatch.reduce((p, msg) => {
     const id = objectHash(msg);
     return Object.assign(p, {
@@ -28,11 +30,14 @@ const sendBatch = async (sqsBatch, queueUrl, call, { maxRetries, backoffFunction
     });
     response.push(result);
     result.Successful.forEach((e) => delete pending[e.Id]);
+    if (Object.keys(pending).length !== 0 && logger !== null) {
+      logger.warn(`Failed to submit (some) message(s). Retrying: ${Object.keys(pending).join(', ')}`);
+    }
   }
   return response;
 };
 
-module.exports = (call) => ({
+module.exports = ({ call, logger }) => ({
   sendMessageBatch: async (msgs, queueUrl, {
     batchSize = 10,
     maxRetries = 10,
@@ -44,7 +49,8 @@ module.exports = (call) => ({
       .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, call, {
         maxRetries,
         backoffFunction,
-        delaySeconds
+        delaySeconds,
+        logger
       })));
     if (msgs.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
       throw new SendMessageBatchError(result);

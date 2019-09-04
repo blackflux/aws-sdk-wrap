@@ -58,7 +58,7 @@ module.exports = ({ config = {}, logger = null } = {}) => {
     updateGlobalConfig: (cfg) => AWS.config.update(cfg),
     call,
     get: getService,
-    sqs: sqs(call),
+    sqs: sqs({ call, logger }),
     errors
   };
 };
