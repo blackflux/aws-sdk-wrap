@@ -6,10 +6,10 @@ const { SendMessageBatchError } = require('../../src/resources/errors');
 describe('Testing sqs util', { useNock: true }, () => {
   let aws;
   before(() => {
-    aws = index();
+    aws = index({ logger: console });
   });
 
-  describe('Testing sendMessageBatch', () => {
+  describe('Testing sendMessageBatch', { record: console }, () => {
     it('Testing send message success', async () => {
       const result = await aws.sqs.sendMessageBatch([{
         type: 'discover',
@@ -32,7 +32,7 @@ describe('Testing sqs util', { useNock: true }, () => {
       }]]);
     });
 
-    it('Testing send message error retry', async () => {
+    it('Testing send message error retry', async ({ recorder }) => {
       const result = await aws.sqs.sendMessageBatch([{
         type: 'webhook',
         url: 'https://some-url.com/path',
@@ -63,6 +63,10 @@ describe('Testing sqs util', { useNock: true }, () => {
         }],
         Failed: []
       }]]);
+      expect(recorder.get()).to.deep.equal([
+        'Failed to submit (some) message(s). Retrying: '
+        + '[(Id=d7967cdc826c420f2482b9bac6b10b73fb156efc, MD5=90cfad0c5a2d7b4f32be02659214aaba)]'
+      ]);
     });
 
     it('Testing empty messages', async () => {
