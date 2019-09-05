@@ -1,6 +1,7 @@
 const assert = require('assert');
 const get = require('lodash.get');
 const AWS = require('aws-sdk');
+const Joi = require('joi-strict');
 const sqs = require('./util/sqs');
 const errors = require('./resources/errors');
 
@@ -13,8 +14,14 @@ const getAttr = (obj, key) => { // case insensitive lookup
   return lookupCache.get(obj)[key.toLowerCase()];
 };
 
-module.exports = ({ config = {}, logger = null } = {}) => {
+module.exports = (opts = {}) => {
+  Joi.assert(opts, Joi.object().keys({
+    config: Joi.object().optional(),
+    logger: Joi.any().optional()
+  }));
   const services = {};
+  const config = get(opts, 'config', {});
+  const logger = get(opts, 'logger', null);
 
   const getService = (service) => {
     const serviceLower = service.toLowerCase();
