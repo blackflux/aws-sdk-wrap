@@ -66,11 +66,21 @@ Get the service from the underlying `aws-sdk` without initializing it. Possible 
 Updates the global aws config of the underlying `aws-sdk` via `AWS.config.update`.
 In most cases this should not be necessary to use.
 
-#### sendMessageBatch(msgs: Array, queueUrl: String, options: Object = {})
+#### sqs.sendMessageBatch(msgs: Array, queueUrl: String, options: Object = {})
 
 Splits `msgs` into groups and calls [sqs.SendMessageBatch](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessageBatch-property) for every group.
 Batch sizes can be modified by the `batchSize` option. Failed calls will be retried up to the `maxRetries` option.
 The available sendMessageBatch `options` are detailed below.
+
+#### sqs.QueueProcessor({ queueUrl: String, stepsDir: String })
+
+Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files.
+
+Each `step` needs to export `schema` (Joi schema), `handler` (execution logic ingesting payload and event) and `next` (array of next possible steps).
+
+The schema needs to define the event name under `name`. New events that are to be re-queued into the queue need to be returned from the `handler` function as an array.
+
+Please see tests for example.
 
 ### Init Options
 
