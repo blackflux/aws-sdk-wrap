@@ -1,3 +1,4 @@
+const assert = require('assert');
 const fs = require('smart-fs');
 const path = require('path');
 const Joi = require('joi-strict');
@@ -21,28 +22,31 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
     }), {});
 
   return wrap((event) => {
-    if (event.Records.length !== 1) {
-      throw new Error(
-        'Lambda SQS subscription is mis-configured! '
-        + 'Please only process one event at a time for retry resilience.'
-      );
-    }
+    assert(
+      event.Records.length === 1,
+      'Lambda SQS subscription is mis-configured! ' +
+      'Please only process one event at a time for retry resilience.'
+    );
     return Promise.all(event.Records.map(async (e) => {
       const payload = JSON.parse(e.body);
-      if (!(payload instanceof Object && !Array.isArray(payload))) {
-        throw new Error(`Invalid Event Received: ${e.body}`);
-      }
-      if (payload.name === undefined) {
-        throw new Error('Received step event that is missing "name" property.');
-      }
+      assert(
+        payload instanceof Object && !Array.isArray(payload),
+        `Invalid Event Received: ${e.body}`
+      );
+      assert(
+        payload.name !== undefined,
+        'Received step event that is missing "name" property.'
+      );
       const step = steps[payload.name];
-      if (step === undefined) {
-        throw new Error(`Invalid step provided: ${payload.name}`);
-      }
+      assert(
+        step !== undefined,
+        `Invalid step provided: ${payload.name}`
+      );
       const messages = await step.handler(payload, e);
-      if (messages.length !== 0 && step.next.length === 0) {
-        throw new Error(`No output allowed for step: ${payload.name}`);
-      }
+      assert(
+        messages.length === 0 || step.next.length !== 0,
+        `No output allowed for step: ${payload.name}`
+      );
       Joi.assert(
         messages,
         Joi.array().items(step.next.map((n) => steps[n].schema)),
