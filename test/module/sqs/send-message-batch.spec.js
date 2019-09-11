@@ -3,7 +3,11 @@ const { describe } = require('node-tdd');
 const index = require('../../../src/index');
 const { SendMessageBatchError } = require('../../../src/resources/errors');
 
-describe('Testing sendMessageBatch', { useNock: true, record: console }, () => {
+describe('Testing sendMessageBatch', {
+  useNock: true,
+  record: console,
+  envVarsFile: 'config.env.yml'
+}, () => {
   let aws;
   before(() => {
     aws = index({ logger: console });

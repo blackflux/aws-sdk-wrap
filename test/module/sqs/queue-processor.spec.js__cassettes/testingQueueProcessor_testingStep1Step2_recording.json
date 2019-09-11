@@ -1,0 +1,10 @@
+[
+  {
+    "scope": "https://sqs.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrl&SendMessageBatchRequestEntry.1.Id=9207814704912e326ed773e40027e802bf31d830&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22step2%22%7D&Version=2012-11-05",
+    "status": 200,
+    "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>9207814704912e326ed773e40027e802bf31d830</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>4e85d0a6c2a615ac701dc2f1f05f58e6</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>"
+  }
+]

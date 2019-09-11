@@ -39,6 +39,7 @@
     "@babel/register": "7.6.0",
     "@blackflux/eslint-plugin-rules": "1.3.8",
     "@blackflux/robo-config-plugin": "2.6.3",
+    "@hapi/joi": "15.1.1",
     "aws-sdk": "2.527.0",
     "babel-eslint": "10.0.3",
     "chai": "4.2.0",
@@ -101,8 +102,10 @@
   ],
   "dependencies": {
     "joi-strict": "1.0.9",
+    "lambda-async": "1.0.1",
     "lodash.chunk": "4.2.0",
     "lodash.get": "4.4.2",
-    "object-hash": "1.3.1"
+    "object-hash": "1.3.1",
+    "smart-fs": "1.9.11"
   }
 }
