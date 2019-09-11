@@ -24,8 +24,8 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
   return wrap((event) => {
     assert(
       event.Records.length === 1,
-      'Lambda SQS subscription is mis-configured! ' +
-      'Please only process one event at a time for retry resilience.'
+      'Lambda SQS subscription is mis-configured! '
+      + 'Please only process one event at a time for retry resilience.'
     );
     return Promise.all(event.Records.map(async (e) => {
       const payload = JSON.parse(e.body);
