@@ -10,6 +10,15 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
     .reduce((p, step) => Object.assign(p, {
       [step.slice(0, -3)]: (() => {
         const { schema, handler, next } = fs.smartRead(path.join(stepsDir, step));
+        assert(schema.isJoi === true, 'Schema not a Joi schema.');
+        assert(
+          typeof handler === 'function' && handler.length === 2,
+          'Handler must be a function taking two arguments.'
+        );
+        assert(
+          Array.isArray(next) && next.every((e) => typeof e === 'string'),
+          'Next must be an array of strings.'
+        );
         return {
           handler: (payload, event) => {
             Joi.assert(payload, schema, `Invalid payload received for step: ${payload.name}`);
