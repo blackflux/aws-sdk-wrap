@@ -2,7 +2,7 @@ const assert = require('assert');
 const get = require('lodash.get');
 const AWS = require('aws-sdk');
 const Joi = require('joi-strict');
-const sqs = require('./util/sqs');
+const sqs = require('./module/sqs');
 const errors = require('./resources/errors');
 
 const lookupCache = new Map();
