@@ -32,10 +32,10 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
       if (!(payload instanceof Object && !Array.isArray(payload))) {
         throw new Error(`Invalid Event Received: ${e.body}`);
       }
-      const step = steps[payload.name];
       if (payload.name === undefined) {
         throw new Error('Received step event that is missing "name" property.');
       }
+      const step = steps[payload.name];
       if (step === undefined) {
         throw new Error(`Invalid step provided: ${payload.name}`);
       }
