@@ -44,7 +44,7 @@ describe('Testing QueueProcessor', {
     expect(result.message).to.equal(
       'Unexpected/Invalid next step(s) returned for: bad-output '
       + '[\n  {\n    "name" \u001b[31m[1]\u001b[0m: "unknown-step"\n  }\n]'
-      + '\n\u001b[31m\n[1] "name" must be one of [step2]\u001b[0m'
+      + '\n\u001b[31m\n[1] "[0].name" must be [step2]\u001b[0m'
     );
   });
 
