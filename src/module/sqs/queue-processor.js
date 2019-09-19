@@ -10,7 +10,7 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
     .reduce((p, step) => Object.assign(p, {
       [step.slice(0, -3)]: (() => {
         const { schema, handler, next } = fs.smartRead(path.join(stepsDir, step));
-        assert(schema.isJoi === true, 'Schema not a Joi schema.');
+        assert(Joi.isSchema(schema) === true, 'Schema not a Joi schema.');
         assert(
           typeof handler === 'function' && handler.length === 2,
           'Handler must be a function taking two arguments.'
@@ -62,7 +62,7 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
       );
       Joi.assert(
         messages,
-        Joi.array().items(step.next.map((n) => steps[n].schema)),
+        Joi.array().items(...step.next.map((n) => steps[n].schema)),
         `Unexpected/Invalid next step(s) returned for: ${payload.name}`
       );
       await ingest(messages);
