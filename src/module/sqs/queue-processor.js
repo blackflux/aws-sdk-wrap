@@ -29,7 +29,7 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
         };
       })()
     }), {});
-  const globalSchema = Joi.array().items(Object.values(steps).map((step) => step.schema));
+  const globalSchema = Joi.array().items(...Object.values(steps).map((step) => step.schema));
   const ingest = async (messages) => {
     Joi.assert(messages, globalSchema);
     await sendMessageBatch(messages, queueUrl);
