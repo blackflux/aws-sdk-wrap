@@ -17,7 +17,7 @@ describe('Testing QueueProcessor', {
       stepsDir: `${__filename}_steps`
     });
     executor = (records) => new Promise((resolve, reject) => {
-      processor({
+      processor.handler({
         Records: records.map((r) => ({ body: JSON.stringify(r) }))
       }, {}, (err, resp) => {
         if (err !== null) {

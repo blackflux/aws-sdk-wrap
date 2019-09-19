@@ -29,8 +29,12 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
         };
       })()
     }), {});
-
-  return wrap((event) => {
+  const globalSchema = Joi.array().items(Object.values(steps).map((step) => step.schema));
+  const ingest = async (messages) => {
+    Joi.assert(messages, globalSchema);
+    await sendMessageBatch(messages, queueUrl);
+  };
+  const handler = wrap((event) => {
     assert(
       event.Records.length === 1,
       'Lambda SQS subscription is mis-configured! '
@@ -61,8 +65,10 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
         Joi.array().items(step.next.map((n) => steps[n].schema)),
         `Unexpected/Invalid next step(s) returned for: ${payload.name}`
       );
-      await sendMessageBatch(messages, queueUrl);
+      await ingest(messages);
       return payload;
     }));
   });
+
+  return { ingest, handler };
 };
