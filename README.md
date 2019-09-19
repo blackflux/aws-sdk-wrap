@@ -80,6 +80,8 @@ Each `step` needs to export `schema` (Joi schema), `handler` (execution logic in
 
 The schema needs to define the event name under `name`. New events that are to be re-queued into the queue need to be returned from the `handler` function as an array.
 
+The exposed `ingest` method should only be used to seed the queue. Messages generated inside a step should simply be returned from that step.
+
 Please see tests for example.
 
 ### Init Options
