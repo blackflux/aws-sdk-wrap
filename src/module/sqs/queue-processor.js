@@ -4,7 +4,13 @@ const path = require('path');
 const Joi = require('joi-strict');
 const { wrap } = require('lambda-async');
 
-module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
+module.exports = ({ sendMessageBatch }) => (opts) => {
+  Joi.assert(opts, Joi.object().keys({
+    queueUrl: Joi.string(),
+    stepsDir: Joi.string(),
+    ingestSteps: Joi.array().unique().min(1).items(Joi.string())
+  }));
+  const { queueUrl, stepsDir, ingestSteps } = opts;
   const steps = fs
     .readdirSync(stepsDir)
     .reduce((p, step) => Object.assign(p, {
@@ -29,11 +35,13 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
         };
       })()
     }), {});
-  const globalSchema = Joi.array().items(...Object.values(steps).map((step) => step.schema));
+
+  const ingestSchema = Joi.array().items(...ingestSteps.map((step) => steps[step].schema));
   const ingest = async (messages) => {
-    Joi.assert(messages, globalSchema);
+    Joi.assert(messages, ingestSchema);
     await sendMessageBatch(messages, queueUrl);
   };
+
   const handler = wrap((event) => {
     assert(
       event.Records.length === 1,
@@ -65,7 +73,7 @@ module.exports = ({ sendMessageBatch }) => ({ queueUrl, stepsDir }) => {
         Joi.array().items(...step.next.map((n) => steps[n].schema)),
         `Unexpected/Invalid next step(s) returned for: ${payload.name}`
       );
-      await ingest(messages);
+      await sendMessageBatch(messages, queueUrl);
       return payload;
     }));
   });
