@@ -72,7 +72,7 @@ Splits `msgs` into groups and calls [sqs.SendMessageBatch](https://docs.aws.amaz
 Batch sizes can be modified by the `batchSize` option. Failed calls will be retried up to the `maxRetries` option.
 The available sendMessageBatch `options` are detailed below.
 
-#### sqs.QueueProcessor({ queueUrl: String, stepsDir: String })
+#### sqs.QueueProcessor({ queueUrl: String, stepsDir: String, ingestSteps: String[] })
 
 Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files.
 
