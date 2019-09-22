@@ -14,7 +14,8 @@ describe('Testing QueueProcessor', {
     aws = index({ logger: console });
     processor = aws.sqs.QueueProcessor({
       queueUrl: process.env.QUEUE_URL,
-      stepsDir: `${__filename}_steps`
+      stepsDir: `${__filename}_steps`,
+      ingestSteps: ['step1']
     });
     executor = (records) => new Promise((resolve, reject) => {
       processor.handler({
@@ -27,6 +28,11 @@ describe('Testing QueueProcessor', {
         }
       });
     });
+  });
+
+  it('Testing ingest', async () => {
+    const result = await processor.ingest([{ name: 'step1' }]);
+    expect(result).to.equal(undefined);
   });
 
   it('Testing step1 -> [step2]', async () => {
