@@ -1,6 +1,8 @@
 const assert = require('assert');
 const util = require('util');
 const chunk = require('lodash.chunk');
+const get = require('lodash.get');
+const Joi = require('joi-strict');
 const objectHash = require('object-hash');
 const { SendMessageBatchError } = require('../../resources/errors');
 
@@ -47,12 +49,22 @@ const sendBatch = async (sqsBatch, queueUrl, {
   return response;
 };
 
-module.exports = ({ call, getService, logger }) => async (msgs, queueUrl, {
-  batchSize = 10,
-  maxRetries = 10,
-  backoffFunction = (count) => 30 * (count ** 2),
-  delaySeconds = null
-} = {}) => {
+module.exports = ({ call, getService, logger }) => async (opts) => {
+  Joi.assert(opts, Joi.object().keys({
+    msgs: Joi.array(),
+    queueUrl: Joi.string(),
+    batchSize: Joi.number().integer().optional(),
+    maxRetries: Joi.number().integer().optional(),
+    backoffFunction: Joi.function().optional(),
+    delaySeconds: Joi.number().integer().optional()
+  }));
+  const msgs = get(opts, 'msgs');
+  const queueUrl = get(opts, 'queueUrl');
+  const batchSize = get(opts, 'batchSize', 10);
+  const maxRetries = get(opts, 'maxRetries', 10);
+  const backoffFunction = get(opts, 'backoffFunction', (count) => 30 * (count ** 2));
+  const delaySeconds = get(opts, 'delaySeconds', null);
+
   assert(batchSize <= 10, 'AWS sqs:sendMessageBatch restriction');
   const result = await Promise.all(chunk(msgs, batchSize)
     .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, {

@@ -6,7 +6,7 @@ const { wrap } = require('lambda-async');
 
 module.exports = ({ sendMessageBatch }) => (opts) => {
   Joi.assert(opts, Joi.object().keys({
-    queueUrl: Joi.string(),
+    queueUrl: Joi.string().optional(),
     stepsDir: Joi.string(),
     ingestSteps: Joi.array().unique().min(1).items(Joi.string())
   }));
@@ -39,7 +39,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
   const ingestSchema = Joi.array().items(...ingestSteps.map((step) => steps[step].schema));
   const ingest = async (messages) => {
     Joi.assert(messages, ingestSchema);
-    await sendMessageBatch(messages, queueUrl);
+    await sendMessageBatch({ msgs: messages, queueUrl });
   };
 
   const handler = wrap((event) => {
@@ -73,7 +73,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
         Joi.array().items(...step.next.map((n) => steps[n].schema)),
         `Unexpected/Invalid next step(s) returned for: ${payload.name}`
       );
-      await sendMessageBatch(messages, queueUrl);
+      await sendMessageBatch({ msgs: messages, queueUrl });
       return payload;
     }));
   });

@@ -14,14 +14,17 @@ describe('Testing sendMessageBatch', {
   });
 
   it('Testing send message success', async () => {
-    const result = await aws.sqs.sendMessageBatch([{
-      type: 'discover',
-      data: {
-        propertyId: '706a95c1-0001-4e35-af8c-e5227976b607',
-        integrationId: 'f578b003-6497-4fd0-b354-f977e0ee9742',
-        hour: '2018-10-25T20:00:00.000Z'
-      }
-    }], process.env.QUEUE_URL);
+    const result = await aws.sqs.sendMessageBatch({
+      msgs: [{
+        type: 'discover',
+        data: {
+          propertyId: '706a95c1-0001-4e35-af8c-e5227976b607',
+          integrationId: 'f578b003-6497-4fd0-b354-f977e0ee9742',
+          hour: '2018-10-25T20:00:00.000Z'
+        }
+      }],
+      queueUrl: process.env.QUEUE_URL
+    });
     expect(result).to.deep.equal([[{
       ResponseMetadata: {
         RequestId: 'a8b4a121-1f5c-562e-b28d-f54f44cd7572'
@@ -36,14 +39,17 @@ describe('Testing sendMessageBatch', {
   });
 
   it('Testing send message error retry', async ({ recorder }) => {
-    const result = await aws.sqs.sendMessageBatch([{
-      type: 'webhook',
-      url: 'https://some-url.com/path',
-      meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
-      event: {
-        name: 'event_name'
-      }
-    }], process.env.QUEUE_URL);
+    const result = await aws.sqs.sendMessageBatch({
+      msgs: [{
+        type: 'webhook',
+        url: 'https://some-url.com/path',
+        meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
+        event: {
+          name: 'event_name'
+        }
+      }],
+      queueUrl: process.env.QUEUE_URL
+    });
     expect(result).to.deep.equal([[{
       ResponseMetadata: {
         RequestId: 'b4f56dbc-037a-5147-8dcd-38068125b74b'
@@ -73,31 +79,39 @@ describe('Testing sendMessageBatch', {
   });
 
   it('Testing empty messages', async () => {
-    const result = await aws.sqs.sendMessageBatch([], process.env.QUEUE_URL);
+    const result = await aws.sqs.sendMessageBatch({ msgs: [], queueUrl: process.env.QUEUE_URL });
     expect(result).to.deep.equal([]);
   });
 
   it('Testing Send message batch error', async () => {
     try {
-      await aws.sqs.sendMessageBatch([{
-        type: 'webhook',
-        url: 'https://some-url.com/path',
-        meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
-        event: {
-          name: 'event_name'
-        }
-      }], process.env.QUEUE_URL, { maxRetries: 1 });
+      await aws.sqs.sendMessageBatch({
+        msgs: [{
+          type: 'webhook',
+          url: 'https://some-url.com/path',
+          meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
+          event: {
+            name: 'event_name'
+          }
+        }],
+        queueUrl: process.env.QUEUE_URL,
+        maxRetries: 1
+      });
     } catch (err) {
       expect(err).instanceof(SendMessageBatchError);
     }
   });
 
   it('Testing maxDelaySeconds option', async () => {
-    const result = await aws.sqs.sendMessageBatch([{
-      action: 'delete',
-      type: 'collection',
-      target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
-    }], process.env.QUEUE_URL, { delaySeconds: 5 });
+    const result = await aws.sqs.sendMessageBatch({
+      msgs: [{
+        action: 'delete',
+        type: 'collection',
+        target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
+      }],
+      queueUrl: process.env.QUEUE_URL,
+      delaySeconds: 5
+    });
     expect(result).to.deep.equal([[{
       ResponseMetadata: {
         RequestId: '8d1d8e98-dc7e-5fc2-9c83-db8791125e19'
