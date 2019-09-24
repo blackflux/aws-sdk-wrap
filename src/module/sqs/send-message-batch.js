@@ -1,6 +1,7 @@
-const assert = require('assert');
 const util = require('util');
 const chunk = require('lodash.chunk');
+const get = require('lodash.get');
+const Joi = require('joi-strict');
 const objectHash = require('object-hash');
 const { SendMessageBatchError } = require('../../resources/errors');
 
@@ -47,14 +48,27 @@ const sendBatch = async (sqsBatch, queueUrl, {
   return response;
 };
 
-module.exports = ({ call, getService, logger }) => async (msgs, queueUrl, {
-  batchSize = 10,
-  maxRetries = 10,
-  backoffFunction = (count) => 30 * (count ** 2),
-  delaySeconds = null
-} = {}) => {
-  assert(batchSize <= 10, 'AWS sqs:sendMessageBatch restriction');
-  const result = await Promise.all(chunk(msgs, batchSize)
+module.exports = ({ call, getService, logger }) => async (opts) => {
+  Joi.assert(opts, Joi.object().keys({
+    messages: Joi.array(),
+    queueUrl: Joi.string(),
+    batchSize: Joi.number()
+      .integer()
+      .min(1)
+      .max(10) // AWS sqs:sendMessageBatch restriction
+      .optional(),
+    maxRetries: Joi.number().integer().optional(),
+    backoffFunction: Joi.function().optional(),
+    delaySeconds: Joi.number().integer().optional()
+  }));
+  const messages = get(opts, 'messages');
+  const queueUrl = get(opts, 'queueUrl');
+  const batchSize = get(opts, 'batchSize', 10);
+  const maxRetries = get(opts, 'maxRetries', 10);
+  const backoffFunction = get(opts, 'backoffFunction', (count) => 30 * (count ** 2));
+  const delaySeconds = get(opts, 'delaySeconds', null);
+
+  const result = await Promise.all(chunk(messages, batchSize)
     .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, {
       call,
       getService,
@@ -63,7 +77,7 @@ module.exports = ({ call, getService, logger }) => async (msgs, queueUrl, {
       delaySeconds,
       logger
     })));
-  if (msgs.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
+  if (messages.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
     throw new SendMessageBatchError(result);
   }
   return result;
