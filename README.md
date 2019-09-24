@@ -66,9 +66,9 @@ Get the service from the underlying `aws-sdk` without initializing it. Possible 
 Updates the global aws config of the underlying `aws-sdk` via `AWS.config.update`.
 In most cases this should not be necessary to use.
 
-#### sqs.sendMessageBatch({ msgs: Array, queueUrl: String })
+#### sqs.sendMessageBatch({ messages: Array, queueUrl: String /* ... other options ... */ })
 
-Splits `msgs` into groups and calls [sqs.SendMessageBatch](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessageBatch-property) for every group.
+Splits `messages` into groups and calls [sqs.SendMessageBatch](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessageBatch-property) for every group.
 Batch sizes can be modified by the `batchSize` option. Failed calls will be retried up to the `maxRetries` option.
 The available sendMessageBatch `options` are detailed below.
 

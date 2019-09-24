@@ -51,14 +51,14 @@ const sendBatch = async (sqsBatch, queueUrl, {
 
 module.exports = ({ call, getService, logger }) => async (opts) => {
   Joi.assert(opts, Joi.object().keys({
-    msgs: Joi.array(),
+    messages: Joi.array(),
     queueUrl: Joi.string(),
     batchSize: Joi.number().integer().optional(),
     maxRetries: Joi.number().integer().optional(),
     backoffFunction: Joi.function().optional(),
     delaySeconds: Joi.number().integer().optional()
   }));
-  const msgs = get(opts, 'msgs');
+  const messages = get(opts, 'messages');
   const queueUrl = get(opts, 'queueUrl');
   const batchSize = get(opts, 'batchSize', 10);
   const maxRetries = get(opts, 'maxRetries', 10);
@@ -66,7 +66,7 @@ module.exports = ({ call, getService, logger }) => async (opts) => {
   const delaySeconds = get(opts, 'delaySeconds', null);
 
   assert(batchSize <= 10, 'AWS sqs:sendMessageBatch restriction');
-  const result = await Promise.all(chunk(msgs, batchSize)
+  const result = await Promise.all(chunk(messages, batchSize)
     .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, {
       call,
       getService,
@@ -75,7 +75,7 @@ module.exports = ({ call, getService, logger }) => async (opts) => {
       delaySeconds,
       logger
     })));
-  if (msgs.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
+  if (messages.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
     throw new SendMessageBatchError(result);
   }
   return result;

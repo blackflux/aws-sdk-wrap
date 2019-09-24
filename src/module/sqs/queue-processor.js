@@ -39,7 +39,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
   const ingestSchema = Joi.array().items(...ingestSteps.map((step) => steps[step].schema));
   const ingest = async (messages) => {
     Joi.assert(messages, ingestSchema);
-    await sendMessageBatch({ msgs: messages, queueUrl });
+    await sendMessageBatch({ messages, queueUrl });
   };
 
   const handler = wrap((event) => {
@@ -73,7 +73,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
         Joi.array().items(...step.next.map((n) => steps[n].schema)),
         `Unexpected/Invalid next step(s) returned for: ${payload.name}`
       );
-      await sendMessageBatch({ msgs: messages, queueUrl });
+      await sendMessageBatch({ messages, queueUrl });
       return payload;
     }));
   });

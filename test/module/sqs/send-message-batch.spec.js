@@ -15,7 +15,7 @@ describe('Testing sendMessageBatch', {
 
   it('Testing send message success', async () => {
     const result = await aws.sqs.sendMessageBatch({
-      msgs: [{
+      messages: [{
         type: 'discover',
         data: {
           propertyId: '706a95c1-0001-4e35-af8c-e5227976b607',
@@ -40,7 +40,7 @@ describe('Testing sendMessageBatch', {
 
   it('Testing send message error retry', async ({ recorder }) => {
     const result = await aws.sqs.sendMessageBatch({
-      msgs: [{
+      messages: [{
         type: 'webhook',
         url: 'https://some-url.com/path',
         meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
@@ -79,14 +79,14 @@ describe('Testing sendMessageBatch', {
   });
 
   it('Testing empty messages', async () => {
-    const result = await aws.sqs.sendMessageBatch({ msgs: [], queueUrl: process.env.QUEUE_URL });
+    const result = await aws.sqs.sendMessageBatch({ messages: [], queueUrl: process.env.QUEUE_URL });
     expect(result).to.deep.equal([]);
   });
 
   it('Testing Send message batch error', async () => {
     try {
       await aws.sqs.sendMessageBatch({
-        msgs: [{
+        messages: [{
           type: 'webhook',
           url: 'https://some-url.com/path',
           meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
@@ -104,7 +104,7 @@ describe('Testing sendMessageBatch', {
 
   it('Testing maxDelaySeconds option', async () => {
     const result = await aws.sqs.sendMessageBatch({
-      msgs: [{
+      messages: [{
         action: 'delete',
         type: 'collection',
         target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
