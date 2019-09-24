@@ -52,10 +52,10 @@ module.exports = ({ call, getService, logger }) => async (opts) => {
   Joi.assert(opts, Joi.object().keys({
     messages: Joi.array(),
     queueUrl: Joi.string(),
-    batchSize: Joi.number() // AWS sqs:sendMessageBatch restriction
+    batchSize: Joi.number()
       .integer()
       .min(1)
-      .max(10)
+      .max(10) // AWS sqs:sendMessageBatch restriction
       .optional(),
     maxRetries: Joi.number().integer().optional(),
     backoffFunction: Joi.function().optional(),
