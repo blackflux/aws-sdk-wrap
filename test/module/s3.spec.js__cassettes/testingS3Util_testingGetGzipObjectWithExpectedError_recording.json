@@ -1,0 +1,10 @@
+[
+  {
+    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
+    "method": "GET",
+    "path": "/key",
+    "body": "",
+    "status": 404,
+    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>key</Key><RequestId>1971DDCB25E1BDFD</RequestId><HostId>1qyUUgDhQNh0BwFOoX8Mp8DkoGugDRBqPJZgGPxI5vKBK2xfigyQe93wh5ufGwNc2W8O7lNdmFM=</HostId></Error>"
+  }
+]

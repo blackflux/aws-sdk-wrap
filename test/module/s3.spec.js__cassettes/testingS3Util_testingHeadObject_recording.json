@@ -1,0 +1,14 @@
+[
+  {
+    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
+    "method": "HEAD",
+    "path": "/key",
+    "body": "",
+    "status": 200,
+    "response": [],
+    "rawHeaders": [
+      "Content-Encoding",
+      "gzip"
+    ]
+  }
+]

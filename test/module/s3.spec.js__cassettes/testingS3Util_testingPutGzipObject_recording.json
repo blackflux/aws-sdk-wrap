@@ -1,0 +1,10 @@
+[
+  {
+    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
+    "method": "PUT",
+    "path": "/key",
+    "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
+    "status": 200,
+    "response": ""
+  }
+]

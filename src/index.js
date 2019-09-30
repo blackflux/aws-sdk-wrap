@@ -3,6 +3,7 @@ const get = require('lodash.get');
 const AWS = require('aws-sdk');
 const Joi = require('joi-strict');
 const sqs = require('./module/sqs');
+const s3 = require('./module/s3');
 const errors = require('./resources/errors');
 
 const lookupCache = new Map();
@@ -66,6 +67,7 @@ module.exports = (opts = {}) => {
     call,
     get: getService,
     sqs: sqs({ call, getService, logger }),
+    s3: s3({ call, getService }),
     errors
   };
 };
