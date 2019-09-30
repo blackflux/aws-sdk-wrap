@@ -85,7 +85,7 @@ describe('Testing s3 Util', {
           }
         ],
         IsTruncated: true,
-        KeyCount: 10,
+        KeyCount: 1,
         MaxKeys: 10,
         Name: 'test-bucket-name',
         ContinuationToken: 'continuationToken',
@@ -108,7 +108,7 @@ describe('Testing s3 Util', {
           }
         ],
         IsTruncated: true,
-        KeyCount: 10,
+        KeyCount: 1,
         MaxKeys: 10,
         Name: 'test-bucket-name',
         NextContinuationToken: 'continuationToken',
