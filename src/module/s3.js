@@ -1,6 +1,6 @@
 const zlib = require('zlib');
 
-module.exports = ({ call, getService }) => {
+module.exports.S3 = ({ call, getService }) => {
   const putGzipObject = ({ bucket, key, data }) => call('s3:putObject', {
     ContentType: 'application/json',
     ContentEncoding: 'gzip',
@@ -23,11 +23,22 @@ module.exports = ({ call, getService }) => {
 
   const deleteObject = ({ bucket, key }) => call('s3:deleteObject', { Bucket: bucket, Key: key });
 
-  const listObjects = ({ bucket, limit, continuationToken = null }) => call('s3:listObjectsV2', {
-    Bucket: bucket,
-    MaxKeys: limit,
-    ...(continuationToken === null ? {} : { ContinuationToken: continuationToken })
-  });
+  const listObjects = async ({ bucket, limit, startAfter = undefined }) => {
+    const result = [];
+    let continuationToken;
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      const response = await call('s3:listObjectsV2', {
+        Bucket: bucket,
+        MaxKeys: Math.min(1000, limit - result.length),
+        ...(continuationToken === undefined && startAfter !== undefined ? { StartAfter: startAfter } : {}),
+        ...(continuationToken === undefined ? {} : { ContinuationToken: continuationToken })
+      });
+      result.push(...response.Contents);
+      continuationToken = response.NextContinuationToken;
+    } while (continuationToken !== undefined && result.length < limit);
+    return result;
+  };
 
   const getSignedUrl = ({ bucket, key, expires }) => getService('s3')
     .getSignedUrl('getObject', {
@@ -37,7 +48,7 @@ module.exports = ({ call, getService }) => {
     });
 
   // https://stackoverflow.com/questions/39465220#answer-42184248
-  const escapeBucketKey = (key) => decodeURIComponent(key.replace(/\+/g, ' '));
+  const escapeKey = (key) => decodeURIComponent(key.replace(/\+/g, ' '));
 
   return {
     putGzipObject,
@@ -46,6 +57,6 @@ module.exports = ({ call, getService }) => {
     deleteObject,
     listObjects,
     getSignedUrl,
-    escapeBucketKey
+    escapeKey
   };
 };

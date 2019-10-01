@@ -2,11 +2,7 @@ const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const index = require('../../src');
 
-describe('Testing s3 Util', {
-  useNock: true,
-  envVarsFile: 'config.env.yml',
-  timestamp: 1569876020
-}, () => {
+describe('Testing s3 Util', { useNock: true, envVarsFile: 'config.env.yml', timestamp: 1569876020 }, () => {
   let aws;
   let bucket;
   let key;
@@ -68,53 +64,48 @@ describe('Testing s3 Util', {
   });
 
   it('Testing "listObjects"', async () => {
+    const result = await aws.s3.listObjects({ bucket, limit: 1 });
+    expect(result).to.deep.equal([{
+      ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
+      Key: 'key',
+      Size: 135,
+      StorageClass: 'STANDARD'
+    }]);
+  });
+
+  it('Testing "listObjects" with "StartAfter"', async () => {
     const result = await aws.s3.listObjects({
       bucket,
       limit: 10,
-      continuationToken: 'continuationToken'
+      startAfter: 'startAfter'
     });
-    expect(result).to.deep.equal(
-      {
-        CommonPrefixes: [],
-        Contents: [
-          {
-            ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
-            Key: 'key',
-            Size: 135,
-            StorageClass: 'STANDARD'
-          }
-        ],
-        IsTruncated: true,
-        KeyCount: 1,
-        MaxKeys: 10,
-        Name: 'test-bucket-name',
-        ContinuationToken: 'continuationToken',
-        Prefix: ''
-      }
-    );
+    expect(result).to.deep.equal([{
+      ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
+      Key: 'key',
+      Size: 135,
+      StorageClass: 'STANDARD'
+    }]);
   });
 
-  it('Testing "listObjects" with null continuationToken', async () => {
-    const result = await aws.s3.listObjects({ bucket, limit: 10 });
-    expect(result).to.deep.equal(
+  it('Testing "listObjects" with "ContinuationToken"', async () => {
+    const result = await aws.s3.listObjects({
+      bucket,
+      limit: 2
+    });
+    expect(result).to.deep.equal([
       {
-        CommonPrefixes: [],
-        Contents: [
-          {
-            ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
-            Key: 'key',
-            Size: 135,
-            StorageClass: 'STANDARD'
-          }
-        ],
-        IsTruncated: true,
-        KeyCount: 1,
-        MaxKeys: 10,
-        Name: 'test-bucket-name',
-        NextContinuationToken: 'continuationToken',
-        Prefix: ''
+        ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
+        Key: 'key',
+        Size: 135,
+        StorageClass: 'STANDARD'
+      },
+      {
+        ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
+        Key: 'key2',
+        Size: 130,
+        StorageClass: 'STANDARD'
       }
-    );
+    ]);
   });
 
   it('Testing "getSignedUrl"', () => {
@@ -127,8 +118,8 @@ describe('Testing s3 Util', {
       + 'key?AWSAccessKeyId=%7BXXXXXXXXXXXXXXXXXXXX%7D&Expires=3139752040&Signature=NluM7ESOWbzyAafdtNwxuGik4eA%3D');
   });
 
-  it('Testing "escapeBucketKey"', () => {
-    const result = aws.s3.escapeBucketKey('2018-10-25T20%3A55%3A00.000Z/Collection+Viewed.json.gz');
+  it('Testing "escapeKey"', () => {
+    const result = aws.s3.escapeKey('2018-10-25T20%3A55%3A00.000Z/Collection+Viewed.json.gz');
     expect(result).to.equal('2018-10-25T20:55:00.000Z/Collection Viewed.json.gz');
   });
 });
