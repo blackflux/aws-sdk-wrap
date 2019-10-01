@@ -67,7 +67,7 @@ module.exports = (opts = {}) => {
     call,
     get: getService,
     sqs: Sqs({ call, getService, logger }),
-    s3: S3({ call, getService }),
+    s3: S3({ call }),
     errors
   };
 };

@@ -1,6 +1,6 @@
 const zlib = require('zlib');
 
-module.exports.S3 = ({ call, getService }) => {
+module.exports.S3 = ({ call }) => {
   const putGzipObject = ({ bucket, key, data }) => call('s3:putObject', {
     ContentType: 'application/json',
     ContentEncoding: 'gzip',
@@ -40,13 +40,6 @@ module.exports.S3 = ({ call, getService }) => {
     return result;
   };
 
-  const getSignedUrl = ({ bucket, key, expires }) => getService('s3')
-    .getSignedUrl('getObject', {
-      Bucket: bucket,
-      Key: key,
-      Expires: expires
-    });
-
   // https://stackoverflow.com/questions/39465220#answer-42184248
   const escapeKey = (key) => decodeURIComponent(key.replace(/\+/g, ' '));
 
@@ -56,7 +49,6 @@ module.exports.S3 = ({ call, getService }) => {
     headObject,
     deleteObject,
     listObjects,
-    getSignedUrl,
     escapeKey
   };
 };

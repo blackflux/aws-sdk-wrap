@@ -6,7 +6,7 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
   let aws;
   let bucket;
   let key;
-  before(() => {
+  beforeEach(() => {
     aws = index();
     bucket = process.env.BUCKET_NAME;
     key = 'key';
@@ -106,16 +106,6 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
         StorageClass: 'STANDARD'
       }
     ]);
-  });
-
-  it('Testing "getSignedUrl"', () => {
-    const result = aws.s3.getSignedUrl({
-      bucket,
-      key,
-      expires: 1569876020
-    });
-    expect(result).to.equal('https://test-bucket-name.s3.us-west-2.amazonaws.com/'
-      + 'key?AWSAccessKeyId=%7BXXXXXXXXXXXXXXXXXXXX%7D&Expires=3139752040&Signature=NluM7ESOWbzyAafdtNwxuGik4eA%3D');
   });
 
   it('Testing "escapeKey"', () => {
