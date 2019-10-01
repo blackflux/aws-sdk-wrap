@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const index = require('../../src');
 
-describe('Testing s3 Util', { useNock: true, envVarsFile: 'config.env.yml', timestamp: 1569876020 }, () => {
+describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
   let aws;
   let bucket;
   let key;
