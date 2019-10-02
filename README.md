@@ -101,7 +101,7 @@ List objects keys in an Amazon S3 bucket. Internally this pages until the
 limit is reached or no more keys are available. Uses [s3:listObjectsV2](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property).
 
 #### s3.escapeKey(key: String)
-Returns a non-ASCII filename from an Amazon S3 bucket Key. Useful to obtain the 
+Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain the 
 not-encoded key representation after calling `listObjects`.
 
 ### Init Options
