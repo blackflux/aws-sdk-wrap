@@ -1,0 +1,10 @@
+[
+  {
+    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
+    "method": "DELETE",
+    "path": "/key",
+    "body": "",
+    "status": 204,
+    "response": ""
+  }
+]

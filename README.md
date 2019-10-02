@@ -84,6 +84,26 @@ The exposed `ingest` method should only be used to seed the queue. Messages gene
 
 Please see tests for example.
 
+#### s3.putGzipObject({ bucket: String, key: String, data: Object })
+Adds an object to an Amazon S3 bucket gzipped. Uses [s3:putObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property).
+
+#### s3.getGzipObject({ bucket: String, key: String, expectedErrorCodes: [String] })
+Retrieves objects from Amazon S3, expecting it to be gzipped. Uses [s3:getObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getObject-property).
+
+#### s3.headObject({ bucket: String, key: String, expectedErrorCodes: [String] })
+Retrieves only the metadata from an object in an Amazon S3 bucket. Uses [s3:headObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#headObject-property).
+
+#### s3.deleteObject({ bucket: String, key: String })
+Delete object from an Amazon S3 bucket at key. Uses [s3:deleteObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
+
+#### s3.listObjects({ bucket: String, limit: Number, startAfter: String })
+List objects keys in an Amazon S3 bucket. Internally this pages until the 
+limit is reached or no more keys are available. Uses [s3:listObjectsV2](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property).
+
+#### s3.decodeKey(key: String)
+Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain the 
+not-encoded key representation after calling `listObjects`.
+
 ### Init Options
 
 #### logger
