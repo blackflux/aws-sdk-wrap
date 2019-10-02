@@ -110,18 +110,18 @@ Retrieves only the metadata from an object in an Amazon S3 bucket. Uses [s3:head
 `expectedErrorCodes`: Array of expected errors from `s3:headObject`.
 
 #### s3.deleteObject({ bucket: String, key: String })
-Retrieves only the metadata from an object in an Amazon S3 bucket. Uses [s3:deleteObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#headObject-property).
+Removes the object from an Amazon S3 bucket at key. Uses [s3:deleteObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
 
 ##### Parameters
 `bucket`: Name of an Amazon S3 bucket.<br>
 `key`: Key of the object in an Amazon S3 bucket.
 
-#### s3.listObjects({ bucket: String, key: String, startAfter: String })
+#### s3.listObjects({ bucket: String, limit: Number, startAfter: String })
 Returns some or all of the objects in an Amazon S3 bucket. Uses [s3:listObjectsV2](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property).
 
 ##### Parameters
 `bucket`: Name of an Amazon S3 bucket.<br>
-`key`: Key of the object in an Amazon S3 bucket.<br>
+`limit`: Max number of objects to be returned from an Amazon S3 bucket.<br>
 `startAfter`(optional): A specific key in an Amazon S3 bucket to start listing from.
 
 #### s3.escapeKey(key: String)
