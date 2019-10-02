@@ -108,8 +108,8 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
     ]);
   });
 
-  it('Testing "escapeKey"', () => {
-    const result = aws.s3.escapeKey('2018-10-25T20%3A55%3A00.000Z/Collection+Viewed.json.gz');
+  it('Testing "decodeKey"', () => {
+    const result = aws.s3.decodeKey('2018-10-25T20%3A55%3A00.000Z/Collection+Viewed.json.gz');
     expect(result).to.equal('2018-10-25T20:55:00.000Z/Collection Viewed.json.gz');
   });
 });

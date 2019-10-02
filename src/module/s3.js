@@ -21,7 +21,11 @@ module.exports.S3 = ({ call }) => {
     { expectedErrorCodes }
   );
 
-  const deleteObject = ({ bucket, key }) => call('s3:deleteObject', { Bucket: bucket, Key: key });
+  const deleteObject = ({ bucket, key, expectedErrorCodes }) => call(
+    's3:deleteObject',
+    { Bucket: bucket, Key: key },
+    { expectedErrorCodes }
+  );
 
   const listObjects = async ({ bucket, limit, startAfter = undefined }) => {
     const result = [];
@@ -41,7 +45,7 @@ module.exports.S3 = ({ call }) => {
   };
 
   // https://stackoverflow.com/questions/39465220#answer-42184248
-  const escapeKey = (key) => decodeURIComponent(key.replace(/\+/g, ' '));
+  const decodeKey = (key) => decodeURIComponent(key.replace(/\+/g, ' '));
 
   return {
     putGzipObject,
@@ -49,6 +53,6 @@ module.exports.S3 = ({ call }) => {
     headObject,
     deleteObject,
     listObjects,
-    escapeKey
+    decodeKey
   };
 };
