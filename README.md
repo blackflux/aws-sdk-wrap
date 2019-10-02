@@ -96,7 +96,7 @@ Retrieves only the metadata from an object in an Amazon S3 bucket. Uses [s3:head
 #### s3.deleteObject({ bucket: String, key: String })
 Delete object from an Amazon S3 bucket at key. Uses [s3:deleteObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
 
-#### s3.listObjects({ bucket: String, limit: Number, startAfter: String })
+#### s3.listObjects({ bucket: String, limit: Number, startAfter: String, prefix: String })
 List objects keys in an Amazon S3 bucket. Internally this pages until the 
 limit is reached or no more keys are available. Uses [s3:listObjectsV2](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property).
 

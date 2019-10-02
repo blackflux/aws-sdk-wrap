@@ -27,20 +27,28 @@ module.exports.S3 = ({ call }) => {
     { expectedErrorCodes }
   );
 
-  const listObjects = async ({ bucket, limit, startAfter = undefined }) => {
+  const listObjects = async ({
+    bucket,
+    limit,
+    startAfter = undefined,
+    prefix = undefined
+  }) => {
     const result = [];
     let continuationToken;
+    let isTruncated;
     do {
       // eslint-disable-next-line no-await-in-loop
       const response = await call('s3:listObjectsV2', {
         Bucket: bucket,
         MaxKeys: Math.min(1000, limit - result.length),
+        ...(prefix === undefined ? {} : { Prefix: prefix }),
         ...(continuationToken === undefined && startAfter !== undefined ? { StartAfter: startAfter } : {}),
         ...(continuationToken === undefined ? {} : { ContinuationToken: continuationToken })
       });
       result.push(...response.Contents);
       continuationToken = response.NextContinuationToken;
-    } while (continuationToken !== undefined && result.length < limit);
+      isTruncated = response.IsTruncated;
+    } while (isTruncated === true && result.length < limit);
     return result;
   };
 
