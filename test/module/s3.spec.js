@@ -87,6 +87,20 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
     }]);
   });
 
+  it('Testing "listObjects" with "Prefix"', async () => {
+    const result = await aws.s3.listObjects({
+      bucket,
+      limit: 1,
+      prefix: 'prefix'
+    });
+    expect(result).to.deep.equal([{
+      ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
+      Key: 'prefix',
+      Size: 135,
+      StorageClass: 'STANDARD'
+    }]);
+  });
+
   it('Testing "listObjects" with "ContinuationToken"', async () => {
     const result = await aws.s3.listObjects({
       bucket,
