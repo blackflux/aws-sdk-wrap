@@ -29,7 +29,7 @@ module.exports.S3 = ({ call }) => {
 
   const listObjects = async ({
     bucket,
-    limit,
+    limit = undefined,
     startAfter = undefined,
     prefix = undefined
   }) => {
@@ -40,7 +40,7 @@ module.exports.S3 = ({ call }) => {
       // eslint-disable-next-line no-await-in-loop
       const response = await call('s3:listObjectsV2', {
         Bucket: bucket,
-        MaxKeys: Math.min(1000, limit - result.length),
+        ...(limit === undefined ? {} : { MaxKeys: Math.min(1000, limit - result.length) }),
         ...(prefix === undefined ? {} : { Prefix: prefix }),
         ...(continuationToken === undefined && startAfter !== undefined ? { StartAfter: startAfter } : {}),
         ...(continuationToken === undefined ? {} : { ContinuationToken: continuationToken })
@@ -48,7 +48,7 @@ module.exports.S3 = ({ call }) => {
       result.push(...response.Contents);
       continuationToken = response.NextContinuationToken;
       isTruncated = response.IsTruncated;
-    } while (isTruncated === true && result.length < limit);
+    } while (isTruncated === true && (limit === undefined || result.length < limit));
     return result;
   };
 

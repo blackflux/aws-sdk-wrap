@@ -90,7 +90,6 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
   it('Testing "listObjects" with "Prefix"', async () => {
     const result = await aws.s3.listObjects({
       bucket,
-      limit: 1,
       prefix: 'prefix'
     });
     expect(result).to.deep.equal([{
