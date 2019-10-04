@@ -1,5 +1,4 @@
 const zlib = require('zlib');
-const get = require('lodash.get');
 const Joi = require('joi-strict');
 
 module.exports.S3 = ({ call }) => {
@@ -37,13 +36,11 @@ module.exports.S3 = ({ call }) => {
       prefix: Joi.string().optional(),
       continuationToken: Joi.string().optional()
     }));
-    const bucket = get(kwargs, 'bucket');
-    const limit = get(kwargs, 'limit');
-    const startAfter = get(kwargs, 'startAfter');
-    const prefix = get(kwargs, 'prefix');
-
+    const {
+      bucket, limit, startAfter, prefix
+    } = kwargs;
     const result = [];
-    let continuationToken = get(kwargs, 'continuationToken');
+    let continuationToken = kwargs.continuationToken;
     let isTruncated;
     do {
       // eslint-disable-next-line no-await-in-loop
