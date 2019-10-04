@@ -41,9 +41,9 @@ module.exports.S3 = ({ call }) => {
     const limit = get(kwargs, 'limit');
     const startAfter = get(kwargs, 'startAfter');
     const prefix = get(kwargs, 'prefix');
-    let continuationToken = get(kwargs, 'continuationToken');
 
     const result = [];
+    let continuationToken = get(kwargs, 'continuationToken');
     let isTruncated;
     do {
       // eslint-disable-next-line no-await-in-loop
@@ -51,9 +51,7 @@ module.exports.S3 = ({ call }) => {
         Bucket: bucket,
         ...(limit === undefined ? {} : { MaxKeys: Math.min(1000, limit - result.length) }),
         ...(prefix === undefined ? {} : { Prefix: prefix }),
-        ...(continuationToken === undefined && startAfter !== undefined
-          ? { StartAfter: startAfter }
-          : {}),
+        ...(continuationToken === undefined && startAfter !== undefined ? { StartAfter: startAfter } : {}),
         ...(continuationToken === undefined ? {} : { ContinuationToken: continuationToken })
       });
       result.push(...response.Contents);
