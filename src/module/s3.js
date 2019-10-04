@@ -1,4 +1,5 @@
 const zlib = require('zlib');
+const get = require('lodash.get');
 const Joi = require('joi-strict');
 
 module.exports.S3 = ({ call }) => {
@@ -36,24 +37,29 @@ module.exports.S3 = ({ call }) => {
       prefix: Joi.string().optional(),
       continuationToken: Joi.string().optional()
     }));
+    const bucket = get(kwargs, 'bucket');
+    const limit = get(kwargs, 'limit');
+    const startAfter = get(kwargs, 'startAfter');
+    const prefix = get(kwargs, 'prefix');
+    let continuationToken = get(kwargs, 'continuationToken');
+
     const result = [];
-    let continuationToken = kwargs.continuationToken;
     let isTruncated;
     do {
       // eslint-disable-next-line no-await-in-loop
       const response = await call('s3:listObjectsV2', {
-        Bucket: kwargs.bucket,
-        ...(kwargs.limit === undefined ? {} : { MaxKeys: Math.min(1000, kwargs.limit - result.length) }),
-        ...(kwargs.prefix === undefined ? {} : { Prefix: kwargs.prefix }),
-        ...(continuationToken === undefined && kwargs.startAfter !== undefined
-          ? { StartAfter: kwargs.startAfter }
+        Bucket: bucket,
+        ...(limit === undefined ? {} : { MaxKeys: Math.min(1000, limit - result.length) }),
+        ...(prefix === undefined ? {} : { Prefix: prefix }),
+        ...(continuationToken === undefined && startAfter !== undefined
+          ? { StartAfter: startAfter }
           : {}),
         ...(continuationToken === undefined ? {} : { ContinuationToken: continuationToken })
       });
       result.push(...response.Contents);
       continuationToken = response.NextContinuationToken;
       isTruncated = response.IsTruncated;
-    } while (isTruncated === true && (kwargs.limit === undefined || result.length < kwargs.limit));
+    } while (isTruncated === true && (limit === undefined || result.length < limit));
     result.continuationToken = continuationToken;
     result.isTruncated = isTruncated;
     return result;
