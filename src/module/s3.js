@@ -10,19 +10,19 @@ module.exports.S3 = ({ call }) => {
     Body: zlib.gzipSync(data, { level: 9 })
   });
 
-  const getGzipJsonObject = ({ bucket, key, expectedErrorCodes }) => call(
+  const getGzipJsonObject = ({ bucket, key, expectedErrorCodes = [] }) => call(
     's3:getObject',
     { Bucket: bucket, Key: key },
     { expectedErrorCodes }
   ).then((r) => (expectedErrorCodes.includes(r) ? r : JSON.parse(zlib.gunzipSync(r.Body).toString('utf8'))));
 
-  const headObject = ({ bucket, key, expectedErrorCodes }) => call(
+  const headObject = ({ bucket, key, expectedErrorCodes = [] }) => call(
     's3:headObject',
     { Bucket: bucket, Key: key },
     { expectedErrorCodes }
   );
 
-  const deleteObject = ({ bucket, key, expectedErrorCodes }) => call(
+  const deleteObject = ({ bucket, key, expectedErrorCodes = [] }) => call(
     's3:deleteObject',
     { Bucket: bucket, Key: key },
     { expectedErrorCodes }
