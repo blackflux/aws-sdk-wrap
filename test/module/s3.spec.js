@@ -24,8 +24,7 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
   it('Testing "getGzipJsonObject"', async () => {
     const result = await aws.s3.getGzipJsonObject({
       bucket,
-      key,
-      expectedErrorCodes: []
+      key
     });
     expect(result).to.deep.equal({
       data: 'data'
