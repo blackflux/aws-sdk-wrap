@@ -1,4 +1,5 @@
 const zlib = require('zlib');
+const Joi = require('joi-strict');
 
 module.exports.S3 = ({ call }) => {
   const putGzipObject = ({ bucket, key, data }) => call('s3:putObject', {
@@ -27,28 +28,34 @@ module.exports.S3 = ({ call }) => {
     { expectedErrorCodes }
   );
 
-  const listObjects = async ({
-    bucket,
-    limit,
-    startAfter = undefined,
-    prefix = undefined
-  }) => {
+  const listObjects = async (kwargs) => {
+    Joi.assert(kwargs, Joi.object().keys({
+      bucket: Joi.string(),
+      limit: Joi.number().integer().min(1).optional(),
+      startAfter: Joi.string().optional(),
+      prefix: Joi.string().optional(),
+      continuationToken: Joi.string().optional()
+    }));
     const result = [];
-    let continuationToken;
+    let continuationToken = kwargs.continuationToken;
     let isTruncated;
     do {
       // eslint-disable-next-line no-await-in-loop
       const response = await call('s3:listObjectsV2', {
-        Bucket: bucket,
-        MaxKeys: Math.min(1000, limit - result.length),
-        ...(prefix === undefined ? {} : { Prefix: prefix }),
-        ...(continuationToken === undefined && startAfter !== undefined ? { StartAfter: startAfter } : {}),
+        Bucket: kwargs.bucket,
+        ...(kwargs.limit === undefined ? {} : { MaxKeys: Math.min(1000, kwargs.limit - result.length) }),
+        ...(kwargs.prefix === undefined ? {} : { Prefix: kwargs.prefix }),
+        ...(continuationToken === undefined && kwargs.startAfter !== undefined
+          ? { StartAfter: kwargs.startAfter }
+          : {}),
         ...(continuationToken === undefined ? {} : { ContinuationToken: continuationToken })
       });
       result.push(...response.Contents);
       continuationToken = response.NextContinuationToken;
       isTruncated = response.IsTruncated;
-    } while (isTruncated === true && result.length < limit);
+    } while (isTruncated === true && (kwargs.limit === undefined || result.length < kwargs.limit));
+    result.continuationToken = continuationToken;
+    result.isTruncated = isTruncated;
     return result;
   };
 

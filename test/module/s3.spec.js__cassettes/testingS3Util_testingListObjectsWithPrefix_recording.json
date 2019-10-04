@@ -2,7 +2,7 @@
   {
     "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
     "method": "GET",
-    "path": "/?list-type=2&max-keys=1&prefix=prefix",
+    "path": "/?list-type=2&prefix=prefix",
     "body": "",
     "status": 200,
     "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListBucketResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Name>test-bucket-name</Name><Prefix>prefix</Prefix>><KeyCount>1</KeyCount><MaxKeys>1</MaxKeys><Contents><Key>prefix</Key><ETag>&quot;a32d8ca2be8b6454d40b230fcc4a2fc4&quot;</ETag><Size>135</Size><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>"
