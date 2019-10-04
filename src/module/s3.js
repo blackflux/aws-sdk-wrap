@@ -10,7 +10,7 @@ module.exports.S3 = ({ call }) => {
     Body: zlib.gzipSync(data, { level: 9 })
   });
 
-  const getGzipObject = ({ bucket, key, expectedErrorCodes }) => call(
+  const getGzipJsonObject = ({ bucket, key, expectedErrorCodes }) => call(
     's3:getObject',
     { Bucket: bucket, Key: key },
     { expectedErrorCodes }
@@ -65,7 +65,7 @@ module.exports.S3 = ({ call }) => {
 
   return {
     putGzipObject,
-    getGzipObject,
+    getGzipJsonObject,
     headObject,
     deleteObject,
     listObjects,

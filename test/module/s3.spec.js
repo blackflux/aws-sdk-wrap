@@ -21,8 +21,8 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
     expect(result).to.deep.equal({});
   });
 
-  it('Testing "getGzipObject"', async () => {
-    const result = await aws.s3.getGzipObject({
+  it('Testing "getGzipJsonObject"', async () => {
+    const result = await aws.s3.getGzipJsonObject({
       bucket,
       key,
       expectedErrorCodes: []
@@ -32,8 +32,8 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
     });
   });
 
-  it('Testing "getGzipObject" with expected error', async () => {
-    const result = await aws.s3.getGzipObject({
+  it('Testing "getGzipJsonObject" with expected error', async () => {
+    const result = await aws.s3.getGzipJsonObject({
       bucket,
       key,
       expectedErrorCodes: ['NoSuchKey']

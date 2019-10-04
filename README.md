@@ -87,7 +87,7 @@ Please see tests for example.
 #### s3.putGzipObject({ bucket: String, key: String, data: Object })
 Adds an object to an Amazon S3 bucket gzipped. Uses [s3:putObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property).
 
-#### s3.getGzipObject({ bucket: String, key: String, expectedErrorCodes: [String] })
+#### s3.getGzipJsonObject({ bucket: String, key: String, expectedErrorCodes: [String] })
 Retrieves objects from Amazon S3, expecting it to be gzipped. Uses [s3:getObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getObject-property).
 
 #### s3.headObject({ bucket: String, key: String, expectedErrorCodes: [String] })
