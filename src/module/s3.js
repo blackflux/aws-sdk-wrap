@@ -1,4 +1,6 @@
 const zlib = require('zlib');
+const get = require('lodash.get');
+const Joi = require('joi-strict');
 
 module.exports.S3 = ({ call }) => {
   const putGzipObject = ({ bucket, key, data }) => call('s3:putObject', {
@@ -27,14 +29,21 @@ module.exports.S3 = ({ call }) => {
     { expectedErrorCodes }
   );
 
-  const listObjects = async ({
-    bucket,
-    limit = undefined,
-    startAfter = undefined,
-    prefix = undefined
-  }) => {
+  const listObjects = async (kwargs) => {
+    Joi.assert(kwargs, Joi.object().keys({
+      bucket: Joi.string(),
+      limit: Joi.number().integer().min(1).optional(),
+      startAfter: Joi.string().optional(),
+      prefix: Joi.string().optional(),
+      continuationToken: Joi.string().optional()
+    }));
+    const bucket = get(kwargs, 'bucket');
+    const limit = get(kwargs, 'limit');
+    const startAfter = get(kwargs, 'startAfter');
+    const prefix = get(kwargs, 'prefix');
+
     const result = [];
-    let continuationToken;
+    let continuationToken = get(kwargs, 'continuationToken');
     let isTruncated;
     do {
       // eslint-disable-next-line no-await-in-loop
@@ -49,6 +58,8 @@ module.exports.S3 = ({ call }) => {
       continuationToken = response.NextContinuationToken;
       isTruncated = response.IsTruncated;
     } while (isTruncated === true && (limit === undefined || result.length < limit));
+    result.continuationToken = continuationToken;
+    result.isTruncated = isTruncated;
     return result;
   };
 
