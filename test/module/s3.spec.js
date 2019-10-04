@@ -81,6 +81,8 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
       limit: 10,
       startAfter: 'startAfter'
     });
+    expect(result.continuationToken).to.equal(undefined);
+    expect(result.isTruncated).to.equal(undefined);
     expect(result).to.deep.equal([{
       ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
       Key: 'key',
