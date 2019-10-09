@@ -73,7 +73,7 @@ describe('Testing sendMessageBatch', {
       Failed: []
     }]]);
     expect(recorder.get()).to.deep.equal([
-      'Failed to submit (some) message(s)\n Retrying: '
+      'Failed to submit (some) message(s)\nRetrying: '
       + '[(Id=d7967cdc826c420f2482b9bac6b10b73fb156efc, MD5=90cfad0c5a2d7b4f32be02659214aaba)]'
     ]);
   });
