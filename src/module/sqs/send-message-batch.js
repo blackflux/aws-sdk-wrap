@@ -37,7 +37,7 @@ const sendBatch = async (sqsBatch, queueUrl, {
     response.push(result);
     result.Successful.forEach((e) => delete pending[e.Id]);
     if (Object.keys(pending).length !== 0 && logger !== null) {
-      logger.warn(`Failed to submit (some) message(s). Retrying: [${
+      logger.warn(`Failed to submit (some) message(s)\nRetrying: [${
         Object
           .values(pending)
           .map(({ Id, MessageBody }) => `(Id=${Id}, MD5=${getService('util.crypto').md5(MessageBody, 'hex')})`)
