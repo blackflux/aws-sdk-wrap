@@ -13,17 +13,18 @@ const sendBatch = async (sqsBatch, queueUrl, {
   getService,
   maxRetries,
   backoffFunction,
-  delaySeconds,
+  delaySeconds: batchDelaySeconds,
   logger
 }) => {
   const pending = sqsBatch.reduce((p, msg) => {
     const id = objectHash(msg);
-    const msgDelaySeconds = getDelaySeconds(msg) || delaySeconds;
+    const msgDelaySeconds = getDelaySeconds(msg);
+    const delaySeconds = msgDelaySeconds === undefined ? batchDelaySeconds : msgDelaySeconds;
     return Object.assign(p, {
       [id]: {
         Id: id,
         MessageBody: JSON.stringify(msg),
-        ...(msgDelaySeconds === null ? {} : { DelaySeconds: msgDelaySeconds })
+        ...(delaySeconds === null ? {} : { DelaySeconds: delaySeconds })
       }
     });
   }, {});
