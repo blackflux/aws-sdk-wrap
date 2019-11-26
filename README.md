@@ -84,6 +84,11 @@ The exposed `ingest` method should only be used to seed the queue. Messages gene
 
 Please see tests for example.
 
+#### sqs.prepareMessage(msg: Object, opts: Object)
+
+Prepare message object with options. Currently options include:
+- `delaySeconds` (integer): used to set the delay for a specific message
+
 #### s3.putGzipObject({ bucket: String, key: String, data: Object })
 Adds an object to an Amazon S3 bucket gzipped. Uses [s3:putObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property).
 
