@@ -98,6 +98,13 @@ describe('Testing QueueProcessor', {
     expect(getDelaySeconds(msg)).to.equal(10);
   });
 
+  it('Testing multi prepare message error', async ({ capture }) => {
+    const msg = { name: 'step1' };
+    aws.sqs.prepareMessage(msg, { delaySeconds: 10 });
+    expect(() => aws.sqs.prepareMessage(msg, { delaySeconds: 20 }))
+      .to.throw('Cannot redefine property: Symbol(delay-seconds)');
+  });
+
   it('Testing empty setting on message', async () => {
     const msg = { name: 'step1' };
     aws.sqs.prepareMessage(msg, {});
