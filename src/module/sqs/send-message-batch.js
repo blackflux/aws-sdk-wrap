@@ -3,6 +3,7 @@ const chunk = require('lodash.chunk');
 const get = require('lodash.get');
 const Joi = require('joi-strict');
 const objectHash = require('object-hash');
+const { getDelaySeconds } = require('./prepare-message');
 const { SendMessageBatchError } = require('../../resources/errors');
 
 const sleep = util.promisify(setTimeout);
@@ -17,11 +18,12 @@ const sendBatch = async (sqsBatch, queueUrl, {
 }) => {
   const pending = sqsBatch.reduce((p, msg) => {
     const id = objectHash(msg);
+    const msgDelaySeconds = getDelaySeconds(msg) || delaySeconds;
     return Object.assign(p, {
       [id]: {
         Id: id,
         MessageBody: JSON.stringify(msg),
-        ...(delaySeconds === null ? {} : { DelaySeconds: delaySeconds })
+        ...(msgDelaySeconds === null ? {} : { DelaySeconds: msgDelaySeconds })
       }
     });
   }, {});

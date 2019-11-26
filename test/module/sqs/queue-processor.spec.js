@@ -1,6 +1,7 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const index = require('../../../src/index');
+const { getDelaySeconds } = require('../../../src/module/sqs/prepare-message');
 
 describe('Testing QueueProcessor', {
   useNock: true,
@@ -89,5 +90,17 @@ describe('Testing QueueProcessor', {
       'Lambda SQS subscription is mis-configured! '
       + 'Please only process one event at a time for retry resilience.'
     );
+  });
+
+  it('Testing setting delay on message', async () => {
+    const msg = { name: 'step1' };
+    aws.sqs.prepareMessage(msg, { delaySeconds: 10 });
+    expect(getDelaySeconds(msg)).to.equal(10);
+  });
+
+  it('Testing empty setting on message', async () => {
+    const msg = { name: 'step1' };
+    aws.sqs.prepareMessage(msg, {});
+    expect(getDelaySeconds(msg)).to.equal(undefined);
   });
 });
