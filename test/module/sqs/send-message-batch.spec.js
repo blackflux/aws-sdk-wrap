@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const index = require('../../../src/index');
-const { SendMessageBatchError } = require('../../../src/resources/errors');
+const { SendMessageBatchError, MessageCollisionError } = require('../../../src/resources/errors');
 
 describe('Testing sendMessageBatch', {
   useNock: true,
@@ -123,5 +123,24 @@ describe('Testing sendMessageBatch', {
       }],
       Failed: []
     }]]);
+  });
+
+  it('Testing message collision error', async ({ capture }) => {
+    const err = await capture(() => aws.sqs.sendMessageBatch({
+      messages: [
+        {
+          action: 'delete',
+          type: 'collection',
+          target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
+        },
+        {
+          action: 'delete',
+          type: 'collection',
+          target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
+        }
+      ],
+      queueUrl: process.env.QUEUE_URL
+    }));
+    expect(err).instanceof(MessageCollisionError);
   });
 });
