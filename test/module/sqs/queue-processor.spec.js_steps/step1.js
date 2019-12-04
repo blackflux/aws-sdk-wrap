@@ -1,8 +1,11 @@
 const Joi = require('joi-strict');
 const { prepareMessage } = require('../../../../src/module/sqs/prepare-message');
 
+module.exports.queueUrl = process.env.QUEUE_URL;
+
 module.exports.schema = Joi.object().keys({
-  name: Joi.string().valid('step1')
+  name: Joi.string().valid('step1'),
+  meta: Joi.string()
 });
 
 module.exports.handler = async (payload, event) => {

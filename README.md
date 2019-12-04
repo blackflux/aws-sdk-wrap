@@ -72,11 +72,11 @@ Splits `messages` into groups and calls [sqs.SendMessageBatch](https://docs.aws.
 Batch sizes can be modified by the `batchSize` option. Failed calls will be retried up to the `maxRetries` option.
 The available sendMessageBatch `options` are detailed below.
 
-#### sqs.QueueProcessor({ queueUrl: String, stepsDir: String, ingestSteps: String[] })
+#### sqs.QueueProcessor({ queueUrls: String[], stepsDir: String, ingestSteps: String[] })
 
-Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files.
+Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files. Each queueUrl used by a step must be defined in queueUrls.
 
-Each `step` needs to export `schema` (Joi schema), `handler` (execution logic ingesting payload and event) and `next` (array of next possible steps).
+Each `step` needs to export `schema` (Joi schema), `handler` (execution logic ingesting payload and event), `next` (array of next possible steps) and `queueUrl` (the queue that the step is ingested into).
 
 The schema needs to define the event name under `name`. New events that are to be re-queued into the queue need to be returned from the `handler` function as an array.
 

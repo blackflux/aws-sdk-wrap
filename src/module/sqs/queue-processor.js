@@ -6,16 +6,18 @@ const { wrap } = require('lambda-async');
 
 module.exports = ({ sendMessageBatch }) => (opts) => {
   Joi.assert(opts, Joi.object().keys({
-    queueUrl: Joi.string().optional(),
+    queueUrls: Joi.array().items(Joi.string()),
     stepsDir: Joi.string(),
     ingestSteps: Joi.array().unique().min(1).items(Joi.string())
   }));
-  const { queueUrl, stepsDir, ingestSteps } = opts;
+  const { queueUrls, stepsDir, ingestSteps } = opts;
   const steps = fs
     .readdirSync(stepsDir)
     .reduce((p, step) => Object.assign(p, {
       [step.slice(0, -3)]: (() => {
-        const { schema, handler, next } = fs.smartRead(path.join(stepsDir, step));
+        const {
+          schema, handler, next, queueUrl
+        } = fs.smartRead(path.join(stepsDir, step));
         assert(Joi.isSchema(schema) === true, 'Schema not a Joi schema.');
         assert(
           typeof handler === 'function' && handler.length === 2,
@@ -25,21 +27,48 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           Array.isArray(next) && next.every((e) => typeof e === 'string'),
           'Next must be an array of strings.'
         );
+        assert(
+          queueUrls.includes(queueUrl),
+          'Step has invalid / not allowed queueUrl defined.'
+        );
         return {
           handler: (payload, event) => {
             Joi.assert(payload, schema, `Invalid payload received for step: ${payload.name}`);
             return handler(payload, event);
           },
           schema,
-          next
+          next,
+          queueUrl
         };
       })()
     }), {});
+  assert(
+    queueUrls.every((queueUrl) => Object.values(steps).some((step) => queueUrl === step.queueUrl)),
+    'Unused entry in queueUrls defined.'
+  );
+
+  const sendMessages = async (messages) => {
+    const batches = {};
+    messages.forEach((msg) => {
+      const queueUrl = steps[msg.name].queueUrl;
+      assert(queueUrl !== undefined);
+      if (batches[queueUrl] === undefined) {
+        batches[queueUrl] = [];
+      }
+      batches[queueUrl].push(msg);
+    });
+    const batchEntries = Object.entries(batches);
+    for (let i = 0; i < batchEntries.length; i += 1) {
+      const [queueUrl, msgs] = batchEntries[i];
+      // eslint-disable-next-line no-await-in-loop
+      await sendMessageBatch({ queueUrl, messages: msgs });
+    }
+  };
 
   const ingestSchema = Joi.array().items(...ingestSteps.map((step) => steps[step].schema));
   const ingest = async (messages) => {
     Joi.assert(messages, ingestSchema);
-    await sendMessageBatch({ messages, queueUrl });
+    await sendMessages(messages);
   };
 
   const handler = wrap((event) => {
@@ -73,7 +102,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
         Joi.array().items(...step.next.map((n) => steps[n].schema)),
         `Unexpected/Invalid next step(s) returned for: ${payload.name}`
       );
-      await sendMessageBatch({ messages, queueUrl });
+      await sendMessages(messages);
       return payload;
     }));
   });
