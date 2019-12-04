@@ -74,7 +74,7 @@ The available sendMessageBatch `options` are detailed below.
 
 #### sqs.QueueProcessor({ queueUrls: String[], stepsDir: String, ingestSteps: String[] })
 
-Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files. Each queueUrl used by a step must be defined in QueueUrls.
+Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files. Each queueUrl used by a step must be defined in queueUrls.
 
 Each `step` needs to export `schema` (Joi schema), `handler` (execution logic ingesting payload and event), `next` (array of next possible steps) and `queueUrl` (the queue that the step is ingested into).
 

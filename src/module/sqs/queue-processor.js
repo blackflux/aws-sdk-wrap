@@ -42,6 +42,10 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
         };
       })()
     }), {});
+  assert(
+    queueUrls.every((queueUrl) => Object.values(steps).some((step) => queueUrl === step.queueUrl)),
+    'Unused entry in queueUrls defined'
+  );
 
   const sendMessages = async (messages) => {
     const batches = {};
