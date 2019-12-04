@@ -1,5 +1,7 @@
 const Joi = require('joi-strict');
 
+module.exports.queueUrl = process.env.QUEUE_URL;
+
 module.exports.schema = Joi.object().keys({
   name: Joi.string().valid('disallowed-output')
 });
