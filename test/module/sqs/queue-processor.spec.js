@@ -36,6 +36,11 @@ describe('Testing QueueProcessor', {
     expect(result).to.equal(undefined);
   });
 
+  it('Testing ingest for two messages', async () => {
+    const result = await processor.ingest([{ name: 'step1' }, { name: 'step1', meta: 'meta' }]);
+    expect(result).to.equal(undefined);
+  });
+
   it('Testing step1 -> [step2]', async () => {
     const result = await executor([{ name: 'step1' }]);
     expect(result).to.deep.equal([{ name: 'step1' }]);
