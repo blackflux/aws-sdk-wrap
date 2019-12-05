@@ -8,7 +8,7 @@ class SendMessageBatchError extends Error {
 
 class MessageCollisionError extends Error {
   constructor(message) {
-    super(JSON.stringify(message));
+    super(message);
     this.name = 'MessageCollisionError';
   }
 }

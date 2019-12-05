@@ -21,7 +21,7 @@ const sendBatch = async (sqsBatch, queueUrl, {
     const msgDelaySeconds = getDelaySeconds(msg);
     const delaySeconds = msgDelaySeconds === undefined ? batchDelaySeconds : msgDelaySeconds;
     if (p[id] !== undefined) {
-      throw new MessageCollisionError(p[id]);
+      throw new MessageCollisionError(JSON.stringify(p[id]));
     }
     return Object.assign(p, {
       [id]: {
@@ -84,7 +84,7 @@ module.exports = ({ call, getService, logger }) => async (opts) => {
       logger
     })));
   if (messages.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
-    throw new SendMessageBatchError(result);
+    throw new SendMessageBatchError(JSON.stringify(result));
   }
   return result;
 };
