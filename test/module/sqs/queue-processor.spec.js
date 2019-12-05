@@ -14,7 +14,7 @@ describe('Testing QueueProcessor', {
   before(() => {
     aws = index({ logger: console });
     processor = aws.sqs.QueueProcessor({
-      queueUrls: [process.env.QUEUE_URL],
+      queueUrls: [process.env.QUEUE_URL, process.env.QUEUE_URL_DUMMY],
       stepsDir: `${__filename}_steps`,
       ingestSteps: ['step1']
     });
