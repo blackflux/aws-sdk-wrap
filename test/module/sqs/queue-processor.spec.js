@@ -14,9 +14,9 @@ describe('Testing QueueProcessor', {
   before(() => {
     aws = index({ logger: console });
     processor = aws.sqs.QueueProcessor({
-      queueUrls: [process.env.QUEUE_URL, process.env.QUEUE_URL_DUMMY],
+      queueUrls: [process.env.QUEUE_URL_ONE, process.env.QUEUE_URL_TWO],
       stepsDir: `${__filename}_steps`,
-      ingestSteps: ['step1']
+      ingestSteps: ['step1', 'step3']
     });
     executor = (records) => new Promise((resolve, reject) => {
       processor.handler({
@@ -34,6 +34,11 @@ describe('Testing QueueProcessor', {
   it('Testing ingest', async () => {
     const result = await processor.ingest([{ name: 'step1', meta: 'meta1' }]);
     expect(result).to.equal(undefined);
+  });
+
+  it('Testing ingest separate queues', async () => {
+    const result = await executor([{ name: 'step3', meta: 'meta3' }]);
+    expect(result).to.deep.equal([{ name: 'step3', meta: 'meta3' }]);
   });
 
   it('Testing ingest for two messages', async () => {
