@@ -4,7 +4,7 @@ const get = require('lodash.get');
 const Joi = require('joi-strict');
 const objectHash = require('object-hash');
 const { getDelaySeconds } = require('./prepare-message');
-const { SendMessageBatchError } = require('../../resources/errors');
+const { SendMessageBatchError, MessageCollisionError } = require('../../resources/errors');
 
 const sleep = util.promisify(setTimeout);
 
@@ -20,6 +20,9 @@ const sendBatch = async (sqsBatch, queueUrl, {
     const id = objectHash(msg);
     const msgDelaySeconds = getDelaySeconds(msg);
     const delaySeconds = msgDelaySeconds === undefined ? batchDelaySeconds : msgDelaySeconds;
+    if (p[id] !== undefined) {
+      throw new MessageCollisionError(JSON.stringify(p[id]));
+    }
     return Object.assign(p, {
       [id]: {
         Id: id,
@@ -81,7 +84,7 @@ module.exports = ({ call, getService, logger }) => async (opts) => {
       logger
     })));
   if (messages.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
-    throw new SendMessageBatchError(result);
+    throw new SendMessageBatchError(JSON.stringify(result));
   }
   return result;
 };

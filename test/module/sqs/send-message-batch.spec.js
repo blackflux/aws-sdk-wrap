@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const index = require('../../../src/index');
-const { SendMessageBatchError } = require('../../../src/resources/errors');
+const { SendMessageBatchError, MessageCollisionError } = require('../../../src/resources/errors');
 
 describe('Testing sendMessageBatch', {
   useNock: true,
@@ -23,7 +23,7 @@ describe('Testing sendMessageBatch', {
           hour: '2018-10-25T20:00:00.000Z'
         }
       }],
-      queueUrl: process.env.QUEUE_URL
+      queueUrl: process.env.QUEUE_URL_ONE
     });
     expect(result).to.deep.equal([[{
       ResponseMetadata: {
@@ -48,7 +48,7 @@ describe('Testing sendMessageBatch', {
           name: 'event_name'
         }
       }],
-      queueUrl: process.env.QUEUE_URL
+      queueUrl: process.env.QUEUE_URL_ONE
     });
     expect(result).to.deep.equal([[{
       ResponseMetadata: {
@@ -79,7 +79,7 @@ describe('Testing sendMessageBatch', {
   });
 
   it('Testing empty messages', async () => {
-    const result = await aws.sqs.sendMessageBatch({ messages: [], queueUrl: process.env.QUEUE_URL });
+    const result = await aws.sqs.sendMessageBatch({ messages: [], queueUrl: process.env.QUEUE_URL_ONE });
     expect(result).to.deep.equal([]);
   });
 
@@ -94,7 +94,7 @@ describe('Testing sendMessageBatch', {
             name: 'event_name'
           }
         }],
-        queueUrl: process.env.QUEUE_URL,
+        queueUrl: process.env.QUEUE_URL_ONE,
         maxRetries: 1
       });
     } catch (err) {
@@ -109,7 +109,7 @@ describe('Testing sendMessageBatch', {
         type: 'collection',
         target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
       }],
-      queueUrl: process.env.QUEUE_URL,
+      queueUrl: process.env.QUEUE_URL_ONE,
       delaySeconds: 5
     });
     expect(result).to.deep.equal([[{
@@ -123,5 +123,24 @@ describe('Testing sendMessageBatch', {
       }],
       Failed: []
     }]]);
+  });
+
+  it('Testing message collision error', async ({ capture }) => {
+    const err = await capture(() => aws.sqs.sendMessageBatch({
+      messages: [
+        {
+          action: 'delete',
+          type: 'collection',
+          target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
+        },
+        {
+          action: 'delete',
+          type: 'collection',
+          target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
+        }
+      ],
+      queueUrl: process.env.QUEUE_URL_ONE
+    }));
+    expect(err).instanceof(MessageCollisionError);
   });
 });
