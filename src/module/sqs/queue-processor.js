@@ -6,7 +6,8 @@ const { wrap } = require('lambda-async');
 
 module.exports = ({ sendMessageBatch }) => (opts) => {
   Joi.assert(opts, Joi.object().keys({
-    queueUrls: Joi.array().items(Joi.string()),
+    // queueUrls entries are undefined when QueueProcessor is instantiated.
+    queueUrls: Joi.array().sparse(),
     stepsDir: Joi.string(),
     ingestSteps: Joi.array().unique().min(1).items(Joi.string())
   }));
