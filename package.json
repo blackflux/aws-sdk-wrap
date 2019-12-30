@@ -49,8 +49,8 @@
     "eslint-plugin-json": "2.0.1",
     "eslint-plugin-markdown": "1.0.1",
     "eslint-plugin-mocha": "6.2.2",
-    "js-gardener": "2.0.123",
-    "node-tdd": "2.5.24",
+    "js-gardener": "2.0.125",
+    "node-tdd": "2.5.25",
     "nyc": "15.0.0",
     "semantic-release": "15.14.0"
   },
@@ -100,7 +100,7 @@
     "lib"
   ],
   "dependencies": {
-    "joi-strict": "1.1.10",
+    "joi-strict": "1.1.11",
     "lambda-async": "1.0.4",
     "lodash.chunk": "4.2.0",
     "lodash.get": "4.4.2",
