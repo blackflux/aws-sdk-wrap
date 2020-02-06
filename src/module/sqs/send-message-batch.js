@@ -46,7 +46,7 @@ const sendBatch = async (sqsBatch, queueUrl, {
       logger.warn(`Failed to submit (some) message(s)\nRetrying: [${
         Object
           .values(pending)
-          .map(({ Id, MessageBody }) => `(Id=${Id}, MD5=${getService('util.crypto').md5(MessageBody, 'hex')})`)
+          .map(({ Id, MessageBody }) => `( Id = ${Id} , MD5 = ${getService('util.crypto').md5(MessageBody, 'hex')} )`)
           .join(', ')
       }]`);
     }
