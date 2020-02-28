@@ -13,3 +13,5 @@ module.exports.handler = async (payload, event) => [
 ];
 
 module.exports.next = ['step1', 'step3'];
+
+module.exports.delay = 15;

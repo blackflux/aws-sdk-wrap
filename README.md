@@ -16,7 +16,7 @@ Wrapper around [aws-sdk](https://www.npmjs.com/package/aws-sdk).
 When dealing with the aws-sdk a lot, some calls become very repetitive and achieving code coverage becomes tiresome. This wrapper abstracts some of the repetitive logic.
 
 Some examples of repetitive logic are:
- - having to call `.promise()` 
+ - having to call `.promise()`
  - handling of expected errors
  - logging of unexpected errors
 
@@ -53,9 +53,9 @@ One can access an `aws-sdk` service directly by calling e.g. `aws.get('s3')`.
 The `action` is of the format `path.to.service:functionName`.
 
 Gets the service from the underlying `aws-sdk` and initialize it with the available config iff the service is not initialized yet.
-Then calls the function with the passed `params` (which needs to contain the appropriate parameters for the function). 
+Then calls the function with the passed `params` (which needs to contain the appropriate parameters for the function).
 
-The available call `options` are detailed below. 
+The available call `options` are detailed below.
 
 #### get(serviceName: String)
 
@@ -76,7 +76,7 @@ The available sendMessageBatch `options` are detailed below.
 
 Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files. Each queueUrl used by a step must be defined in queueUrls.
 
-Each `step` needs to export `schema` (Joi schema), `handler` (execution logic ingesting payload and event), `next` (array of next possible steps) and `queueUrl` (the queue that the step is ingested into).
+Each `step` needs to export `schema` (Joi schema), `handler` (execution logic ingesting payload and event), `next` (array of next possible steps), `queueUrl` (the queue that the step is ingested into) and optionally `delay` (the amount of seconds that the message is delayed, defaults to zero).
 
 The schema needs to define the event name under `name`. New events that are to be re-queued into the queue need to be returned from the `handler` function as an array.
 
@@ -102,11 +102,11 @@ Retrieves only the metadata from an object in an Amazon S3 bucket. Uses [s3:head
 Delete object from an Amazon S3 bucket at key. Uses [s3:deleteObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
 
 #### s3.listObjects({ bucket: String, limit: Number, startAfter: String, prefix: String })
-List objects keys in an Amazon S3 bucket. Internally this pages until the 
+List objects keys in an Amazon S3 bucket. Internally this pages until the
 limit is reached or no more keys are available. Uses [s3:listObjectsV2](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property).
 
 #### s3.decodeKey(key: String)
-Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain the 
+Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain the
 not-encoded key representation after calling `listObjects`.
 
 ### Init Options
@@ -162,4 +162,4 @@ The length of time the function will wait after each failed request before retry
 Type: `integer`<br>
 Default: `null`
 
-Set [DelaySeconds](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html) option. 
+Set [DelaySeconds](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html) option.
