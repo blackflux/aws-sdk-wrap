@@ -3,6 +3,7 @@ const fs = require('smart-fs');
 const path = require('path');
 const Joi = require('joi-strict');
 const { wrap } = require('lambda-async');
+const { prepareMessage } = require('./prepare-message');
 
 module.exports = ({ sendMessageBatch }) => (opts) => {
   Joi.assert(opts, Joi.object().keys({
@@ -17,7 +18,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
     .reduce((p, step) => Object.assign(p, {
       [step.slice(0, -3)]: (() => {
         const {
-          schema, handler, next, queueUrl
+          schema, handler, next, queueUrl, delay = 0
         } = fs.smartRead(path.join(stepsDir, step));
         assert(Joi.isSchema(schema) === true, 'Schema not a Joi schema.');
         assert(
@@ -32,6 +33,10 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           queueUrls.includes(queueUrl),
           'Step has invalid / not allowed queueUrl defined.'
         );
+        assert(
+          Number.isInteger(delay) && delay >= 0 && delay <= 15 * 60,
+          'Invalid value for step delay provided.'
+        );
         return {
           handler: (payload, event) => {
             Joi.assert(payload, schema, `Invalid payload received for step: ${payload.name}`);
@@ -39,7 +44,8 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           },
           schema,
           next,
-          queueUrl
+          queueUrl,
+          delay
         };
       })()
     }), {});
@@ -53,6 +59,11 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
     messages.forEach((msg) => {
       const queueUrl = steps[msg.name].queueUrl;
       assert(queueUrl !== undefined);
+      const delay = steps[msg.name].delay;
+      assert(delay !== undefined);
+      if (delay !== 0) {
+        prepareMessage(msg, { delaySeconds: steps[msg.name].delay });
+      }
       if (batches[queueUrl] === undefined) {
         batches[queueUrl] = [];
       }
