@@ -6,7 +6,8 @@ module.exports.getDelaySeconds = (msg) => msg[DELAY_SECONDS];
 
 module.exports.prepareMessage = (msg, opts) => {
   Joi.assert(opts, Joi.object().keys({
-    delaySeconds: Joi.number().integer().optional()
+    // eslint-disable-next-line newline-per-chained-call
+    delaySeconds: Joi.number().integer().min(0).max(15 * 60).optional()
   }));
   if (opts.delaySeconds !== undefined) {
     Object.defineProperty(msg, DELAY_SECONDS, {
