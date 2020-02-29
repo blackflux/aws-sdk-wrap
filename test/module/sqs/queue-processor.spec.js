@@ -97,12 +97,15 @@ describe('Testing QueueProcessor', {
     );
   });
 
-  it('Testing multiple records', async ({ capture }) => {
-    const result = await capture(() => executor([{ name: 'step1' }, { name: 'step1' }]));
-    expect(result.message).to.equal(
-      'Lambda SQS subscription is mis-configured! '
-      + 'Please only process one event at a time for retry resilience.'
-    );
+  it('Testing multiple records', async () => {
+    const result = await executor([
+      { name: 'parallel-step', meta: 'A' },
+      { name: 'parallel-step', meta: 'B' }
+    ]);
+    expect(result).to.deep.equal([
+      { name: 'parallel-step', meta: 'A' },
+      { name: 'parallel-step', meta: 'B' }
+    ]);
   });
 
   it('Testing setting delay on message', async () => {

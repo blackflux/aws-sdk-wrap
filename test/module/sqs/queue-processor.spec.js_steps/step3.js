@@ -7,7 +7,7 @@ module.exports.schema = Joi.object().keys({
   meta: Joi.string()
 });
 
-module.exports.handler = async (payload, event) => [
+module.exports.handler = async (payload, event, context) => [
   { name: 'step1', meta: 'meta1' },
   { name: 'step3', meta: 'meta3' }
 ];
