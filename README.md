@@ -77,11 +77,11 @@ The available sendMessageBatch `options` are detailed below.
 Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files. Each queueUrl used by a step must be defined in queueUrls.
 
 Each `step` should export:
- - `schema<Joi>` (Joi schema)
+ - `schema<Joi>`: Joi schema
  - `handler<function(step, event, stepContext): steps>`: execution logic ingesting payload and event
  - `next`: array of next possible steps
  - `queueUrl`: the queue that the step is ingested into
- - `delay` (optional): the amount of seconds that the message is delayed, defaults to zero
+ - `delay` (optional): the amount of seconds that the message is delayed, defaults to undefined, i.e. the queue default
  - `before<function(stepContext): steps>` (optional): called before first step is executed
  - `after<function(stepContext): steps>` (optional):
 
