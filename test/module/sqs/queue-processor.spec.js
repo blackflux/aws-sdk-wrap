@@ -97,7 +97,7 @@ describe('Testing QueueProcessor', {
     );
   });
 
-  it('Testing multiple records', async () => {
+  it('Testing multiple records (success)', async () => {
     const result = await executor([
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
@@ -106,6 +106,12 @@ describe('Testing QueueProcessor', {
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
     ]);
+  });
+
+  it('Testing multiple records (error)', async ({ capture }) => {
+    const result = await capture(() => executor([{ name: 'step1' }, { name: 'step1' }]));
+    expect(result.message)
+      .to.equal('SQS mis-configured. Parallel processing not supported for: step1');
   });
 
   it('Testing setting delay on message', async () => {

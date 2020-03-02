@@ -17,6 +17,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
     .readdirSync(stepsDir)
     .reduce((p, step) => Object.assign(p, {
       [step.slice(0, -3)]: (() => {
+        const stepLogic = fs.smartRead(path.join(stepsDir, step));
         const {
           schema,
           handler,
@@ -25,7 +26,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           delay = 0,
           before = async (stepContext) => [],
           after = async (stepContext) => []
-        } = fs.smartRead(path.join(stepsDir, step));
+        } = stepLogic;
         assert(Joi.isSchema(schema) === true, 'Schema not a Joi schema.');
         assert(
           typeof handler === 'function' && handler.length === 3,
@@ -62,7 +63,8 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           queueUrl,
           delay,
           before,
-          after
+          after,
+          isParallel: typeof stepLogic.before === 'function' && typeof stepLogic.after === 'function'
         };
       })()
     }), {});
@@ -123,6 +125,15 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
         }
         return [payload, e, step];
       });
+
+    if (event.Records.length !== 1) {
+      const invalidSteps = Array.from(stepContexts)
+        .filter(([step]) => !step.isParallel)
+        .map(([step]) => step.name);
+      if (invalidSteps.length !== 0) {
+        throw new Error(`SQS mis-configured. Parallel processing not supported for: ${invalidSteps.join(', ')}`);
+      }
+    }
 
     const messageBus = (() => {
       const messages = [];
