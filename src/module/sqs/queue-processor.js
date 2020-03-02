@@ -17,12 +17,19 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
     .readdirSync(stepsDir)
     .reduce((p, step) => Object.assign(p, {
       [step.slice(0, -3)]: (() => {
+        const stepLogic = fs.smartRead(path.join(stepsDir, step));
         const {
-          schema, handler, next, queueUrl, delay = 0
-        } = fs.smartRead(path.join(stepsDir, step));
+          schema,
+          handler,
+          next,
+          queueUrl,
+          delay = 0,
+          before = async (stepContext) => [],
+          after = async (stepContext) => []
+        } = stepLogic;
         assert(Joi.isSchema(schema) === true, 'Schema not a Joi schema.');
         assert(
-          typeof handler === 'function' && handler.length === 2,
+          typeof handler === 'function' && handler.length === 3,
           'Handler must be a function taking two arguments.'
         );
         assert(
@@ -37,15 +44,27 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           Number.isInteger(delay) && delay >= 0 && delay <= 15 * 60,
           'Invalid value for step delay provided.'
         );
+        assert(
+          typeof before === 'function' && before.length === 1,
+          'Invalid before() definition for step.'
+        );
+        assert(
+          typeof after === 'function' && after.length === 1,
+          'Invalid after() definition for step.'
+        );
         return {
-          handler: (payload, event) => {
+          name: step.slice(0, -3),
+          handler: (payload, ...args) => {
             Joi.assert(payload, schema, `Invalid payload received for step: ${payload.name}`);
-            return handler(payload, event);
+            return handler(payload, ...args);
           },
           schema,
           next,
           queueUrl,
-          delay
+          delay,
+          before,
+          after,
+          isParallel: typeof stepLogic.before === 'function' && typeof stepLogic.after === 'function'
         };
       })()
     }), {});
@@ -83,40 +102,71 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
     await sendMessages(messages);
   };
 
-  const handler = wrap((event) => {
-    assert(
-      event.Records.length === 1,
-      'Lambda SQS subscription is mis-configured! '
-      + 'Please only process one event at a time for retry resilience.'
-    );
-    return Promise.all(event.Records.map(async (e) => {
-      const payload = JSON.parse(e.body);
-      assert(
-        payload instanceof Object && !Array.isArray(payload),
-        `Invalid Event Received: ${e.body}`
-      );
-      assert(
-        payload.name !== undefined,
-        'Received step event that is missing "name" property.'
-      );
-      const step = steps[payload.name];
-      assert(
-        step !== undefined,
-        `Invalid step provided: ${payload.name}`
-      );
-      const messages = await step.handler(payload, e);
-      assert(
-        messages.length === 0 || step.next.length !== 0,
-        `No output allowed for step: ${payload.name}`
-      );
-      Joi.assert(
-        messages,
-        Joi.array().items(...step.next.map((n) => steps[n].schema)),
-        `Unexpected/Invalid next step(s) returned for: ${payload.name}`
-      );
-      await sendMessages(messages);
+  const handler = wrap(async (event) => {
+    const stepContexts = new Map();
+    const tasks = event.Records
+      .map((e) => {
+        const payload = JSON.parse(e.body);
+        assert(
+          payload instanceof Object && !Array.isArray(payload),
+          `Invalid Event Received: ${e.body}`
+        );
+        assert(
+          payload.name !== undefined,
+          'Received step event that is missing "name" property.'
+        );
+        const step = steps[payload.name];
+        assert(
+          step !== undefined,
+          `Invalid step provided: ${payload.name}`
+        );
+        if (!stepContexts.has(step)) {
+          stepContexts.set(step, Object.create(null));
+        }
+        return [payload, e, step];
+      });
+
+    if (event.Records.length !== 1) {
+      const invalidSteps = Array.from(stepContexts)
+        .filter(([step]) => !step.isParallel)
+        .map(([step]) => step.name);
+      if (invalidSteps.length !== 0) {
+        throw new Error(`SQS mis-configured. Parallel processing not supported for: ${invalidSteps.join(', ')}`);
+      }
+    }
+
+    const messageBus = (() => {
+      const messages = [];
+      return {
+        add: (msgs, step) => {
+          assert(
+            msgs.length === 0 || step.next.length !== 0,
+            `No output allowed for step: ${step.name}`
+          );
+          Joi.assert(
+            msgs,
+            Joi.array().items(...step.next.map((n) => steps[n].schema)),
+            `Unexpected/Invalid next step(s) returned for: ${step.name}`
+          );
+          messages.push(...msgs);
+        },
+        send: () => sendMessages(messages.splice(0))
+      };
+    })();
+
+    await Promise.all(Array.from(stepContexts)
+      .map(([step, ctx]) => step.before(ctx).then((msgs) => messageBus.add(msgs, step))));
+
+    const result = await Promise.all(tasks.map(async ([payload, e, step]) => {
+      messageBus.add(await step.handler(payload, e, stepContexts.get(step)), step);
       return payload;
     }));
+
+    await Promise.all(Array.from(stepContexts)
+      .map(([step, ctx]) => step.after(ctx).then((msgs) => messageBus.add(msgs, step))));
+
+    await messageBus.send();
+    return result;
   });
 
   return { ingest, handler };
