@@ -8,7 +8,7 @@ module.exports.schema = Joi.object().keys({
   meta: Joi.string()
 });
 
-module.exports.handler = async (payload, event) => {
+module.exports.handler = async (payload, event, context) => {
   const msg = { name: 'step2' };
   prepareMessage(msg, { delaySeconds: 10 });
   return [msg];
