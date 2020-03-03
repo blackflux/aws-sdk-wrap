@@ -30,7 +30,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
         assert(Joi.isSchema(schema) === true, 'Schema not a Joi schema.');
         assert(
           typeof handler === 'function' && handler.length === 3,
-          'Handler must be a function taking two arguments.'
+          'Handler must be a function taking three arguments.'
         );
         assert(
           Array.isArray(next) && next.every((e) => typeof e === 'string'),
