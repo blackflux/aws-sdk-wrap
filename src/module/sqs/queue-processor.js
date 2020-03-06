@@ -150,23 +150,25 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           );
           messages.push(...msgs);
         },
-        send: () => sendMessages(messages.splice(0))
+        send: async () => {
+          const toSend = messages.splice(0);
+          await sendMessages(toSend);
+          return toSend;
+        }
       };
     })();
 
     await Promise.all(Array.from(stepContexts)
       .map(([step, ctx]) => step.before(ctx).then((msgs) => messageBus.add(msgs, step))));
 
-    const result = await Promise.all(tasks.map(async ([payload, e, step]) => {
+    await Promise.all(tasks.map(async ([payload, e, step]) => {
       messageBus.add(await step.handler(payload, e, stepContexts.get(step)), step);
-      return payload;
     }));
 
     await Promise.all(Array.from(stepContexts)
       .map(([step, ctx]) => step.after(ctx).then((msgs) => messageBus.add(msgs, step))));
 
-    await messageBus.send();
-    return result;
+    return messageBus.send();
   });
 
   return { ingest, handler };

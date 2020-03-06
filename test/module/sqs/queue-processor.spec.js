@@ -38,7 +38,10 @@ describe('Testing QueueProcessor', {
 
   it('Test ingesting into separate queues', async () => {
     const result = await executor([{ name: 'step3', meta: 'meta3' }]);
-    expect(result).to.deep.equal([{ name: 'step3', meta: 'meta3' }]);
+    expect(result).to.deep.equal([
+      { name: 'step1', meta: 'meta1' },
+      { name: 'step3', meta: 'meta3' }
+    ]);
   });
 
   it('Testing ingest for two messages', async () => {
@@ -51,12 +54,12 @@ describe('Testing QueueProcessor', {
 
   it('Testing step1 -> [step2]', async () => {
     const result = await executor([{ name: 'step1', meta: 'meta1' }]);
-    expect(result).to.deep.equal([{ name: 'step1', meta: 'meta1' }]);
+    expect(result).to.deep.equal([{ name: 'step2' }]);
   });
 
   it('Testing step2 -> []', async () => {
     const result = await executor([{ name: 'step2' }]);
-    expect(result).to.deep.equal([{ name: 'step2' }]);
+    expect(result).to.deep.equal([]);
   });
 
   it('Testing bad-output', async ({ capture }) => {
