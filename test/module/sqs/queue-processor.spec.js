@@ -31,6 +31,42 @@ describe('Testing QueueProcessor', {
     });
   });
 
+  it('Visualize', async () => {
+    expect(processor.digraph()).to.deep.equal([
+      '# Visualize at http://viz-js.com/',
+      'digraph G {',
+      '  subgraph cluster_0 {',
+      '    label="One";',
+      '    style=filled;',
+      '    color=lightgrey;',
+      '    node [style=filled,color=white];',
+      '    badOutput [];',
+      '    disallowedOutput [];',
+      '    step1 [];',
+      '  }',
+      '  subgraph cluster_1 {',
+      '    label="Two";',
+      '    style=filled;',
+      '    color=lightgrey;',
+      '    node [style=filled,color=white];',
+      '    parallelStep [color=red,shape=doublecircle];',
+      '    step2 [];',
+      '    step3 [shape=doublecircle];',
+      '  }',
+      '  ',
+      '  ingest [shape=Mdiamond];',
+      '  ingest -> step1;',
+      '  ingest -> step3;',
+      '  ',
+      '  badOutput -> step2;',
+      '  parallelStep -> parallelStep;',
+      '  step1 -> step2;',
+      '  step3 -> step1;',
+      '  step3 -> step3;',
+      '}'
+    ]);
+  });
+
   it('Testing ingest', async () => {
     const result = await processor.ingest([{ name: 'step1', meta: 'meta1' }]);
     expect(result).to.equal(undefined);
