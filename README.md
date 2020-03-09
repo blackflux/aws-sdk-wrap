@@ -89,6 +89,8 @@ The schema needs to define the event name under `name`. New events that are to b
 
 The exposed `ingest` method should only be used to seed the queue. Messages generated inside a step should simply be returned from that step.
 
+Exposed `digraph` option can be used to visualize flow using [viz-js.com](http://viz-js.com/).
+
 Please see tests for example.
 
 #### sqs.prepareMessage(msg: Object, opts: Object)
