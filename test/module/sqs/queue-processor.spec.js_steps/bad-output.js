@@ -1,6 +1,6 @@
 const Joi = require('joi-strict');
 
-module.exports.queueUrl = process.env.QUEUE_URL_ONE;
+module.exports.queue = 'one';
 
 module.exports.schema = Joi.object().keys({
   name: Joi.string().valid('bad-output')
