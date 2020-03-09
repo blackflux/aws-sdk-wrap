@@ -7,12 +7,12 @@ const { prepareMessage } = require('./prepare-message');
 
 module.exports = ({ sendMessageBatch }) => (opts) => {
   Joi.assert(opts, Joi.object().keys({
-    // queueUrls entries are undefined when QueueProcessor is instantiated.
-    queueUrls: Joi.array().sparse(),
+    // queue urls can be undefined when QueueProcessor is instantiated.
+    queues: Joi.object().pattern(Joi.string(), Joi.string().optional()),
     stepsDir: Joi.string(),
     ingestSteps: Joi.array().unique().min(1).items(Joi.string())
   }));
-  const { queueUrls, stepsDir, ingestSteps } = opts;
+  const { queues, stepsDir, ingestSteps } = opts;
   const steps = fs
     .readdirSync(stepsDir)
     .reduce((p, step) => Object.assign(p, {
@@ -22,7 +22,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           schema,
           handler,
           next,
-          queueUrl,
+          queue,
           delay = 0,
           before = async (stepContext) => [],
           after = async (stepContext) => []
@@ -37,8 +37,8 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           'Next must be an array of strings.'
         );
         assert(
-          queueUrls.includes(queueUrl),
-          'Step has invalid / not allowed queueUrl defined.'
+          Object.keys(queues).includes(queue),
+          'Step has invalid / not allowed queue defined.'
         );
         assert(
           Number.isInteger(delay) && delay >= 0 && delay <= 15 * 60,
@@ -60,7 +60,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           },
           schema,
           next,
-          queueUrl,
+          queue,
           delay,
           before,
           after,
@@ -69,14 +69,14 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
       })()
     }), {});
   assert(
-    queueUrls.every((queueUrl) => Object.values(steps).some((step) => queueUrl === step.queueUrl)),
-    'Unused entry in queueUrls defined.'
+    Object.keys(queues).every((queue) => Object.values(steps).some((step) => queue === step.queue)),
+    'Unused queue(s) defined.'
   );
 
   const sendMessages = async (messages) => {
     const batches = {};
     messages.forEach((msg) => {
-      const queueUrl = steps[msg.name].queueUrl;
+      const queueUrl = queues[steps[msg.name].queue];
       assert(queueUrl !== undefined);
       const delay = steps[msg.name].delay;
       assert(delay !== undefined);
@@ -173,21 +173,19 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
 
   const digraph = () => {
     const formatStep = (step) => step.replace(/-([a-z])/g, ($1) => $1.slice(1).toUpperCase());
-    const shortenQueueUrl = (queueUrl) => queueUrl
-      .slice([...queueUrl].findIndex((e, idx) => queueUrls.some((qUrl) => qUrl[idx] !== e)));
 
     const result = [
-      ...queueUrls
-        .map((queueUrl, idx) => [
+      ...Object.keys(queues)
+        .map((queue, idx) => [
           `subgraph cluster_${idx} {`,
           ...[
-            `label="${shortenQueueUrl(queueUrl)}";`,
+            `label="${queue}";`,
             'style=filled;',
             'color=lightgrey;',
             'node [style=filled,color=white];',
             ...Object
               .values(steps)
-              .filter((step) => queueUrl === step.queueUrl)
+              .filter((step) => queue === step.queue)
               .map((step) => `${formatStep(step.name)} [${[
                 step.isParallel ? 'color=red' : null,
                 step.delay !== 0 ? 'shape=doublecircle' : null

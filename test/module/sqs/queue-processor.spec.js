@@ -14,7 +14,10 @@ describe('Testing QueueProcessor', {
   before(() => {
     aws = index({ logger: console });
     processor = aws.sqs.QueueProcessor({
-      queueUrls: [process.env.QUEUE_URL_ONE, process.env.QUEUE_URL_TWO],
+      queues: {
+        one: process.env.QUEUE_URL_ONE,
+        two: process.env.QUEUE_URL_TWO
+      },
       stepsDir: `${__filename}_steps`,
       ingestSteps: ['step1', 'step3']
     });
@@ -36,7 +39,7 @@ describe('Testing QueueProcessor', {
       '# Visualize at http://viz-js.com/',
       'digraph G {',
       '  subgraph cluster_0 {',
-      '    label="One";',
+      '    label="one";',
       '    style=filled;',
       '    color=lightgrey;',
       '    node [style=filled,color=white];',
@@ -45,7 +48,7 @@ describe('Testing QueueProcessor', {
       '    step1 [];',
       '  }',
       '  subgraph cluster_1 {',
-      '    label="Two";',
+      '    label="two";',
       '    style=filled;',
       '    color=lightgrey;',
       '    node [style=filled,color=white];',
