@@ -195,8 +195,8 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
         ])
         .reduce((p, c) => p.concat(c), []),
       '',
-      'ingest [shape=Mdiamond];',
-      ...ingestSteps.map((step) => `ingest -> ${formatStep(step)};`),
+      '_ingest [shape=Mdiamond,label=ingest];',
+      ...ingestSteps.map((step) => `_ingest -> ${formatStep(step)};`),
       '',
       ...Object.values(steps).reduce((r, step) => {
         step.next.forEach((nStep) => {
