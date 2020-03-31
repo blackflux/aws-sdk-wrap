@@ -58,8 +58,8 @@ module.exports.S3 = ({ call }) => {
       });
       if (stopAfter !== null && response.Contents[response.Contents.length - 1].Key >= stopAfter) {
         result.push(...response.Contents.slice(0, response.Contents.findIndex((e) => e.Key > stopAfter)));
-        isTruncated = false;
         continuationToken = undefined;
+        isTruncated = false;
       } else {
         result.push(...response.Contents);
         continuationToken = response.NextContinuationToken;
