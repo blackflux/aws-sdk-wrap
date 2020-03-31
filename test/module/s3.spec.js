@@ -132,19 +132,19 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
     expect(result).to.deep.equal([
       {
         ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
-        Key: '2020-03-30T15:00:00.000Z/key1',
+        Key: '2020-03-30T15:00:00.000Z',
         Size: 135,
         StorageClass: 'STANDARD'
       },
       {
         ETag: '"ede7147e166b322902e0e8fc33f4a876"',
-        Key: '2020-03-30T15:05:00.000Z/key2',
+        Key: '2020-03-30T15:05:00.000Z',
         Size: 217,
         StorageClass: 'STANDARD'
       },
       {
         ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
-        Key: '2020-03-30T15:10:00.000Z/key3',
+        Key: '2020-03-30T15:10:00.000Z',
         Size: 135,
         StorageClass: 'STANDARD'
       }
