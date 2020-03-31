@@ -1,0 +1,10 @@
+[
+  {
+    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
+    "method": "GET",
+    "path": "/?list-type=2",
+    "body": "",
+    "status": 200,
+    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListBucketResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Name>stateflow-data-local-stateexpirations3bucket-dmf0hybn1lqp</Name><Prefix></Prefix><KeyCount>2</KeyCount><NextContinuationToken>1agd5BmvxjViPqJu8UX9P4c6aKW+xwqRMqqShTkE9M6KytQBKzXz4AvHVX67Qd8gA33/M5lsPvsx09l0gUx1b1TjzqopSi8u2XzT8Qrz1Fk2rBzpOECny40iumnE18m5TEJDkpCnsALFLTEiAMwT/S2p3/rIE+aLXJLFhA4N8GSwMEiakhoNSS74Bk2W8sSZvDrmXrXTVeOdhWNITB1jzk4S2VLIiUlzoOIGrTPQmefA=</NextContinuationToken><MaxKeys>10</MaxKeys><IsTruncated>true</IsTruncated><Contents><Key>2020-03-30T15:00:00.000Z/key1</Key><ETag>&quot;a32d8ca2be8b6454d40b230fcc4a2fc4&quot;</ETag><Size>135</Size><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>2020-03-30T15:15:00.000Z</Key><ETag>&quot;ede7147e166b322902e0e8fc33f4a876&quot;</ETag><Size>217</Size><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>"
+  }
+]
