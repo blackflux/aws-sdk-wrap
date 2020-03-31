@@ -183,12 +183,6 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
         Key: '2020-03-30T15:00:00.000Z/key1',
         Size: 135,
         StorageClass: 'STANDARD'
-      },
-      {
-        ETag: '"ede7147e166b322902e0e8fc33f4a876"',
-        Key: '2020-03-30T15:15:00.000Z',
-        Size: 217,
-        StorageClass: 'STANDARD'
       }
     ]);
   });
