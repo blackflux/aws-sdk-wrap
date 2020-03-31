@@ -33,15 +33,21 @@ module.exports.S3 = ({ call }) => {
       bucket: Joi.string(),
       limit: Joi.number().integer().min(1).optional(),
       startAfter: Joi.string().optional(),
+      stopAfter: Joi.string().optional(),
       prefix: Joi.string().optional(),
       continuationToken: Joi.string().optional()
     }));
     const {
-      bucket, limit, startAfter, prefix
+      bucket,
+      limit,
+      startAfter,
+      stopAfter = null,
+      prefix
     } = kwargs;
     const result = [];
     let continuationToken = kwargs.continuationToken;
     let isTruncated;
+    let stopAfterFlag = false;
     do {
       // eslint-disable-next-line no-await-in-loop
       const response = await call('s3:listObjectsV2', {
@@ -51,10 +57,20 @@ module.exports.S3 = ({ call }) => {
         ...(continuationToken === undefined && startAfter !== undefined ? { StartAfter: startAfter } : {}),
         ...(continuationToken === undefined ? {} : { ContinuationToken: continuationToken })
       });
+      if (stopAfter !== null) {
+        const entries = [...response.Contents];
+        for (let i = 0; i < entries.length; i += 1) {
+          if (entries[i].Key > stopAfter) {
+            stopAfterFlag = true;
+            response.Contents = entries.slice(0, i);
+            break;
+          }
+        }
+      }
       result.push(...response.Contents);
       continuationToken = response.NextContinuationToken;
       isTruncated = response.IsTruncated;
-    } while (isTruncated === true && (limit === undefined || result.length < limit));
+    } while (isTruncated === true && stopAfterFlag === false && (limit === undefined || result.length < limit));
     result.continuationToken = continuationToken;
     result.isTruncated = isTruncated;
     return result;
