@@ -113,7 +113,7 @@ Delete object from an Amazon S3 bucket at key. Uses [s3:deleteObject](https://do
 #### s3.listObjects({ bucket: String, limit: Number, startAfter: String, stopAfter: String, prefix: String })
 List objects keys in an Amazon S3 bucket. Internally this pages until the
 limit is reached or no more keys are available. Uses [s3:listObjectsV2](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property).
-stopAfter: If provided paging is stopped if the last key returned is larger or equal to this parameter. Only appropriate keys are then returned.
+- stopAfter: If provided paging is stopped if the last key returned is larger or equal to this parameter. Only appropriate keys are then returned.
 
 #### s3.decodeKey(key: String)
 Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain the
