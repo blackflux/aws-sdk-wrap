@@ -33,11 +33,16 @@ module.exports.S3 = ({ call }) => {
       bucket: Joi.string(),
       limit: Joi.number().integer().min(1).optional(),
       startAfter: Joi.string().optional(),
+      stopAfter: Joi.string().optional(),
       prefix: Joi.string().optional(),
       continuationToken: Joi.string().optional()
     }));
     const {
-      bucket, limit, startAfter, prefix
+      bucket,
+      limit,
+      startAfter,
+      stopAfter = null,
+      prefix
     } = kwargs;
     const result = [];
     let continuationToken = kwargs.continuationToken;
@@ -51,9 +56,15 @@ module.exports.S3 = ({ call }) => {
         ...(continuationToken === undefined && startAfter !== undefined ? { StartAfter: startAfter } : {}),
         ...(continuationToken === undefined ? {} : { ContinuationToken: continuationToken })
       });
-      result.push(...response.Contents);
-      continuationToken = response.NextContinuationToken;
-      isTruncated = response.IsTruncated;
+      if (stopAfter !== null && response.Contents[response.Contents.length - 1].Key >= stopAfter) {
+        result.push(...response.Contents.slice(0, response.Contents.findIndex((e) => e.Key >= stopAfter) + 1));
+        continuationToken = undefined;
+        isTruncated = false;
+      } else {
+        result.push(...response.Contents);
+        continuationToken = response.NextContinuationToken;
+        isTruncated = response.IsTruncated;
+      }
     } while (isTruncated === true && (limit === undefined || result.length < limit));
     result.continuationToken = continuationToken;
     result.isTruncated = isTruncated;

@@ -124,6 +124,54 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
     ]);
   });
 
+  it('Testing "listObjects" with "StopAfter"', async () => {
+    const result = await aws.s3.listObjects({
+      bucket,
+      stopAfter: '2020-03-30T15:10:00.000Z'
+    });
+    expect(result).to.deep.equal([
+      {
+        ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
+        Key: '2020-03-30T15:00:00.000Z/key1',
+        Size: 135,
+        StorageClass: 'STANDARD'
+      },
+      {
+        ETag: '"ede7147e166b322902e0e8fc33f4a876"',
+        Key: '2020-03-30T15:05:00.000Z/key2',
+        Size: 217,
+        StorageClass: 'STANDARD'
+      },
+      {
+        ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
+        Key: '2020-03-30T15:10:00.000Z',
+        Size: 135,
+        StorageClass: 'STANDARD'
+      }
+    ]);
+  });
+
+  it('Testing "listObjects" with "StopAfter" equal to last key', async () => {
+    const result = await aws.s3.listObjects({
+      bucket,
+      stopAfter: '2020-03-30T15:10:00.000Z'
+    });
+    expect(result).to.deep.equal([
+      {
+        ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
+        Key: '2020-03-30T15:00:00.000Z/key1',
+        Size: 135,
+        StorageClass: 'STANDARD'
+      },
+      {
+        ETag: '"ede7147e166b322902e0e8fc33f4a876"',
+        Key: '2020-03-30T15:10:00.000Z',
+        Size: 217,
+        StorageClass: 'STANDARD'
+      }
+    ]);
+  });
+
   it('Testing "decodeKey"', () => {
     const result = aws.s3.decodeKey('2018-10-25T20%3A55%3A00.000Z/Collection+Viewed.json.gz');
     expect(result).to.equal('2018-10-25T20:55:00.000Z/Collection Viewed.json.gz');
