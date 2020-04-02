@@ -1,0 +1,11 @@
+[
+  {
+    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
+    "method": "GET",
+    "path": "/?list-type=2",
+    "body": "",
+    "status": 200,
+    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ListBucketResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Name>test-bucket-name</Name><Prefix></Prefix><KeyCount>0</KeyCount><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>",
+    "responseIsBinary": false
+  }
+]

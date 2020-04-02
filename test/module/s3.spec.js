@@ -187,6 +187,14 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
     ]);
   });
 
+  it('Testing "listObjects" with "StopAfter" no items returned', async () => {
+    const result = await aws.s3.listObjects({
+      bucket,
+      stopAfter: '2020-03-30T15:10:00.000Z'
+    });
+    expect(result).to.deep.equal([]);
+  });
+
   it('Testing "decodeKey"', () => {
     const result = aws.s3.decodeKey('2018-10-25T20%3A55%3A00.000Z/Collection+Viewed.json.gz');
     expect(result).to.equal('2018-10-25T20:55:00.000Z/Collection Viewed.json.gz');
