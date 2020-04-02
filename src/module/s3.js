@@ -56,7 +56,11 @@ module.exports.S3 = ({ call }) => {
         ...(continuationToken === undefined && startAfter !== undefined ? { StartAfter: startAfter } : {}),
         ...(continuationToken === undefined ? {} : { ContinuationToken: continuationToken })
       });
-      if (stopAfter !== null && response.Contents[response.Contents.length - 1].Key >= stopAfter) {
+      if (
+        stopAfter !== null
+        && response.Contents.length > 0
+        && response.Contents[response.Contents.length - 1].Key >= stopAfter
+      ) {
         const sliceIdx = response.Contents.findIndex((e) => e.Key > stopAfter);
         result.push(...(sliceIdx === -1 ? response.Contents : response.Contents.slice(0, sliceIdx)));
         continuationToken = undefined;
