@@ -182,11 +182,12 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
             `label="${queue}";`,
             'style=filled;',
             'color=lightgrey;',
-            'node [style=filled,color=white];',
+            'node [label="node",style=filled,color=white];',
             ...Object
               .values(steps)
               .filter((step) => queue === step.queue)
               .map((step) => `${formatStep(step.name)} [${[
+                `label="${step.name}"`,
                 step.isParallel ? 'color=red' : null,
                 step.delay !== 0 ? 'shape=doublecircle' : null
               ].filter((e) => e !== null).join(',')}];`)
