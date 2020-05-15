@@ -7,6 +7,6 @@ module.exports.Sqs = ({ call, getService, logger }) => {
   return {
     prepareMessage,
     sendMessageBatch: smb,
-    QueueProcessor: QueueProcessor({ sendMessageBatch: smb })
+    QueueProcessor: QueueProcessor({ sendMessageBatch: smb, logger })
   };
 };

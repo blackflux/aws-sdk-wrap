@@ -2,10 +2,19 @@ const assert = require('assert');
 const fs = require('smart-fs');
 const path = require('path');
 const Joi = require('joi-strict');
+const get = require('lodash.get');
 const { wrap } = require('lambda-async');
 const { prepareMessage } = require('./prepare-message');
+const errors = require('./queue-processor/errors');
 
-module.exports = ({ sendMessageBatch }) => (opts) => {
+const metaKey = '__meta';
+const normalizePayload = (payload) => {
+  const r = { ...payload };
+  delete r[metaKey];
+  return r;
+};
+
+module.exports = ({ sendMessageBatch, logger }) => (opts) => {
   Joi.assert(opts, Joi.object().keys({
     // queue urls can be undefined when QueueProcessor is instantiated.
     queues: Joi.object().pattern(Joi.string(), Joi.string().optional()),
@@ -24,6 +33,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           next,
           queue,
           delay = 0,
+          retry = null,
           before = async (stepContext) => [],
           after = async (stepContext) => []
         } = stepLogic;
@@ -45,6 +55,10 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
           'Invalid value for step delay provided.'
         );
         assert(
+          retry === null || retry instanceof errors.RetryError,
+          'Invalid value for step delay provided.'
+        );
+        assert(
           typeof before === 'function' && before.length === 1,
           'Invalid before() definition for step.'
         );
@@ -55,13 +69,14 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
         return {
           name: step.slice(0, -3),
           handler: (payload, ...args) => {
-            Joi.assert(payload, schema, `Invalid payload received for step: ${payload.name}`);
+            Joi.assert(normalizePayload(payload), schema, `Invalid payload received for step: ${payload.name}`);
             return handler(payload, ...args);
           },
           schema,
           next,
           queue,
           delay,
+          retry,
           before,
           after,
           isParallel: typeof stepLogic.before === 'function' && typeof stepLogic.after === 'function'
@@ -144,7 +159,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
             `No output allowed for step: ${step.name}`
           );
           Joi.assert(
-            msgs,
+            msgs.map((payload) => normalizePayload(payload)),
             Joi.array().items(...step.next.map((n) => steps[n].schema)),
             `Unexpected/Invalid next step(s) returned for: ${step.name}`
           );
@@ -162,7 +177,63 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
       .map(([step, ctx]) => step.before(ctx).then((msgs) => messageBus.add(msgs, step))));
 
     await Promise.all(tasks.map(async ([payload, e, step]) => {
-      messageBus.add(await step.handler(payload, e, stepContexts.get(step)), step);
+      try {
+        messageBus.add(await step.handler(payload, e, stepContexts.get(step)), step);
+      } catch (error) {
+        let err = error;
+        if (!(err instanceof errors.RetryError)) {
+          if (step.retry === null) {
+            throw err;
+          } else {
+            err = step.retry;
+          }
+        }
+        const maxFailureCount = err.maxFailureCount;
+        const maxAgeInSec = err.maxAgeInSec;
+        const delayInSec = err.delayInSec;
+        const failureCount = get(payload, [metaKey, 'failureCount'], 0) + 1;
+        const timestamp = get(
+          payload,
+          [metaKey, 'timestamp'],
+          new Date(
+            Number.parseInt(get(e, ['attributes', 'SentTimestamp'], Date.now()), 10)
+          ).toISOString()
+        );
+        const kwargs = {
+          logger,
+          limits: {
+            maxFailureCount,
+            maxAgeInSec
+          },
+          meta: {
+            failureCount,
+            timestamp
+          },
+          payload
+        };
+        const delaySeconds = typeof delayInSec === 'function'
+          ? delayInSec(kwargs.meta)
+          : delayInSec;
+        if (
+          failureCount >= maxFailureCount
+          || (Date.now() - Date.parse(timestamp)) / 1000 > maxAgeInSec
+        ) {
+          await err.onPermanentFailure(kwargs);
+        } else {
+          await err.onTemporaryFailure(kwargs);
+          const msg = {
+            ...payload,
+            [metaKey]: {
+              failureCount,
+              timestamp
+            }
+          };
+          if (delaySeconds !== 0) {
+            prepareMessage(msg, { delaySeconds });
+          }
+          messageBus.add([msg], step);
+        }
+      }
     }));
 
     await Promise.all(Array.from(stepContexts)
@@ -215,5 +286,11 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
     ];
   };
 
-  return { ingest, handler, digraph };
+  return {
+    ingest,
+    handler,
+    errors,
+    prepareMessage,
+    digraph
+  };
 };

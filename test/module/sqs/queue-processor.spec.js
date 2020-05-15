@@ -6,7 +6,8 @@ const { getDelaySeconds } = require('../../../src/module/sqs/prepare-message');
 describe('Testing QueueProcessor', {
   useNock: true,
   record: console,
-  envVarsFile: 'config.env.yml'
+  envVarsFile: 'config.env.yml',
+  timestamp: '2020-05-15T19:56:35.713Z'
 }, () => {
   let aws;
   let processor;
@@ -23,7 +24,25 @@ describe('Testing QueueProcessor', {
     });
     executor = (records) => new Promise((resolve, reject) => {
       processor.handler({
-        Records: records.map((r) => ({ body: JSON.stringify(r) }))
+        Records: records.map((r) => ({
+          messageId: '11d6ee51-4cc7-4302-9e22-7cd8afdaadf5',
+          receiptHandle: 'AQEBBX8nesZEXmkhsmZeyIE8iQAMig7qw...',
+          body: JSON.stringify(r),
+          attributes: {
+            ApproximateReceiveCount: '1',
+            SentTimestamp: String(Date.now()),
+            SequenceNumber: '18849496460467696128',
+            MessageGroupId: '1',
+            SenderId: 'AIDAIO23YVJENQZJOL4VO',
+            MessageDeduplicationId: '1',
+            ApproximateFirstReceiveTimestamp: '1573251510774'
+          },
+          messageAttributes: {},
+          md5OfBody: 'e4e68fb7bd0e697a0ae8f1bb342846b3',
+          eventSource: 'aws:sqs',
+          eventSourceARN: 'arn:aws:sqs:us-east-2:123456789012:fifo.fifo',
+          awsRegion: 'us-east-2'
+        }))
       }, {}, (err, resp) => {
         if (err !== null) {
           reject(err);
@@ -43,8 +62,11 @@ describe('Testing QueueProcessor', {
       '    style=filled;',
       '    color=lightgrey;',
       '    node [label="node",style=filled,color=white];',
+      '    autoRetryDelayFn [label="auto-retry-delay-fn"];',
+      '    autoRetry [label="auto-retry"];',
       '    badOutput [label="bad-output"];',
       '    disallowedOutput [label="disallowed-output"];',
+      '    stepAutoRetry [label="step-auto-retry"];',
       '    step1 [label="step1"];',
       '  }',
       '  subgraph cluster_1 {',
@@ -61,8 +83,11 @@ describe('Testing QueueProcessor', {
       '  _ingest -> step1;',
       '  _ingest -> step3;',
       '  ',
+      '  autoRetryDelayFn -> autoRetryDelayFn;',
+      '  autoRetry -> autoRetry;',
       '  badOutput -> step2;',
       '  parallelStep -> parallelStep;',
+      '  stepAutoRetry -> stepAutoRetry;',
       '  step1 -> step2;',
       '  step3 -> step1;',
       '  step3 -> step3;',
@@ -147,6 +172,95 @@ describe('Testing QueueProcessor', {
     expect(result).to.deep.equal([
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
+    ]);
+  });
+
+  it('Test auto retry', async ({ recorder }) => {
+    const result = await executor([{ name: 'auto-retry' }]);
+    expect(result).to.deep.equal([{
+      name: 'auto-retry',
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:56:35.713Z'
+      }
+    }]);
+    expect(recorder.get()).to.deep.equal([]);
+  });
+
+  it('Test auto retry (from step)', async ({ recorder }) => {
+    const result = await executor([{ name: 'step-auto-retry' }]);
+    expect(result).to.deep.equal([{
+      name: 'step-auto-retry',
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:56:35.713Z'
+      }
+    }]);
+    expect(recorder.get()).to.deep.equal([]);
+  });
+
+  it('Test auto retry (delay)', async ({ recorder }) => {
+    const retrySettings = { delayInSec: 60 };
+    const result = await executor([{ name: 'auto-retry', retrySettings }]);
+    expect(result).to.deep.equal([{
+      name: 'auto-retry',
+      retrySettings,
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:56:35.713Z'
+      }
+    }]);
+    expect(recorder.get()).to.deep.equal([]);
+  });
+
+  it('Test auto retry (delay function)', async ({ recorder }) => {
+    const result = await executor([{ name: 'auto-retry-delay-fn' }]);
+    expect(result).to.deep.equal([{
+      name: 'auto-retry-delay-fn',
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:56:35.713Z'
+      }
+    }]);
+    expect(recorder.get()).to.deep.equal([]);
+  });
+
+  it('Test auto retry (retry fail)', async ({ recorder }) => {
+    const result = await executor([{
+      name: 'auto-retry',
+      __meta: {
+        failureCount: 9,
+        timestamp: '2020-05-15T19:56:35.713Z'
+      }
+    }]);
+    expect(result).to.deep.equal([]);
+    expect(recorder.get()).to.deep.equal([
+      'Permanent Retry Failure\n{'
+      + '"limits":{"maxFailureCount":10,"maxAgeInSec":9007199254740991},'
+      + '"meta":{"failureCount":10,"timestamp":"2020-05-15T19:56:35.713Z"},'
+      + '"payload":{"name":"auto-retry",'
+      + '"__meta":{"failureCount":9,"timestamp":"2020-05-15T19:56:35.713Z"}}}'
+    ]);
+  });
+
+  it('Test auto retry (timeout fail)', async ({ recorder }) => {
+    const result = await executor([{
+      name: 'auto-retry',
+      retrySettings: {
+        maxAgeInSec: 60
+      },
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:55:35.712Z'
+      }
+    }]);
+    expect(result).to.deep.equal([]);
+    expect(recorder.get()).to.deep.equal([
+      'Permanent Retry Failure\n{'
+      + '"limits":{"maxFailureCount":10,"maxAgeInSec":60},'
+      + '"meta":{"failureCount":2,"timestamp":"2020-05-15T19:55:35.712Z"},'
+      + '"payload":{"name":"auto-retry","retrySettings":{"maxAgeInSec":60},'
+      + '"__meta":{"failureCount":1,"timestamp":"2020-05-15T19:55:35.712Z"}}}'
     ]);
   });
 
