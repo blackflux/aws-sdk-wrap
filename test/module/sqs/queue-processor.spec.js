@@ -1,12 +1,13 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const index = require('../../../src/index');
-const { getDelaySeconds } = require('../../../src/module/sqs/prepare-message');
+const { getDelaySeconds } = require('../../../src/module/sqs/queue-processor/prepare-message');
 
 describe('Testing QueueProcessor', {
   useNock: true,
   record: console,
-  envVarsFile: 'config.env.yml'
+  envVarsFile: 'config.env.yml',
+  timestamp: '2020-05-15T19:56:35.713Z'
 }, () => {
   let aws;
   let processor;
@@ -43,6 +44,7 @@ describe('Testing QueueProcessor', {
       '    style=filled;',
       '    color=lightgrey;',
       '    node [label="node",style=filled,color=white];',
+      '    autoRetry [label="auto-retry"];',
       '    badOutput [label="bad-output"];',
       '    disallowedOutput [label="disallowed-output"];',
       '    step1 [label="step1"];',
@@ -61,6 +63,7 @@ describe('Testing QueueProcessor', {
       '  _ingest -> step1;',
       '  _ingest -> step3;',
       '  ',
+      '  autoRetry -> autoRetry;',
       '  badOutput -> step2;',
       '  parallelStep -> parallelStep;',
       '  step1 -> step2;',
@@ -147,6 +150,71 @@ describe('Testing QueueProcessor', {
     expect(result).to.deep.equal([
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
+    ]);
+  });
+
+  it('Test auto retry', async ({ recorder }) => {
+    const result = await executor([{ name: 'auto-retry' }]);
+    expect(result).to.deep.equal([{
+      name: 'auto-retry',
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:56:35.713Z'
+      }
+    }]);
+    expect(recorder.get()).to.deep.equal([]);
+  });
+
+  it('Test auto retry (delay)', async ({ recorder }) => {
+    const retrySettings = { delayInSec: 60 };
+    const result = await executor([{ name: 'auto-retry', retrySettings }]);
+    expect(result).to.deep.equal([{
+      name: 'auto-retry',
+      retrySettings,
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:56:35.713Z'
+      }
+    }]);
+    expect(recorder.get()).to.deep.equal([]);
+  });
+
+  it('Test auto retry (retry fail)', async ({ recorder }) => {
+    const result = await executor([{
+      name: 'auto-retry',
+      __meta: {
+        failureCount: 9,
+        timestamp: '2020-05-15T19:56:35.713Z'
+      }
+    }]);
+    expect(result).to.deep.equal([]);
+    expect(recorder.get()).to.deep.equal([
+      'Permanent Retry Failure\n{'
+      + '"limits":{"maxFailureCount":10,"maxAgeInSec":9007199254740991},'
+      + '"meta":{"failureCount":10,"timestamp":"2020-05-15T19:56:35.713Z"},'
+      + '"payload":{"name":"auto-retry",'
+      + '"__meta":{"failureCount":9,"timestamp":"2020-05-15T19:56:35.713Z"}}}'
+    ]);
+  });
+
+  it('Test auto retry (timeout fail)', async ({ recorder }) => {
+    const result = await executor([{
+      name: 'auto-retry',
+      retrySettings: {
+        maxAgeInSec: 60
+      },
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:55:35.712Z'
+      }
+    }]);
+    expect(result).to.deep.equal([]);
+    expect(recorder.get()).to.deep.equal([
+      'Permanent Retry Failure\n{'
+      + '"limits":{"maxFailureCount":10,"maxAgeInSec":60},'
+      + '"meta":{"failureCount":2,"timestamp":"2020-05-15T19:55:35.712Z"},'
+      + '"payload":{"name":"auto-retry","retrySettings":{"maxAgeInSec":60},'
+      + '"__meta":{"failureCount":1,"timestamp":"2020-05-15T19:55:35.712Z"}}}'
     ]);
   });
 

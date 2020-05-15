@@ -2,10 +2,19 @@ const assert = require('assert');
 const fs = require('smart-fs');
 const path = require('path');
 const Joi = require('joi-strict');
+const get = require('lodash.get');
 const { wrap } = require('lambda-async');
-const { prepareMessage } = require('./prepare-message');
+const { prepareMessage } = require('./queue-processor/prepare-message');
+const errors = require('./queue-processor/errors');
 
-module.exports = ({ sendMessageBatch }) => (opts) => {
+const metaKey = '__meta';
+const normalizePayload = (payload) => {
+  const r = { ...payload };
+  delete r[metaKey];
+  return r;
+};
+
+module.exports = ({ sendMessageBatch, logger }) => (opts) => {
   Joi.assert(opts, Joi.object().keys({
     // queue urls can be undefined when QueueProcessor is instantiated.
     queues: Joi.object().pattern(Joi.string(), Joi.string().optional()),
@@ -55,7 +64,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
         return {
           name: step.slice(0, -3),
           handler: (payload, ...args) => {
-            Joi.assert(payload, schema, `Invalid payload received for step: ${payload.name}`);
+            Joi.assert(normalizePayload(payload), schema, `Invalid payload received for step: ${payload.name}`);
             return handler(payload, ...args);
           },
           schema,
@@ -144,7 +153,7 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
             `No output allowed for step: ${step.name}`
           );
           Joi.assert(
-            msgs,
+            msgs.map((payload) => normalizePayload(payload)),
             Joi.array().items(...step.next.map((n) => steps[n].schema)),
             `Unexpected/Invalid next step(s) returned for: ${step.name}`
           );
@@ -162,7 +171,61 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
       .map(([step, ctx]) => step.before(ctx).then((msgs) => messageBus.add(msgs, step))));
 
     await Promise.all(tasks.map(async ([payload, e, step]) => {
-      messageBus.add(await step.handler(payload, e, stepContexts.get(step)), step);
+      try {
+        messageBus.add(await step.handler(payload, e, stepContexts.get(step)), step);
+      } catch (err) {
+        if (!(err instanceof errors.RetryError)) {
+          throw err;
+        }
+        const maxFailureCount = err.maxFailureCount;
+        const maxAgeInSec = err.maxAgeInSec;
+        const delayInSec = err.delayInSec;
+        const failureCount = get(payload, [metaKey, 'failureCount'], 0) + 1;
+        const timestamp = get(
+          payload,
+          [metaKey, 'timestamp'],
+          new Date(get(e, ['attributes', 'SentTimestamp'], Date.now())).toISOString()
+        );
+        if (
+          failureCount >= maxFailureCount
+          || (Date.now() - Date.parse(timestamp)) / 1000 > maxAgeInSec
+        ) {
+          await err.onPermanentFailure({
+            logger,
+            limits: {
+              maxFailureCount,
+              maxAgeInSec
+            },
+            meta: {
+              failureCount,
+              timestamp
+            },
+            payload
+          });
+        } else {
+          await err.onTemporaryFailure({
+            logger,
+            limits: {
+              maxFailureCount,
+              maxAgeInSec
+            },
+            meta: {
+              failureCount,
+              timestamp
+            },
+            payload
+          });
+          const msg = {
+            ...payload,
+            [metaKey]: {
+              failureCount,
+              timestamp
+            }
+          };
+          prepareMessage(msg, { delaySeconds: delayInSec });
+          messageBus.add([msg], step);
+        }
+      }
     }));
 
     await Promise.all(Array.from(stepContexts)
@@ -215,5 +278,11 @@ module.exports = ({ sendMessageBatch }) => (opts) => {
     ];
   };
 
-  return { ingest, handler, digraph };
+  return {
+    ingest,
+    handler,
+    errors,
+    prepareMessage,
+    digraph
+  };
 };
