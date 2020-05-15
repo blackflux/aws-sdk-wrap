@@ -87,9 +87,12 @@ Each `step` should export:
 
 The schema needs to define the event name under `name`. New events that are to be re-queued into the queue need to be returned from the `handler`, `before` or `after` function as an array.
 
-The exposed `ingest` method should only be used to seed the queue. Messages generated inside a step should simply be returned from that step.
-
-Exposed `digraph` option can be used to visualize flow using [viz-js.com](http://viz-js.com/).
+Exposes:
+- `ingest`: Method used to seed queue. Note that messages generated inside a step should simply be returned from that step.
+- `handler`: Lambda function handler that is triggered by sqs
+- `errors.RetryError`: Can be used to trigger (code) retry logic
+- `prepareMessage`: same as prepareMessage exposed from sqs
+- `digraph`: Visualize flow using [viz-js.com](http://viz-js.com/).
 
 Please see tests for example.
 
