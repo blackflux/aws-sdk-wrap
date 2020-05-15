@@ -200,6 +200,9 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           },
           payload
         };
+        const delaySeconds = typeof delayInSec === 'function'
+          ? delayInSec(kwargs.meta)
+          : delayInSec;
         if (
           failureCount >= maxFailureCount
           || (Date.now() - Date.parse(timestamp)) / 1000 > maxAgeInSec
@@ -214,8 +217,8 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
               timestamp
             }
           };
-          if (delayInSec !== 0) {
-            prepareMessage(msg, { delaySeconds: delayInSec });
+          if (delaySeconds !== 0) {
+            prepareMessage(msg, { delaySeconds });
           }
           messageBus.add([msg], step);
         }
