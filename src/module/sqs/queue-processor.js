@@ -33,6 +33,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           next,
           queue,
           delay = 0,
+          retry = null,
           before = async (stepContext) => [],
           after = async (stepContext) => []
         } = stepLogic;
@@ -54,6 +55,10 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           'Invalid value for step delay provided.'
         );
         assert(
+          retry === null || retry instanceof errors.RetryError,
+          'Invalid value for step delay provided.'
+        );
+        assert(
           typeof before === 'function' && before.length === 1,
           'Invalid before() definition for step.'
         );
@@ -71,6 +76,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           next,
           queue,
           delay,
+          retry,
           before,
           after,
           isParallel: typeof stepLogic.before === 'function' && typeof stepLogic.after === 'function'
@@ -173,9 +179,14 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
     await Promise.all(tasks.map(async ([payload, e, step]) => {
       try {
         messageBus.add(await step.handler(payload, e, stepContexts.get(step)), step);
-      } catch (err) {
+      } catch (error) {
+        let err = error;
         if (!(err instanceof errors.RetryError)) {
-          throw err;
+          if (step.retry === null) {
+            throw err;
+          } else {
+            err = step.retry;
+          }
         }
         const maxFailureCount = err.maxFailureCount;
         const maxAgeInSec = err.maxAgeInSec;

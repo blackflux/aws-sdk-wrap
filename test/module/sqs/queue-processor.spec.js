@@ -66,6 +66,7 @@ describe('Testing QueueProcessor', {
       '    autoRetry [label="auto-retry"];',
       '    badOutput [label="bad-output"];',
       '    disallowedOutput [label="disallowed-output"];',
+      '    stepAutoRetry [label="step-auto-retry"];',
       '    step1 [label="step1"];',
       '  }',
       '  subgraph cluster_1 {',
@@ -86,6 +87,7 @@ describe('Testing QueueProcessor', {
       '  autoRetry -> autoRetry;',
       '  badOutput -> step2;',
       '  parallelStep -> parallelStep;',
+      '  stepAutoRetry -> stepAutoRetry;',
       '  step1 -> step2;',
       '  step3 -> step1;',
       '  step3 -> step3;',
@@ -177,6 +179,18 @@ describe('Testing QueueProcessor', {
     const result = await executor([{ name: 'auto-retry' }]);
     expect(result).to.deep.equal([{
       name: 'auto-retry',
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:56:35.713Z'
+      }
+    }]);
+    expect(recorder.get()).to.deep.equal([]);
+  });
+
+  it('Test auto retry (from step)', async ({ recorder }) => {
+    const result = await executor([{ name: 'step-auto-retry' }]);
+    expect(result).to.deep.equal([{
+      name: 'step-auto-retry',
       __meta: {
         failureCount: 1,
         timestamp: '2020-05-15T19:56:35.713Z'
