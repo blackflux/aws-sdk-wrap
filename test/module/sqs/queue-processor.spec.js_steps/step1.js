@@ -1,5 +1,5 @@
 const Joi = require('joi-strict');
-const { prepareMessage } = require('../../../../src/module/sqs/queue-processor/prepare-message');
+const { prepareMessage } = require('../../../../src/module/sqs/prepare-message');
 
 module.exports.queue = 'one';
 

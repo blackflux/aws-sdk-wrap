@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const index = require('../../../src/index');
-const { getDelaySeconds } = require('../../../src/module/sqs/queue-processor/prepare-message');
+const { getDelaySeconds } = require('../../../src/module/sqs/prepare-message');
 
 describe('Testing QueueProcessor', {
   useNock: true,

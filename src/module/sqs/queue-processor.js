@@ -4,7 +4,7 @@ const path = require('path');
 const Joi = require('joi-strict');
 const get = require('lodash.get');
 const { wrap } = require('lambda-async');
-const { prepareMessage } = require('./queue-processor/prepare-message');
+const { prepareMessage } = require('./prepare-message');
 const errors = require('./queue-processor/errors');
 
 const metaKey = '__meta';

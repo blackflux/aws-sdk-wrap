@@ -1,6 +1,6 @@
 const sendMessageBatch = require('./sqs/send-message-batch');
 const QueueProcessor = require('./sqs/queue-processor');
-const { prepareMessage } = require('./sqs/queue-processor/prepare-message');
+const { prepareMessage } = require('./sqs/prepare-message');
 
 module.exports.Sqs = ({ call, getService, logger }) => {
   const smb = sendMessageBatch({ call, getService, logger });
