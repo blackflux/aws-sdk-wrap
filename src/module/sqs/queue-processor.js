@@ -214,7 +214,9 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
               timestamp
             }
           };
-          prepareMessage(msg, { delaySeconds: delayInSec });
+          if (delayInSec !== 0) {
+            prepareMessage(msg, { delaySeconds: delayInSec });
+          }
           messageBus.add([msg], step);
         }
       }
