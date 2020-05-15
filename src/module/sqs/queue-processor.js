@@ -184,7 +184,9 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
         const timestamp = get(
           payload,
           [metaKey, 'timestamp'],
-          new Date(get(e, ['attributes', 'SentTimestamp'], Date.now())).toISOString()
+          new Date(
+            Number.parseInt(get(e, ['attributes', 'SentTimestamp'], Date.now()), 10)
+          ).toISOString()
         );
         if (
           failureCount >= maxFailureCount
