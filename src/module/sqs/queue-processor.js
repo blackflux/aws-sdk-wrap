@@ -188,35 +188,25 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
             Number.parseInt(get(e, ['attributes', 'SentTimestamp'], Date.now()), 10)
           ).toISOString()
         );
+        const kwargs = {
+          logger,
+          limits: {
+            maxFailureCount,
+            maxAgeInSec
+          },
+          meta: {
+            failureCount,
+            timestamp
+          },
+          payload
+        };
         if (
           failureCount >= maxFailureCount
           || (Date.now() - Date.parse(timestamp)) / 1000 > maxAgeInSec
         ) {
-          await err.onPermanentFailure({
-            logger,
-            limits: {
-              maxFailureCount,
-              maxAgeInSec
-            },
-            meta: {
-              failureCount,
-              timestamp
-            },
-            payload
-          });
+          await err.onPermanentFailure(kwargs);
         } else {
-          await err.onTemporaryFailure({
-            logger,
-            limits: {
-              maxFailureCount,
-              maxAgeInSec
-            },
-            meta: {
-              failureCount,
-              timestamp
-            },
-            payload
-          });
+          await err.onTemporaryFailure(kwargs);
           const msg = {
             ...payload,
             [metaKey]: {
