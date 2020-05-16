@@ -8,6 +8,8 @@ const { wrap } = require('lambda-async');
 const { prepareMessage } = require('./prepare-message');
 const errors = require('./errors');
 
+const globalPool = Pool({ concurrency: Number.MAX_SAFE_INTEGER });
+
 const metaKey = '__meta';
 const stripPayloadMeta = (payload) => {
   const r = { ...payload };
@@ -98,6 +100,15 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
     'Unused queue(s) defined.'
   );
 
+  const sendMessagesParallel = async (messagesGroupedByUrl) => {
+    const entries = Object.entries(messagesGroupedByUrl);
+    if (entries.length === 0) {
+      return;
+    }
+    const fns = entries.map(([queueUrl, messages]) => () => sendMessageBatch({ queueUrl, messages }));
+    await globalPool(fns);
+  };
+
   const sendMessages = async (messages) => {
     const batches = {};
     messages.forEach((msg) => {
@@ -113,12 +124,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
       }
       batches[queueUrl].push(msg);
     });
-    const batchEntries = Object.entries(batches);
-    for (let i = 0; i < batchEntries.length; i += 1) {
-      const [queueUrl, msgs] = batchEntries[i];
-      // eslint-disable-next-line no-await-in-loop
-      await sendMessageBatch({ queueUrl, messages: msgs });
-    }
+    await sendMessagesParallel(batches);
   };
 
   const ingestSchema = Joi.array().items(...ingestSteps.map((step) => steps[step].schema));
