@@ -82,6 +82,7 @@ Each `step` should export:
  - `next`: array of next possible steps
  - `queueUrl`: the queue that the step is ingested into
  - `delay` (optional): the amount of seconds that the message is delayed, defaults to undefined, i.e. the queue default
+ - `retry` (optional): Declare object that is then used to instantiate `RetryError` internally
  - `before<function(stepContext): steps>` (optional): called before first step is executed
  - `after<function(stepContext): steps>` (optional):
 
@@ -90,11 +91,13 @@ The schema needs to define the event name under `name`. New events that are to b
 Exposes:
 - `ingest`: Method used to seed queue. Note that messages generated inside a step should simply be returned from that step.
 - `handler`: Lambda function handler that is triggered by sqs
-- `errors.RetryError`: Can be used to trigger (code) retry logic
-- `prepareMessage`: same as prepareMessage exposed from sqs
 - `digraph`: Visualize flow using [viz-js.com](http://viz-js.com/).
 
 Please see tests for example.
+
+#### sqs.errors
+
+- `RetryError`: Can be thrown from step logic or declared on step to trigger (code) retry logic
 
 #### sqs.prepareMessage(msg: Object, opts: Object)
 
