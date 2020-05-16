@@ -249,8 +249,7 @@ describe('Testing QueueProcessor', {
       'Permanent Retry Failure\n{'
       + '"limits":{"maxFailureCount":10,"maxAgeInSec":9007199254740991},'
       + '"meta":{"failureCount":10,"timestamp":"2020-05-15T19:56:35.713Z"},'
-      + '"payload":{"name":"auto-retry",'
-      + '"__meta":{"failureCount":9,"timestamp":"2020-05-15T19:56:35.713Z"}}}'
+      + '"payload":{"name":"auto-retry"}}'
     ]);
   });
 
@@ -270,8 +269,7 @@ describe('Testing QueueProcessor', {
       'Permanent Retry Failure\n{'
       + '"limits":{"maxFailureCount":10,"maxAgeInSec":60},'
       + '"meta":{"failureCount":2,"timestamp":"2020-05-15T19:55:35.712Z"},'
-      + '"payload":{"name":"auto-retry","retrySettings":{"maxAgeInSec":60},'
-      + '"__meta":{"failureCount":1,"timestamp":"2020-05-15T19:55:35.712Z"}}}'
+      + '"payload":{"name":"auto-retry","retrySettings":{"maxAgeInSec":60}}}'
     ]);
   });
 
