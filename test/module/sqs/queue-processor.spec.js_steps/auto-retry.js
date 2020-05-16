@@ -1,5 +1,5 @@
 const Joi = require('joi-strict');
-const { RetryError } = require('../../../../src/module/sqs/queue-processor/errors');
+const { RetryError } = require('../../../../src/module/sqs/errors');
 
 module.exports.queue = 'one';
 
