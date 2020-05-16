@@ -81,8 +81,9 @@ Each `step` should export:
  - `handler<function(step, event, stepContext): steps>`: execution logic ingesting payload and event
  - `next`: array of next possible steps
  - `queueUrl`: the queue that the step is ingested into
- - `delay` (optional): the amount of seconds that the message is delayed, defaults to undefined, i.e. the queue default
- - `retry` (optional): Declare object that is then used to instantiate `RetryError` internally
+ - `delay = 0` (optional): the amount of seconds that the message is delayed, defaults to undefined, i.e. the queue default
+ - `retry = null` (optional): Declare object that is then used to instantiate `RetryError` internally
+ - `timeout = 900` (optional): Timeout for individual step. Should allow for extra overhead for message management / processing and account for concurrency.
  - `before<function(stepContext): steps>` (optional): called before first step is executed
  - `after<function(stepContext): steps>` (optional):
 
