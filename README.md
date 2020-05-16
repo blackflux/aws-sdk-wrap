@@ -72,6 +72,10 @@ Splits `messages` into groups and calls [sqs.SendMessageBatch](https://docs.aws.
 Batch sizes can be modified by the `batchSize` option. Failed calls will be retried up to the `maxRetries` option.
 The available sendMessageBatch `options` are detailed below.
 
+#### sqs.getDeadLetterQueueUrl({ queueUrl })
+
+Return the Dead Letter Queue Url configured for the passed queue url
+
 #### sqs.QueueProcessor({ queueUrls: String[], stepsDir: String, ingestSteps: String[] })
 
 Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files. Each queueUrl used by a step must be defined in queueUrls.
