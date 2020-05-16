@@ -272,7 +272,8 @@ module.exports = ({
             failureCount,
             timestamp
           },
-          payload: payloadStripped
+          payload: payloadStripped,
+          error
         };
         const delaySeconds = typeof delayInSec === 'function'
           ? delayInSec(kwargs.meta)
