@@ -18,14 +18,15 @@ class RetryError extends Error {
     super();
     this.name = this.constructor.name;
 
-    assert(Number.isInteger(maxFailureCount) && maxFailureCount >= 0);
-    assert(Number.isInteger(maxAgeInSec) && maxAgeInSec >= 0);
+    assert(Number.isInteger(maxFailureCount) && maxFailureCount >= 0, 'maxFailureCount');
+    assert(Number.isInteger(maxAgeInSec) && maxAgeInSec >= 0, 'maxAgeInSec');
     assert(
       typeof delayInSec === 'function'
-      || (Number.isInteger(delayInSec) && delayInSec >= 0 && delayInSec <= 15 * 60)
+      || (Number.isInteger(delayInSec) && delayInSec >= 0 && delayInSec <= 15 * 60),
+      'delayInSec'
     );
-    assert(typeof onTemporaryFailure === 'function');
-    assert(typeof onPermanentFailure === 'function');
+    assert(typeof onTemporaryFailure === 'function', 'onTemporaryFailure');
+    assert(typeof onPermanentFailure === 'function', 'onPermanentFailure');
     this.maxFailureCount = maxFailureCount;
     this.maxAgeInSec = maxAgeInSec;
     this.delayInSec = delayInSec;

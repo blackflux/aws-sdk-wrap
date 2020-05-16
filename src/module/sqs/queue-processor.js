@@ -5,7 +5,7 @@ const Joi = require('joi-strict');
 const get = require('lodash.get');
 const { wrap } = require('lambda-async');
 const { prepareMessage } = require('./prepare-message');
-const errors = require('./queue-processor/errors');
+const errors = require('./errors');
 
 const metaKey = '__meta';
 const normalizePayload = (payload) => {
@@ -55,7 +55,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           'Invalid value for step delay provided.'
         );
         assert(
-          retry === null || retry instanceof errors.RetryError,
+          retry === null || (retry instanceof Object && !Array.isArray(retry)),
           'Invalid value for step delay provided.'
         );
         assert(
@@ -76,7 +76,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           next,
           queue,
           delay,
-          retry,
+          retry: retry !== null ? new errors.RetryError(retry) : retry,
           before,
           after,
           isParallel: typeof stepLogic.before === 'function' && typeof stepLogic.after === 'function'
@@ -289,8 +289,6 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
   return {
     ingest,
     handler,
-    errors,
-    prepareMessage,
     digraph
   };
 };
