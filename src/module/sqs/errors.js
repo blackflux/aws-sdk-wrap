@@ -5,7 +5,7 @@ class RetryError extends Error {
     maxFailureCount = 10,
     maxAgeInSec = Number.MAX_SAFE_INTEGER,
     delayInSec = 0,
-    onTemporaryFailure = () => {},
+    onTemporaryFailure = () => [],
     onPermanentFailure = ({
       logger,
       limits,
@@ -13,6 +13,7 @@ class RetryError extends Error {
       payload
     }) => {
       logger.warn(`Permanent Retry Failure\n${JSON.stringify({ limits, meta, payload })}`);
+      return [];
     }
   } = {}) {
     super();
