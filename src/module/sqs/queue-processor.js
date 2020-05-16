@@ -4,6 +4,7 @@ const path = require('path');
 const Joi = require('joi-strict');
 const get = require('lodash.get');
 const { Pool } = require('promise-pool-ext');
+const LRU = require('lru-cache-ext');
 const { wrap } = require('lambda-async');
 const { prepareMessage } = require('./prepare-message');
 const errors = require('./errors');
@@ -15,7 +16,14 @@ const stripPayloadMeta = (payload) => {
   return r;
 };
 
-module.exports = ({ sendMessageBatch, logger }) => (opts) => {
+module.exports = ({
+  sendMessageBatch,
+  getDeadLetterQueueUrl,
+  logger
+}) => (opts) => {
+  const dlqCache = new LRU({ maxAge: 60 * 1000 });
+  const globalPool = Pool({ concurrency: Number.MAX_SAFE_INTEGER });
+
   Joi.assert(opts, Joi.object().keys({
     // queue urls can be undefined when QueueProcessor is instantiated.
     queues: Joi.object().pattern(Joi.string(), Joi.string().optional()),
@@ -98,33 +106,48 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
     'Unused queue(s) defined.'
   );
 
-  const sendMessages = async (messages) => {
-    const batches = {};
-    messages.forEach((msg) => {
-      const queueUrl = queues[steps[msg.name].queue];
-      assert(queueUrl !== undefined);
-      const delay = steps[msg.name].delay;
-      assert(delay !== undefined);
-      if (delay !== 0) {
-        prepareMessage(msg, { delaySeconds: steps[msg.name].delay });
+  const messageBus = (() => {
+    const tasks = [];
+    const addRaw = (msgs, queueUrl) => {
+      tasks.push([msgs, queueUrl]);
+    };
+    return {
+      addRaw,
+      addStepMessages: (messages) => {
+        messages.forEach((msg) => {
+          const queueUrl = queues[steps[msg.name].queue];
+          assert(queueUrl !== undefined);
+          const delay = steps[msg.name].delay;
+          assert(delay !== undefined);
+          if (delay !== 0) {
+            prepareMessage(msg, { delaySeconds: steps[msg.name].delay });
+          }
+          addRaw([msg], queueUrl);
+        });
+      },
+      flush: async () => {
+        if (tasks.length === 0) {
+          return;
+        }
+        const groups = {};
+        tasks.splice(0).forEach(([msgs, queueUrl]) => {
+          if (groups[queueUrl] === undefined) {
+            groups[queueUrl] = [];
+          }
+          groups[queueUrl].push(...msgs);
+        });
+        const fns = Object.entries(groups)
+          .map(([queueUrl, messages]) => () => sendMessageBatch({ queueUrl, messages }));
+        await globalPool(fns);
       }
-      if (batches[queueUrl] === undefined) {
-        batches[queueUrl] = [];
-      }
-      batches[queueUrl].push(msg);
-    });
-    const batchEntries = Object.entries(batches);
-    for (let i = 0; i < batchEntries.length; i += 1) {
-      const [queueUrl, msgs] = batchEntries[i];
-      // eslint-disable-next-line no-await-in-loop
-      await sendMessageBatch({ queueUrl, messages: msgs });
-    }
-  };
+    };
+  })();
 
   const ingestSchema = Joi.array().items(...ingestSteps.map((step) => steps[step].schema));
   const ingest = async (messages) => {
     Joi.assert(messages, ingestSchema);
-    await sendMessages(messages);
+    messageBus.addStepMessages(messages);
+    await messageBus.flush();
   };
 
   const handler = wrap(async (event) => {
@@ -160,10 +183,10 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
       }
     }
 
-    const messageBus = (() => {
+    const stepBus = (() => {
       const messages = [];
       return {
-        add: (msgs, step) => {
+        prepare: (msgs, step) => {
           assert(
             msgs.length === 0 || step.next.length !== 0,
             `No output allowed for step: ${step.name}`
@@ -175,22 +198,45 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           );
           messages.push(...msgs);
         },
-        send: async () => {
-          const toSend = messages.splice(0);
-          await sendMessages(toSend);
-          return toSend;
+        propagate: () => {
+          const msgs = messages.splice(0);
+          messageBus.addStepMessages(msgs);
+          return msgs;
+        }
+      };
+    })();
+
+    const dlqBus = (() => {
+      const pending = [];
+      return {
+        prepare: (msgs, step) => {
+          pending.push([step, msgs]);
+        },
+        propagate: async () => {
+          if (pending.length === 0) {
+            return;
+          }
+          const fns = pending.splice(0).map(([step, msgs]) => async () => {
+            const queueUrl = queues[step.queue];
+            const dlqUrl = await dlqCache.memoize(
+              queueUrl,
+              () => getDeadLetterQueueUrl(queueUrl)
+            );
+            messageBus.addRaw(msgs, dlqUrl);
+          });
+          await globalPool(fns);
         }
       };
     })();
 
     await Promise.all(Array.from(stepContexts)
-      .map(([step, ctx]) => step.before(ctx).then((msgs) => messageBus.add(msgs, step))));
+      .map(([step, ctx]) => step.before(ctx).then((msgs) => stepBus.prepare(msgs, step))));
 
     await Promise.all(tasks.map(async ([payload, e, step]) => {
       const payloadStripped = stripPayloadMeta(payload);
       try {
         const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts.get(step)));
-        messageBus.add(msgs, step);
+        stepBus.prepare(msgs, step);
       } catch (error) {
         let err = error;
         if (!(err instanceof errors.RetryError)) {
@@ -232,7 +278,8 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
         ) {
           const msgs = await err.onPermanentFailure(kwargs);
           assert(Array.isArray(msgs), 'onPermanentFailure must return array of messages');
-          messageBus.add(msgs, step);
+          stepBus.prepare(msgs, step);
+          dlqBus.prepare([payload], step);
         } else {
           const msgs = await err.onTemporaryFailure(kwargs);
           assert(Array.isArray(msgs), 'onTemporaryFailure must return array of messages');
@@ -246,15 +293,18 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           if (delaySeconds !== 0) {
             prepareMessage(msg, { delaySeconds });
           }
-          messageBus.add(msgs.concat(msg), step);
+          stepBus.prepare(msgs.concat(msg), step);
         }
       }
     }));
 
     await Promise.all(Array.from(stepContexts)
-      .map(([step, ctx]) => step.after(ctx).then((msgs) => messageBus.add(msgs, step))));
+      .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.prepare(msgs, step))));
 
-    return messageBus.send();
+    const result = stepBus.propagate();
+    await dlqBus.propagate();
+    await messageBus.flush();
+    return result;
   });
 
   const digraph = () => {

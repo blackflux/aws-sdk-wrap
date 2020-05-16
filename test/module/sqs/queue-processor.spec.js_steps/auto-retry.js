@@ -8,9 +8,12 @@ module.exports.schema = Joi.object().keys({
   retrySettings: Joi.object().optional()
 });
 
+
+module.exports.before = async (context) => [];
 module.exports.handler = async (payload, event, context) => {
   throw new RetryError(payload.retrySettings);
 };
+module.exports.after = async (context) => [];
 
 module.exports.next = ['auto-retry'];
 
