@@ -4,11 +4,10 @@ const path = require('path');
 const Joi = require('joi-strict');
 const get = require('lodash.get');
 const { Pool } = require('promise-pool-ext');
+const LRU = require('lru-cache-ext');
 const { wrap } = require('lambda-async');
 const { prepareMessage } = require('./prepare-message');
 const errors = require('./errors');
-
-const globalPool = Pool({ concurrency: Number.MAX_SAFE_INTEGER });
 
 const metaKey = '__meta';
 const stripPayloadMeta = (payload) => {
@@ -17,7 +16,14 @@ const stripPayloadMeta = (payload) => {
   return r;
 };
 
-module.exports = ({ sendMessageBatch, logger }) => (opts) => {
+module.exports = ({
+  sendMessageBatch,
+  getDeadLetterQueueUrl,
+  logger
+}) => (opts) => {
+  const dlqCache = new LRU({ maxAge: 60 * 1000 });
+  const globalPool = Pool({ concurrency: Number.MAX_SAFE_INTEGER });
+
   Joi.assert(opts, Joi.object().keys({
     // queue urls can be undefined when QueueProcessor is instantiated.
     queues: Joi.object().pattern(Joi.string(), Joi.string().optional()),
@@ -166,7 +172,37 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
       }
     }
 
-    const messageBus = (() => {
+    const dlqBus = (() => {
+      const pending = [];
+      return {
+        add: (msgs, step) => {
+          pending.push([step, msgs]);
+        },
+        send: async () => {
+          if (pending.length === 0) {
+            return [];
+          }
+          const fns = pending.splice(0).map(([step, msgs]) => async () => {
+            const queueUrl = queues[step.queue];
+            const dlqUrl = await dlqCache.memoize(queueUrl, () => getDeadLetterQueueUrl(queueUrl));
+            return [dlqUrl, msgs];
+          });
+          const toSend = (await globalPool(fns))
+            .reduce((p, [url, msgs]) => {
+              if (p[url] === undefined) {
+                // eslint-disable-next-line no-param-reassign
+                p[url] = [];
+              }
+              p[url].push(...msgs);
+              return p;
+            }, {});
+          await sendMessagesParallel(toSend);
+          return toSend;
+        }
+      };
+    })();
+
+    const stepBus = (() => {
       const messages = [];
       return {
         add: (msgs, step) => {
@@ -190,13 +226,13 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
     })();
 
     await Promise.all(Array.from(stepContexts)
-      .map(([step, ctx]) => step.before(ctx).then((msgs) => messageBus.add(msgs, step))));
+      .map(([step, ctx]) => step.before(ctx).then((msgs) => stepBus.add(msgs, step))));
 
     await Promise.all(tasks.map(async ([payload, e, step]) => {
       const payloadStripped = stripPayloadMeta(payload);
       try {
         const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts.get(step)));
-        messageBus.add(msgs, step);
+        stepBus.add(msgs, step);
       } catch (error) {
         let err = error;
         if (!(err instanceof errors.RetryError)) {
@@ -238,7 +274,8 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
         ) {
           const msgs = await err.onPermanentFailure(kwargs);
           assert(Array.isArray(msgs), 'onPermanentFailure must return array of messages');
-          messageBus.add(msgs, step);
+          stepBus.add(msgs, step);
+          dlqBus.add([payload], step);
         } else {
           const msgs = await err.onTemporaryFailure(kwargs);
           assert(Array.isArray(msgs), 'onTemporaryFailure must return array of messages');
@@ -252,15 +289,17 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           if (delaySeconds !== 0) {
             prepareMessage(msg, { delaySeconds });
           }
-          messageBus.add(msgs.concat(msg), step);
+          stepBus.add(msgs.concat(msg), step);
         }
       }
     }));
 
     await Promise.all(Array.from(stepContexts)
-      .map(([step, ctx]) => step.after(ctx).then((msgs) => messageBus.add(msgs, step))));
+      .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.add(msgs, step))));
 
-    return messageBus.send();
+    // todo: send these together (!)
+    await dlqBus.send();
+    return stepBus.send();
   });
 
   const digraph = () => {
