@@ -218,9 +218,12 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           failureCount >= maxFailureCount
           || (Date.now() - Date.parse(timestamp)) / 1000 > maxAgeInSec
         ) {
-          await err.onPermanentFailure(kwargs);
+          const msgs = await err.onPermanentFailure(kwargs);
+          assert(Array.isArray(msgs), 'onPermanentFailure must return array of messages');
+          messageBus.add(msgs, step);
         } else {
-          await err.onTemporaryFailure(kwargs);
+          const msgs = await err.onTemporaryFailure(kwargs);
+          assert(Array.isArray(msgs), 'onTemporaryFailure must return array of messages');
           const msg = {
             ...payload,
             [metaKey]: {
@@ -231,7 +234,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           if (delaySeconds !== 0) {
             prepareMessage(msg, { delaySeconds });
           }
-          messageBus.add([msg], step);
+          messageBus.add(msgs.concat(msg), step);
         }
       }
     }));
