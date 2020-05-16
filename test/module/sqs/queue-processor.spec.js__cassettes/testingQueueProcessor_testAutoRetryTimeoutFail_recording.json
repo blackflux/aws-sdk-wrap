@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "scope": "https://sqs.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": "Action=GetQueueAttributes&AttributeName.1=RedrivePolicy&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&Version=2012-11-05",
+    "status": 200,
+    "response": "<?xml version=\"1.0\"?><GetQueueAttributesResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><GetQueueAttributesResult><Attribute><Name>RedrivePolicy</Name><Value>{&quot;deadLetterTargetArn&quot;:&quot;arn:aws:sqs:us-west-2:123456789012:queueName&quot;,&quot;maxReceiveCount&quot;:10}</Value></Attribute></GetQueueAttributesResult><ResponseMetadata><RequestId>809a243a-3460-5dd8-8390-730032387781</RequestId></ResponseMetadata></GetQueueAttributesResponse>",
+    "rawHeaders": [
+      "x-amzn-RequestId",
+      "809a243a-3460-5dd8-8390-730032387781",
+      "Date",
+      "Sat, 16 May 2020 15:17:44 GMT",
+      "Content-Type",
+      "text/xml",
+      "Content-Length",
+      "515"
+    ],
+    "responseIsBinary": false
+  },
+  {
+    "scope": "https://sqs.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2F123456789012%2FqueueName&SendMessageBatchRequestEntry.1.Id=fff3faaa41317011ab93814eb6dad70054b0265c&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22auto-retry%22%2C%22retrySettings%22%3A%7B%22maxAgeInSec%22%3A60%7D%2C%22__meta%22%3A%7B%22failureCount%22%3A1%2C%22timestamp%22%3A%222020-05-15T19%3A55%3A35.712Z%22%7D%7D&Version=2012-11-05",
+    "status": 200,
+    "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>fff3faaa41317011ab93814eb6dad70054b0265c</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>321762fbcf50c9a11e80be8acf55e155</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>"
+  }
+]

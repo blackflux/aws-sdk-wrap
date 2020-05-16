@@ -12,7 +12,7 @@ describe('Testing QueueProcessor', {
   let aws;
   let processor;
   let executor;
-  before(() => {
+  beforeEach(() => {
     aws = index({ logger: console });
     processor = aws.sqs.QueueProcessor({
       queues: {
@@ -63,7 +63,7 @@ describe('Testing QueueProcessor', {
       '    color=lightgrey;',
       '    node [label="node",style=filled,color=white];',
       '    autoRetryDelayFn [label="auto-retry-delay-fn"];',
-      '    autoRetry [label="auto-retry"];',
+      '    autoRetry [label="auto-retry",color=red];',
       '    badOutput [label="bad-output"];',
       '    delayStep [label="delay-step",color=red];',
       '    disallowedOutput [label="disallowed-output"];',
@@ -243,13 +243,26 @@ describe('Testing QueueProcessor', {
         failureCount: 9,
         timestamp: '2020-05-15T19:56:35.713Z'
       }
+    }, {
+      name: 'auto-retry',
+      retrySettings: {
+        maxAgeInSec: 60
+      },
+      __meta: {
+        failureCount: 1,
+        timestamp: '2020-05-15T19:55:35.712Z'
+      }
     }]);
     expect(result).to.deep.equal([]);
     expect(recorder.get()).to.deep.equal([
       'Permanent Retry Failure\n{'
       + '"limits":{"maxFailureCount":10,"maxAgeInSec":9007199254740991},'
       + '"meta":{"failureCount":10,"timestamp":"2020-05-15T19:56:35.713Z"},'
-      + '"payload":{"name":"auto-retry"}}'
+      + '"payload":{"name":"auto-retry"}}',
+      'Permanent Retry Failure\n{'
+      + '"limits":{"maxFailureCount":10,"maxAgeInSec":60},'
+      + '"meta":{"failureCount":2,"timestamp":"2020-05-15T19:55:35.712Z"},'
+      + '"payload":{"name":"auto-retry","retrySettings":{"maxAgeInSec":60}}}'
     ]);
   });
 
