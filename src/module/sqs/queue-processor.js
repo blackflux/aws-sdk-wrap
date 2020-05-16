@@ -75,7 +75,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
         return {
           name: step.slice(0, -3),
           handler: (payload, ...args) => {
-            Joi.assert(stripPayloadMeta(payload), schema, `Invalid payload received for step: ${payload.name}`);
+            Joi.assert(payload, schema, `Invalid payload received for step: ${payload.name}`);
             return handler(payload, ...args);
           },
           schema,
@@ -187,8 +187,9 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
       .map(([step, ctx]) => step.before(ctx).then((msgs) => messageBus.add(msgs, step))));
 
     await Promise.all(tasks.map(async ([payload, e, step]) => {
+      const payloadStripped = stripPayloadMeta(payload);
       try {
-        const msgs = await step.pool(() => step.handler(stripPayloadMeta(payload), e, stepContexts.get(step)));
+        const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts.get(step)));
         messageBus.add(msgs, step);
       } catch (error) {
         let err = error;
@@ -220,7 +221,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
             failureCount,
             timestamp
           },
-          payload
+          payload: payloadStripped
         };
         const delaySeconds = typeof delayInSec === 'function'
           ? delayInSec(kwargs.meta)
