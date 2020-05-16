@@ -35,6 +35,7 @@ module.exports = ({
     .readdirSync(stepsDir)
     .reduce((p, step) => Object.assign(p, {
       [step.slice(0, -3)]: (() => {
+        const name = step.slice(0, -3);
         const stepLogic = fs.smartRead(path.join(stepsDir, step));
         const {
           schema,
@@ -69,6 +70,10 @@ module.exports = ({
           'Invalid value for step retry provided.'
         );
         assert(
+          retry === null || next.includes(name),
+          'Step with retry defined must include itself in "next".'
+        );
+        assert(
           Number.isInteger(timeout) && timeout > 0 && timeout <= 900,
           'Invalid value for step timeout provided.'
         );
@@ -81,7 +86,7 @@ module.exports = ({
           'Invalid after() definition for step.'
         );
         return {
-          name: step.slice(0, -3),
+          name,
           handler: (payload, ...args) => {
             Joi.assert(payload, schema, `Invalid payload received for step: ${payload.name}`);
             return handler(payload, ...args);
