@@ -9,7 +9,6 @@ class RetryError extends Error {
       maxFailureCount: Joi.number().integer().min(1).optional(),
       maxAgeInSec: Joi.number().integer().min(1).optional(),
       delayInSec: Joi.alternatives(
-        // eslint-disable-next-line newline-per-chained-call
         Joi.number().integer().min(0).max(900),
         Joi.function()
       ).optional(),
