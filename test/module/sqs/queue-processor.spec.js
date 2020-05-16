@@ -65,6 +65,7 @@ describe('Testing QueueProcessor', {
       '    autoRetryDelayFn [label="auto-retry-delay-fn"];',
       '    autoRetry [label="auto-retry"];',
       '    badOutput [label="bad-output"];',
+      '    delayStep [label="delay-step",color=red];',
       '    disallowedOutput [label="disallowed-output"];',
       '    stepAutoRetry [label="step-auto-retry"];',
       '    step1 [label="step1"];',
@@ -173,6 +174,16 @@ describe('Testing QueueProcessor', {
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
     ]);
+  });
+
+  it('Testing timeout error', async ({ capture }) => {
+    const result = await capture(() => executor([{ name: 'delay-step', delay: 2000 }]));
+    expect(result.message).to.deep.equal('Promise "" timed out after 1000 ms');
+  });
+
+  it('Testing timeout ok', async ({ capture }) => {
+    const result = await executor([{ name: 'delay-step', delay: 500 }]);
+    expect(result).to.deep.equal([]);
   });
 
   it('Test auto retry', async ({ recorder }) => {

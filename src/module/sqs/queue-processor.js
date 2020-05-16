@@ -3,6 +3,7 @@ const fs = require('smart-fs');
 const path = require('path');
 const Joi = require('joi-strict');
 const get = require('lodash.get');
+const { Pool } = require('promise-pool-ext');
 const { wrap } = require('lambda-async');
 const { prepareMessage } = require('./prepare-message');
 const errors = require('./errors');
@@ -34,6 +35,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           queue,
           delay = 0,
           retry = null,
+          timeout = 900,
           before = async (stepContext) => [],
           after = async (stepContext) => []
         } = stepLogic;
@@ -56,7 +58,11 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
         );
         assert(
           retry === null || (retry instanceof Object && !Array.isArray(retry)),
-          'Invalid value for step delay provided.'
+          'Invalid value for step retry provided.'
+        );
+        assert(
+          Number.isInteger(timeout) && timeout > 0 && timeout <= 900,
+          'Invalid value for step timeout provided.'
         );
         assert(
           typeof before === 'function' && before.length === 1,
@@ -77,6 +83,10 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
           queue,
           delay,
           retry: retry !== null ? new errors.RetryError(retry) : retry,
+          pool: Pool({
+            concurrency: Number.MAX_SAFE_INTEGER,
+            timeout: timeout * 1000
+          }),
           before,
           after,
           isParallel: typeof stepLogic.before === 'function' && typeof stepLogic.after === 'function'
@@ -178,7 +188,8 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
 
     await Promise.all(tasks.map(async ([payload, e, step]) => {
       try {
-        messageBus.add(await step.handler(payload, e, stepContexts.get(step)), step);
+        const msgs = await step.pool(() => step.handler(payload, e, stepContexts.get(step)));
+        messageBus.add(msgs, step);
       } catch (error) {
         let err = error;
         if (!(err instanceof errors.RetryError)) {
