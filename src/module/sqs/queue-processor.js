@@ -9,7 +9,7 @@ const { prepareMessage } = require('./prepare-message');
 const errors = require('./errors');
 
 const metaKey = '__meta';
-const normalizePayload = (payload) => {
+const stripPayloadMeta = (payload) => {
   const r = { ...payload };
   delete r[metaKey];
   return r;
@@ -75,7 +75,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
         return {
           name: step.slice(0, -3),
           handler: (payload, ...args) => {
-            Joi.assert(normalizePayload(payload), schema, `Invalid payload received for step: ${payload.name}`);
+            Joi.assert(stripPayloadMeta(payload), schema, `Invalid payload received for step: ${payload.name}`);
             return handler(payload, ...args);
           },
           schema,
@@ -169,7 +169,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
             `No output allowed for step: ${step.name}`
           );
           Joi.assert(
-            msgs.map((payload) => normalizePayload(payload)),
+            msgs.map((payload) => stripPayloadMeta(payload)),
             Joi.array().items(...step.next.map((n) => steps[n].schema)),
             `Unexpected/Invalid next step(s) returned for: ${step.name}`
           );
@@ -188,7 +188,7 @@ module.exports = ({ sendMessageBatch, logger }) => (opts) => {
 
     await Promise.all(tasks.map(async ([payload, e, step]) => {
       try {
-        const msgs = await step.pool(() => step.handler(payload, e, stepContexts.get(step)));
+        const msgs = await step.pool(() => step.handler(stripPayloadMeta(payload), e, stepContexts.get(step)));
         messageBus.add(msgs, step);
       } catch (error) {
         let err = error;
