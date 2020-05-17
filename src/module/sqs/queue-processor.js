@@ -282,13 +282,13 @@ module.exports = ({
           failureCount >= maxFailureCount
           || (Date.now() - Date.parse(timestamp)) / 1000 > maxAgeInSec
         ) {
-          const msgs = await err.onPermanentFailure(kwargs);
-          assert(Array.isArray(msgs), 'onPermanentFailure must return array of messages');
+          const msgs = await err.onFailure({ ...kwargs, temporary: false });
+          assert(Array.isArray(msgs), 'onFailure must return array of messages');
           stepBus.prepare(msgs, step);
           dlqBus.prepare([payload], step);
         } else {
-          const msgs = await err.onTemporaryFailure(kwargs);
-          assert(Array.isArray(msgs), 'onTemporaryFailure must return array of messages');
+          const msgs = await err.onFailure({ ...kwargs, temporary: true });
+          assert(Array.isArray(msgs), 'onFailure must return array of messages');
           const msg = {
             ...payload,
             [metaKey]: {
