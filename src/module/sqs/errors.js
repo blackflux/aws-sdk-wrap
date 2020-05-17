@@ -12,22 +12,23 @@ class RetryError extends Error {
         Joi.number().integer().min(0).max(900),
         Joi.function()
       ).optional(),
-      onTemporaryFailure: Joi.function().optional(),
-      onPermanentFailure: Joi.function().optional()
+      onFailure: Joi.function().optional()
     }));
 
     const {
       maxFailureCount = 10,
       maxAgeInSec = Number.MAX_SAFE_INTEGER,
       delayInSec = 0,
-      onTemporaryFailure = () => [],
-      onPermanentFailure = ({
+      onFailure = ({
+        temporary,
         logger,
         limits,
         meta,
         payload
       }) => {
-        logger.warn(`Permanent Retry Failure\n${JSON.stringify({ limits, meta, payload })}`);
+        if (temporary === false) {
+          logger.warn(`Permanent Retry Failure\n${JSON.stringify({ limits, meta, payload })}`);
+        }
         return [];
       }
     } = kwargs;
@@ -35,8 +36,7 @@ class RetryError extends Error {
     this.maxFailureCount = maxFailureCount;
     this.maxAgeInSec = maxAgeInSec;
     this.delayInSec = delayInSec;
-    this.onTemporaryFailure = onTemporaryFailure;
-    this.onPermanentFailure = onPermanentFailure;
+    this.onFailure = onFailure;
   }
 }
 module.exports.RetryError = RetryError;
