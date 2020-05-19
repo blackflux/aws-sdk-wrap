@@ -62,7 +62,7 @@ describe('Testing QueueProcessor', {
       '    style=filled;',
       '    color=lightgrey;',
       '    node [label="node",style=filled,color=white];',
-      '    autoRetryDelayFn [label="auto-retry-delay-fn"];',
+      '    autoRetryBackoffFn [label="auto-retry-backoff-fn"];',
       '    autoRetry [label="auto-retry",color=red];',
       '    badOutput [label="bad-output"];',
       '    delayStep [label="delay-step",color=red];',
@@ -84,7 +84,7 @@ describe('Testing QueueProcessor', {
       '  _ingest -> step1;',
       '  _ingest -> step3;',
       '  ',
-      '  autoRetryDelayFn -> autoRetryDelayFn;',
+      '  autoRetryBackoffFn -> autoRetryBackoffFn;',
       '  autoRetry -> autoRetry;',
       '  badOutput -> step2;',
       '  parallelStep -> parallelStep;',
@@ -210,8 +210,8 @@ describe('Testing QueueProcessor', {
     expect(recorder.get()).to.deep.equal([]);
   });
 
-  it('Test auto retry (delay)', async ({ recorder }) => {
-    const retrySettings = { delayInSec: 60 };
+  it('Test auto retry (backoff)', async ({ recorder }) => {
+    const retrySettings = { backoffInSec: 60 };
     const result = await executor([{ name: 'auto-retry', retrySettings }]);
     expect(result).to.deep.equal([{
       name: 'auto-retry',
@@ -224,10 +224,10 @@ describe('Testing QueueProcessor', {
     expect(recorder.get()).to.deep.equal([]);
   });
 
-  it('Test auto retry (delay function)', async ({ recorder }) => {
-    const result = await executor([{ name: 'auto-retry-delay-fn' }]);
+  it('Test auto retry (backoff function)', async ({ recorder }) => {
+    const result = await executor([{ name: 'auto-retry-backoff-fn' }]);
     expect(result).to.deep.equal([{
-      name: 'auto-retry-delay-fn',
+      name: 'auto-retry-backoff-fn',
       __meta: {
         failureCount: 1,
         timestamp: '2020-05-15T19:56:35.713Z'

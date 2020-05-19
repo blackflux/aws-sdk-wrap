@@ -253,7 +253,7 @@ module.exports = ({
         }
         const maxFailureCount = err.maxFailureCount;
         const maxAgeInSec = err.maxAgeInSec;
-        const delayInSec = err.delayInSec;
+        const backoffInSec = err.backoffInSec;
         const failureCount = get(payload, [metaKey, 'failureCount'], 0) + 1;
         const timestamp = get(
           payload,
@@ -275,9 +275,9 @@ module.exports = ({
           payload: payloadStripped,
           error
         };
-        const delaySeconds = typeof delayInSec === 'function'
-          ? delayInSec(kwargs.meta)
-          : delayInSec;
+        const delaySeconds = typeof backoffInSec === 'function'
+          ? backoffInSec(kwargs.meta)
+          : backoffInSec;
         if (
           failureCount >= maxFailureCount
           || (Date.now() - Date.parse(timestamp)) / 1000 > maxAgeInSec

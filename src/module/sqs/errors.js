@@ -8,7 +8,7 @@ class RetryError extends Error {
     Joi.assert(kwargs, Joi.object().keys({
       maxFailureCount: Joi.number().integer().min(1).optional(),
       maxAgeInSec: Joi.number().integer().min(1).optional(),
-      delayInSec: Joi.alternatives(
+      backoffInSec: Joi.alternatives(
         Joi.number().integer().min(0).max(900),
         Joi.function()
       ).optional(),
@@ -18,7 +18,7 @@ class RetryError extends Error {
     const {
       maxFailureCount = 10,
       maxAgeInSec = Number.MAX_SAFE_INTEGER,
-      delayInSec = 0,
+      backoffInSec = 0,
       onFailure = ({
         temporary,
         logger,
@@ -35,7 +35,7 @@ class RetryError extends Error {
 
     this.maxFailureCount = maxFailureCount;
     this.maxAgeInSec = maxAgeInSec;
-    this.delayInSec = delayInSec;
+    this.backoffInSec = backoffInSec;
     this.onFailure = onFailure;
   }
 }
