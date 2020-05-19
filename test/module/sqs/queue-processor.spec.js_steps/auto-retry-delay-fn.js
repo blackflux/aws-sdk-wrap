@@ -9,7 +9,7 @@ module.exports.schema = Joi.object().keys({
 
 module.exports.handler = async (payload, event, context) => {
   throw new RetryError({
-    delayInSec: ({ failureCount }) => Math.min(failureCount * 10, 15 * 60)
+    backoffInSec: ({ failureCount }) => Math.min(failureCount * 10, 15 * 60)
   });
 };
 
