@@ -8,7 +8,6 @@ module.exports.schema = Joi.object().keys({
 });
 
 module.exports.before = async (context) => {
-  // eslint-disable-next-line no-param-reassign
   context.store = [];
   return [];
 };
