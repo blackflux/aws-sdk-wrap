@@ -17,9 +17,9 @@ const sendBatch = async (sqsBatch, queueUrl, {
   logger
 }) => {
   const pending = sqsBatch.reduce((p, msg) => {
-    const id = objectHash(msg);
     const msgDelaySeconds = getDelaySeconds(msg);
     const delaySeconds = msgDelaySeconds === undefined ? batchDelaySeconds : msgDelaySeconds;
+    const id = objectHash(delaySeconds === null ? msg : { msg, delaySeconds });
     if (p[id] !== undefined) {
       throw new MessageCollisionError(JSON.stringify(p[id]));
     }
