@@ -117,7 +117,7 @@ describe('Testing sendMessageBatch', {
         RequestId: '8d1d8e98-dc7e-5fc2-9c83-db8791125e19'
       },
       Successful: [{
-        Id: 'e6e5e4a0d0b12e1a085cd0d9b6388a0d0a0b2f79',
+        Id: 'dc616406d8b80239f3fb6b0f7a9a3c1a360f0d46',
         MessageId: '8085f0e3-a423-447e-9c89-3463acc149ef',
         MD5OfMessageBody: '5e44aadb9678e3604d5dbee0be04c4e4'
       }],
