@@ -8,6 +8,7 @@
       "packageName": "aws-sdk-wrap",
       "projectName": "aws-sdk-wrap",
       "owner": "simlu",
+      "nodeVersion": "10",
       "ownerName": "Lukas Siemon",
       "mergeBot": "MrsFlux"
     }
