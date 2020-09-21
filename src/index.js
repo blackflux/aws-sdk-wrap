@@ -18,10 +18,12 @@ const getAttr = (obj, key) => { // case insensitive lookup
 module.exports = (opts = {}) => {
   Joi.assert(opts, Joi.object().keys({
     config: Joi.object().optional(),
+    configService: Joi.object().optional(),
     logger: Joi.any().optional()
   }));
   const services = {};
   const config = get(opts, 'config', {});
+  const configService = get(opts, 'configService', {});
   const logger = get(opts, 'logger', null);
 
   const getService = (service) => {
@@ -29,7 +31,7 @@ module.exports = (opts = {}) => {
     if (services[serviceLower] === undefined) {
       const Service = serviceLower.split('.').reduce(getAttr, AWS);
       try {
-        services[serviceLower] = new Service(config);
+        services[serviceLower] = new Service(get(configService, serviceLower, config));
       } catch (e) {
         assert(e instanceof TypeError);
         services[serviceLower] = Service;
