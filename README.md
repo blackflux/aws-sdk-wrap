@@ -150,12 +150,12 @@ AWS Config object used to initialize the service.
 
 This only affects initialized services. To update the global AWS config use `updateGlobalConfig`.
 
-#### serviceConfig
+#### configService
 
 Type: `Object`<br>
 Default: `{}`
 
-Declare service specific configurations. E.g. `serviceConfig = { dynamodb: { ... } }`.
+Declare service specific configurations. E.g. `configService = { dynamodb: { ... } }`.
 
 ### Call Options
 
