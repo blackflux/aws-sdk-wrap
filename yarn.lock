@@ -4024,6 +4024,13 @@ joi-strict@1.2.5:
   dependencies:
     "@hapi/joi" "17.1.1"
 
+joi-strict@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/joi-strict/-/joi-strict-1.2.6.tgz#2aed6ae784efa2adbf66175a198eb6d650418f1f"
+  integrity sha512-ShSxfxxoRA/ETL885BNCc+fOCYSoQgkc0ObTT4LWKcU3TBlKsGaxDuyYLOP17oie8dir2ZUvT6YvABpdfj2t8Q==
+  dependencies:
+    "@hapi/joi" "17.1.1"
+
 js-gardener@2.0.177:
   version "2.0.177"
   resolved "https://registry.yarnpkg.com/js-gardener/-/js-gardener-2.0.177.tgz#7037ea4267669f136437db43d1c4dbbd7f68d90f"
@@ -6063,12 +6070,12 @@ promise-inflight@^1.0.1, promise-inflight@~1.0.1:
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
   integrity sha1-mEcocL8igTL8vdhoEputEsPAKeM=
 
-promise-pool-ext@1.3.8:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/promise-pool-ext/-/promise-pool-ext-1.3.8.tgz#c7e882816cd5b6ba8e8fcee08fae7d75e768a966"
-  integrity sha512-3J4/rVgSmhB3OnboifsDjjM3d+itIGQcXweWnhw/90ze0UTgLJkQAIKYRu7DlPDqCbnomD+ZBbnTqpUucyxr/A==
+promise-pool-ext@1.3.10:
+  version "1.3.10"
+  resolved "https://registry.yarnpkg.com/promise-pool-ext/-/promise-pool-ext-1.3.10.tgz#c11f5ec6c345384c693c386223748b0f751d8358"
+  integrity sha512-CbrLkKU4wrMLJlT3xs3P/UXNSLKVa0e/3m3whNlAf2kuWCXbt9WXVWmpwc85NeFS8RxLyhEQ6ML23od0sWazZQ==
   dependencies:
-    joi-strict "1.2.5"
+    joi-strict "1.2.6"
 
 promise-retry@^1.1.1:
   version "1.1.1"
