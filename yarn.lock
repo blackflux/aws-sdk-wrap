@@ -4182,10 +4182,10 @@ kind-of@^6.0.0, kind-of@^6.0.2, kind-of@^6.0.3:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-lambda-async@1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/lambda-async/-/lambda-async-1.0.8.tgz#b09b2556d4938219277af4ba0f20936940a811db"
-  integrity sha512-YxsgmcjPrkXRWmeSkeQOlMLSuvKA61500ftW7C7JkLLJzGHuZygpRUzieprBv4sp33QC+6/VTQXV5PMxipC4uA==
+lambda-async@1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/lambda-async/-/lambda-async-1.0.9.tgz#e66298ded7903b8c6163386b377ed08c89569255"
+  integrity sha512-r24gjx5ATuQOx6EDET2KK+CQMyIVP1hZ1E91553vmu1D9k+QUCksrwNo9w8ff3luYwqXPdGDdEJKgo82j6SVCw==
 
 latest-version@^3.0.0:
   version "3.1.0"
