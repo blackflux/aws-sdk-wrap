@@ -52,7 +52,7 @@
     "js-gardener": "2.0.179",
     "node-tdd": "2.18.11",
     "nyc": "15.1.0",
-    "semantic-release": "17.2.1",
+    "semantic-release": "17.2.2",
     "babel-preset-latest-node": "5.0.0"
   },
   "peerDependencies": {
