@@ -2,7 +2,11 @@ const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const index = require('../../src');
 
-describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
+describe('Testing s3 Util', {
+  useNock: true,
+  timestamp: 1569876020,
+  timeout: 10000
+}, () => {
   let aws;
   let bucket;
   let key;
@@ -198,5 +202,42 @@ describe('Testing s3 Util', { useNock: true, timestamp: 1569876020 }, () => {
   it('Testing "decodeKey"', () => {
     const result = aws.s3.decodeKey('2018-10-25T20%3A55%3A00.000Z/Collection+Viewed.json.gz');
     expect(result).to.equal('2018-10-25T20:55:00.000Z/Collection Viewed.json.gz');
+  });
+
+  it('Testing request rate exceed until error', async ({ capture }) => {
+    const error = await capture(() => aws.s3.putGzipObject({
+      bucket,
+      key,
+      data: JSON.stringify({ data: 'data' })
+    }));
+    expect(error).to.deep.contain({
+      statusCode: 301
+    });
+  });
+
+  it('Testing request rate exceed retry', async ({ capture }) => {
+    const error = await capture(() => aws.s3.putGzipObject({
+      bucket,
+      key,
+      data: JSON.stringify({ data: 'data' })
+    }));
+    expect(error).to.deep.contain({
+      statusCode: 400
+    });
+  });
+
+  it('Testing request rate exceed until error with logger', async ({ capture }) => {
+    aws = index({
+      // eslint-disable-next-line no-console
+      logger: new console.Console(process.stdout, process.stderr)
+    });
+    const error = await capture(() => aws.s3.putGzipObject({
+      bucket,
+      key,
+      data: JSON.stringify({ data: 'data' })
+    }));
+    expect(error).to.deep.contain({
+      statusCode: 301
+    });
   });
 });
