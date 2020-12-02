@@ -1,8 +1,43 @@
+const util = require('util');
 const zlib = require('zlib');
+const get = require('lodash.get');
 const Joi = require('joi-strict');
 
-module.exports.S3 = ({ call }) => {
-  const putGzipObject = ({ bucket, key, data }) => call('s3:putObject', {
+const sleep = util.promisify(setTimeout);
+
+module.exports.S3 = ({
+  call,
+  logger,
+  backoffFunction = (count) => 30 * (count ** 2),
+  maxRetries = 10
+}) => {
+  const exec = async (
+    action,
+    opts,
+    { expectedErrorCodes = [] } = {}
+  ) => {
+    let lastError;
+    for (let count = 0; count <= maxRetries; count += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await sleep(backoffFunction(count));
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        return await call(action, opts, { expectedErrorCodes });
+      } catch (e) {
+        if (get(e, 'message') === 'SlowDown: Please reduce your request rate.') {
+          lastError = e;
+          if (logger !== null) {
+            logger.warn(`Failed to submit ${action}\n${JSON.stringify({ action, opts })}`);
+          }
+        } else {
+          throw e;
+        }
+      }
+    }
+    throw lastError;
+  };
+
+  const putGzipObject = ({ bucket, key, data }) => exec('s3:putObject', {
     ContentType: 'application/json',
     ContentEncoding: 'gzip',
     Bucket: bucket,
@@ -10,19 +45,19 @@ module.exports.S3 = ({ call }) => {
     Body: zlib.gzipSync(data, { level: 9 })
   });
 
-  const getGzipJsonObject = ({ bucket, key, expectedErrorCodes = [] }) => call(
+  const getGzipJsonObject = ({ bucket, key, expectedErrorCodes = [] }) => exec(
     's3:getObject',
     { Bucket: bucket, Key: key },
     { expectedErrorCodes }
   ).then((r) => (expectedErrorCodes.includes(r) ? r : JSON.parse(zlib.gunzipSync(r.Body).toString('utf8'))));
 
-  const headObject = ({ bucket, key, expectedErrorCodes = [] }) => call(
+  const headObject = ({ bucket, key, expectedErrorCodes = [] }) => exec(
     's3:headObject',
     { Bucket: bucket, Key: key },
     { expectedErrorCodes }
   );
 
-  const deleteObject = ({ bucket, key, expectedErrorCodes = [] }) => call(
+  const deleteObject = ({ bucket, key, expectedErrorCodes = [] }) => exec(
     's3:deleteObject',
     { Bucket: bucket, Key: key },
     { expectedErrorCodes }
@@ -49,7 +84,7 @@ module.exports.S3 = ({ call }) => {
     let isTruncated;
     do {
       // eslint-disable-next-line no-await-in-loop
-      const response = await call('s3:listObjectsV2', {
+      const response = await exec('s3:listObjectsV2', {
         Bucket: bucket,
         ...(limit === undefined ? {} : { MaxKeys: Math.min(1000, limit - result.length) }),
         ...(prefix === undefined ? {} : { Prefix: prefix }),
