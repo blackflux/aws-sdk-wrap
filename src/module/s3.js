@@ -17,7 +17,7 @@ module.exports.S3 = ({
     { expectedErrorCodes = [] } = {}
   ) => {
     let lastError;
-    for (let count = 0; count < maxRetries; count += 1) {
+    for (let count = 0; count <= maxRetries; count += 1) {
       // eslint-disable-next-line no-await-in-loop
       await sleep(backoffFunction(count));
       try {

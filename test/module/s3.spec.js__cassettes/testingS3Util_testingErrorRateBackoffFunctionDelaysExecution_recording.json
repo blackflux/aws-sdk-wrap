@@ -13,69 +13,6 @@
     "method": "PUT",
     "path": "/key",
     "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
-    "status": 400,
-    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>SlowDown: Please reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
-    "responseIsBinary": false
-  },
-  {
-    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
-    "method": "PUT",
-    "path": "/key",
-    "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
-    "status": 400,
-    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>SlowDown: Please reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
-    "responseIsBinary": false
-  },
-  {
-    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
-    "method": "PUT",
-    "path": "/key",
-    "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
-    "status": 400,
-    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>SlowDown: Please reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
-    "responseIsBinary": false
-  },
-  {
-    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
-    "method": "PUT",
-    "path": "/key",
-    "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
-    "status": 400,
-    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>SlowDown: Please reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
-    "responseIsBinary": false
-  },
-  {
-    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
-    "method": "PUT",
-    "path": "/key",
-    "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
-    "status": 400,
-    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>SlowDown: Please reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
-    "responseIsBinary": false
-  },
-  {
-    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
-    "method": "PUT",
-    "path": "/key",
-    "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
-    "status": 400,
-    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>SlowDown: Please reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
-    "responseIsBinary": false
-  },
-  {
-    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
-    "method": "PUT",
-    "path": "/key",
-    "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
-    "status": 400,
-    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>SlowDown: Please reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
-    "responseIsBinary": false
-  },
-  {
-    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
-    "method": "PUT",
-    "path": "/key",
-    "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
     "status": 200,
     "response": ""
   }

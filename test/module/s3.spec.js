@@ -213,7 +213,7 @@ describe('Testing s3 Util', {
     const s3 = S3({
       logger: console,
       backoffFunction: () => 0,
-      maxRetries: 1
+      maxRetries: 0
     });
     const error = await capture(() => s3.putGzipObject({
       bucket,
@@ -235,7 +235,7 @@ describe('Testing s3 Util', {
     const s3 = S3({
       logger: console,
       backoffFunction: () => 0,
-      maxRetries: 2
+      maxRetries: 1
     });
     const error = await capture(() => s3.putGzipObject({
       bucket,
@@ -255,7 +255,10 @@ describe('Testing s3 Util', {
 
   it('Testing error rate backoff function delays execution', async () => {
     const startTime = new Date();
-    const result = await S3().putGzipObject({
+    const result = await S3({
+      maxRetries: 1,
+      backoffFunction: () => 500
+    }).putGzipObject({
       bucket,
       key,
       data: JSON.stringify({ data: 'data' })
