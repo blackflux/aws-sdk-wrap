@@ -27,7 +27,7 @@ module.exports.S3 = ({
         lastError = e;
         if (get(e, 'message') === 'SlowDown: Please reduce your request rate.') {
           if (logger !== null) {
-            logger.warn(`Failed to submit (some) ${action}(s)\nRetrying: [${JSON.stringify({ action, opts })}]`);
+            logger.warn(`Failed to submit ${action}\nRetrying: [${JSON.stringify({ action, opts })}]`);
           }
         } else {
           throw e;

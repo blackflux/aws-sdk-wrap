@@ -224,7 +224,7 @@ describe('Testing s3 Util', {
       statusCode: 400
     });
     expect(recorder.get()).to.deep.equal([
-      'Failed to submit (some) s3:putObject(s)\n'
+      'Failed to submit s3:putObject\n'
       + 'Retrying: [{"action":"s3:putObject","opts":{"ContentType":"application/json","ContentEncoding":"gzip",'
       + '"Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer","data":[31,139,8,0,0,0,0,0,2,3,171,86,74,'
       + '73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}}}]'
@@ -246,7 +246,7 @@ describe('Testing s3 Util', {
       statusCode: 500
     });
     expect(recorder.get()).to.deep.equal([
-      'Failed to submit (some) s3:putObject(s)\n'
+      'Failed to submit s3:putObject\n'
       + 'Retrying: [{"action":"s3:putObject","opts":{"ContentType":"application/json","ContentEncoding":"gzip",'
       + '"Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer","data":[31,139,8,0,0,0,0,0,2,3,171,86,74,'
       + '73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}}}]'
