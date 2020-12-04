@@ -13,7 +13,7 @@ describe('Testing s3 Util', {
   let key;
   beforeEach(() => {
     S3 = (opts = {}) => S3Module({
-      call: index().call,
+      call: index({ config: { maxRetries: 0 } }).call,
       logger: null,
       ...opts
     });
@@ -221,7 +221,7 @@ describe('Testing s3 Util', {
       data: JSON.stringify({ data: 'data' })
     }));
     expect(error).to.deep.contain({
-      statusCode: 400
+      statusCode: 503
     });
     expect(recorder.get()).to.deep.equal([
       'Failed to submit s3:putObject\n'

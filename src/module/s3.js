@@ -24,7 +24,7 @@ module.exports.S3 = ({
         // eslint-disable-next-line no-await-in-loop
         return await call(action, opts, { expectedErrorCodes });
       } catch (e) {
-        if (get(e, 'message') === 'SlowDown: Please reduce your request rate.') {
+        if (get(e, 'code') === 'SlowDown') {
           lastError = e;
           if (logger !== null) {
             logger.warn(`Failed to submit ${action}\n${JSON.stringify({ action, opts })}`);
