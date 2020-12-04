@@ -27,7 +27,12 @@ module.exports.S3 = ({
         if (get(e, 'code') === 'SlowDown') {
           lastError = e;
           if (logger !== null) {
-            logger.warn(`Failed to submit ${action}\n${JSON.stringify({ action, opts })}`);
+            logger.warn(`Failed to submit ${action}\n${JSON.stringify({
+              errorCode: get(e, 'code'),
+              action,
+              opts,
+              retryCount: count
+            })}`);
           }
         } else {
           throw e;
