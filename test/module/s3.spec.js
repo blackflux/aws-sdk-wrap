@@ -13,7 +13,10 @@ describe('Testing s3 Util', {
   let key;
   beforeEach(() => {
     S3 = (opts = {}) => S3Module({
-      call: index({ logger: console, config: { maxRetries: 0 } }).call,
+      call: index({
+        logger: console,
+        config: { maxRetries: 0 }
+      }).call,
       ...opts
     });
     bucket = process.env.BUCKET_NAME;
