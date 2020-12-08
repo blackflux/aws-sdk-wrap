@@ -225,7 +225,7 @@ describe('Testing s3 Util', {
     expect(timeDiff).to.be.greaterThan(500);
   });
 
-  describe('Testing with rate-limiting', {
+  describe('Testing with logs', {
     timestamp: 1607453027,
     record: console
   }, () => {
