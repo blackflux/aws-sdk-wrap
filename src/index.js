@@ -68,7 +68,7 @@ module.exports = (opts = {}) => {
     call,
     get: getService,
     sqs: Sqs({ call, getService, logger }),
-    s3: S3({ call, logger }),
+    s3: S3({ call, logger }), // TODO: backoffFunction, maxRetries are not set on instantiation. Is this by design?
     errors
   };
 };

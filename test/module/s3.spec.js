@@ -208,7 +208,7 @@ describe('Testing s3 Util', {
     expect(result).to.equal('2018-10-25T20:55:00.000Z/Collection Viewed.json.gz');
   });
 
-  it('Testing error rate does not exceed retry count', async ({ capture, recorder }) => {
+  it('Testing error rate does not exceed retry count', async ({ recorder }) => {
     const s3 = S3({
       logger: console,
       backoffFunction: () => 0,
