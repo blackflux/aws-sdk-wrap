@@ -5,16 +5,17 @@ const { S3: S3Module } = require('../../src/module/s3');
 
 describe('Testing s3 Util', {
   useNock: true,
-  timeout: 10000,
-  record: console
+  timeout: 10000
 }, () => {
   let S3;
   let bucket;
   let key;
   beforeEach(() => {
     S3 = (opts = {}) => S3Module({
-      call: index({ config: { maxRetries: 0 } }).call,
-      logger: null,
+      call: index({
+        logger: console,
+        config: { maxRetries: 0 }
+      }).call,
       ...opts
     });
     bucket = process.env.BUCKET_NAME;
@@ -209,52 +210,6 @@ describe('Testing s3 Util', {
     expect(result).to.equal('2018-10-25T20:55:00.000Z/Collection Viewed.json.gz');
   });
 
-  it('Testing error rate exceeds retry count', async ({ capture, recorder }) => {
-    const s3 = S3({
-      logger: console,
-      backoffFunction: () => 0,
-      maxRetries: 0
-    });
-    const error = await capture(() => s3.putGzipObject({
-      bucket,
-      key,
-      data: JSON.stringify({ data: 'data' })
-    }));
-    expect(error).to.deep.contain({
-      statusCode: 503
-    });
-    expect(recorder.get()).to.deep.equal([
-      'Failed to submit s3:putObject\n'
-      + '{"errorCode":"SlowDown","action":"s3:putObject","opts":{"ContentType":"application/json",'
-      + '"ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer",'
-      + '"data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},'
-      + '"retryCount":0}'
-    ]);
-  });
-
-  it('Testing error rate until fatal error', async ({ capture, recorder }) => {
-    const s3 = S3({
-      logger: console,
-      backoffFunction: () => 0,
-      maxRetries: 1
-    });
-    const error = await capture(() => s3.putGzipObject({
-      bucket,
-      key,
-      data: JSON.stringify({ data: 'data' })
-    }));
-    expect(error).to.deep.contain({
-      statusCode: 500
-    });
-    expect(recorder.get()).to.deep.equal([
-      'Failed to submit s3:putObject\n'
-      + '{"errorCode":"SlowDown","action":"s3:putObject","opts":{"ContentType":"application/json",'
-      + '"ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer",'
-      + '"data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},'
-      + '"retryCount":0}'
-    ]);
-  });
-
   it('Testing error rate backoff function delays execution', async () => {
     const startTime = new Date();
     const result = await S3({
@@ -268,5 +223,64 @@ describe('Testing s3 Util', {
     const timeDiff = (new Date() - startTime);
     expect(result).to.deep.equal({});
     expect(timeDiff).to.be.greaterThan(500);
+  });
+
+  describe('Testing with logs', {
+    timestamp: '2020-12-08T21:38:37.124Z',
+    record: console
+  }, () => {
+    it('Testing error rate does not exceed retry count', async ({ recorder }) => {
+      const s3 = S3({
+        backoffFunction: () => 0,
+        maxRetries: 1
+      });
+      const result = await s3.putGzipObject({
+        bucket,
+        key,
+        data: JSON.stringify({ data: 'data' })
+      });
+      expect(result).to.deep.equal({});
+      expect(recorder.get()).to.deep.equal([
+        // eslint-disable-next-line max-len
+        'Request failed for s3.putObject()\n{"errorName":"Error","errorDetails":{"message":"Reduce your request rate.","code":"SlowDown","region":null,"time":"2020-12-08T21:38:37.124Z","requestId":null,"statusCode":503,"retryable":true},"requestParams":{"ContentType":"application/json","ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer","data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},"meta":{"retryCount":0}}'
+      ]);
+    });
+
+    it('Testing error rate until fatal error', async ({ capture, recorder }) => {
+      const s3 = S3({
+        backoffFunction: () => 0,
+        maxRetries: 1
+      });
+      const error = await capture(() => s3.putGzipObject({
+        bucket,
+        key,
+        data: JSON.stringify({ data: 'data' })
+      }));
+      expect(error).to.deep.contain({
+        statusCode: 503
+      });
+      expect(recorder.get()).to.deep.equal([
+        // eslint-disable-next-line max-len
+        'Request failed for s3.putObject()\n{"errorName":"Error","errorDetails":{"message":"Reduce your request rate.","code":"SlowDown","region":null,"time":"2020-12-08T21:38:37.124Z","requestId":null,"statusCode":503,"retryable":true},"requestParams":{"ContentType":"application/json","ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer","data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},"meta":{"retryCount":0}}',
+        // eslint-disable-next-line max-len
+        'Request failed for s3.putObject()\n{"errorName":"Error","errorDetails":{"message":"Reduce your request rate.","code":"SlowDown","region":null,"time":"2020-12-08T21:38:37.124Z","requestId":null,"statusCode":503,"retryable":true},"requestParams":{"ContentType":"application/json","ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer","data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},"meta":{"retryCount":1}}'
+      ]);
+    });
+
+    it('Testing error handling no retry', async ({ capture, recorder }) => {
+      const s3 = S3();
+      const error = await capture(() => s3.putGzipObject({
+        bucket,
+        key,
+        data: JSON.stringify({ data: 'data' })
+      }));
+      expect(error).to.deep.contain({
+        statusCode: 500
+      });
+      expect(recorder.get()).to.deep.equal([
+        // eslint-disable-next-line max-len
+        'Request failed for s3.putObject()\n{"errorName":"Error","errorDetails":{"message":"The bucket you are attempting to access must be addressed using the specified endpoint. Please send all future requests to this endpoint.","code":"PermanentRedirect","region":null,"time":"2020-12-08T21:38:37.124Z","requestId":null,"statusCode":500,"retryable":true},"requestParams":{"ContentType":"application/json","ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer","data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},"meta":{"retryCount":0}}'
+      ]);
+    });
   });
 });
