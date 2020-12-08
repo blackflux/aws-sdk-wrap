@@ -40,7 +40,7 @@ module.exports = (opts = {}) => {
     return services[serviceLower];
   };
 
-  const call = (action, params, { expectedErrorCodes = [] } = {}) => {
+  const call = (action, params, { expectedErrorCodes = [], errorLogOverride = false } = {}) => {
     assert(typeof action === 'string');
     assert(params instanceof Object && !Array.isArray(params));
     assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every((e) => typeof e === 'string'));
@@ -52,13 +52,12 @@ module.exports = (opts = {}) => {
       if (expectedErrorCodes.indexOf(e.code) !== -1) {
         return e.code;
       }
-      if (logger !== null) {
-        logger.error({
-          message: `Request failed for ${service}.${funcName}()`,
+      if (logger !== null && errorLogOverride !== true) {
+        logger.error(`Request failed for ${service}.${funcName}()\n${JSON.stringify({
           errorName: get(e, 'constructor.name'),
           errorDetails: e,
           requestParams: params
-        });
+        })}`);
       }
       throw e;
     });

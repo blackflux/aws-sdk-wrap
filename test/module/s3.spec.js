@@ -13,8 +13,7 @@ describe('Testing s3 Util', {
   let key;
   beforeEach(() => {
     S3 = (opts = {}) => S3Module({
-      call: index({ config: { maxRetries: 0 } }).call,
-      logger: null,
+      call: index({ logger: console, config: { maxRetries: 0 } }).call,
       ...opts
     });
     bucket = process.env.BUCKET_NAME;
@@ -209,27 +208,19 @@ describe('Testing s3 Util', {
     expect(result).to.equal('2018-10-25T20:55:00.000Z/Collection Viewed.json.gz');
   });
 
-  it('Testing error rate exceeds retry count', async ({ capture, recorder }) => {
+  it('Testing error rate does not exceed retry count', async ({ capture, recorder }) => {
     const s3 = S3({
       logger: console,
       backoffFunction: () => 0,
-      maxRetries: 0
+      maxRetries: 1
     });
-    const error = await capture(() => s3.putGzipObject({
+    const result = await s3.putGzipObject({
       bucket,
       key,
       data: JSON.stringify({ data: 'data' })
-    }));
-    expect(error).to.deep.contain({
-      statusCode: 503
     });
-    expect(recorder.get()).to.deep.equal([
-      'Failed to submit s3:putObject\n'
-      + '{"errorCode":"SlowDown","action":"s3:putObject","opts":{"ContentType":"application/json",'
-      + '"ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer",'
-      + '"data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},'
-      + '"retryCount":0}'
-    ]);
+    expect(result).to.deep.equal({});
+    expect(recorder.get()).to.deep.equal([]);
   });
 
   it('Testing error rate until fatal error', async ({ capture, recorder }) => {
@@ -244,15 +235,11 @@ describe('Testing s3 Util', {
       data: JSON.stringify({ data: 'data' })
     }));
     expect(error).to.deep.contain({
-      statusCode: 500
+      statusCode: 503
     });
-    expect(recorder.get()).to.deep.equal([
-      'Failed to submit s3:putObject\n'
-      + '{"errorCode":"SlowDown","action":"s3:putObject","opts":{"ContentType":"application/json",'
-      + '"ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer",'
-      + '"data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},'
-      + '"retryCount":0}'
-    ]);
+    const errorLog = recorder.get();
+    const errorLogSplit = errorLog[0].split('\n');
+    expect(errorLogSplit[0]).to.equal('Request failed for s3.putObject()');
   });
 
   it('Testing error rate backoff function delays execution', async () => {

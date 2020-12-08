@@ -1,13 +1,11 @@
 const util = require('util');
 const zlib = require('zlib');
-const get = require('lodash.get');
 const Joi = require('joi-strict');
 
 const sleep = util.promisify(setTimeout);
 
 module.exports.S3 = ({
   call,
-  logger,
   backoffFunction = (count) => 30 * (count ** 2),
   maxRetries = 10
 }) => {
@@ -22,21 +20,12 @@ module.exports.S3 = ({
       await sleep(backoffFunction(count));
       try {
         // eslint-disable-next-line no-await-in-loop
-        return await call(action, opts, { expectedErrorCodes });
+        return await call(action, opts, {
+          expectedErrorCodes,
+          errorLogOverride: count < maxRetries
+        });
       } catch (e) {
-        if (get(e, 'code') === 'SlowDown') {
-          lastError = e;
-          if (logger !== null) {
-            logger.warn(`Failed to submit ${action}\n${JSON.stringify({
-              errorCode: get(e, 'code'),
-              action,
-              opts,
-              retryCount: count
-            })}`);
-          }
-        } else {
-          throw e;
-        }
+        lastError = e;
       }
     }
     throw lastError;
