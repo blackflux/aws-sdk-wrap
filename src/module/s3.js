@@ -1,5 +1,6 @@
 const util = require('util');
 const zlib = require('zlib');
+const get = require('lodash.get');
 const Joi = require('joi-strict');
 
 const sleep = util.promisify(setTimeout);
@@ -22,9 +23,12 @@ module.exports.S3 = ({
         // eslint-disable-next-line no-await-in-loop
         return await call(action, opts, {
           expectedErrorCodes,
-          errorLogOverride: count < maxRetries
+          meta: { retryCount: count }
         });
       } catch (e) {
+        if (get(e, 'code') !== 'SlowDown') {
+          throw e;
+        }
         lastError = e;
       }
     }

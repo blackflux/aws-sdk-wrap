@@ -40,7 +40,7 @@ module.exports = (opts = {}) => {
     return services[serviceLower];
   };
 
-  const call = (action, params, { expectedErrorCodes = [], errorLogOverride = false } = {}) => {
+  const call = (action, params, { expectedErrorCodes = [], meta = null } = {}) => {
     assert(typeof action === 'string');
     assert(params instanceof Object && !Array.isArray(params));
     assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every((e) => typeof e === 'string'));
@@ -52,11 +52,12 @@ module.exports = (opts = {}) => {
       if (expectedErrorCodes.indexOf(e.code) !== -1) {
         return e.code;
       }
-      if (logger !== null && errorLogOverride !== true) {
+      if (logger !== null) {
         logger.error(`Request failed for ${service}.${funcName}()\n${JSON.stringify({
           errorName: get(e, 'constructor.name'),
           errorDetails: e,
-          requestParams: params
+          requestParams: params,
+          ...(meta === null ? {} : { meta })
         })}`);
       }
       throw e;
@@ -68,7 +69,7 @@ module.exports = (opts = {}) => {
     call,
     get: getService,
     sqs: Sqs({ call, getService, logger }),
-    s3: S3({ call, logger }), // TODO: backoffFunction, maxRetries are not set on instantiation. Is this by design?
+    s3: S3({ call, logger }),
     errors
   };
 };

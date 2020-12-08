@@ -220,7 +220,9 @@ describe('Testing s3 Util', {
       data: JSON.stringify({ data: 'data' })
     });
     expect(result).to.deep.equal({});
-    expect(recorder.get()).to.deep.equal([]);
+    const errorLog = recorder.get();
+    const errorLogSplit = errorLog.map((e) => e.split('\n')[0]);
+    expect(errorLogSplit).to.deep.equal(['Request failed for s3.putObject()']);
   });
 
   it('Testing error rate until fatal error', async ({ capture, recorder }) => {
@@ -238,8 +240,26 @@ describe('Testing s3 Util', {
       statusCode: 503
     });
     const errorLog = recorder.get();
-    const errorLogSplit = errorLog[0].split('\n');
-    expect(errorLogSplit[0]).to.equal('Request failed for s3.putObject()');
+    const errorLogSplit = errorLog.map((e) => e.split('\n')[0]);
+    expect(errorLogSplit).to.deep.equal([
+      'Request failed for s3.putObject()',
+      'Request failed for s3.putObject()'
+    ]);
+  });
+
+  it('Testing error handling no retry', async ({ capture, recorder }) => {
+    const s3 = S3({ logger: console });
+    const error = await capture(() => s3.putGzipObject({
+      bucket,
+      key,
+      data: JSON.stringify({ data: 'data' })
+    }));
+    expect(error).to.deep.contain({
+      statusCode: 500
+    });
+    const errorLog = recorder.get();
+    const errorLogSplit = errorLog.map((e) => e.split('\n')[0]);
+    expect(errorLogSplit).to.deep.equal(['Request failed for s3.putObject()']);
   });
 
   it('Testing error rate backoff function delays execution', async () => {
