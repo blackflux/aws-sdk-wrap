@@ -40,11 +40,7 @@ describe('Testing index', { useNock: true }, () => {
       await index({
         logger: {
           error: (msg) => {
-            expect(msg).to.deep.contain({
-              message: 'Request failed for s3.putObject()',
-              errorName: 'Error',
-              requestParams: {}
-            });
+            expect(msg).to.contain('Request failed for s3.putObject()');
           }
         }
       }).call('s3:putObject', {});
