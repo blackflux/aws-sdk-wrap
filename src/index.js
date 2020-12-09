@@ -53,7 +53,7 @@ module.exports = (opts = {}) => {
         return e.code;
       }
       if (logger !== null) {
-        logger.error(`Request failed for ${service}.${funcName}()\n${JSON.stringify({
+        logger.warn(`Request failed for ${service}.${funcName}()\n${JSON.stringify({
           errorName: get(e, 'constructor.name'),
           errorDetails: e,
           requestParams: params,
