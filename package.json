@@ -41,6 +41,7 @@
     "@blackflux/robo-config-plugin": "3.10.15",
     "aws-sdk": "2.804.0",
     "babel-eslint": "10.1.0",
+    "babel-preset-latest-node": "5.1.1",
     "chai": "4.2.0",
     "coveralls": "3.1.0",
     "eslint": "7.14.0",
@@ -52,8 +53,7 @@
     "js-gardener": "2.0.181",
     "node-tdd": "2.18.11",
     "nyc": "15.1.0",
-    "semantic-release": "17.3.0",
-    "babel-preset-latest-node": "5.1.1"
+    "semantic-release": "17.3.0"
   },
   "peerDependencies": {
     "aws-sdk": "^2.296.0"
@@ -101,6 +101,7 @@
     "lib"
   ],
   "dependencies": {
+    "dynamodb-toolbox": "0.2.0-beta.1",
     "joi-strict": "1.2.6",
     "lambda-async": "1.0.9",
     "lodash.chunk": "4.2.0",
