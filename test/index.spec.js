@@ -1,12 +1,12 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const DocumentType = require('aws-sdk').DynamoDB.DocumentClient;
-const index = require('../src/index');
+const Index = require('../src/index');
 
 describe('Testing index', { useNock: true }, () => {
   let aws;
   before(() => {
-    aws = index();
+    aws = Index();
   });
 
   it('Testing global configuration', () => {
@@ -37,7 +37,7 @@ describe('Testing index', { useNock: true }, () => {
 
   it('Testing Exception with Logger', async () => {
     try {
-      await index({
+      await Index({
         logger: {
           error: (msg) => {
             expect(msg).to.deep.contain({
