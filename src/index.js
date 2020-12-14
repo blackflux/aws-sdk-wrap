@@ -3,7 +3,7 @@ const get = require('lodash.get');
 const AWS = require('aws-sdk');
 const Joi = require('joi-strict');
 const S3 = require('./module/s3');
-const { Sqs } = require('./module/sqs');
+const Sqs = require('./module/sqs');
 const errors = require('./resources/errors');
 
 const lookupCache = new Map();
