@@ -2,6 +2,7 @@ const assert = require('assert');
 const get = require('lodash.get');
 const AWS = require('aws-sdk');
 const Joi = require('joi-strict');
+const Dy = require('./module/dy');
 const S3 = require('./module/s3');
 const Sqs = require('./module/sqs');
 const errors = require('./resources/errors');
@@ -68,6 +69,7 @@ module.exports = (opts = {}) => {
     updateGlobalConfig: (cfg) => AWS.config.update(cfg),
     call,
     get: getService,
+    dy: Dy({ call, getService, logger }),
     s3: S3({ call, logger }),
     sqs: Sqs({ call, getService, logger }),
     errors

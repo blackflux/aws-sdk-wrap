@@ -9,6 +9,18 @@ describe('Testing index', { useNock: true }, () => {
     aws = Index();
   });
 
+  it('Testing exports', () => {
+    expect(Object.keys(aws)).to.deep.equal([
+      'updateGlobalConfig',
+      'call',
+      'get',
+      'dy',
+      's3',
+      'sqs',
+      'errors'
+    ]);
+  });
+
   it('Testing global configuration', () => {
     expect(aws.updateGlobalConfig({})).to.equal(undefined);
   });
