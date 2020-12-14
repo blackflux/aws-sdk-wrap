@@ -5,7 +5,7 @@ const Joi = require('joi-strict');
 
 const sleep = util.promisify(setTimeout);
 
-module.exports.S3 = ({
+module.exports = ({
   call,
   logger,
   backoffFunction = (count) => 30 * (count ** 2),
