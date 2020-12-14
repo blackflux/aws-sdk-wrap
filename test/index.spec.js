@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
-const DocumentType = require('aws-sdk').DynamoDB.DocumentClient;
+const DocumentClient = require('aws-sdk').DynamoDB.DocumentClient;
 const Index = require('../src/index');
 
 describe('Testing index', { useNock: true }, () => {
@@ -14,7 +14,7 @@ describe('Testing index', { useNock: true }, () => {
   });
 
   it('Testing nested get', () => {
-    expect(aws.get('DynamoDB.DocumentClient')).to.be.instanceof(DocumentType);
+    expect(aws.get('DynamoDB.DocumentClient')).to.be.instanceof(DocumentClient);
     expect(aws.get('DynamoDB.Converter')).to.be.a('object');
   });
 
