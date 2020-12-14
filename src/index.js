@@ -40,7 +40,7 @@ module.exports = (opts = {}) => {
     return services[serviceLower];
   };
 
-  const call = (action, params, { expectedErrorCodes = [] } = {}) => {
+  const call = (action, params, { expectedErrorCodes = [], meta = null } = {}) => {
     assert(typeof action === 'string');
     assert(params instanceof Object && !Array.isArray(params));
     assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every((e) => typeof e === 'string'));
@@ -53,12 +53,12 @@ module.exports = (opts = {}) => {
         return e.code;
       }
       if (logger !== null) {
-        logger.error({
-          message: `Request failed for ${service}.${funcName}()`,
+        logger.warn(`Request failed for ${service}.${funcName}()\n${JSON.stringify({
           errorName: get(e, 'constructor.name'),
           errorDetails: e,
-          requestParams: params
-        });
+          requestParams: params,
+          ...(meta === null ? {} : { meta })
+        })}`);
       }
       throw e;
     });

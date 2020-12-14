@@ -4,15 +4,6 @@
     "method": "PUT",
     "path": "/key",
     "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
-    "status": 503,
-    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>Reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
-    "responseIsBinary": false
-  },
-  {
-    "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
-    "method": "PUT",
-    "path": "/key",
-    "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
     "status": 500,
     "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>PermanentRedirect</Code><Message>The bucket you are attempting to access must be addressed using the specified endpoint. Please send all future requests to this endpoint.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>3AE2F6662208B202</RequestId><HostId>X5h1Z9Fr2p/BY5vhraKcGoIT3IV1GSS+n+BB1Dj6sMSOAu7r+khvFGNfcfr1OoE34NekexKP3lc=</HostId></Error>"
   }
