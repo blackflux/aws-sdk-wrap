@@ -1,12 +1,12 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
-const DocumentType = require('aws-sdk').DynamoDB.DocumentClient;
-const index = require('../src/index');
+const DocumentClient = require('aws-sdk').DynamoDB.DocumentClient;
+const Index = require('../src/index');
 
 describe('Testing index', { useNock: true }, () => {
   let aws;
   before(() => {
-    aws = index();
+    aws = Index();
   });
 
   it('Testing global configuration', () => {
@@ -14,7 +14,7 @@ describe('Testing index', { useNock: true }, () => {
   });
 
   it('Testing nested get', () => {
-    expect(aws.get('DynamoDB.DocumentClient')).to.be.instanceof(DocumentType);
+    expect(aws.get('DynamoDB.DocumentClient')).to.be.instanceof(DocumentClient);
     expect(aws.get('DynamoDB.Converter')).to.be.a('object');
   });
 
@@ -37,7 +37,7 @@ describe('Testing index', { useNock: true }, () => {
 
   it('Testing Exception with Logger', async () => {
     try {
-      await index({
+      await Index({
         logger: {
           warn: (msg) => {
             expect(msg).to.contain('Request failed for s3.putObject()');

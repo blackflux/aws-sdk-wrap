@@ -2,8 +2,8 @@ const assert = require('assert');
 const get = require('lodash.get');
 const AWS = require('aws-sdk');
 const Joi = require('joi-strict');
-const { Sqs } = require('./module/sqs');
-const { S3 } = require('./module/s3');
+const S3 = require('./module/s3');
+const Sqs = require('./module/sqs');
 const errors = require('./resources/errors');
 
 const lookupCache = new Map();
@@ -68,8 +68,8 @@ module.exports = (opts = {}) => {
     updateGlobalConfig: (cfg) => AWS.config.update(cfg),
     call,
     get: getService,
-    sqs: Sqs({ call, getService, logger }),
     s3: S3({ call, logger }),
+    sqs: Sqs({ call, getService, logger }),
     errors
   };
 };

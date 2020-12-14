@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
-const index = require('../../../src/index');
+const Index = require('../../../src/index');
 const { getDelaySeconds } = require('../../../src/module/sqs/prepare-message');
 
 describe('Testing QueueProcessor', {
@@ -13,7 +13,7 @@ describe('Testing QueueProcessor', {
   let processor;
   let executor;
   beforeEach(() => {
-    aws = index({ logger: console });
+    aws = Index({ logger: console });
     processor = aws.sqs.QueueProcessor({
       queues: {
         one: process.env.QUEUE_URL_ONE,

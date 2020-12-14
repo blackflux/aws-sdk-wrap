@@ -4,7 +4,7 @@ const QueueProcessor = require('./sqs/queue-processor');
 const { prepareMessage } = require('./sqs/prepare-message');
 const errors = require('./sqs/errors');
 
-module.exports.Sqs = ({ call, getService, logger }) => {
+module.exports = ({ call, getService, logger }) => {
   const sendMessageBatch = SendMessageBatch({ call, getService, logger });
   const getDeadLetterQueueUrl = GetDeadLetterQueueUrl({ call });
   return {
