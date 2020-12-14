@@ -3,14 +3,13 @@ const getFirst = require('./get-first');
 const validateKwargs = require('./validate-kwargs');
 
 // todo: write unit test
-module.exports = ({
-  name,
-  attributes,
-  indexes,
-  DocumentClient
-}) => {
-  // todo: do joi validation here
-  // ...
+module.exports = (kwargs) => {
+  const {
+    name,
+    attributes,
+    indices,
+    DocumentClient
+  } = validateKwargs(kwargs);
 
   const partitionKey = getFirst(attributes, ([k, v]) => v.partitionKey === true);
   const sortKey = getFirst(attributes, ([k, v]) => v.sortKey === true);
