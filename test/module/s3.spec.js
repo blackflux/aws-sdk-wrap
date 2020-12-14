@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
-const index = require('../../src');
-const { S3: S3Module } = require('../../src/module/s3');
+const Index = require('../../src');
+const S3Module = require('../../src/module/s3');
 
 describe('Testing s3 Util', {
   useNock: true,
@@ -13,7 +13,7 @@ describe('Testing s3 Util', {
   let key;
   beforeEach(() => {
     S3 = (opts = {}) => S3Module({
-      call: index({ config: { maxRetries: 0 } }).call,
+      call: Index({ config: { maxRetries: 0 } }).call,
       logger: null,
       ...opts
     });
