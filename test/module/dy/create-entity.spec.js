@@ -8,7 +8,8 @@ describe('Testing create-entity.js', () => {
     const r = createEntity({
       name: 'table-name',
       attributes: {
-        id: { partitionKey: true }
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string' }
       },
       indices: {
         targetIndex: {

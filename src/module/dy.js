@@ -4,12 +4,12 @@ module.exports = ({ call, getService, logger }) => ({
   Table: ({
     name,
     attributes,
-    indexes = {}
+    indices = {}
   }) => {
     const { entity } = createEntity({
       name,
       attributes,
-      indexes,
+      indices,
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
     return ({

@@ -1,5 +1,6 @@
 const toolbox = require('dynamodb-toolbox');
 const getFirst = require('./get-first');
+const validateKwargs = require('./validate-kwargs');
 
 // todo: write unit test
 module.exports = ({
@@ -18,7 +19,7 @@ module.exports = ({
     name,
     ...(partitionKey === undefined ? {} : { partitionKey }),
     ...(sortKey === undefined ? {} : { sortKey }),
-    indexes,
+    indexes: indices,
     entityField: false,
     removeNullAttributes: false,
     DocumentClient
