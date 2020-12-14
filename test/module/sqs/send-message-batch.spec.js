@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
-const index = require('../../../src/index');
+const Index = require('../../../src/index');
 const { SendMessageBatchError, MessageCollisionError } = require('../../../src/resources/errors');
 
 describe('Testing sendMessageBatch', {
@@ -10,7 +10,7 @@ describe('Testing sendMessageBatch', {
 }, () => {
   let aws;
   before(() => {
-    aws = index({ logger: console });
+    aws = Index({ logger: console });
   });
 
   it('Testing send message success', async () => {
