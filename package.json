@@ -101,7 +101,7 @@
     "lib"
   ],
   "dependencies": {
-    "joi-strict": "1.2.6",
+    "joi-strict": "1.2.7",
     "lambda-async": "1.0.9",
     "lodash.chunk": "4.2.0",
     "lodash.get": "4.4.2",
