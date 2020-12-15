@@ -332,10 +332,10 @@
   dependencies:
     smart-fs "1.12.1"
 
-"@blackflux/robo-config-plugin@3.10.15":
-  version "3.10.15"
-  resolved "https://registry.yarnpkg.com/@blackflux/robo-config-plugin/-/robo-config-plugin-3.10.15.tgz#3ef5a4313150ecd60c29aeb1a834e7710a98b544"
-  integrity sha512-w0iDutfLeJsEQfyIKwO0LYgzS0DYis5P5p0XEoxFi+GAnn4PYJl+paMjqOO4+MZi7DIhb9YGwxd1ahzZWqXlAg==
+"@blackflux/robo-config-plugin@3.10.17":
+  version "3.10.17"
+  resolved "https://registry.yarnpkg.com/@blackflux/robo-config-plugin/-/robo-config-plugin-3.10.17.tgz#f4c32940b5cad6e887254ee78f726dc43d3105a8"
+  integrity sha512-XB8xRsGyexU4KNs3PM6NL/Qv/9s9ukzJIZ+Nu8klGqOeBkIYLTlN7H7gpzXeGSmCAWQE+x6m8cRaKOCixXjC+A==
 
 "@eslint/eslintrc@^0.2.2":
   version "0.2.2"
@@ -5007,10 +5007,10 @@ node-sass-tilde-importer@^1.0.2:
   dependencies:
     find-parent-dir "^0.3.0"
 
-node-tdd@2.18.13:
-  version "2.18.13"
-  resolved "https://registry.yarnpkg.com/node-tdd/-/node-tdd-2.18.13.tgz#d2363affa1fd88cd71fa139f44fe067358a1846d"
-  integrity sha512-9yam8U5N3NV7UuxE5PqLWT/jJCA9dIwdQPhNrFCOER5vesCEj+p/JjhjRsG6KvxFdGZQq0AQKLZGJy7ykMS4Cw==
+node-tdd@2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/node-tdd/-/node-tdd-2.19.0.tgz#a42c1a8bd4db7ea17c974b71def4feb8953deb99"
+  integrity sha512-ejkJw9gnqLuRyLgjA9MKmi4Mxj6zKZHCuhFiFATrUhhjnjaYEGOiTLDAvNN8zsoaJY68jXhNZMO1neGj+j10Jw==
   dependencies:
     callsites "3.1.0"
     joi-strict "1.2.5"
