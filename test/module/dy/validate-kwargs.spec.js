@@ -86,6 +86,20 @@ describe('Testing validate-kwargs.js', () => {
       .to.equal('ValidationError: Indices values must match with defined attributes');
   });
 
+  it('Testing indices partitionKey must be defined in attributes one not found', async ({ capture }) => {
+    kwargs.attributes = {
+      id: { type: 'string', partitionKey: true },
+      name: { type: 'string' }
+    };
+    kwargs.indices = {
+      GSI1: { partitionKey: 'id' },
+      GSI2: { partitionKey: 'idNotExist' }
+    };
+    const err = await capture(() => validateKwargs(kwargs));
+    expect(err.message)
+      .to.equal('ValidationError: Indices values must match with defined attributes');
+  });
+
   it('Testing indices attribute can\'t be used for partitionKey and sortKey', async ({ capture }) => {
     kwargs.attributes = {
       id: { type: 'string', partitionKey: true }
@@ -112,7 +126,8 @@ describe('Testing validate-kwargs.js', () => {
       name: { type: 'string', sortKey: true }
     };
     kwargs.indices = {
-      GSI1: { partitionKey: 'id', sortKey: 'name' }
+      GSI1: { partitionKey: 'id', sortKey: 'name' },
+      GSI2: { partitionKey: 'name' }
     };
     const result = validateKwargs(kwargs);
     expect(result.error).to.equal(undefined);
