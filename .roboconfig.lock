@@ -13,7 +13,9 @@
     ".releaserc.json",
     "LICENSE",
     "README.md",
+    "docker/Dockerfile",
     "gardener.js",
+    "manage.sh",
     "package.json",
     "src/index.js",
     "test/index.spec.js"
