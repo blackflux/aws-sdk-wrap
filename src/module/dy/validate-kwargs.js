@@ -1,5 +1,6 @@
 const Joi = require('joi-strict');
 
+// todo: re-read this, check for correctness, tests, and ensure error messages are meaningful
 const schema = Joi.object().keys({
   name: Joi.string(),
   attributes: Joi.object().pattern(
@@ -27,6 +28,7 @@ const schema = Joi.object().keys({
   indices: Joi.object().pattern(
     Joi.string(),
     Joi.object().keys({
+      // todo: should probably be required, since we don't want to deal with local indices
       partitionKey: Joi.string().optional(),
       sortKey: Joi.string().optional()
     }).or('partitionKey', 'sortKey')
