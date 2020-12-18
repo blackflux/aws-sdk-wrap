@@ -1,19 +1,19 @@
-const createEntity = require('./dy/create-entity');
+const createModel = require('./dy/create-model');
 
 module.exports = ({ call, getService, logger }) => ({
-  Table: ({
+  Model: ({
     name,
     attributes,
     indices = {}
   }) => {
-    const { entity } = createEntity({
+    const model = createModel({
       name,
       attributes,
       indices,
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
     return ({
-      schema: () => {},
+      model,
       update: () => {},
       get: () => {},
       genSchema: () => null // subset of cloudformation template
