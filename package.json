@@ -102,7 +102,7 @@
   ],
   "dependencies": {
     "joi-strict": "1.2.9",
-    "lambda-async": "1.0.9",
+    "lambda-async": "1.0.10",
     "lodash.chunk": "4.2.0",
     "lodash.get": "4.4.2",
     "lru-cache-ext": "1.2.4",
