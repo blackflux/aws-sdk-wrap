@@ -133,7 +133,7 @@ describe('Testing validate-kwargs.js', () => {
       attributes: { id: { type: 'string', partitionKey: true } }
     });
     const result = exec(kwargs);
-    expect(result.error).to.equal(undefined);
+    expect(result).to.deep.equal(kwargs);
   });
 
   it('Testing model schema success with indices', () => {
@@ -148,6 +148,6 @@ describe('Testing validate-kwargs.js', () => {
       }
     });
     const result = exec(kwargs);
-    expect(result.error).to.equal(undefined);
+    expect(result).to.deep.equal(kwargs);
   });
 });
