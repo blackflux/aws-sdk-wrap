@@ -33,9 +33,7 @@ const schema = Joi.object().keys({
   ).optional().min(1)
     .custom((v, h) => {
       const valid = Object.values(v)
-        .every((idx) => ((Object.keys(idx).length > 1)
-          ? idx.partitionKey !== idx.sortKey
-          : true));
+        .every((idx) => Object.keys(idx).length === 0 || idx.partitionKey !== idx.sortKey);
       if (valid !== true) {
         return h.message('Cannot use the same attribute for partitionKey and sortKey');
       }
@@ -59,5 +57,5 @@ module.exports = (kwargs) => {
   if (result.error) {
     throw new Error(result.error);
   }
-  return result;
+  return result.value;
 };
