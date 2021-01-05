@@ -2,6 +2,13 @@ const toolbox = require('dynamodb-toolbox');
 const getFirst = require('./get-first');
 const validateKwargs = require('./validate-kwargs');
 
+const generateKeySchema = ({ partitionKey, sortKey = null }) => ({
+  KeySchema: [
+    { AttributeName: partitionKey, KeyType: 'HASH' },
+    ...(sortKey === null ? [] : [{ AttributeName: sortKey, KeyType: 'RANGE' }])
+  ]
+});
+
 const convertType = (t) => {
   switch (t) {
     case 'string':
@@ -47,9 +54,6 @@ module.exports = (kwargs) => {
     ...(sortKey === undefined ? [] : [sortKey])
   ];
 
-  // todo: define secondary indices
-  // ...
-
   const schema = {
     TableName: name,
     AttributeDefinitions: Object
@@ -59,33 +63,19 @@ module.exports = (kwargs) => {
         AttributeName: k,
         AttributeType: convertType(v.type)
       })),
-    KeySchema: [
-      { AttributeName: partitionKey, KeyType: 'HASH' },
-      ...(sortKey === undefined ? [] : [{ AttributeName: sortKey, KeyType: 'RANGE' }])
-    ],
-    // todo: defined secondary indices
-    // ...(Object.keys(indices).length === 0 ? {} : {
-    //   GlobalSecondaryIndexes: /* ... */
-    // }),
-    /*
-            GlobalSecondaryIndexes:
-          - IndexName: parentIndex
-            KeySchema:
-              - AttributeName: parentHash
-                KeyType: HASH
-              - AttributeName: child
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-          - IndexName: childIndex
-            KeySchema:
-              - AttributeName: childHash
-                KeyType: HASH
-              - AttributeName: parent
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-     */
+    ...generateKeySchema({ partitionKey, sortKey }),
+    ...(Object.keys(indices).length === 0 ? {} : {
+      GlobalSecondaryIndexes: Object.entries(indices).map(([k, v]) => ({
+        IndexName: k,
+        ...generateKeySchema({
+          partitionKey: v.partitionKey,
+          sortKey: v.sortKey
+        }),
+        Projection: {
+          ProjectionType: 'ALL'
+        }
+      }))
+    }),
     BillingMode: 'PAY_PER_REQUEST'
   };
 

@@ -27,8 +27,8 @@ describe('Testing dy Util', { useNock: true, nockStripHeaders: true }, () => {
       indices: {
         targetIndex: {
           // todo: this should error the way that is is
-          partitionKey: 'target',
-          sortKey: 'type'
+          partitionKey: 'id',
+          sortKey: 'name'
         }
       },
       DocumentClient: new DocumentClient({

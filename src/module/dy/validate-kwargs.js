@@ -1,6 +1,5 @@
 const Joi = require('joi-strict');
 
-// todo: re-read this, check for correctness, tests, and ensure error messages are meaningful
 const schema = Joi.object().keys({
   name: Joi.string(),
   attributes: Joi.object().pattern(
@@ -20,7 +19,7 @@ const schema = Joi.object().keys({
     if (partitionKeyCount > 1) {
       return h.message('Duplicated partitionKey definition');
     }
-    if (sortKeyCount !== 0 && sortKeyCount > 1) {
+    if (sortKeyCount > 1) {
       return h.message('Duplicated sortKey definition');
     }
     return v;
@@ -28,18 +27,15 @@ const schema = Joi.object().keys({
   indices: Joi.object().pattern(
     Joi.string(),
     Joi.object().keys({
-      // todo: should probably be required, since we don't want to deal with local indices
-      partitionKey: Joi.string().optional(),
+      partitionKey: Joi.string(),
       sortKey: Joi.string().optional()
-    }).or('partitionKey', 'sortKey')
+    })
   ).optional().min(1)
     .custom((v, h) => {
       const valid = Object.values(v)
-        .every((idx) => ((Object.keys(idx).length > 1)
-          ? idx.partitionKey !== idx.sortKey
-          : true));
-      if (valid === false) {
-        return h.message('Can\'t use the same attribute as partitionKey and sortKey');
+        .every((idx) => Object.keys(idx).length === 0 || idx.partitionKey !== idx.sortKey);
+      if (valid !== true) {
+        return h.message('Cannot use the same attribute for partitionKey and sortKey');
       }
       return v;
     }),
@@ -47,8 +43,7 @@ const schema = Joi.object().keys({
 }).custom((v, h) => {
   const { attributes, indices } = v;
   if (indices !== undefined) {
-    const indexKeys = Object.values(indices)
-      .map((idx) => Object.values(idx)).flat();
+    const indexKeys = Object.values(indices).reduce((prev, cur) => prev.concat(...Object.values(cur)), []);
     const foundKeys = indexKeys.filter((idx) => Object.keys(attributes).includes(idx));
     if (foundKeys.length !== indexKeys.length) {
       return h.message('Indices values must match with defined attributes');
@@ -62,5 +57,5 @@ module.exports = (kwargs) => {
   if (result.error) {
     throw new Error(result.error);
   }
-  return result;
+  return result.value;
 };

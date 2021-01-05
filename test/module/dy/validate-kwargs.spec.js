@@ -3,133 +3,151 @@ const { describe } = require('node-tdd');
 const validateKwargs = require('../../../src/module/dy/validate-kwargs');
 
 describe('Testing validate-kwargs.js', () => {
-  let kwargs;
-  beforeEach(() => {
-    kwargs = {
+  let exec;
+  let generateKwargs;
+
+  before(() => {
+    exec = (kwargs) => {
+      let result;
+      try {
+        result = validateKwargs(kwargs);
+      } catch (err) {
+        result = err;
+      }
+      return result;
+    };
+    generateKwargs = ({ attributes = null, indices = null } = {}) => ({
       name: 'table-name',
+      ...(attributes === null ? {} : { attributes }),
+      ...(indices === null ? {} : { indices }),
       DocumentClient: {}
-    };
+    });
   });
 
-  it('Testing empty definition', async ({ capture }) => {
-    const err = await capture(() => validateKwargs({}));
-    expect(err.message).to.equal('ValidationError: "name" is required');
+  it('Testing empty definition', () => {
+    const error = exec({});
+    expect(error.message).to.equal('ValidationError: "name" is required');
   });
 
-  it('Testing without attributes definition', async ({ capture }) => {
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message).to.equal('ValidationError: "attributes" is required');
+  it('Testing without attributes definition', () => {
+    const kwargs = generateKwargs();
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: "attributes" is required');
   });
 
-  it('Testing attributes incomplete attributes definition', async ({ capture }) => {
-    kwargs.attributes = {};
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message).to.equal('ValidationError: "attributes" must have at least 1 key');
+  it('Testing incomplete attributes definition', () => {
+    const kwargs = generateKwargs({ attributes: {} });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: "attributes" must have at least 1 key');
   });
 
-  it('Testing invalid partitionKey and sortKey definition in same attribute', async ({ capture }) => {
-    kwargs.attributes = {
-      id: { type: 'string', partitionKey: true, sortKey: true }
-    };
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message).to.equal('ValidationError: "partitionKey" must not exist simultaneously with [sortKey]');
+  it('Testing attribute cannot be defined as partitionKey and sortKey simultaneously', () => {
+    const kwargs = generateKwargs({
+      attributes: { id: { type: 'string', partitionKey: true, sortKey: true } }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: "partitionKey" must not exist simultaneously with [sortKey]');
   });
 
-  it('Testing duplicated partitionKey in attribute definition', async ({ capture }) => {
-    kwargs.attributes = {
-      id: { type: 'string', partitionKey: true },
-      name: { type: 'string', partitionKey: true }
-    };
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message).to.equal('ValidationError: Duplicated partitionKey definition');
+  it('Testing duplicated partitionKey in attributes definition', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string', partitionKey: true }
+      }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: Duplicated partitionKey definition');
   });
 
-  it('Testing must have zero or one value with sortKey', async ({ capture }) => {
-    kwargs.attributes = {
-      id: { type: 'string', partitionKey: true },
-      name: { type: 'string', sortKey: true },
-      desc: { type: 'string', sortKey: true }
-    };
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message).to.equal('ValidationError: Duplicated sortKey definition');
+  it('Testing duplicated sortKey in attributes definition', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string', sortKey: true },
+        desc: { type: 'string', sortKey: true }
+      }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: Duplicated sortKey definition');
   });
 
-  it('Testing must have defined a partitionKey', async ({ capture }) => {
-    kwargs.attributes = {
-      id: { type: 'string' },
-      name: { type: 'string' }
-    };
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message).to.equal('ValidationError: At least one partitionKey must be defined');
+  it('Testing partitionKey must be defined in attributes definition', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string' },
+        name: { type: 'string' }
+      }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: At least one partitionKey must be defined');
   });
 
-  it('Testing indices (if defined) property must not be empty', async ({ capture }) => {
-    kwargs.attributes = {
-      id: { type: 'string', partitionKey: true }
-    };
-    kwargs.indices = {};
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message)
-      .to.equal('ValidationError: "indices" must have at least 1 key');
+  it('Testing indices must have at least one defined index', () => {
+    const kwargs = generateKwargs({
+      attributes: { id: { type: 'string', partitionKey: true } },
+      indices: {}
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: "indices" must have at least 1 key');
   });
 
-  it('Testing indices partitionKey must be defined in attributes', async ({ capture }) => {
-    kwargs.attributes = {
-      id: { type: 'string', partitionKey: true },
-      name: { type: 'string' }
-    };
-    kwargs.indices = {
-      GSI1: { partitionKey: 'idNotExist' }
-    };
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message)
-      .to.equal('ValidationError: Indices values must match with defined attributes');
+  it('Testing index partitionKey must be defined in attributes', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string' }
+      },
+      indices: { GSI1: { partitionKey: 'idNotExist', sortKey: 'name' } }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: Indices values must match with defined attributes');
   });
 
-  it('Testing indices partitionKey must be defined in attributes one not found', async ({ capture }) => {
-    kwargs.attributes = {
-      id: { type: 'string', partitionKey: true },
-      name: { type: 'string' }
-    };
-    kwargs.indices = {
-      GSI1: { partitionKey: 'id' },
-      GSI2: { partitionKey: 'idNotExist' }
-    };
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message)
-      .to.equal('ValidationError: Indices values must match with defined attributes');
+  it('Testing one index missing partitionKey definition in attributes', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string' }
+      },
+      indices: {
+        GSI1: { partitionKey: 'id' },
+        GSI2: { partitionKey: 'idNotExist', sortKey: 'name' }
+      }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: Indices values must match with defined attributes');
   });
 
-  it('Testing indices attribute can\'t be used for partitionKey and sortKey', async ({ capture }) => {
-    kwargs.attributes = {
-      id: { type: 'string', partitionKey: true }
-    };
-    kwargs.indices = {
-      GSI1: { partitionKey: 'id', sortKey: 'id' }
-    };
-    const err = await capture(() => validateKwargs(kwargs));
-    expect(err.message)
-      .to.equal('ValidationError: Can\'t use the same attribute as partitionKey and sortKey');
+  it('Testing index definition cannot use the same attribute for partitionKey and sortKey', () => {
+    const kwargs = generateKwargs({
+      attributes: { id: { type: 'string', partitionKey: true } },
+      indices: { GSI1: { partitionKey: 'id', sortKey: 'id' } }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: Cannot use the same attribute for partitionKey and sortKey');
   });
 
   it('Testing model schema success minimal definition', () => {
-    kwargs.attributes = {
-      id: { type: 'string', partitionKey: true }
-    };
-    const result = validateKwargs(kwargs);
-    expect(result.error).to.equal(undefined);
+    const kwargs = generateKwargs({
+      attributes: { id: { type: 'string', partitionKey: true } }
+    });
+    const result = exec(kwargs);
+    expect(result).to.deep.equal(kwargs);
   });
 
   it('Testing model schema success with indices', () => {
-    kwargs.attributes = {
-      id: { type: 'string', partitionKey: true },
-      name: { type: 'string', sortKey: true }
-    };
-    kwargs.indices = {
-      GSI1: { partitionKey: 'id', sortKey: 'name' },
-      GSI2: { partitionKey: 'name' }
-    };
-    const result = validateKwargs(kwargs);
-    expect(result.error).to.equal(undefined);
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string', sortKey: true }
+      },
+      indices: {
+        GSI1: { partitionKey: 'id', sortKey: 'name' },
+        GSI2: { partitionKey: 'name' }
+      }
+    });
+    const result = exec(kwargs);
+    expect(result).to.deep.equal(kwargs);
   });
 });
