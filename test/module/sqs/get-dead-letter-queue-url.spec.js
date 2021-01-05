@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
-const index = require('../../../src/index');
+const Index = require('../../../src/index');
 const GetDeadLetterQueueUrl = require('../../../src/module/sqs/get-dead-letter-queue-url');
 
 describe('Testing getDeadLetterQueueUrl', {
@@ -11,7 +11,7 @@ describe('Testing getDeadLetterQueueUrl', {
   let aws;
   let getDeadLetterQueueUrl;
   before(() => {
-    aws = index({ logger: console });
+    aws = Index({ logger: console });
     getDeadLetterQueueUrl = GetDeadLetterQueueUrl({ call: aws.call });
   });
 
