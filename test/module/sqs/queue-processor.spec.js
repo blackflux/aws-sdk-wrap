@@ -113,6 +113,8 @@ describe('Testing QueueProcessor', {
   it('Testing ingest with groupIdFunction', async () => {
     const result = await processor.ingest([{ name: 'group-id-step', meta: 'meta1' }]);
     expect(result).to.equal(undefined);
+    const r = await executor([{ name: 'group-id-step', meta: 'meta1' }]);
+    expect(r).to.deep.equal([]);
   });
 
   it('Test ingesting into separate queues', async () => {

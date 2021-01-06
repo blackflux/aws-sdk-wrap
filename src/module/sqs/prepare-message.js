@@ -1,3 +1,4 @@
+const assert = require('assert');
 const Joi = require('joi-strict');
 
 const GROUP_ID = Symbol('group-id');
@@ -8,12 +9,15 @@ module.exports.getDelaySeconds = (msg) => msg[DELAY_SECONDS];
 
 module.exports.prepareMessage = (msg, opts) => {
   Joi.assert(opts, Joi.object().keys({
-    // eslint-disable-next-line newline-per-chained-call
     groupId: Joi.string().optional(),
     // eslint-disable-next-line newline-per-chained-call
     delaySeconds: Joi.number().integer().min(0).max(15 * 60).optional()
   }));
   if (opts.groupId !== undefined) {
+    assert(
+      typeof opts.groupId === 'string' && opts.groupId.length <= 128 && opts.groupId.length !== 0,
+      `Invalid Message Group Id ( MessageGroupId = ${opts.groupId} )`
+    );
     Object.defineProperty(msg, GROUP_ID, {
       value: opts.groupId,
       writable: false
