@@ -3,7 +3,7 @@ const chunk = require('lodash.chunk');
 const get = require('lodash.get');
 const Joi = require('joi-strict');
 const objectHash = require('object-hash-strict');
-const { getDelaySeconds, getGroupId } = require('./prepare-message');
+const { getGroupId, getDelaySeconds } = require('./prepare-message');
 const { SendMessageBatchError, MessageCollisionError } = require('../../resources/errors');
 
 const sleep = util.promisify(setTimeout);
