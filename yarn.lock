@@ -5424,7 +5424,7 @@ object-deep-contain@1.0.29:
   resolved "https://registry.yarnpkg.com/object-deep-contain/-/object-deep-contain-1.0.29.tgz#d6cf9df21455e31de769f486410594cd6885d215"
   integrity sha512-nLOAncdGePrOWzjSD1AwroXRtaUOXf3LRyVhTntdYSPwvWld65toDGxFrDvw/0ji3AGF5FeEvnoBNZBUElK3Ng==
 
-object-hash-strict@^1.2.38:
+object-hash-strict@1.2.38:
   version "1.2.38"
   resolved "https://registry.yarnpkg.com/object-hash-strict/-/object-hash-strict-1.2.38.tgz#03bca3064d61283f40049fd82e6842237ea051aa"
   integrity sha512-nvcSHgBhNz9GtNJavIT5B3x7nff3/+oQysRG8QkFf7X1w6sBK5n+JWR3SPlyoK4QDkIQhnMbakS6dHbCUdFo2A==
