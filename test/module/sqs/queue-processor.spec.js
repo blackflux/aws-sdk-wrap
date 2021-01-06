@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const Index = require('../../../src/index');
-const { getDelaySeconds } = require('../../../src/module/sqs/prepare-message');
+const { getDelaySeconds, prepareMessage } = require('../../../src/module/sqs/prepare-message');
 
 describe('Testing QueueProcessor', {
   useNock: true,
@@ -20,7 +20,7 @@ describe('Testing QueueProcessor', {
         two: process.env.QUEUE_URL_TWO
       },
       stepsDir: `${__filename}_steps`,
-      ingestSteps: ['step1', 'step3']
+      ingestSteps: ['step1', 'step3', 'group-id-step']
     });
     executor = (records) => new Promise((resolve, reject) => {
       processor.handler({
@@ -67,6 +67,7 @@ describe('Testing QueueProcessor', {
       '    badOutput [label="bad-output"];',
       '    delayStep [label="delay-step",color=red];',
       '    disallowedOutput [label="disallowed-output"];',
+      '    groupIdStep [label="group-id-step"];',
       '    stepAutoRetry [label="step-auto-retry"];',
       '    step1 [label="step1"];',
       '  }',
@@ -83,6 +84,7 @@ describe('Testing QueueProcessor', {
       '  _ingest [shape=Mdiamond,label=ingest];',
       '  _ingest -> step1;',
       '  _ingest -> step3;',
+      '  _ingest -> groupIdStep;',
       '  ',
       '  autoRetryBackoffFn -> autoRetryBackoffFn;',
       '  autoRetry -> autoRetry;',
@@ -99,6 +101,20 @@ describe('Testing QueueProcessor', {
   it('Testing ingest', async () => {
     const result = await processor.ingest([{ name: 'step1', meta: 'meta1' }]);
     expect(result).to.equal(undefined);
+  });
+
+  it('Testing ingest with groupId', async () => {
+    const msg = { name: 'step1', meta: 'meta1' };
+    prepareMessage(msg, { groupId: '123' });
+    const result = await processor.ingest([msg]);
+    expect(result).to.equal(undefined);
+  });
+
+  it('Testing ingest with groupIdFunction', async () => {
+    const result = await processor.ingest([{ name: 'group-id-step', meta: 'meta1' }]);
+    expect(result).to.equal(undefined);
+    const r = await executor([{ name: 'group-id-step', meta: 'meta1' }]);
+    expect(r).to.deep.equal([]);
   });
 
   it('Test ingesting into separate queues', async () => {
