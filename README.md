@@ -88,6 +88,7 @@ Each `step` should export:
  - `delay = 0` (optional): the amount of seconds that the message is delayed, defaults to undefined, i.e. the queue default
  - `retry = null` (optional): Declare object that is then used to instantiate `RetryError` internally
  - `timeout = 900` (optional): Timeout for individual step. Should allow for extra overhead for message management / processing and account for concurrency.
+ - `groupIdFunction = undefined` (optional): Generator function for the groupId. Takes step payload as parameter
  - `before<function(stepContext): steps>` (optional): called before first step is executed
  - `after<function(stepContext): steps>` (optional):
 
@@ -108,6 +109,7 @@ Please see tests for example.
 
 Prepare message object with options. Currently options include:
 - `delaySeconds` (integer): used to set the delay for a specific message. Supersedes the corresponding batch option.
+- `groupId` (string): group id for the message, can only be set for steps that do not define `groupIdFunction`
 
 #### s3.putGzipObject({ bucket: String, key: String, data: Object })
 Adds an object to an Amazon S3 bucket gzipped. Uses [s3:putObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property).
