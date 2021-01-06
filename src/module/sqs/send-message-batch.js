@@ -2,8 +2,8 @@ const util = require('util');
 const chunk = require('lodash.chunk');
 const get = require('lodash.get');
 const Joi = require('joi-strict');
-const objectHash = require('object-hash');
-const { getDelaySeconds } = require('./prepare-message');
+const objectHash = require('object-hash-strict');
+const { getDelaySeconds, getGroupId } = require('./prepare-message');
 const { SendMessageBatchError, MessageCollisionError } = require('../../resources/errors');
 
 const sleep = util.promisify(setTimeout);
@@ -44,6 +44,7 @@ const transformMessages = ({ messages, batchDelaySeconds }) => {
   const result = {};
   for (let idx = 0; idx < messages.length; idx += 1) {
     const msg = messages[idx];
+    const msgGroupId = getGroupId(msg);
     const msgDelaySeconds = getDelaySeconds(msg);
     const delaySeconds = msgDelaySeconds === undefined ? batchDelaySeconds : msgDelaySeconds;
     const id = objectHash(delaySeconds === null ? msg : { msg, delaySeconds });
@@ -53,6 +54,7 @@ const transformMessages = ({ messages, batchDelaySeconds }) => {
     result[id] = {
       Id: id,
       MessageBody: JSON.stringify(msg),
+      ...(msgGroupId === undefined ? {} : { MessageGroupId: msgGroupId }),
       ...(delaySeconds === null ? {} : { DelaySeconds: delaySeconds })
     };
   }

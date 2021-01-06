@@ -45,6 +45,7 @@ module.exports = ({
           delay = 0,
           retry = null,
           timeout = 900,
+          groupIdFunction = null,
           before = async (stepContext) => [],
           after = async (stepContext) => []
         } = stepLogic;
@@ -78,6 +79,11 @@ module.exports = ({
           'Invalid value for step timeout provided.'
         );
         assert(
+          groupIdFunction === null
+          || (typeof groupIdFunction === 'function' && groupIdFunction.length === 1),
+          'groupIdFunction must be a function taking one argument.'
+        );
+        assert(
           typeof before === 'function' && before.length === 1,
           'Invalid before() definition for step.'
         );
@@ -100,6 +106,7 @@ module.exports = ({
             concurrency: Number.MAX_SAFE_INTEGER,
             timeout: timeout * 1000
           }),
+          groupIdFunction,
           before,
           after,
           isParallel: typeof stepLogic.before === 'function' && typeof stepLogic.after === 'function'
@@ -122,6 +129,12 @@ module.exports = ({
         messages.forEach((msg) => {
           const queueUrl = queues[steps[msg.name].queue];
           assert(queueUrl !== undefined);
+          const groupIdFunction = steps[msg.name].groupIdFunction;
+          if (groupIdFunction !== null) {
+            prepareMessage(msg, {
+              groupId: groupIdFunction(msg)
+            });
+          }
           const delay = steps[msg.name].delay;
           assert(delay !== undefined);
           if (delay !== 0) {
