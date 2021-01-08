@@ -9,7 +9,7 @@ module.exports.schema = Joi.object().keys({
   delay: Joi.number().integer().min(0)
 });
 
-module.exports.before = async (context) => [];
+module.exports.before = async (context, payloads) => [];
 module.exports.handler = async (payload, event, context) => new Promise(
   (resolve) => setTimeout(() => resolve([]), payload.delay)
 );
