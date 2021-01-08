@@ -7,7 +7,7 @@ module.exports.schema = Joi.object().keys({
   meta: Joi.string()
 });
 
-module.exports.before = async (context) => {
+module.exports.before = async (context, payloads) => {
   context.store = [];
   return [];
 };
