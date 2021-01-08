@@ -181,7 +181,7 @@ describe('Testing QueueProcessor', {
     );
   });
 
-  it('Testing multiple records (success)', async () => {
+  it('Testing multiple records (success)', async ({ recorder }) => {
     const result = await executor([
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
@@ -190,6 +190,10 @@ describe('Testing QueueProcessor', {
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
     ]);
+    expect(recorder.get()).to.deep.equal([[
+      { name: 'parallel-step', meta: 'A' },
+      { name: 'parallel-step', meta: 'B' }
+    ]]);
   });
 
   it('Testing timeout error', async ({ capture }) => {
@@ -197,7 +201,7 @@ describe('Testing QueueProcessor', {
     expect(result.message).to.deep.equal('Promise "" timed out after 1000 ms');
   });
 
-  it('Testing timeout ok', async ({ capture }) => {
+  it('Testing timeout ok', async () => {
     const result = await executor([{ name: 'delay-step', delay: 500 }]);
     expect(result).to.deep.equal([]);
   });

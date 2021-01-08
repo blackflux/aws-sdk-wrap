@@ -46,7 +46,7 @@ module.exports = ({
           retry = null,
           timeout = 900,
           groupIdFunction = null,
-          before = async (stepContext) => [],
+          before = async (stepContext, payloads) => [],
           after = async (stepContext) => []
         } = stepLogic;
         assert(Joi.isSchema(schema) === true, 'Schema not a Joi schema.');
@@ -84,7 +84,7 @@ module.exports = ({
           'groupIdFunction must be a function taking one argument.'
         );
         assert(
-          typeof before === 'function' && before.length === 1,
+          typeof before === 'function' && before.length === 2,
           'Invalid before() definition for step.'
         );
         assert(
@@ -248,7 +248,10 @@ module.exports = ({
     })();
 
     await Promise.all(Array.from(stepContexts)
-      .map(([step, ctx]) => step.before(ctx).then((msgs) => stepBus.prepare(msgs, step))));
+      .map(([step, ctx]) => step.before(
+        ctx,
+        tasks.filter((e) => e[2] === step).map((e) => e[0])
+      ).then((msgs) => stepBus.prepare(msgs, step))));
 
     await Promise.all(tasks.map(async ([payload, e, step]) => {
       const payloadStripped = stripPayloadMeta(payload);
