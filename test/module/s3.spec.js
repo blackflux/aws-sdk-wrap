@@ -231,6 +231,7 @@ describe('Testing s3 Util', {
   }, () => {
     it('Testing error rate does not exceed retry count', async ({ recorder }) => {
       const s3 = S3({
+        backoffFunction: () => 0,
         maxRetries: 1
       });
       const result = await s3.putGzipObject({
@@ -247,6 +248,7 @@ describe('Testing s3 Util', {
 
     it('Testing error rate until fatal error', async ({ capture, recorder }) => {
       const s3 = S3({
+        backoffFunction: () => 0,
         maxRetries: 1
       });
       const error = await capture(() => s3.putGzipObject({
@@ -278,6 +280,24 @@ describe('Testing s3 Util', {
       expect(recorder.get()).to.deep.equal([
         // eslint-disable-next-line max-len
         'Request failed for s3.putObject()\n{"errorName":"Error","errorDetails":{"message":"The bucket you are attempting to access must be addressed using the specified endpoint. Please send all future requests to this endpoint.","code":"PermanentRedirect","region":null,"time":"2020-12-08T21:38:37.124Z","requestId":null,"statusCode":500,"retryable":true},"requestParams":{"ContentType":"application/json","ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer","data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},"meta":{"retryCount":0}}'
+      ]);
+    });
+
+    it('Testing error with default backOffFunction', async ({ capture, recorder }) => {
+      const s3 = S3({ maxRetries: 1 });
+      const error = await capture(() => s3.putGzipObject({
+        bucket,
+        key,
+        data: JSON.stringify({ data: 'data' })
+      }));
+      expect(error).to.deep.contain({
+        statusCode: 503
+      });
+      expect(recorder.get()).to.deep.equal([
+        // eslint-disable-next-line max-len
+        'Request failed for s3.putObject()\n{"errorName":"Error","errorDetails":{"message":"Reduce your request rate.","code":"SlowDown","region":null,"time":"2020-12-08T21:38:37.124Z","requestId":null,"statusCode":503,"retryable":true},"requestParams":{"ContentType":"application/json","ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer","data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},"meta":{"retryCount":0}}',
+        // eslint-disable-next-line max-len
+        'Request failed for s3.putObject()\n{"errorName":"Error","errorDetails":{"message":"Reduce your request rate.","code":"SlowDown","region":null,"time":"2020-12-08T21:38:37.124Z","requestId":null,"statusCode":503,"retryable":true},"requestParams":{"ContentType":"application/json","ContentEncoding":"gzip","Bucket":"test-bucket-name","Key":"key","Body":{"type":"Buffer","data":[31,139,8,0,0,0,0,0,2,3,171,86,74,73,44,73,84,178,130,80,181,0,185,30,67,221,15,0,0,0]}},"meta":{"retryCount":1}}'
       ]);
     });
   });
