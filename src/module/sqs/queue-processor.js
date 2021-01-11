@@ -189,7 +189,7 @@ module.exports = ({
         if (!stepContexts.has(step)) {
           stepContexts.set(step, Object.create(null));
         }
-        return [payload, e, step];
+        return [payload, stripPayloadMeta(payload), e, step];
       });
 
     if (event.Records.length !== 1) {
@@ -250,11 +250,10 @@ module.exports = ({
     await Promise.all(Array.from(stepContexts)
       .map(([step, ctx]) => step.before(
         ctx,
-        tasks.filter((e) => e[2] === step).map((e) => e[0])
+        tasks.filter((e) => e[3] === step).map((e) => e[1])
       ).then((msgs) => stepBus.prepare(msgs, step))));
 
-    await Promise.all(tasks.map(async ([payload, e, step]) => {
-      const payloadStripped = stripPayloadMeta(payload);
+    await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
       try {
         const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts.get(step)));
         stepBus.prepare(msgs, step);
