@@ -231,7 +231,6 @@ describe('Testing s3 Util', {
   }, () => {
     it('Testing error rate does not exceed retry count', async ({ recorder }) => {
       const s3 = S3({
-        backoffFunction: () => 0,
         maxRetries: 1
       });
       const result = await s3.putGzipObject({
@@ -248,7 +247,6 @@ describe('Testing s3 Util', {
 
     it('Testing error rate until fatal error', async ({ capture, recorder }) => {
       const s3 = S3({
-        backoffFunction: () => 0,
         maxRetries: 1
       });
       const error = await capture(() => s3.putGzipObject({
