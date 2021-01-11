@@ -7,9 +7,11 @@ module.exports.schema = Joi.object().keys({
   meta: Joi.string()
 });
 
-module.exports.before = async (context, payloads) => {
+module.exports.before = async (context, payloads, events) => {
   // eslint-disable-next-line no-console
   console.log(payloads);
+  // eslint-disable-next-line no-console
+  console.log(events);
   context.store = [];
   return [];
 };

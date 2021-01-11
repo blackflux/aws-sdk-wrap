@@ -89,7 +89,7 @@ Each `step` should export:
  - `retry = null` (optional): Declare object that is then used to instantiate `RetryError` internally
  - `timeout = 900` (optional): Timeout for individual step. Should allow for extra overhead for message management / processing and account for concurrency.
  - `groupIdFunction = undefined` (optional): Generator function for the groupId. Takes step payload as parameter
- - `before<function(stepContext, payloads[]): steps>` (optional): called before first step is executed
+ - `before<function(stepContext, payloads[], events[]): steps>` (optional): called before first step is executed
  - `after<function(stepContext): steps>` (optional):
 
 The schema needs to define the event name under `name`. New events that are to be re-queued into the queue need to be returned from the `handler`, `before` or `after` function as an array.

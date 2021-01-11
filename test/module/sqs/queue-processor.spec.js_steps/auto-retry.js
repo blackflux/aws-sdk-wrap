@@ -8,7 +8,7 @@ module.exports.schema = Joi.object().keys({
   retrySettings: Joi.object().optional()
 });
 
-module.exports.before = async (context, payloads) => [];
+module.exports.before = async (context, payloads, events) => [];
 module.exports.handler = async (payload, event, context) => {
   throw new RetryError(payload.retrySettings);
 };
