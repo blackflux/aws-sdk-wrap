@@ -7,12 +7,17 @@ const { LocalTable } = require('../dy-helper');
 
 const { DocumentClient } = DynamoDB;
 
-describe('Testing dy Util', { useNock: true, nockStripHeaders: true }, () => {
+describe('Testing dy Util', { useNock: true, nockStripHeaders: true, timeout: 55000 }, () => {
   let Model;
   let model;
   let localTable;
   beforeEach(async () => {
-    const index = Index({ config: { maxRetries: 0 } });
+    const index = Index({
+      config: {
+        maxRetries: 0,
+        endpoint: process.env.DYNAMODB_ENDPOINT
+      }
+    });
     Model = (opts = {}) => DyUtil({
       call: index.call,
       logger: null,
@@ -32,7 +37,7 @@ describe('Testing dy Util', { useNock: true, nockStripHeaders: true }, () => {
         }
       },
       DocumentClient: new DocumentClient({
-        endpoint: 'http://dynamodb-local:8000'
+        endpoint: process.env.DYNAMODB_ENDPOINT
       })
     });
     localTable = LocalTable(model.model);
@@ -50,4 +55,37 @@ describe('Testing dy Util', { useNock: true, nockStripHeaders: true }, () => {
       'genSchema'
     ]);
   });
+
+  it('Testing put', async () => {
+    const item = {
+      id: 123,
+      name: 'name'
+    };
+    const result = await model.put(item);
+    expect(result).to.deep.equal({});
+  });
+
+  it('Testing put with conditions', async () => {
+    const item = {
+      id: 123,
+      name: 'name'
+    };
+    const result = await model.put(item, { conditions: { attr: 'name', exists: false } });
+    expect(result).to.deep.equal({});
+  });
+
+  it('Testing put with ConditionalCheckFailedException', async ({ capture }) => {
+    const item = {
+      id: 123,
+      name: 'name'
+    };
+    const error = await capture(() => model.put(item, { conditions: { attr: 'name', exists: true } }));
+    expect(error.code).to.equal('ConditionalCheckFailedException');
+  });
 });
+
+
+// let result = await MyEntity.get(
+//   key,
+//   { consistent: true }
+// )
