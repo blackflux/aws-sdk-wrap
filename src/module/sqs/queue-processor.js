@@ -45,7 +45,8 @@ module.exports = ({
           delay = 0,
           retry = null,
           timeout = 900,
-          before = async (stepContext) => [],
+          groupIdFunction = null,
+          before = async (stepContext, payloads) => [],
           after = async (stepContext) => []
         } = stepLogic;
         assert(Joi.isSchema(schema) === true, 'Schema not a Joi schema.');
@@ -78,7 +79,12 @@ module.exports = ({
           'Invalid value for step timeout provided.'
         );
         assert(
-          typeof before === 'function' && before.length === 1,
+          groupIdFunction === null
+          || (typeof groupIdFunction === 'function' && groupIdFunction.length === 1),
+          'groupIdFunction must be a function taking one argument.'
+        );
+        assert(
+          typeof before === 'function' && before.length === 2,
           'Invalid before() definition for step.'
         );
         assert(
@@ -100,6 +106,7 @@ module.exports = ({
             concurrency: Number.MAX_SAFE_INTEGER,
             timeout: timeout * 1000
           }),
+          groupIdFunction,
           before,
           after,
           isParallel: typeof stepLogic.before === 'function' && typeof stepLogic.after === 'function'
@@ -122,6 +129,12 @@ module.exports = ({
         messages.forEach((msg) => {
           const queueUrl = queues[steps[msg.name].queue];
           assert(queueUrl !== undefined);
+          const groupIdFunction = steps[msg.name].groupIdFunction;
+          if (groupIdFunction !== null) {
+            prepareMessage(msg, {
+              groupId: groupIdFunction(msg)
+            });
+          }
           const delay = steps[msg.name].delay;
           assert(delay !== undefined);
           if (delay !== 0) {
@@ -235,7 +248,10 @@ module.exports = ({
     })();
 
     await Promise.all(Array.from(stepContexts)
-      .map(([step, ctx]) => step.before(ctx).then((msgs) => stepBus.prepare(msgs, step))));
+      .map(([step, ctx]) => step.before(
+        ctx,
+        tasks.filter((e) => e[2] === step).map((e) => e[0])
+      ).then((msgs) => stepBus.prepare(msgs, step))));
 
     await Promise.all(tasks.map(async ([payload, e, step]) => {
       const payloadStripped = stripPayloadMeta(payload);
