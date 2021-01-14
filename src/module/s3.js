@@ -17,8 +17,10 @@ module.exports = ({
   ) => {
     let lastError;
     for (let count = 0; count <= maxRetries; count += 1) {
-      // eslint-disable-next-line no-await-in-loop
-      await sleep(backoffFunction(count));
+      if (count !== 0) {
+        // eslint-disable-next-line no-await-in-loop
+        await sleep(backoffFunction(count));
+      }
       try {
         // eslint-disable-next-line no-await-in-loop
         return await call(action, opts, {

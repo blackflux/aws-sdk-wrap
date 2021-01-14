@@ -54,7 +54,13 @@ const transformMessages = ({ messages, batchDelaySeconds }) => {
     result[id] = {
       Id: id,
       MessageBody: JSON.stringify(msg),
-      ...(msgGroupId === undefined ? {} : { MessageGroupId: msgGroupId }),
+      ...(msgGroupId === undefined ? {} : {
+        MessageGroupId: msgGroupId,
+        MessageDeduplicationId: objectHash({
+          timestamp: new Date().toISOString(),
+          id
+        })
+      }),
       ...(delaySeconds === null ? {} : { DelaySeconds: delaySeconds })
     };
   }
