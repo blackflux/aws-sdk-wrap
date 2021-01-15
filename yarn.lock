@@ -332,10 +332,10 @@
   dependencies:
     smart-fs "1.12.4"
 
-"@blackflux/robo-config-plugin@3.10.18":
-  version "3.10.18"
-  resolved "https://registry.yarnpkg.com/@blackflux/robo-config-plugin/-/robo-config-plugin-3.10.18.tgz#9582d99556ffdb4bb006832c531e668c59bd09e1"
-  integrity sha512-a8CEr2VGPLuX5C1OTLOwXCFOLFME9fogg4dygJ5wkTlyDdYkQiIRuRPFRlM/CLQsgwgQmsUcTI46itSH3+Uigg==
+"@blackflux/robo-config-plugin@4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@blackflux/robo-config-plugin/-/robo-config-plugin-4.0.1.tgz#bd44abff828d15e2ec719cd9bf06d8a69c8cf0f2"
+  integrity sha512-xPSsd8eFnWJVllRF4PVrW1i01d+V4aieWzpJ4eDA9adK9OgYTBUrUHKzcpXZ7mG+jIlpLzsqDWTZkc5TrvE9+g==
 
 "@eslint/eslintrc@^0.2.2":
   version "0.2.2"
@@ -1024,10 +1024,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-aws-sdk@2.825.0:
-  version "2.825.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.825.0.tgz#91dad854827f6f8ada5a305dd32524e2f19cc622"
-  integrity sha512-b49nvaETm7uVRLf0FJ1CMmwCRVlLaxHtptVFuxX+2L4FR9VB0sLdgsxhtL3RVFbQlgVFNRV7fJUVK27mC++H+A==
+aws-sdk@2.828.0:
+  version "2.828.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.828.0.tgz#6aa599c3582f219568f41fb287eb65753e4a9234"
+  integrity sha512-JoDujGdncSIF9ka+XFZjop/7G+fNGucwPwYj7OHYMmFIOV5p7YmqomdbVmH/vIzd988YZz8oLOinWc4jM6vvhg==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -5422,13 +5422,13 @@ object-deep-contain@1.0.29:
   resolved "https://registry.yarnpkg.com/object-deep-contain/-/object-deep-contain-1.0.29.tgz#d6cf9df21455e31de769f486410594cd6885d215"
   integrity sha512-nLOAncdGePrOWzjSD1AwroXRtaUOXf3LRyVhTntdYSPwvWld65toDGxFrDvw/0ji3AGF5FeEvnoBNZBUElK3Ng==
 
-object-hash-strict@1.2.38:
-  version "1.2.38"
-  resolved "https://registry.yarnpkg.com/object-hash-strict/-/object-hash-strict-1.2.38.tgz#03bca3064d61283f40049fd82e6842237ea051aa"
-  integrity sha512-nvcSHgBhNz9GtNJavIT5B3x7nff3/+oQysRG8QkFf7X1w6sBK5n+JWR3SPlyoK4QDkIQhnMbakS6dHbCUdFo2A==
+object-hash-strict@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/object-hash-strict/-/object-hash-strict-2.0.0.tgz#8d9b924f0f033ab4b99221511037464e40ab6fc9"
+  integrity sha512-PLzcFyh8rhvIOQ8L8wpPl7NC3wlzJk91BZX4OBnxZvoJswBJaWQZ2hASBSe1vsZxPFBVILRp/BelnArBLc0tuw==
   dependencies:
     object-hash "2.1.1"
-    object-scan "13.7.1"
+    object-scan "13.8.0"
 
 object-hash@2.1.1:
   version "2.1.1"
@@ -5449,6 +5449,11 @@ object-scan@13.7.1:
   version "13.7.1"
   resolved "https://registry.yarnpkg.com/object-scan/-/object-scan-13.7.1.tgz#2ce78454ae6a35ea45da7f26f2209f5545613122"
   integrity sha512-akfqDKVs77wfaRhcln8p9IVIjfQ6MdgfsqsstAAgBWHHO9OqWjs74IUUqiGihDStpvgKA3fFUqdLpdD2Oi7YkQ==
+
+object-scan@13.8.0:
+  version "13.8.0"
+  resolved "https://registry.yarnpkg.com/object-scan/-/object-scan-13.8.0.tgz#70ec43620b76fbc580856beb5275ee28321f781c"
+  integrity sha512-ljh4WKzs/TTBML0kl+qfTpu13lSZ0Q41aj5XiJa0ue9FkEdP5fi5/FTHbZgsGBiXo/AeyPRh1XZDOuGQLffC1A==
 
 object-treeify@1.1.31:
   version "1.1.31"
@@ -6689,10 +6694,10 @@ sax@>=0.6.0, sax@^1.2.4:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
-semantic-release@17.3.1:
-  version "17.3.1"
-  resolved "https://registry.yarnpkg.com/semantic-release/-/semantic-release-17.3.1.tgz#8904ef1ca8e704394de0e204b284f6c252284da4"
-  integrity sha512-NSdxvnBTklrRBYRexVUx44Hri9sTu9b8x+1HfWDGIWemDTFQfWOTbT1N3oy5l8WcZHodhRvtyI7gm50SfAa3Fg==
+semantic-release@17.3.2:
+  version "17.3.2"
+  resolved "https://registry.yarnpkg.com/semantic-release/-/semantic-release-17.3.2.tgz#89c793ed64fe00b7bfe1c36bc389fb04855a4df9"
+  integrity sha512-S8ppLzFFeznDXvRGEvltuwpRT7Tb7o3gBIqaVnahi0sAzrxD/WdWZQoHOpwypzTBD7i9gCxZ+RqVpaHa9WFD3w==
   dependencies:
     "@semantic-release/commit-analyzer" "^8.0.0"
     "@semantic-release/error" "^2.2.0"
