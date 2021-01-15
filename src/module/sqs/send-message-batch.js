@@ -47,7 +47,10 @@ const transformMessages = ({ messages, batchDelaySeconds }) => {
     const msgGroupId = getGroupId(msg);
     const msgDelaySeconds = getDelaySeconds(msg);
     const delaySeconds = msgDelaySeconds === undefined ? batchDelaySeconds : msgDelaySeconds;
-    const id = objectHash(delaySeconds === null ? msg : { msg, delaySeconds });
+    const id = objectHash(
+      delaySeconds === null ? msg : { msg, delaySeconds },
+      { allowUndefined: true }
+    );
     if (result[id] !== undefined) {
       throw new MessageCollisionError(JSON.stringify(result[id]));
     }
