@@ -41,7 +41,7 @@
     "@blackflux/robo-config-plugin": "4.0.3",
     "aws-sdk": "2.828.0",
     "babel-eslint": "10.1.0",
-    "babel-preset-latest-node": "5.2.0",
+    "babel-preset-latest-node": "5.4.0",
     "chai": "4.2.0",
     "coveralls": "3.1.0",
     "eslint": "7.17.0",
