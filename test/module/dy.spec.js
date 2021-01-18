@@ -7,7 +7,11 @@ const { LocalTable } = require('../dy-helper');
 
 const { DocumentClient } = DynamoDB;
 
-describe('Testing dy Util', { useNock: true, nockStripHeaders: true, timeout: 55000 }, () => {
+describe('Testing dy Util', {
+  useNock: true,
+  nockStripHeaders: true,
+  envVarsFile: '../default.env.yml'
+}, () => {
   let Model;
   let model;
   let localTable;

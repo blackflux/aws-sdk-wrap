@@ -13,13 +13,13 @@ module.exports = ({ call, getService, logger }) => ({
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
     return ({
-      model, // TODO: maybe don't export
+      model,
       put: (item, { conditions = null } = {}) => model.entity.put(item, {
         ...(conditions === null ? {} : { conditions })
       }),
       update: () => {},
       get: () => {},
-      genSchema: () => null // subset of cloudformation template// remove
+      genSchema: () => null // subset of cloudformation template
     });
   }
 });
