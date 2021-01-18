@@ -1,7 +1,8 @@
 {
   "@blackflux/robo-config-plugin": {
     "tasks": [
-      "assorted/@npm-opensource"
+      "assorted/@npm-opensource",
+      "assorted/@dynamo-testing"
     ],
     "variables": {
       "repoKey": "blackflux/aws-sdk-wrap",
