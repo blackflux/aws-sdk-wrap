@@ -20,7 +20,7 @@ describe('Testing QueueProcessor', {
         two: process.env.QUEUE_URL_TWO
       },
       stepsDir: `${__filename}_steps`,
-      ingestSteps: ['step1', 'step3', 'group-id-step']
+      ingestSteps: ['step1', 'step3', 'group-id-step', 'step-urgent-message']
     });
     executor = (records) => new Promise((resolve, reject) => {
       processor.handler({
@@ -69,6 +69,7 @@ describe('Testing QueueProcessor', {
       '    disallowedOutput [label="disallowed-output"];',
       '    groupIdStep [label="group-id-step"];',
       '    stepAutoRetry [label="step-auto-retry"];',
+      '    stepUrgentMessage [label="step-urgent-message",color=red];',
       '    step1 [label="step1"];',
       '  }',
       '  subgraph cluster_1 {',
@@ -85,12 +86,14 @@ describe('Testing QueueProcessor', {
       '  _ingest -> step1;',
       '  _ingest -> step3;',
       '  _ingest -> groupIdStep;',
+      '  _ingest -> stepUrgentMessage;',
       '  ',
       '  autoRetryBackoffFn -> autoRetryBackoffFn;',
       '  autoRetry -> autoRetry;',
       '  badOutput -> step2;',
       '  parallelStep -> parallelStep;',
       '  stepAutoRetry -> stepAutoRetry;',
+      '  stepUrgentMessage -> step1;',
       '  step1 -> step2;',
       '  step3 -> step1;',
       '  step3 -> step3;',
@@ -131,6 +134,14 @@ describe('Testing QueueProcessor', {
       { name: 'step1', meta: 'meta2' }
     ]);
     expect(result).to.equal(undefined);
+  });
+
+  it('Testing urgent message before others', async () => {
+    const result = await executor([{ name: 'step-urgent-message' }]);
+    expect(result).to.deep.equal([
+      { name: 'step1', meta: 'before' },
+      { name: 'step1', meta: 'handler' }
+    ]);
   });
 
   it('Testing step1 -> [step2]', async () => {
