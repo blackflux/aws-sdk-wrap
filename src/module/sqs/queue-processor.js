@@ -7,13 +7,11 @@ const { wrap } = require('lambda-async');
 const { prepareMessage } = require('./prepare-message');
 const errors = require('./errors');
 const loadSteps = require('./queue-processor/load-steps');
-
-const metaKey = '__meta';
-const stripPayloadMeta = (payload) => {
-  const r = { ...payload };
-  delete r[metaKey];
-  return r;
-};
+const MessageBus = require('./queue-processor/message-bus');
+const StepBus = require('./queue-processor/step-bus');
+const DlqBus = require('./queue-processor/dlq-bus');
+const { metaKey, stripPayloadMeta } = require('./queue-processor/payload');
+const Digraph = require('./queue-processor/digraph');
 
 module.exports = ({
   sendMessageBatch,
@@ -36,48 +34,12 @@ module.exports = ({
     'Unused queue(s) defined.'
   );
 
-  const messageBus = (() => {
-    const tasks = [];
-    const addRaw = (msgs, queueUrl) => {
-      tasks.push([msgs, queueUrl]);
-    };
-    return {
-      addRaw,
-      addStepMessages: (messages) => {
-        messages.forEach((msg) => {
-          const queueUrl = queues[steps[msg.name].queue];
-          assert(queueUrl !== undefined);
-          const groupIdFunction = steps[msg.name].groupIdFunction;
-          if (groupIdFunction !== null) {
-            prepareMessage(msg, {
-              groupId: groupIdFunction(msg)
-            });
-          }
-          const delay = steps[msg.name].delay;
-          assert(delay !== undefined);
-          if (delay !== 0) {
-            prepareMessage(msg, { delaySeconds: steps[msg.name].delay });
-          }
-          addRaw([msg], queueUrl);
-        });
-      },
-      flush: async (full = true) => {
-        if (tasks.length === 0) {
-          return;
-        }
-        const groups = {};
-        tasks.splice(0).forEach(([msgs, queueUrl]) => {
-          if (groups[queueUrl] === undefined) {
-            groups[queueUrl] = [];
-          }
-          groups[queueUrl].push(...msgs);
-        });
-        const fns = Object.entries(groups)
-          .map(([queueUrl, messages]) => () => sendMessageBatch({ queueUrl, messages }));
-        await globalPool(fns);
-      }
-    };
-  })();
+  const messageBus = MessageBus({
+    sendMessageBatch,
+    queues,
+    steps,
+    globalPool
+  });
 
   const ingestSchema = Joi.array().items(...ingestSteps.map((step) => steps[step].schema));
   const ingest = async (messages) => {
@@ -119,51 +81,10 @@ module.exports = ({
       }
     }
 
-    const stepBus = (() => {
-      const messages = [];
-      return {
-        prepare: (msgs, step) => {
-          assert(
-            msgs.length === 0 || step.next.length !== 0,
-            `No output allowed for step: ${step.name}`
-          );
-          Joi.assert(
-            msgs.map((payload) => stripPayloadMeta(payload)),
-            Joi.array().items(...step.next.map((n) => steps[n].schema)),
-            `Unexpected/Invalid next step(s) returned for: ${step.name}`
-          );
-          messages.push(...msgs);
-        },
-        propagate: () => {
-          const msgs = messages.splice(0);
-          messageBus.addStepMessages(msgs);
-          return msgs;
-        }
-      };
-    })();
-
-    const dlqBus = (() => {
-      const pending = [];
-      return {
-        prepare: (msgs, step) => {
-          pending.push([step, msgs]);
-        },
-        propagate: async () => {
-          if (pending.length === 0) {
-            return;
-          }
-          const fns = pending.splice(0).map(([step, msgs]) => async () => {
-            const queueUrl = queues[step.queue];
-            const dlqUrl = await dlqCache.memoize(
-              queueUrl,
-              () => getDeadLetterQueueUrl(queueUrl)
-            );
-            messageBus.addRaw(msgs, dlqUrl);
-          });
-          await globalPool(fns);
-        }
-      };
-    })();
+    const stepBus = StepBus({ steps, messageBus });
+    const dlqBus = DlqBus({
+      queues, dlqCache, getDeadLetterQueueUrl, messageBus, globalPool
+    });
 
     await Promise.all(Array.from(stepContexts)
       .map(([step, ctx]) => step.before(
@@ -246,53 +167,9 @@ module.exports = ({
     return result;
   });
 
-  const digraph = () => {
-    const formatStep = (step) => step.replace(/-([a-z])/g, ($1) => $1.slice(1).toUpperCase());
-
-    const result = [
-      ...Object.keys(queues)
-        .map((queue, idx) => [
-          `subgraph cluster_${idx} {`,
-          ...[
-            `label="${queue}";`,
-            'style=filled;',
-            'color=lightgrey;',
-            'node [label="node",style=filled,color=white];',
-            ...Object
-              .values(steps)
-              .filter((step) => queue === step.queue)
-              .map((step) => `${formatStep(step.name)} [${[
-                `label="${step.name}"`,
-                step.isParallel ? 'color=red' : null,
-                step.delay !== 0 ? 'shape=doublecircle' : null
-              ].filter((e) => e !== null).join(',')}];`)
-          ].map((e) => `  ${e}`),
-          '}'
-        ])
-        .reduce((p, c) => p.concat(c), []),
-      '',
-      '_ingest [shape=Mdiamond,label=ingest];',
-      ...ingestSteps.map((step) => `_ingest -> ${formatStep(step)};`),
-      '',
-      ...Object.values(steps).reduce((r, step) => {
-        step.next.forEach((nStep) => {
-          r.push(`${formatStep(step.name)} -> ${formatStep(nStep)};`);
-        });
-        return r;
-      }, [])
-    ];
-
-    return [
-      '# Visualize at http://viz-js.com/',
-      'digraph G {',
-      ...result.map((e) => `  ${e}`),
-      '}'
-    ];
-  };
-
   return {
     ingest,
     handler,
-    digraph
+    digraph: Digraph({ queues, ingestSteps, steps })
   };
 };
