@@ -50,6 +50,7 @@ describe('Testing dy Util', { useNock: true, nockStripHeaders: true, timeout: 55
   it('Testing basic logic', () => {
     expect(Object.keys(model)).to.deep.equal([
       'model',
+      'put',
       'update',
       'get',
       'genSchema'
