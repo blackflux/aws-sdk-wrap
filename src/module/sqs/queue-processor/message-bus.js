@@ -9,7 +9,7 @@ module.exports = ({
 }) => {
   const tasks = [];
   const addRaw = (msgs, queueUrl) => {
-    tasks.push([msgs, queueUrl]);
+    tasks.push([[...msgs], queueUrl]);
   };
   return {
     addRaw,
