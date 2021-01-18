@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const Index = require('../../../src/index');
-const { getDelaySeconds } = require('../../../src/module/sqs/prepare-message');
+const { getDelaySeconds, prepareMessage } = require('../../../src/module/sqs/prepare-message');
 
 describe('Testing QueueProcessor', {
   useNock: true,
@@ -20,7 +20,7 @@ describe('Testing QueueProcessor', {
         two: process.env.QUEUE_URL_TWO
       },
       stepsDir: `${__filename}_steps`,
-      ingestSteps: ['step1', 'step3']
+      ingestSteps: ['step1', 'step3', 'group-id-step', 'step-urgent-message']
     });
     executor = (records) => new Promise((resolve, reject) => {
       processor.handler({
@@ -67,7 +67,9 @@ describe('Testing QueueProcessor', {
       '    badOutput [label="bad-output"];',
       '    delayStep [label="delay-step",color=red];',
       '    disallowedOutput [label="disallowed-output"];',
+      '    groupIdStep [label="group-id-step"];',
       '    stepAutoRetry [label="step-auto-retry"];',
+      '    stepUrgentMessage [label="step-urgent-message",color=red];',
       '    step1 [label="step1"];',
       '  }',
       '  subgraph cluster_1 {',
@@ -83,12 +85,15 @@ describe('Testing QueueProcessor', {
       '  _ingest [shape=Mdiamond,label=ingest];',
       '  _ingest -> step1;',
       '  _ingest -> step3;',
+      '  _ingest -> groupIdStep;',
+      '  _ingest -> stepUrgentMessage;',
       '  ',
       '  autoRetryBackoffFn -> autoRetryBackoffFn;',
       '  autoRetry -> autoRetry;',
       '  badOutput -> step2;',
       '  parallelStep -> parallelStep;',
       '  stepAutoRetry -> stepAutoRetry;',
+      '  stepUrgentMessage -> step1;',
       '  step1 -> step2;',
       '  step3 -> step1;',
       '  step3 -> step3;',
@@ -99,6 +104,20 @@ describe('Testing QueueProcessor', {
   it('Testing ingest', async () => {
     const result = await processor.ingest([{ name: 'step1', meta: 'meta1' }]);
     expect(result).to.equal(undefined);
+  });
+
+  it('Testing ingest with groupId', async () => {
+    const msg = { name: 'step1', meta: 'meta1' };
+    prepareMessage(msg, { groupId: '123' });
+    const result = await processor.ingest([msg]);
+    expect(result).to.equal(undefined);
+  });
+
+  it('Testing ingest with groupIdFunction', async () => {
+    const result = await processor.ingest([{ name: 'group-id-step', meta: 'meta1' }]);
+    expect(result).to.equal(undefined);
+    const r = await executor([{ name: 'group-id-step', meta: 'meta1' }]);
+    expect(r).to.deep.equal([]);
   });
 
   it('Test ingesting into separate queues', async () => {
@@ -115,6 +134,14 @@ describe('Testing QueueProcessor', {
       { name: 'step1', meta: 'meta2' }
     ]);
     expect(result).to.equal(undefined);
+  });
+
+  it('Testing urgent message before others', async () => {
+    const result = await executor([{ name: 'step-urgent-message' }]);
+    expect(result).to.deep.equal([
+      { name: 'step1', meta: 'before' },
+      { name: 'step1', meta: 'handler' }
+    ]);
   });
 
   it('Testing step1 -> [step2]', async () => {
@@ -165,7 +192,7 @@ describe('Testing QueueProcessor', {
     );
   });
 
-  it('Testing multiple records (success)', async () => {
+  it('Testing multiple records (success)', async ({ recorder }) => {
     const result = await executor([
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
@@ -174,6 +201,10 @@ describe('Testing QueueProcessor', {
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
     ]);
+    expect(recorder.get()).to.deep.equal([[
+      { name: 'parallel-step', meta: 'A' },
+      { name: 'parallel-step', meta: 'B' }
+    ]]);
   });
 
   it('Testing timeout error', async ({ capture }) => {
@@ -181,7 +212,7 @@ describe('Testing QueueProcessor', {
     expect(result.message).to.deep.equal('Promise "" timed out after 1000 ms');
   });
 
-  it('Testing timeout ok', async ({ capture }) => {
+  it('Testing timeout ok', async () => {
     const result = await executor([{ name: 'delay-step', delay: 500 }]);
     expect(result).to.deep.equal([]);
   });

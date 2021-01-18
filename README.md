@@ -82,13 +82,14 @@ Initialize a queue processor lambda handler with steps. Steps need to be defined
 
 Each `step` should export:
  - `schema<Joi>`: Joi schema
- - `handler<function(step, event, stepContext): steps>`: execution logic ingesting payload and event
+ - `handler<function(payload, event, stepContext): steps>`: execution logic ingesting payload and event
  - `next`: array of next possible steps
  - `queueUrl`: the queue that the step is ingested into
  - `delay = 0` (optional): the amount of seconds that the message is delayed, defaults to undefined, i.e. the queue default
  - `retry = null` (optional): Declare object that is then used to instantiate `RetryError` internally
  - `timeout = 900` (optional): Timeout for individual step. Should allow for extra overhead for message management / processing and account for concurrency.
- - `before<function(stepContext): steps>` (optional): called before first step is executed
+ - `groupIdFunction = undefined` (optional): Generator function for the groupId. Takes step payload as parameter
+ - `before<function(stepContext, payloads[]): steps>` (optional): called before first step is executed
  - `after<function(stepContext): steps>` (optional):
 
 The schema needs to define the event name under `name`. New events that are to be re-queued into the queue need to be returned from the `handler`, `before` or `after` function as an array.
@@ -108,6 +109,8 @@ Please see tests for example.
 
 Prepare message object with options. Currently options include:
 - `delaySeconds` (integer): used to set the delay for a specific message. Supersedes the corresponding batch option.
+- `groupId` (string): group id for the message, can only be set for steps that do not define `groupIdFunction`
+- `urgent` (boolean): message is immediately enqueued if returned from before or handler, instead of at the very end
 
 #### s3.putGzipObject({ bucket: String, key: String, data: Object })
 Adds an object to an Amazon S3 bucket gzipped. Uses [s3:putObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property).
