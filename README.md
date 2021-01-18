@@ -110,6 +110,7 @@ Please see tests for example.
 Prepare message object with options. Currently options include:
 - `delaySeconds` (integer): used to set the delay for a specific message. Supersedes the corresponding batch option.
 - `groupId` (string): group id for the message, can only be set for steps that do not define `groupIdFunction`
+- `urgent` (boolean): message is immediately enqueued if returned from before or handler, instead of at the very end
 
 #### s3.putGzipObject({ bucket: String, key: String, data: Object })
 Adds an object to an Amazon S3 bucket gzipped. Uses [s3:putObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property).
