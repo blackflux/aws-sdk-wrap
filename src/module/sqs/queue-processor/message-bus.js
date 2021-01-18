@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { prepareMessage } = require('../prepare-message');
+const { prepareMessage, getUrgent } = require('../prepare-message');
 
 module.exports = ({
   sendMessageBatch,
@@ -31,17 +31,29 @@ module.exports = ({
         addRaw([msg], queueUrl);
       });
     },
-    flush: async (full = true) => {
+    flush: async (complete) => {
+      assert(typeof complete === 'boolean');
       if (tasks.length === 0) {
         return;
       }
       const groups = {};
-      tasks.splice(0).forEach(([msgs, queueUrl]) => {
-        if (groups[queueUrl] === undefined) {
-          groups[queueUrl] = [];
+      for (let tIdx = 0; tIdx < tasks.length; tIdx += 1) {
+        const [msgs, queueUrl] = tasks[tIdx];
+        for (let mIdx = msgs.length - 1; mIdx >= 0; mIdx -= 1) {
+          const msg = msgs[mIdx];
+          if (complete === true || getUrgent(msg) === true) {
+            if (groups[queueUrl] === undefined) {
+              groups[queueUrl] = [];
+            }
+            groups[queueUrl].push(msg);
+            msgs.splice(mIdx, 1);
+          }
         }
-        groups[queueUrl].push(...msgs);
-      });
+        if (msgs.length === 0) {
+          tasks.splice(tIdx, 1);
+          tIdx -= 1;
+        }
+      }
       const fns = Object.entries(groups)
         .map(([queueUrl, messages]) => () => sendMessageBatch({ queueUrl, messages }));
       await globalPool(fns);

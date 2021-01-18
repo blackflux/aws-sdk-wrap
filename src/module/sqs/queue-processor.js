@@ -46,7 +46,7 @@ module.exports = ({
   const ingest = async (messages) => {
     Joi.assert(messages, ingestSchema);
     messageBus.addStepMessages(messages);
-    await messageBus.flush();
+    await messageBus.flush(true);
   };
 
   const handler = wrap(async (event) => {
@@ -61,12 +61,14 @@ module.exports = ({
       .map(([step, ctx]) => step.before(
         ctx,
         tasks.filter((e) => e[3] === step).map((e) => e[1])
-      ).then((msgs) => stepBus.prepare(msgs, step))));
+      ).then((msgs) => stepBus.push(msgs, step))));
+
+    await messageBus.flush(false);
 
     await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
       try {
         const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts.get(step)));
-        stepBus.prepare(msgs, step);
+        stepBus.push(msgs, step);
       } catch (error) {
         let err = error;
         if (!(err instanceof errors.RetryError)) {
@@ -109,7 +111,7 @@ module.exports = ({
         ) {
           const msgs = await err.onFailure({ ...kwargs, temporary: false });
           assert(Array.isArray(msgs), 'onFailure must return array of messages');
-          stepBus.prepare(msgs, step);
+          stepBus.push(msgs, step);
           dlqBus.prepare([payload], step);
         } else {
           const msgs = await err.onFailure({ ...kwargs, temporary: true });
@@ -124,18 +126,19 @@ module.exports = ({
           if (delaySeconds !== 0) {
             prepareMessage(msg, { delaySeconds });
           }
-          stepBus.prepare(msgs.concat(msg), step);
+          stepBus.push(msgs.concat(msg), step);
         }
       }
     }));
 
-    await Promise.all(Array.from(stepContexts)
-      .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.prepare(msgs, step))));
+    await messageBus.flush(false);
 
-    const result = stepBus.propagate();
+    await Promise.all(Array.from(stepContexts)
+      .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step))));
+
     await dlqBus.propagate();
-    await messageBus.flush();
-    return result;
+    await messageBus.flush(true);
+    return stepBus.get();
   });
 
   return {
