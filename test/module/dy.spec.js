@@ -84,9 +84,3 @@ describe('Testing dy Util', { useNock: true, nockStripHeaders: true, timeout: 55
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 });
-
-
-// let result = await MyEntity.get(
-//   key,
-//   { consistent: true }
-// )
