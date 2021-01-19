@@ -54,37 +54,37 @@ describe('Testing dy Util', {
   it('Testing basic logic', () => {
     expect(Object.keys(model)).to.deep.equal([
       'model',
-      'put',
+      'upsert',
       'update',
       'get',
       'genSchema'
     ]);
   });
 
-  it('Testing put', async () => {
+  it('Testing upsert', async () => {
     const item = {
       id: 123,
       name: 'name'
     };
-    const result = await model.put(item);
+    const result = await model.upsert(item);
     expect(result).to.deep.equal({});
   });
 
-  it('Testing put with conditions', async () => {
+  it('Testing upsert with conditions', async () => {
     const item = {
       id: 123,
       name: 'name'
     };
-    const result = await model.put(item, { conditions: { attr: 'name', exists: false } });
+    const result = await model.upsert(item, { conditions: { attr: 'name', exists: false } });
     expect(result).to.deep.equal({});
   });
 
-  it('Testing put with ConditionalCheckFailedException', async ({ capture }) => {
+  it('Testing upsert with ConditionalCheckFailedException', async ({ capture }) => {
     const item = {
       id: 123,
       name: 'name'
     };
-    const error = await capture(() => model.put(item, { conditions: { attr: 'name', exists: true } }));
+    const error = await capture(() => model.upsert(item, { conditions: { attr: 'name', exists: true } }));
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 });
