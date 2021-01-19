@@ -18,11 +18,11 @@ module.exports = ({ call, getService, logger }) => ({
         ...(conditions === null ? {} : { conditions })
       }),
       update: async (item, {
-        returnValues = null,
+        returnValues = 'all_new',
         conditions = null
       } = {}) => {
         const result = await model.entity.update(item, {
-          returnValues: returnValues === null ? 'all_new' : returnValues,
+          returnValues,
           ...(conditions === null ? {} : { conditions })
         });
         return result.Attributes;
