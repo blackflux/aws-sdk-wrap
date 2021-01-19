@@ -32,7 +32,8 @@ describe('Testing dy Util', {
       name: 'table-name',
       attributes: {
         id: { type: 'string', partitionKey: true },
-        name: { type: 'string', sortKey: true }
+        name: { type: 'string', sortKey: true },
+        age: { type: 'number' }
       },
       indices: {
         targetIndex: {
@@ -98,5 +99,41 @@ describe('Testing dy Util', {
     expect(upsertResult).to.deep.equal({});
     const result = await model.getItemOrNull(item, { toReturn: ['name'] });
     expect(result).to.deep.equal({ name: 'name' });
+  });
+
+  it('Testing update', async () => {
+    const itemToUpdate = {
+      ...item,
+      age: 50
+    };
+    const upsertResult = await model.upsert(itemToUpdate);
+    expect(upsertResult).to.deep.equal({});
+    itemToUpdate.age = 55;
+    const result = await model.update(itemToUpdate);
+    expect(result).to.deep.equal(itemToUpdate);
+  });
+
+  it('Testing update with conditions', async () => {
+    const itemToUpdate = {
+      ...item,
+      age: 50
+    };
+    const upsertResult = await model.upsert(itemToUpdate);
+    expect(upsertResult).to.deep.equal({});
+    itemToUpdate.age = 55;
+    const result = await model.update(itemToUpdate, { conditions: { attr: 'age', eq: 50 } });
+    expect(result).to.deep.equal(itemToUpdate);
+  });
+
+  it('Testing update with ConditionalCheckFailedException', async ({ capture }) => {
+    const itemToUpdate = {
+      ...item,
+      age: 50
+    };
+    const upsertResult = await model.upsert(itemToUpdate);
+    expect(upsertResult).to.deep.equal({});
+    itemToUpdate.age = 55;
+    const error = await capture(() => model.update(itemToUpdate, { conditions: { attr: 'age', eq: 10 } }));
+    expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 });
