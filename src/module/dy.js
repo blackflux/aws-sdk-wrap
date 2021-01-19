@@ -18,7 +18,13 @@ module.exports = ({ call, getService, logger }) => ({
         ...(conditions === null ? {} : { conditions })
       }),
       update: () => {},
-      get: () => {},
+      getItemOrNull: async (key, { toReturn = null } = {}) => {
+        const result = await model.entity.get(key, {
+          consistent: true,
+          ...(toReturn === null ? {} : { attributes: toReturn })
+        });
+        return result.Item === undefined ? null : result.Item;
+      },
       genSchema: () => null // subset of cloudformation template
     });
   }
