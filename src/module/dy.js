@@ -14,6 +14,9 @@ module.exports = ({ call, getService, logger }) => ({
     });
     return ({
       model,
+      put: (item, { conditions = null } = {}) => model.entity.put(item, {
+        ...(conditions === null ? {} : { conditions })
+      }),
       update: () => {},
       get: () => {},
       genSchema: () => null // subset of cloudformation template
