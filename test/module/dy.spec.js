@@ -125,6 +125,20 @@ describe('Testing dy Util', {
     expect(result).to.deep.equal(itemToUpdate);
   });
 
+  it('Testing update with returnValues', async () => {
+    const oldItem = {
+      ...item,
+      age: 50
+    };
+    const upsertResult = await model.upsert(oldItem);
+    expect(upsertResult).to.deep.equal({});
+    const result = await model.update({
+      ...item,
+      age: 55
+    }, { returnValues: 'all_old' });
+    expect(result).to.deep.equal(oldItem);
+  });
+
   it('Testing update with ConditionalCheckFailedException', async ({ capture }) => {
     const itemToUpdate = {
       ...item,

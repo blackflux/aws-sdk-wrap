@@ -17,9 +17,12 @@ module.exports = ({ call, getService, logger }) => ({
       upsert: (item, { conditions = null } = {}) => model.entity.put(item, {
         ...(conditions === null ? {} : { conditions })
       }),
-      update: async (item, { conditions = null } = {}) => {
+      update: async (item, {
+        returnValues = null,
+        conditions = null
+      } = {}) => {
         const result = await model.entity.update(item, {
-          returnValues: 'all_new',
+          returnValues: returnValues === null ? 'all_new' : returnValues,
           ...(conditions === null ? {} : { conditions })
         });
         return result.Attributes;
