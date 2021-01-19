@@ -15,6 +15,7 @@ describe('Testing dy Util', {
   let Model;
   let model;
   let localTable;
+  let item;
   beforeEach(async () => {
     const index = Index({
       config: {
@@ -46,6 +47,10 @@ describe('Testing dy Util', {
     });
     localTable = LocalTable(model.model);
     await localTable.create();
+    item = {
+      id: '123',
+      name: 'name'
+    };
   });
   afterEach(async () => {
     await localTable.tearDown();
@@ -56,35 +61,42 @@ describe('Testing dy Util', {
       'model',
       'upsert',
       'update',
-      'get',
+      'getItemOrNull',
       'genSchema'
     ]);
   });
 
   it('Testing upsert', async () => {
-    const item = {
-      id: 123,
-      name: 'name'
-    };
     const result = await model.upsert(item);
     expect(result).to.deep.equal({});
   });
 
   it('Testing upsert with conditions', async () => {
-    const item = {
-      id: 123,
-      name: 'name'
-    };
     const result = await model.upsert(item, { conditions: { attr: 'name', exists: false } });
     expect(result).to.deep.equal({});
   });
 
   it('Testing upsert with ConditionalCheckFailedException', async ({ capture }) => {
-    const item = {
-      id: 123,
-      name: 'name'
-    };
     const error = await capture(() => model.upsert(item, { conditions: { attr: 'name', exists: true } }));
     expect(error.code).to.equal('ConditionalCheckFailedException');
+  });
+
+  it('Testing getItemOrNull', async () => {
+    const upsertResult = await model.upsert(item);
+    expect(upsertResult).to.deep.equal({});
+    const result = await model.getItemOrNull(item);
+    expect(result).to.deep.equal(item);
+  });
+
+  it('Testing getItemOrNull returns null', async () => {
+    const result = await model.getItemOrNull(item);
+    expect(result).to.equal(null);
+  });
+
+  it('Testing getItemOrNull with toReturn', async () => {
+    const upsertResult = await model.upsert(item);
+    expect(upsertResult).to.deep.equal({});
+    const result = await model.getItemOrNull(item, { toReturn: ['name'] });
+    expect(result).to.deep.equal({ name: 'name' });
   });
 });
