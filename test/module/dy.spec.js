@@ -75,16 +75,13 @@ describe('Testing dy Util', {
   });
 
   it('Testing upsert item created', async () => {
-    const result = await model.upsert(item);
-    expect(result).to.deep.equal({ created: true });
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
   });
 
   it('Testing upsert item updated', async () => {
-    const createdResult = await model.upsert(item);
-    expect(createdResult).to.deep.equal({ created: true });
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 51;
-    const updatedResult = await model.upsert(item);
-    expect(updatedResult).to.deep.equal({ created: false });
+    expect(await model.upsert(item)).to.deep.equal({ created: false });
   });
 
   it('Testing upsert with conditions', async () => {
