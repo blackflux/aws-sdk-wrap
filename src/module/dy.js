@@ -66,7 +66,7 @@ module.exports = ({ call, getService, logger }) => ({
           page
         };
       },
-      genSchema: () => null // subset of cloudformation template
+      genSchema: () => model.schema
     });
   }
 });

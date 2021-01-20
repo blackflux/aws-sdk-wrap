@@ -1,0 +1,21 @@
+TableName: table-name
+AttributeDefinitions:
+  - AttributeName: id
+    AttributeType: S
+  - AttributeName: name
+    AttributeType: S
+KeySchema:
+  - AttributeName: id
+    KeyType: HASH
+  - AttributeName: name
+    KeyType: RANGE
+GlobalSecondaryIndexes:
+  - IndexName: targetIndex
+    KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      - AttributeName: name
+        KeyType: RANGE
+    Projection:
+      ProjectionType: ALL
+BillingMode: PAY_PER_REQUEST
