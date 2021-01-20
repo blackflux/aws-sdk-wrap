@@ -1,8 +1,6 @@
-const path = require('path');
 const expect = require('chai').expect;
 const { DynamoDB } = require('aws-sdk');
 const { describe } = require('node-tdd');
-const fs = require('smart-fs');
 const Index = require('../../src');
 const DyUtil = require('../../src/module/dy');
 const { LocalTable } = require('../dy-helper');
@@ -234,8 +232,8 @@ describe('Testing dy Util', {
     });
   });
 
-  it('Testing genSchema', async () => {
+  it('Testing genSchema', async ({ fixture }) => {
     const result = await model.genSchema();
-    expect(fs.smartWrite(path.join(__dirname, 'dy-schema.yml'), result)).to.equal(false);
+    expect(result).to.deep.equal(fixture('table-schema'));
   });
 });
