@@ -8,13 +8,7 @@ const dynamoDB = async (cmd, params) => {
     accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
     secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
   });
-  return new Promise((resolve, reject) => ddb[cmd](params, (err, data) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(data);
-    }
-  }));
+  return ddb[cmd](params).promise();
 };
 
 module.exports.LocalTable = (model) => ({

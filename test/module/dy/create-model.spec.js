@@ -22,4 +22,48 @@ describe('Testing create-model.js', () => {
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
+
+  it('Testing creation without indices', () => {
+    const r = createModel({
+      name: 'table-name',
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string' },
+        other: { type: 'string' }
+      },
+      DocumentClient: new DocumentClient()
+    });
+    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+  });
+
+  it('Testing creation different attribute types', () => {
+    const r = createModel({
+      name: 'table-name',
+      attributes: {
+        id: { type: 'number', partitionKey: true },
+        binary: { type: 'binary', sortKey: true },
+        other: { type: 'string' },
+        number: { type: 'number' }
+      },
+      DocumentClient: new DocumentClient()
+    });
+    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+  });
+
+  it('Testing attribute not supported for indexing error', () => {
+    try {
+      createModel({
+        name: 'table-name',
+        attributes: {
+          id: { type: 'map', partitionKey: true },
+          binary: { type: 'binary', sortKey: true },
+          other: { type: 'string' },
+          number: { type: 'number' }
+        },
+        DocumentClient: new DocumentClient()
+      });
+    } catch (error) {
+      expect(error.message).to.equal('map not supported for indexing');
+    }
+  });
 });

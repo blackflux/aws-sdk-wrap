@@ -5,7 +5,7 @@ module.exports = ({ call, getService, logger }) => ({
   Model: ({
     name,
     attributes,
-    indices = {}
+    indices
   }) => {
     const model = createModel({
       name,

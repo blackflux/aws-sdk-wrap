@@ -26,7 +26,7 @@ module.exports = (kwargs) => {
   const {
     name,
     attributes,
-    indices,
+    indices = {},
     DocumentClient
   } = validateKwargs(kwargs);
 
