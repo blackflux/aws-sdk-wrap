@@ -52,8 +52,8 @@ module.exports = ({ call, getService, logger }) => ({
           ...(index === null ? {} : { index }),
           limit,
           consistent,
-          ...(toReturn === null ? {} : { attributes: toReturn }),
           reverse: scanIndexForward === false,
+          ...(toReturn === null ? {} : { attributes: toReturn }),
           ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
         });
         const page = buildPageObject({
