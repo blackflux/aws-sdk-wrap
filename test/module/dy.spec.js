@@ -231,4 +231,9 @@ describe('Testing dy Util', {
       }
     });
   });
+
+  it('Testing genSchema', ({ fixture }) => {
+    const result = model.genSchema();
+    expect(result).to.deep.equal(fixture('table-schema'));
+  });
 });
