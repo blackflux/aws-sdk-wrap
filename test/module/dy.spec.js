@@ -16,6 +16,11 @@ describe('Testing dy Util', {
   let model;
   let localTable;
   let item;
+  let primaryKey;
+
+  before(() => {
+    primaryKey = '123';
+  });
   beforeEach(async () => {
     const index = Index({
       config: {
@@ -49,7 +54,7 @@ describe('Testing dy Util', {
     localTable = LocalTable(model.model);
     await localTable.create();
     item = {
-      id: '123',
+      id: primaryKey,
       name: 'name'
     };
   });
@@ -63,6 +68,7 @@ describe('Testing dy Util', {
       'upsert',
       'update',
       'getItemOrNull',
+      'query',
       'genSchema'
     ]);
   });
@@ -149,5 +155,80 @@ describe('Testing dy Util', {
     itemToUpdate.age = 55;
     const error = await capture(() => model.update(itemToUpdate, { conditions: { attr: 'age', eq: 10 } }));
     expect(error.code).to.equal('ConditionalCheckFailedException');
+  });
+
+  it('Testing query', async () => {
+    expect(await model.upsert(item)).to.deep.equal({});
+    const result = await model.query(primaryKey);
+    expect(result).to.deep.equal({
+      payload: [item],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query with limit', async () => {
+    expect(await model.upsert(item)).to.deep.equal({});
+    const result = await model.query(primaryKey, { limit: 1 });
+    expect(result).to.deep.equal({
+      payload: [item],
+      page: {
+        next: {
+          limit: 1,
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+        },
+        index: { current: 1 },
+        size: 1
+      }
+    });
+  });
+
+  it('Testing query with toReturn', async () => {
+    expect(await model.upsert(item)).to.deep.equal({});
+    const result = await model.query(primaryKey, { toReturn: ['name'] });
+    expect(result).to.deep.equal({
+      payload: [{ name: 'name' }],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query with index', async () => {
+    expect(await model.upsert(item)).to.deep.equal({});
+    const result = await model.query(primaryKey, {
+      index: 'targetIndex',
+      consistent: false
+    });
+    expect(result).to.deep.equal({
+      payload: [item],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query with cursor', async () => {
+    expect(await model.upsert(item)).to.deep.equal({});
+    const result = await model.query(primaryKey, {
+      // eslint-disable-next-line max-len
+      cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+    });
+    expect(result).to.deep.equal({
+      payload: [],
+      page: {
+        next: null,
+        index: { current: 2 },
+        size: 1
+      }
+    });
   });
 });
