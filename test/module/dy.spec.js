@@ -28,7 +28,7 @@ describe('Testing dy Util', {
         endpoint: process.env.DYNAMODB_ENDPOINT
       }
     });
-    Model = (opts = {}) => DyUtil({
+    Model = (opts) => DyUtil({
       call: index.call,
       logger: null,
       getService: index.get
