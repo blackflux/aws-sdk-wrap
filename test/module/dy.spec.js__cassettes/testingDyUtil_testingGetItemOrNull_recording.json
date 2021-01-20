@@ -121,14 +121,24 @@
     "path": "/",
     "body": {
       "TableName": "table-name",
-      "Item": {
+      "Key": {
         "id": {
           "S": "123"
         },
         "name": {
           "S": "name"
         }
-      }
+      },
+      "UpdateExpression": "SET #age = :age",
+      "ExpressionAttributeNames": {
+        "#age": "age"
+      },
+      "ExpressionAttributeValues": {
+        ":age": {
+          "N": "50"
+        }
+      },
+      "ReturnValues": "ALL_OLD"
     },
     "status": 200,
     "response": {},
@@ -155,6 +165,9 @@
       "Item": {
         "name": {
           "S": "name"
+        },
+        "age": {
+          "N": "50"
         },
         "id": {
           "S": "123"
