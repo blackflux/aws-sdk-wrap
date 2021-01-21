@@ -166,7 +166,7 @@ Options include:
 - `cursor` (String): Cursor to page through query results.
 Internally uses [query](https://github.com/jeremydaly/dynamodb-toolbox#querypartitionkey-options-parameters)
 
-##### dy.Model().genSchema()
+##### dy.Model().schema
 Returns subset of cloudformation template.
 
 ### Init Options
