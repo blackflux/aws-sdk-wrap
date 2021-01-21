@@ -22,8 +22,6 @@ const convertType = (t) => {
   }
 };
 
-let cache;
-
 module.exports = (kwargs) => {
   const {
     name,
@@ -34,6 +32,7 @@ module.exports = (kwargs) => {
 
   const partitionKey = getFirst(attributes, ([k, v]) => v.partitionKey === true);
   const sortKey = getFirst(attributes, ([k, v]) => v.sortKey === true);
+  let cache;
 
   const table = new toolbox.Table({
     name,

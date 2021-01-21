@@ -1,5 +1,5 @@
 {
-  "presets": [["latest-node", {"target": "10"}]],
+  "presets": [],
   "plugins": [],
-  "sourceMaps": false
+  "sourceMaps": "inline"
 }
