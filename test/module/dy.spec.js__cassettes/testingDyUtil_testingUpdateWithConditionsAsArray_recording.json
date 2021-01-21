@@ -70,7 +70,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1611085915.761,
+        "CreationDateTime": 1611260621.114,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -83,7 +83,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1611085915.761
+          "LastUpdateToPayPerRequestDateTime": 1611260621.114
         },
         "GlobalSecondaryIndexes": [
           {
@@ -170,16 +170,25 @@
           "N": "55"
         },
         ":attr3": {
-          "N": "10"
+          "N": "50"
         }
       },
       "ConditionExpression": "attribute_exists(#attr1) AND attribute_exists(#attr2) AND #attr3 = :attr3",
       "ReturnValues": "ALL_NEW"
     },
-    "status": 400,
+    "status": 200,
     "response": {
-      "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
-      "message": "The conditional request failed"
+      "Attributes": {
+        "name": {
+          "S": "name"
+        },
+        "age": {
+          "N": "55"
+        },
+        "id": {
+          "S": "123"
+        }
+      }
     },
     "responseIsBinary": false
   },
@@ -215,7 +224,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1611085915.761,
+        "CreationDateTime": 1611260621.114,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -228,7 +237,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1611085915.761
+          "LastUpdateToPayPerRequestDateTime": 1611260621.114
         },
         "GlobalSecondaryIndexes": [
           {

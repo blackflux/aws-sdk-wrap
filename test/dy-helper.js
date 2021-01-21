@@ -11,7 +11,10 @@ const dynamoDB = async (cmd, params) => {
   return ddb[cmd](params).promise();
 };
 
-module.exports.LocalTable = (model) => ({
-  create: async () => dynamoDB('createTable', model.schema),
-  delete: async () => dynamoDB('deleteTable', { TableName: model.table.name })
-});
+module.exports.LocalTable = (model) => {
+  const schema = model.genSchema();
+  return {
+    create: async () => dynamoDB('createTable', schema),
+    delete: async () => dynamoDB('deleteTable', { TableName: schema.TableName })
+  };
+};

@@ -50,8 +50,7 @@ describe('Testing dy Util', {
         endpoint: process.env.DYNAMODB_ENDPOINT
       })
     });
-    // eslint-disable-next-line no-underscore-dangle
-    localTable = LocalTable(model._model);
+    localTable = LocalTable(model);
     await localTable.create();
     item = {
       id: primaryKey,
@@ -65,7 +64,6 @@ describe('Testing dy Util', {
 
   it('Testing basic logic', () => {
     expect(Object.keys(model)).to.deep.equal([
-      '_model',
       'upsert',
       'update',
       'getItemOrNull',
@@ -125,6 +123,13 @@ describe('Testing dy Util', {
     expect(result).to.deep.equal(item);
   });
 
+  it('Testing update with conditions as array', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
+    item.age = 55;
+    const result = await model.update(item, { conditions: [{ attr: 'age', eq: 50 }] });
+    expect(result).to.deep.equal(item);
+  });
+
   it('Testing update with returnValues', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     const result = await model.update({
@@ -138,6 +143,11 @@ describe('Testing dy Util', {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 55;
     const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
+    expect(error.code).to.equal('ConditionalCheckFailedException');
+  });
+
+  it('Testing update with item does not exist', async ({ capture }) => {
+    const error = await capture(() => model.update(item));
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
