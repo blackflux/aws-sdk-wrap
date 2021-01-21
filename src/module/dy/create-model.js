@@ -80,8 +80,7 @@ module.exports = (kwargs) => {
   });
 
   return {
-    genSchema,
-    getSchema: (() => {
+    get schema() {
       let cache;
       return () => {
         if (cache === undefined) {
@@ -89,7 +88,7 @@ module.exports = (kwargs) => {
         }
         return cache;
       };
-    })(),
+    },
     table,
     entity
   };
