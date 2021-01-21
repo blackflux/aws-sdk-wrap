@@ -42,7 +42,6 @@ describe('Testing dy Util', {
       },
       indices: {
         targetIndex: {
-          // todo: this should error the way that is is
           partitionKey: 'id',
           sortKey: 'name'
         }
@@ -51,7 +50,8 @@ describe('Testing dy Util', {
         endpoint: process.env.DYNAMODB_ENDPOINT
       })
     });
-    localTable = LocalTable(model.model);
+    // eslint-disable-next-line no-underscore-dangle
+    localTable = LocalTable(model._model);
     await localTable.create();
     item = {
       id: primaryKey,
@@ -60,12 +60,12 @@ describe('Testing dy Util', {
     };
   });
   afterEach(async () => {
-    await localTable.tearDown();
+    await localTable.delete();
   });
 
   it('Testing basic logic', () => {
     expect(Object.keys(model)).to.deep.equal([
-      'model',
+      '_model',
       'upsert',
       'update',
       'getItemOrNull',
@@ -156,6 +156,11 @@ describe('Testing dy Util', {
 
   it('Testing query with limit', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
+    expect(await model.upsert({
+      id: primaryKey,
+      name: 'name-2',
+      age: 25
+    })).to.deep.equal({ created: true });
     const result = await model.query(primaryKey, { limit: 1 });
     expect(result).to.deep.equal({
       payload: [item],
@@ -201,13 +206,33 @@ describe('Testing dy Util', {
   });
 
   it('Testing query with cursor', async () => {
+    const secondItem = {
+      id: primaryKey,
+      name: 'name-2',
+      age: 25
+    };
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    const result = await model.query(primaryKey, {
-      // eslint-disable-next-line max-len
-      cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+    expect(await model.upsert({
+      id: primaryKey,
+      name: 'name-2',
+      age: 25
+    })).to.deep.equal({ created: true });
+    const firstResult = await model.query(primaryKey, { limit: 1 });
+    expect(firstResult).to.deep.equal({
+      payload: [item],
+      page: {
+        next: {
+          limit: 1,
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+        },
+        index: { current: 1 },
+        size: 1
+      }
     });
-    expect(result).to.deep.equal({
-      payload: [],
+    const secondResult = await model.query(primaryKey, { cursor: firstResult.page.next.cursor });
+    expect(secondResult).to.deep.equal({
+      payload: [secondItem],
       page: {
         next: null,
         index: { current: 2 },

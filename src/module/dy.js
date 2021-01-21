@@ -14,7 +14,7 @@ module.exports = ({ call, getService, logger }) => ({
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
     return ({
-      model,
+      _model: model,
       upsert: async (item, {
         conditions = null
       } = {}) => {

@@ -133,6 +133,42 @@ limit is reached or no more keys are available. Uses [s3:listObjectsV2](https://
 Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain the
 not-encoded key representation after calling `listObjects`.
 
+#### dy.Model({ name: String, attributes: Object, indices: Object })
+Instantiates Model.<br>
+Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbox)
+
+#### dy.Model.upsert(item: Object, opts: Object)
+Creates entry if key does not exist. Otherwise updates the item.<br>
+Options include:
+- `conditions` (Object|Array): Conditions that must be met for operation to success.
+Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
+
+#### dy.Model.update(item: Object, opts: Object)
+Edits an existing item's attributes.<br>
+Options include:
+- `returnValues` (String): Determines what item attributes to return.
+- `conditions` (Object|Array): Conditions that must be met for operation to success.
+Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
+
+#### dy.Model.getItemOrNull(key: String, opts: Object)
+Returns entry or null if not found.<br>
+Options include:
+- `toReturn` (Array): Fields to return.
+Internally uses [get](https://github.com/jeremydaly/dynamodb-toolbox#getkey-options-parameters)
+
+#### dy.Model.query(key: String, opts: Object)
+Pages through table based on primary key values.<br>
+Options include:
+- `index` (String): Index name.
+- `limit` (Array): Maximum number of items to retrieve.
+- `consistent` (Boolean): Enables [ConsistentRead](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html#DDB-Query-request-ConsistentRead).
+- `toReturn` (Array): Fields to return.
+- `cursor` (String): Cursor to page through query results.
+Internally uses [query](https://github.com/jeremydaly/dynamodb-toolbox#querypartitionkey-options-parameters)
+
+#### dy.Model.genSchema()
+Returns subset of cloudformation template.
+
 ### Init Options
 
 #### logger
