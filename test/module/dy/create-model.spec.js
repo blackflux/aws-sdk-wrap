@@ -20,7 +20,7 @@ describe('Testing create-model.js', () => {
       },
       DocumentClient: new DocumentClient()
     });
-    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+    expect(Object.keys(r)).to.deep.equal(['genSchema', 'getSchema', 'table', 'entity']);
   });
 
   it('Testing creation without indices', () => {
@@ -33,7 +33,7 @@ describe('Testing create-model.js', () => {
       },
       DocumentClient: new DocumentClient()
     });
-    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+    expect(Object.keys(r)).to.deep.equal(['genSchema', 'getSchema', 'table', 'entity']);
   });
 
   it('Testing creation different attribute types', () => {
@@ -47,7 +47,7 @@ describe('Testing create-model.js', () => {
       },
       DocumentClient: new DocumentClient()
     });
-    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+    expect(Object.keys(r)).to.deep.equal(['genSchema', 'getSchema', 'table', 'entity']);
   });
 
   it('Testing attribute not supported for indexing error', () => {

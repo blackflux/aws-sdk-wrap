@@ -29,8 +29,8 @@ module.exports = ({ call, getService, logger }) => ({
         returnValues = 'all_new',
         conditions: updateConditions = null
       } = {}) => {
-        const conditions = model.schema.KeySchema.reduce((prev, { AttributeName: attr }) => prev
-          .concat({ attr, exists: true }), []);
+        const schema = model.getSchema();
+        const conditions = schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }));
         if (updateConditions !== null) {
           conditions.push(...(Array.isArray(updateConditions) ? updateConditions : [updateConditions]));
         }
@@ -75,7 +75,7 @@ module.exports = ({ call, getService, logger }) => ({
           page
         };
       },
-      genSchema: () => model.schema
+      genSchema: model.genSchema
     });
   }
 });
