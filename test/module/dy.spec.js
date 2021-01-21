@@ -68,7 +68,7 @@ describe('Testing dy Util', {
       'update',
       'getItemOrNull',
       'query',
-      'genSchema'
+      'schema'
     ]);
   });
 
@@ -251,8 +251,8 @@ describe('Testing dy Util', {
     });
   });
 
-  it('Testing genSchema', ({ fixture }) => {
-    const result = model.genSchema();
+  it('Testing schema', ({ fixture }) => {
+    const result = model.schema;
     expect(result).to.deep.equal(fixture('table-schema'));
   });
 });

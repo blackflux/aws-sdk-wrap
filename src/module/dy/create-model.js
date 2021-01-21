@@ -22,6 +22,8 @@ const convertType = (t) => {
   }
 };
 
+let cache;
+
 module.exports = (kwargs) => {
   const {
     name,
@@ -81,13 +83,10 @@ module.exports = (kwargs) => {
 
   return {
     get schema() {
-      let cache;
-      return () => {
-        if (cache === undefined) {
-          cache = genSchema();
-        }
-        return cache;
-      };
+      if (cache === undefined) {
+        cache = genSchema();
+      }
+      return cache;
     },
     table,
     entity
