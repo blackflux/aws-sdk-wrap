@@ -140,14 +140,14 @@ Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbo
 #### dy.Model.upsert(item: Object, opts: Object)
 Creates entry if key does not exist. Otherwise updates the item.<br>
 Options include:
-- `conditions` (Object|Array): Conditions that must be met for operation to success.
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
 #### dy.Model.update(item: Object, opts: Object)
 Edits an existing item's attributes.<br>
 Options include:
-- `returnValues` (String): Determines what item attributes to return.
-- `conditions` (Object|Array): Conditions that must be met for operation to success.
+- `returnValues` (String): Return item attributes as they appeared before or after the update.
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
 #### dy.Model.getItemOrNull(key: String, opts: Object)
