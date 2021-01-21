@@ -32,7 +32,7 @@ module.exports = (kwargs) => {
 
   const partitionKey = getFirst(attributes, ([k, v]) => v.partitionKey === true);
   const sortKey = getFirst(attributes, ([k, v]) => v.sortKey === true);
-  let cache;
+  let schemaCache;
 
   const table = new toolbox.Table({
     name,
@@ -82,10 +82,10 @@ module.exports = (kwargs) => {
 
   return {
     get schema() {
-      if (cache === undefined) {
-        cache = genSchema();
+      if (schemaCache === undefined) {
+        schemaCache = genSchema();
       }
-      return cache;
+      return schemaCache;
     },
     table,
     entity
