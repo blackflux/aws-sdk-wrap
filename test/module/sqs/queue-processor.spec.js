@@ -22,8 +22,8 @@ describe('Testing QueueProcessor', {
       stepsDir: `${__filename}_steps`,
       ingestSteps: ['step1', 'step3', 'group-id-step', 'step-urgent-message']
     });
-    executor = (records) => new Promise((resolve, reject) => {
-      processor.handler({
+    executor = (records, queue = null) => new Promise((resolve, reject) => {
+      processor.handler(queue)({
         Records: records.map((r) => ({
           messageId: '11d6ee51-4cc7-4302-9e22-7cd8afdaadf5',
           receiptHandle: 'AQEBBX8nesZEXmkhsmZeyIE8iQAMig7qw...',
@@ -99,6 +99,16 @@ describe('Testing QueueProcessor', {
       '  step3 -> step3;',
       '}'
     ]);
+  });
+
+  it('Testing bad queue provided', () => {
+    expect(() => processor.handler('unknown'))
+      .to.throw('Unknown queue "unknown" for handler provided');
+  });
+
+  it('Testing bad step for handler', async ({ capture }) => {
+    const err = await capture(() => executor([{ name: 'group-id-step', meta: 'meta1' }], 'two'));
+    expect(err.message).to.equal('Bad step "group-id-step" for handler "two" provided');
   });
 
   it('Testing ingest', async () => {
