@@ -234,7 +234,7 @@
           "S": "123"
         }
       },
-      "Limit": 20,
+      "Limit": 1,
       "ConsistentRead": true,
       "ExclusiveStartKey": {
         "name": {
