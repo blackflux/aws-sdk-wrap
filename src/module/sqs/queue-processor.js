@@ -91,7 +91,7 @@ module.exports = ({
       await messageBus.flush(true);
       return stepBus.get();
     });
-  }
+  };
 
   return {
     ingest,
