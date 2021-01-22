@@ -70,7 +70,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1611172183.212,
+        "CreationDateTime": 1611260540.327,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -83,7 +83,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1611172183.212
+          "LastUpdateToPayPerRequestDateTime": 1611260540.327
         },
         "GlobalSecondaryIndexes": [
           {
@@ -120,6 +120,41 @@
     "method": "POST",
     "path": "/",
     "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name"
+        }
+      },
+      "UpdateExpression": "SET #age = :age",
+      "ExpressionAttributeNames": {
+        "#age": "age",
+        "#attr1": "id",
+        "#attr2": "name"
+      },
+      "ExpressionAttributeValues": {
+        ":age": {
+          "N": "50"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#attr1) AND attribute_exists(#attr2)",
+      "ReturnValues": "ALL_NEW"
+    },
+    "status": 400,
+    "response": {
+      "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
+      "message": "The conditional request failed"
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
       "TableName": "table-name"
     },
     "status": 200,
@@ -147,7 +182,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1611172183.212,
+        "CreationDateTime": 1611260540.327,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -160,7 +195,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1611172183.212
+          "LastUpdateToPayPerRequestDateTime": 1611260540.327
         },
         "GlobalSecondaryIndexes": [
           {

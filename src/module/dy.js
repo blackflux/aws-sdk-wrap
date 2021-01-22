@@ -14,7 +14,6 @@ module.exports = ({ call, getService, logger }) => ({
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
     return ({
-      model,
       upsert: async (item, {
         conditions = null
       } = {}) => {
@@ -28,12 +27,14 @@ module.exports = ({ call, getService, logger }) => ({
       },
       update: async (item, {
         returnValues = 'all_new',
-        conditions = null
+        conditions: updateConditions = null
       } = {}) => {
-        const result = await model.entity.update(item, {
-          returnValues,
-          ...(conditions === null ? {} : { conditions })
-        });
+        const schema = model.schema;
+        const conditions = schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }));
+        if (updateConditions !== null) {
+          conditions.push(...(Array.isArray(updateConditions) ? updateConditions : [updateConditions]));
+        }
+        const result = await model.entity.update(item, { returnValues, conditions });
         return result.Attributes;
       },
       getItemOrNull: async (key, { toReturn = null } = {}) => {
@@ -74,7 +75,7 @@ module.exports = ({ call, getService, logger }) => ({
           page
         };
       },
-      genSchema: () => model.schema
+      schema: model.schema
     });
   }
 });

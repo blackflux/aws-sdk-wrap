@@ -42,7 +42,6 @@ describe('Testing dy Util', {
       },
       indices: {
         targetIndex: {
-          // todo: this should error the way that is is
           partitionKey: 'id',
           sortKey: 'name'
         }
@@ -51,7 +50,7 @@ describe('Testing dy Util', {
         endpoint: process.env.DYNAMODB_ENDPOINT
       })
     });
-    localTable = LocalTable(model.model);
+    localTable = LocalTable(model);
     await localTable.create();
     item = {
       id: primaryKey,
@@ -60,17 +59,16 @@ describe('Testing dy Util', {
     };
   });
   afterEach(async () => {
-    await localTable.tearDown();
+    await localTable.delete();
   });
 
   it('Testing basic logic', () => {
     expect(Object.keys(model)).to.deep.equal([
-      'model',
       'upsert',
       'update',
       'getItemOrNull',
       'query',
-      'genSchema'
+      'schema'
     ]);
   });
 
@@ -125,6 +123,13 @@ describe('Testing dy Util', {
     expect(result).to.deep.equal(item);
   });
 
+  it('Testing update with conditions as array', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
+    item.age = 55;
+    const result = await model.update(item, { conditions: [{ attr: 'age', eq: 50 }] });
+    expect(result).to.deep.equal(item);
+  });
+
   it('Testing update with returnValues', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     const result = await model.update({
@@ -138,6 +143,11 @@ describe('Testing dy Util', {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 55;
     const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
+    expect(error.code).to.equal('ConditionalCheckFailedException');
+  });
+
+  it('Testing update with item does not exist', async ({ capture }) => {
+    const error = await capture(() => model.update(item));
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
@@ -156,6 +166,11 @@ describe('Testing dy Util', {
 
   it('Testing query with limit', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
+    expect(await model.upsert({
+      id: primaryKey,
+      name: 'name-2',
+      age: 25
+    })).to.deep.equal({ created: true });
     const result = await model.query(primaryKey, { limit: 1 });
     expect(result).to.deep.equal({
       payload: [item],
@@ -201,13 +216,33 @@ describe('Testing dy Util', {
   });
 
   it('Testing query with cursor', async () => {
+    const secondItem = {
+      id: primaryKey,
+      name: 'name-2',
+      age: 25
+    };
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    const result = await model.query(primaryKey, {
-      // eslint-disable-next-line max-len
-      cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+    expect(await model.upsert({
+      id: primaryKey,
+      name: 'name-2',
+      age: 25
+    })).to.deep.equal({ created: true });
+    const firstResult = await model.query(primaryKey, { limit: 1 });
+    expect(firstResult).to.deep.equal({
+      payload: [item],
+      page: {
+        next: {
+          limit: 1,
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+        },
+        index: { current: 1 },
+        size: 1
+      }
     });
-    expect(result).to.deep.equal({
-      payload: [],
+    const secondResult = await model.query(primaryKey, { cursor: firstResult.page.next.cursor });
+    expect(secondResult).to.deep.equal({
+      payload: [secondItem],
       page: {
         next: null,
         index: { current: 2 },
@@ -216,8 +251,8 @@ describe('Testing dy Util', {
     });
   });
 
-  it('Testing genSchema', ({ fixture }) => {
-    const result = model.genSchema();
+  it('Testing schema', ({ fixture }) => {
+    const result = model.schema;
     expect(result).to.deep.equal(fixture('table-schema'));
   });
 });
