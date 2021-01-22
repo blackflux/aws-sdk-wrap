@@ -46,42 +46,52 @@ module.exports = ({
     await messageBus.flush(true);
   };
 
-  const handler = wrap(async (event) => {
-    const { tasks, stepContexts } = processEvent({ event, steps });
-
-    const stepBus = StepBus({ steps, messageBus });
-    const dlqBus = DlqBus({
-      queues, dlqCache, getDeadLetterQueueUrl, messageBus, globalPool
-    });
-
-    await Promise.all(Array.from(stepContexts)
-      .map(([step, ctx]) => step.before(
-        ctx,
-        tasks.filter((e) => e[3] === step).map((e) => e[1])
-      ).then((msgs) => stepBus.push(msgs, step))));
-
-    await messageBus.flush(false);
-
-    await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
-      try {
-        const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts.get(step)));
-        stepBus.push(msgs, step);
-      } catch (error) {
-        await handleError({
-          error, payload, payloadStripped, e, step, stepBus, dlqBus, logger
-        });
+  const handler = (queue) => {
+    if (queue !== null && !(queue in queues)) {
+      throw new Error(`Unknown queue "${queue}" for handler provided`);
+    }
+    return wrap(async (event) => {
+      const { tasks, stepContexts } = processEvent({ event, steps });
+      if (queue !== null && !tasks.every((e) => e[3].queue === queue)) {
+        throw new Error(
+          `Bad step "${tasks.find((e) => e[3].queue !== queue)[3].name}" for handler "${queue}" provided`
+        );
       }
-    }));
 
-    await messageBus.flush(false);
+      const stepBus = StepBus({ steps, messageBus });
+      const dlqBus = DlqBus({
+        queues, dlqCache, getDeadLetterQueueUrl, messageBus, globalPool
+      });
 
-    await Promise.all(Array.from(stepContexts)
-      .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step))));
+      await Promise.all(Array.from(stepContexts)
+        .map(([step, ctx]) => step.before(
+          ctx,
+          tasks.filter((e) => e[3] === step).map((e) => e[1])
+        ).then((msgs) => stepBus.push(msgs, step))));
 
-    await dlqBus.propagate();
-    await messageBus.flush(true);
-    return stepBus.get();
-  });
+      await messageBus.flush(false);
+
+      await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
+        try {
+          const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts.get(step)));
+          stepBus.push(msgs, step);
+        } catch (error) {
+          await handleError({
+            error, payload, payloadStripped, e, step, stepBus, dlqBus, logger
+          });
+        }
+      }));
+
+      await messageBus.flush(false);
+
+      await Promise.all(Array.from(stepContexts)
+        .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step))));
+
+      await dlqBus.propagate();
+      await messageBus.flush(true);
+      return stepBus.get();
+    });
+  }
 
   return {
     ingest,
