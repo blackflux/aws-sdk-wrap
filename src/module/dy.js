@@ -75,9 +75,7 @@ module.exports = ({ call, getService, logger }) => ({
           page
         };
       },
-      get schema() {
-        return model.schema;
-      }
+      schema: model.schema
     });
   }
 });

@@ -52,7 +52,7 @@ describe('Testing create-model.js', () => {
 
   it('Testing attribute not supported for indexing error', () => {
     try {
-      const r = createModel({
+      createModel({
         name: 'table-name',
         attributes: {
           id: { type: 'map', partitionKey: true },
@@ -62,7 +62,6 @@ describe('Testing create-model.js', () => {
         },
         DocumentClient: new DocumentClient()
       });
-      r.schema;
     } catch (error) {
       expect(error.message).to.equal('map not supported for indexing');
     }
