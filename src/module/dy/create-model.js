@@ -54,7 +54,7 @@ module.exports = (kwargs) => {
     ...(sortKey === undefined ? [] : [sortKey])
   ];
 
-  const genSchema = () => ({
+  const schema = {
     TableName: name,
     AttributeDefinitions: Object
       .entries(entity.schema.attributes)
@@ -77,10 +77,10 @@ module.exports = (kwargs) => {
       }))
     }),
     BillingMode: 'PAY_PER_REQUEST'
-  });
+  };
 
   return {
-    schema: genSchema(),
+    schema,
     table,
     entity
   };
