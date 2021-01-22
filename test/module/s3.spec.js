@@ -5,7 +5,8 @@ const S3Module = require('../../src/module/s3');
 
 describe('Testing s3 Util', {
   useNock: true,
-  timeout: 10000
+  timeout: 10000,
+  envVarsFile: '../default.env.yml'
 }, () => {
   let S3;
   let bucket;
