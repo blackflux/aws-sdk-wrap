@@ -59,7 +59,7 @@ module.exports = ({ call, getService, logger }) => ({
         } = fromCursor(cursor);
         const result = await model.entity.query(partitionKey, {
           ...(index === null ? {} : { index }),
-          limit,
+          limit: queryLimit,
           consistent,
           reverse: scanIndexForward === false,
           ...(toReturn === null ? {} : { attributes: toReturn }),
