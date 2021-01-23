@@ -110,6 +110,6 @@
     "lru-cache-ext": "1.2.4",
     "object-hash-strict": "2.0.1",
     "promise-pool-ext": "1.3.12",
-    "smart-fs": "1.12.4"
+    "smart-fs": "1.12.5"
   }
 }
