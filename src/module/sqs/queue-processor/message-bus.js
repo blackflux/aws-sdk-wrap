@@ -42,7 +42,7 @@ module.exports = ({
         for (let mIdx = msgs.length - 1; mIdx >= 0; mIdx -= 1) {
           const msg = msgs[mIdx];
           if (complete === true || getUrgent(msg) === true) {
-            if (groups[queueUrl] === undefined) {
+            if (!(queueUrl in groups)) {
               groups[queueUrl] = [];
             }
             groups[queueUrl].push(msg);
@@ -55,7 +55,7 @@ module.exports = ({
         }
       }
       const fns = Object.entries(groups)
-        .map(([queueUrl, messages]) => () => sendMessageBatch({ queueUrl, messages }));
+        .map(([queueUrl, messages]) => async () => sendMessageBatch({ queueUrl, messages }));
       await globalPool(fns);
     }
   };
