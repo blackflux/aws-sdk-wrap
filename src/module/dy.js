@@ -6,12 +6,11 @@ module.exports = ({ call, getService, logger }) => ({
   Model: ({
     name,
     attributes,
-    indices
-  }, {
+    indices,
     onNotFound = (item) => { throw new ModelNotFound(); },
     onUpdate = async (item) => {},
     onCreate = async (item) => {}
-  } = {}) => {
+  }) => {
     const model = createModel({
       name,
       attributes,
