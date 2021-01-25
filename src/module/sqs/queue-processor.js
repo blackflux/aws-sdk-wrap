@@ -31,10 +31,7 @@ module.exports = ({
   );
 
   const messageBus = MessageBus({
-    sendMessageBatch,
-    queues,
-    steps,
-    globalPool
+    sendMessageBatch, queues, steps, globalPool
   });
 
   const ingestSchema = Joi.array().items(...ingestSteps.map((step) => steps[step].schema));
