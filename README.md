@@ -133,9 +133,13 @@ limit is reached or no more keys are available. Uses [s3:listObjectsV2](https://
 Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain the
 not-encoded key representation after calling `listObjects`.
 
-#### dy.Model({ name: String, attributes: Object, indices: Object })
+#### dy.Model({ name: String, attributes: Object, indices: Object}, opts)
 Instantiates Model.<br>
 Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbox)
+Options include:
+- `onNotFound` (Function): Custom function called if an entity is not found.
+- `onUpdate` (Function): Custom function called if an entity has been updated.
+- `onCreate` (Function): Custom function called if an entity has been created.
 
 ##### dy.Model().upsert(item: Object, opts: Object)
 Creates entry if key does not exist. Otherwise updates the item.<br>

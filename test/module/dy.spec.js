@@ -4,6 +4,7 @@ const { describe } = require('node-tdd');
 const Index = require('../../src');
 const DyUtil = require('../../src/module/dy');
 const { LocalTable } = require('../dy-helper');
+const { ModelNotFound } = require('../../src/resources/errors');
 
 const { DocumentClient } = DynamoDB;
 
@@ -38,7 +39,7 @@ describe('Testing dy Util', {
       attributes: {
         id: { type: 'string', partitionKey: true },
         name: { type: 'string', sortKey: true },
-        age: { type: 'number' }
+        age: { type: 'number', default: () => 30 }
       },
       indices: {
         targetIndex: {
@@ -66,7 +67,7 @@ describe('Testing dy Util', {
     expect(Object.keys(model)).to.deep.equal([
       'upsert',
       'update',
-      'getItemOrNull',
+      'getItem',
       'query',
       'schema'
     ]);
@@ -74,6 +75,16 @@ describe('Testing dy Util', {
 
   it('Testing upsert item created', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
+  });
+
+  it('Testing upsert with default', async () => {
+    delete item.age;
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
+    const result = await model.getItem(item);
+    expect(result).to.deep.equal({
+      ...item,
+      age: 30
+    });
   });
 
   it('Testing upsert item updated', async () => {
@@ -92,21 +103,27 @@ describe('Testing dy Util', {
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
-  it('Testing getItemOrNull', async () => {
+  it('Testing getItem', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    const result = await model.getItemOrNull(item);
+    const result = await model.getItem(item);
     expect(result).to.deep.equal(item);
   });
 
-  it('Testing getItemOrNull returns null', async () => {
-    const result = await model.getItemOrNull(item);
-    expect(result).to.equal(null);
+  it('Testing getItem throws ModelNotFound error', async ({ capture }) => {
+    const error = await capture(() => model.getItem(item));
+    expect(error).instanceof(ModelNotFound);
   });
 
-  it('Testing getItemOrNull with toReturn', async () => {
+  it('Testing getItem with toReturn', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    const result = await model.getItemOrNull(item, { toReturn: ['name'] });
+    const result = await model.getItem(item, { toReturn: ['name'] });
     expect(result).to.deep.equal({ name: 'name' });
+  });
+
+  it('Testing getItem with stubbed defaults', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
+    const result = await model.getItem(item, { toReturn: ['age'] });
+    expect(result).to.deep.equal({ age: 30 });
   });
 
   it('Testing update', async () => {
@@ -139,16 +156,23 @@ describe('Testing dy Util', {
     expect(result).to.deep.equal(item);
   });
 
-  it('Testing update with ConditionalCheckFailedException', async ({ capture }) => {
+  it('Testing update with item not found with conditions', async ({ capture }) => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 55;
     const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
-    expect(error.code).to.equal('ConditionalCheckFailedException');
+    expect(error).instanceof(ModelNotFound);
+  });
+
+  it('Testing update with unknown error', async ({ capture }) => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
+    item.age = 55;
+    const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
+    expect(error.code).to.equal('UnknownError');
   });
 
   it('Testing update with item does not exist', async ({ capture }) => {
     const error = await capture(() => model.update(item));
-    expect(error.code).to.equal('ConditionalCheckFailedException');
+    expect(error).instanceof(ModelNotFound);
   });
 
   it('Testing query', async () => {
