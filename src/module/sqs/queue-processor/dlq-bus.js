@@ -2,7 +2,7 @@ module.exports = ({
   queues, getDeadLetterQueueUrl, messageBus, globalPool
 }) => {
   const pending = [];
-  const url2dlqUrl = {};
+  const dlqCache = {};
   return {
     prepare: (msgs, step) => {
       pending.push([queues[step.queue], msgs]);
@@ -14,13 +14,13 @@ module.exports = ({
       const inProgress = pending.splice(0);
       const queueUrls = [...new Set(inProgress.map(([url]) => url))];
       const fns = queueUrls
-        .filter((url) => !(url in url2dlqUrl))
+        .filter((url) => !(url in dlqCache))
         .map((url) => async () => {
-          url2dlqUrl[url] = await getDeadLetterQueueUrl(url);
+          dlqCache[url] = await getDeadLetterQueueUrl(url);
         });
       await globalPool(fns);
       inProgress.forEach(([url, msgs]) => {
-        messageBus.addRaw(msgs, url2dlqUrl[url]);
+        messageBus.addRaw(msgs, dlqCache[url]);
       });
     }
   };
