@@ -42,17 +42,11 @@ module.exports = async ({
   const delaySeconds = typeof backoffInSec === 'function'
     ? backoffInSec(kwargs.meta)
     : backoffInSec;
-  if (
-    failureCount >= maxFailureCount
-    || (Date.now() - Date.parse(timestamp)) / 1000 > maxAgeInSec
-  ) {
-    const msgs = await err.onFailure({ ...kwargs, temporary: false });
-    assert(Array.isArray(msgs), 'onFailure must return array of messages');
-    stepBus.push(msgs, step);
-    dlqBus.prepare([payload], step);
-  } else {
-    const msgs = await err.onFailure({ ...kwargs, temporary: true });
-    assert(Array.isArray(msgs), 'onFailure must return array of messages');
+  const temporary = failureCount < maxFailureCount
+    && (Date.now() - Date.parse(timestamp)) / 1000 <= maxAgeInSec;
+  const msgs = await err.onFailure({ ...kwargs, temporary });
+  assert(Array.isArray(msgs), 'onFailure must return array of messages');
+  if (temporary) {
     const msg = {
       ...payload,
       [metaKey]: {
@@ -64,5 +58,8 @@ module.exports = async ({
       prepareMessage(msg, { delaySeconds });
     }
     stepBus.push(msgs.concat(msg), step);
+  } else {
+    stepBus.push(msgs, step);
+    dlqBus.prepare([payload], step);
   }
 };
