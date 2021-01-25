@@ -1,6 +1,9 @@
+const LRU = require('lru-cache-ext');
+
 module.exports = ({
-  queues, dlqCache, getDeadLetterQueueUrl, messageBus, globalPool
+  queues, getDeadLetterQueueUrl, messageBus, globalPool
 }) => {
+  const dlqCache = new LRU({ maxAge: 60 * 1000 });
   const pending = [];
   return {
     prepare: (msgs, step) => {

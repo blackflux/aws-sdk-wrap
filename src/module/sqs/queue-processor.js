@@ -1,7 +1,6 @@
 const assert = require('assert');
 const Joi = require('joi-strict');
 const { Pool } = require('promise-pool-ext');
-const LRU = require('lru-cache-ext');
 const { wrap } = require('lambda-async');
 const loadSteps = require('./queue-processor/load-steps');
 const MessageBus = require('./queue-processor/message-bus');
@@ -16,7 +15,6 @@ module.exports = ({
   getDeadLetterQueueUrl,
   logger
 }) => (opts) => {
-  const dlqCache = new LRU({ maxAge: 60 * 1000 });
   const globalPool = Pool({ concurrency: Number.MAX_SAFE_INTEGER });
 
   Joi.assert(opts, Joi.object().keys({
@@ -60,7 +58,7 @@ module.exports = ({
 
       const stepBus = StepBus({ steps, messageBus });
       const dlqBus = DlqBus({
-        queues, dlqCache, getDeadLetterQueueUrl, messageBus, globalPool
+        queues, getDeadLetterQueueUrl, messageBus, globalPool
       });
 
       await Promise.all(Array.from(stepContexts)
