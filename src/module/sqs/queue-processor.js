@@ -58,7 +58,7 @@ module.exports = ({
         queues, getDeadLetterQueueUrl, messageBus, globalPool
       });
 
-      await Promise.all(Array.from(stepContexts)
+      await Promise.all(Object.values(stepContexts)
         .map(([step, ctx]) => step.before(
           ctx,
           tasks.filter((e) => e[3] === step).map((e) => e[1])
@@ -68,7 +68,7 @@ module.exports = ({
 
       await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
         try {
-          const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts.get(step)));
+          const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts[step.name][1]));
           stepBus.push(msgs, step);
         } catch (error) {
           await handleError({
@@ -79,7 +79,7 @@ module.exports = ({
 
       await messageBus.flush(false);
 
-      await Promise.all(Array.from(stepContexts)
+      await Promise.all(Object.values(stepContexts)
         .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step))));
 
       await dlqBus.propagate();

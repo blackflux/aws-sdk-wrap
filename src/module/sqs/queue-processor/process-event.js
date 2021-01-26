@@ -2,7 +2,7 @@ const assert = require('assert');
 const { stripPayloadMeta } = require('./payload');
 
 module.exports = ({ event, steps }) => {
-  const stepContexts = new Map();
+  const stepContexts = {};
   const tasks = event.Records
     .map((e) => {
       const payload = JSON.parse(e.body);
@@ -19,16 +19,16 @@ module.exports = ({ event, steps }) => {
         step !== undefined,
         `Invalid step provided: ${payload.name}`
       );
-      if (!stepContexts.has(step)) {
-        stepContexts.set(step, Object.create(null));
+      if (!(step.name in stepContexts)) {
+        stepContexts[step.name] = [step, {}];
       }
       return [payload, stripPayloadMeta(payload), e, step];
     });
 
   if (event.Records.length !== 1) {
-    const invalidSteps = Array.from(stepContexts)
-      .filter(([step]) => !step.isParallel)
-      .map(([step]) => step.name);
+    const invalidSteps = Object.entries(stepContexts)
+      .filter(([k, [step]]) => !step.isParallel)
+      .map(([k]) => k);
     if (invalidSteps.length !== 0) {
       throw new Error(`SQS mis-configured. Parallel processing not supported for: ${invalidSteps.join(', ')}`);
     }
