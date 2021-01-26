@@ -245,37 +245,36 @@ describe('Testing dy Util', {
 
   it('Testing query with cursor', async () => {
     const secondItem = {
-      id: primaryKey,
-      name: 'name-2',
-      age: 25,
-      num: 30
+      ...item,
+      name: 'name-2'
+    };
+    const thirdItem = {
+      ...item,
+      name: 'name-3'
     };
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    expect(await model.upsert({
-      id: primaryKey,
-      name: 'name-2',
-      age: 25
-    })).to.deep.equal({ created: true });
-    const firstResult = await model.query(primaryKey, { limit: 1 });
+    expect(await model.upsert(secondItem)).to.deep.equal({ created: true });
+    expect(await model.upsert(thirdItem)).to.deep.equal({ created: true });
+    const firstResult = await model.query(primaryKey, { limit: 2 });
     expect(firstResult).to.deep.equal({
-      payload: [item],
+      payload: [item, secondItem],
       page: {
         next: {
-          limit: 1,
+          limit: 2,
           // eslint-disable-next-line max-len
-          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZS0yIiwiaWQiOiIxMjMifSwiY3VycmVudFBhZ2UiOjJ9'
         },
         index: { current: 1 },
-        size: 1
+        size: 2
       }
     });
     const secondResult = await model.query(primaryKey, { cursor: firstResult.page.next.cursor });
     expect(secondResult).to.deep.equal({
-      payload: [secondItem],
+      payload: [thirdItem],
       page: {
         next: null,
         index: { current: 2 },
-        size: 1
+        size: 2
       }
     });
   });

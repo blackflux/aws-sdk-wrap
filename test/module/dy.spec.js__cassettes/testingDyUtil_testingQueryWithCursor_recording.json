@@ -162,17 +162,50 @@
           "S": "name-2"
         }
       },
-      "UpdateExpression": "SET #age = :age, #num = if_not_exists(#num,:num)",
+      "UpdateExpression": "SET #age = :age, #num = :num",
       "ExpressionAttributeNames": {
         "#age": "age",
         "#num": "num"
       },
       "ExpressionAttributeValues": {
         ":age": {
-          "N": "25"
+          "N": "50"
         },
         ":num": {
-          "N": "30"
+          "N": "50"
+        }
+      },
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 200,
+    "response": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name-3"
+        }
+      },
+      "UpdateExpression": "SET #age = :age, #num = :num",
+      "ExpressionAttributeNames": {
+        "#age": "age",
+        "#num": "num"
+      },
+      "ExpressionAttributeValues": {
+        ":age": {
+          "N": "50"
+        },
+        ":num": {
+          "N": "50"
         }
       },
       "ReturnValues": "ALL_OLD"
@@ -196,7 +229,7 @@
           "S": "123"
         }
       },
-      "Limit": 1,
+      "Limit": 2,
       "ConsistentRead": true
     },
     "status": 200,
@@ -215,13 +248,27 @@
           "num": {
             "N": "50"
           }
+        },
+        {
+          "name": {
+            "S": "name-2"
+          },
+          "id": {
+            "S": "123"
+          },
+          "age": {
+            "N": "50"
+          },
+          "num": {
+            "N": "50"
+          }
         }
       ],
-      "Count": 1,
-      "ScannedCount": 1,
+      "Count": 2,
+      "ScannedCount": 2,
       "LastEvaluatedKey": {
         "name": {
-          "S": "name"
+          "S": "name-2"
         },
         "id": {
           "S": "123"
@@ -245,11 +292,11 @@
           "S": "123"
         }
       },
-      "Limit": 1,
+      "Limit": 2,
       "ConsistentRead": true,
       "ExclusiveStartKey": {
         "name": {
-          "S": "name"
+          "S": "name-2"
         },
         "id": {
           "S": "123"
@@ -261,16 +308,16 @@
       "Items": [
         {
           "name": {
-            "S": "name-2"
+            "S": "name-3"
           },
           "id": {
             "S": "123"
           },
           "age": {
-            "N": "25"
+            "N": "50"
           },
           "num": {
-            "N": "30"
+            "N": "50"
           }
         }
       ],
@@ -319,8 +366,8 @@
           "ReadCapacityUnits": 0,
           "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 13,
-        "ItemCount": 2,
+        "TableSizeBytes": 73,
+        "ItemCount": 3,
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
@@ -347,8 +394,8 @@
               "ReadCapacityUnits": 0,
               "WriteCapacityUnits": 0
             },
-            "IndexSizeBytes": 13,
-            "ItemCount": 2,
+            "IndexSizeBytes": 73,
+            "ItemCount": 3,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
           }
         ]
