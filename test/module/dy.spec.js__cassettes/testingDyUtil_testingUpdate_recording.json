@@ -129,7 +129,7 @@
           "S": "name"
         }
       },
-      "UpdateExpression": "SET #age = :age, #num = if_not_exists(#num,:num)",
+      "UpdateExpression": "SET #age = :age, #num = :num",
       "ExpressionAttributeNames": {
         "#age": "age",
         "#num": "num"
@@ -139,7 +139,7 @@
           "N": "50"
         },
         ":num": {
-          "N": "30"
+          "N": "50"
         }
       },
       "ReturnValues": "ALL_OLD"
@@ -162,19 +162,19 @@
           "S": "name"
         }
       },
-      "UpdateExpression": "SET #age = :age, #num = if_not_exists(#num,:num)",
+      "UpdateExpression": "SET #age = :age, #num = :num",
       "ExpressionAttributeNames": {
         "#age": "age",
+        "#num": "num",
         "#attr1": "id",
-        "#attr2": "name",
-        "#num": "num"
+        "#attr2": "name"
       },
       "ExpressionAttributeValues": {
         ":age": {
           "N": "55"
         },
         ":num": {
-          "N": "30"
+          "N": "50"
         }
       },
       "ConditionExpression": "attribute_exists(#attr1) AND attribute_exists(#attr2)",
@@ -186,11 +186,14 @@
         "name": {
           "S": "name"
         },
+        "id": {
+          "S": "123"
+        },
         "age": {
           "N": "55"
         },
-        "id": {
-          "S": "123"
+        "num": {
+          "N": "50"
         }
       }
     },
