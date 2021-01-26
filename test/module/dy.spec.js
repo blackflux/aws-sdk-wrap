@@ -4,6 +4,7 @@ const { describe } = require('node-tdd');
 const Index = require('../../src');
 const DyUtil = require('../../src/module/dy');
 const { LocalTable } = require('../dy-helper');
+const { ModelNotFound } = require('../../src/resources/errors');
 
 const { DocumentClient } = DynamoDB;
 
@@ -38,7 +39,7 @@ describe('Testing dy Util', {
       attributes: {
         id: { type: 'string', partitionKey: true },
         name: { type: 'string', sortKey: true },
-        age: { type: 'number' }
+        age: { type: 'number', default: 30 }
       },
       indices: {
         targetIndex: {
@@ -66,7 +67,7 @@ describe('Testing dy Util', {
     expect(Object.keys(model)).to.deep.equal([
       'upsert',
       'update',
-      'getItemOrNull',
+      'getItem',
       'query',
       'schema'
     ]);
@@ -74,6 +75,16 @@ describe('Testing dy Util', {
 
   it('Testing upsert item created', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
+  });
+
+  it('Testing upsert with default', async () => {
+    delete item.age;
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
+    const result = await model.getItem(item);
+    expect(result).to.deep.equal({
+      ...item,
+      age: 30
+    });
   });
 
   it('Testing upsert item updated', async () => {
@@ -92,21 +103,29 @@ describe('Testing dy Util', {
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
-  it('Testing getItemOrNull', async () => {
+  it('Testing getItem', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    const result = await model.getItemOrNull(item);
+    const result = await model.getItem(item);
     expect(result).to.deep.equal(item);
   });
 
-  it('Testing getItemOrNull returns null', async () => {
-    const result = await model.getItemOrNull(item);
-    expect(result).to.equal(null);
+  it('Testing getItem throws ModelNotFound error', async ({ capture }) => {
+    const error = await capture(() => model.getItem(item));
+    expect(error).instanceof(ModelNotFound);
   });
 
-  it('Testing getItemOrNull with toReturn', async () => {
+  it('Testing getItem with toReturn', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    const result = await model.getItemOrNull(item, { toReturn: ['name'] });
+    const result = await model.getItem(item, { toReturn: ['name'] });
     expect(result).to.deep.equal({ name: 'name' });
+  });
+
+  it('Testing getItem with stubbed defaults', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
+    const result = await model.getItem(item, { toReturn: ['age'] });
+    expect(result).to.deep.equal({
+      age: 30
+    });
   });
 
   it('Testing update', async () => {
@@ -135,20 +154,27 @@ describe('Testing dy Util', {
     const result = await model.update({
       ...item,
       age: 55
-    }, { returnValues: 'all_old' });
-    expect(result).to.deep.equal(item);
+    }, { returnValues: 'none' });
+    expect(result).to.equal(undefined);
   });
 
-  it('Testing update with ConditionalCheckFailedException', async ({ capture }) => {
+  it('Testing update with item not found with conditions', async ({ capture }) => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 55;
     const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
-    expect(error.code).to.equal('ConditionalCheckFailedException');
+    expect(error).instanceof(ModelNotFound);
+  });
+
+  it('Testing update with unknown error', async ({ capture }) => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true });
+    item.age = 55;
+    const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
+    expect(error.code).to.equal('UnknownError');
   });
 
   it('Testing update with item does not exist', async ({ capture }) => {
     const error = await capture(() => model.update(item));
-    expect(error.code).to.equal('ConditionalCheckFailedException');
+    expect(error).instanceof(ModelNotFound);
   });
 
   it('Testing query', async () => {
@@ -217,36 +243,36 @@ describe('Testing dy Util', {
 
   it('Testing query with cursor', async () => {
     const secondItem = {
-      id: primaryKey,
-      name: 'name-2',
-      age: 25
+      ...item,
+      name: 'name-2'
+    };
+    const thirdItem = {
+      ...item,
+      name: 'name-3'
     };
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    expect(await model.upsert({
-      id: primaryKey,
-      name: 'name-2',
-      age: 25
-    })).to.deep.equal({ created: true });
-    const firstResult = await model.query(primaryKey, { limit: 1 });
+    expect(await model.upsert(secondItem)).to.deep.equal({ created: true });
+    expect(await model.upsert(thirdItem)).to.deep.equal({ created: true });
+    const firstResult = await model.query(primaryKey, { limit: 2 });
     expect(firstResult).to.deep.equal({
-      payload: [item],
+      payload: [item, secondItem],
       page: {
         next: {
-          limit: 1,
+          limit: 2,
           // eslint-disable-next-line max-len
-          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZS0yIiwiaWQiOiIxMjMifSwiY3VycmVudFBhZ2UiOjJ9'
         },
         index: { current: 1 },
-        size: 1
+        size: 2
       }
     });
     const secondResult = await model.query(primaryKey, { cursor: firstResult.page.next.cursor });
     expect(secondResult).to.deep.equal({
-      payload: [secondItem],
+      payload: [thirdItem],
       page: {
         next: null,
         index: { current: 2 },
-        size: 1
+        size: 2
       }
     });
   });
