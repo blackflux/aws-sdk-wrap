@@ -1,3 +1,4 @@
+const assert = require('assert');
 const createModel = require('./dy/create-model');
 const { fromCursor, buildPageObject } = require('../util/paging');
 const { ModelNotFound } = require('../resources/errors');
@@ -11,19 +12,21 @@ module.exports = ({ call, getService, logger }) => ({
     onUpdate = async (item) => {},
     onCreate = async (item) => {}
   }) => {
+    assert(typeof onNotFound === 'function' && onNotFound.length === 1);
+    assert(typeof onUpdate === 'function' && onUpdate.length === 1);
+    assert(typeof onCreate === 'function' && onCreate.length === 1);
     const model = createModel({
       name,
       attributes,
       indices,
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
-    const stubDefaults = (itemRaw, toReturn) => {
-      const defaults = Object.entries(attributes)
-        .filter(([k, v]) => (toReturn === null || toReturn.includes(k)) && v.default !== undefined)
-        .map(([key, value]) => [key, value.default()]);
-      const item = Object.fromEntries(defaults);
-      Object.assign(item, { ...itemRaw });
-      return item;
+    const defaults = Object.entries(attributes)
+      .filter(([k, v]) => 'default' in v)
+      .map(([k, v]) => [k, typeof v.default === 'function' ? v.default() : v.default]);
+    const setDefaults = (item, toReturn) => {
+      const entries = toReturn === null ? defaults : defaults.filter(([k]) => toReturn.includes(k));
+      return { ...Object.fromEntries(entries), ...item };
     };
     return ({
       upsert: async (item, {
@@ -57,6 +60,9 @@ module.exports = ({ call, getService, logger }) => ({
           }
           throw err;
         }
+        if (['all_old', 'all_new'].includes(returnValues.toLowerCase())) {
+          return setDefaults(result.Attributes, null);
+        }
         return result.Attributes;
       },
       getItem: async (key, { toReturn = null } = {}) => {
@@ -67,7 +73,7 @@ module.exports = ({ call, getService, logger }) => ({
         if (result.Item === undefined) {
           onNotFound(key);
         }
-        return stubDefaults(result.Item, toReturn);
+        return setDefaults(result.Item, toReturn);
       },
       query: async (partitionKey, {
         index = null,
@@ -96,7 +102,7 @@ module.exports = ({ call, getService, logger }) => ({
           lastEvaluatedKey: result.LastEvaluatedKey === undefined ? null : result.LastEvaluatedKey
         });
         return {
-          payload: result.Items.map((item) => stubDefaults(item, toReturn)),
+          payload: result.Items.map((item) => setDefaults(item, toReturn)),
           page
         };
       },

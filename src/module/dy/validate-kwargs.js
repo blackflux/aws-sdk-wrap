@@ -8,7 +8,12 @@ const schema = Joi.object().keys({
       type: Joi.string().valid('string', 'boolean', 'number', 'list', 'map', 'binary', 'set'),
       partitionKey: Joi.boolean().valid(true).optional(),
       sortKey: Joi.boolean().valid(true).optional(),
-      default: Joi.function().optional()
+      default: Joi.alternatives().try(
+        Joi.function(),
+        Joi.string(),
+        Joi.number(),
+        Joi.boolean()
+      ).optional()
     }).nand('partitionKey', 'sortKey')
   ).min(1).custom((v, h) => {
     const attributeValues = Object.values(v);

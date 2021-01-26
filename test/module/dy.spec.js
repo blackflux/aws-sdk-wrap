@@ -17,6 +17,7 @@ describe('Testing dy Util', {
   let model;
   let localTable;
   let item;
+  let itemWithNum;
   let primaryKey;
 
   before(() => {
@@ -39,7 +40,8 @@ describe('Testing dy Util', {
       attributes: {
         id: { type: 'string', partitionKey: true },
         name: { type: 'string', sortKey: true },
-        age: { type: 'number', default: () => 30 }
+        age: { type: 'number', default: () => 30 },
+        num: { type: 'number', default: 30 }
       },
       indices: {
         targetIndex: {
@@ -57,6 +59,10 @@ describe('Testing dy Util', {
       id: primaryKey,
       name: 'name',
       age: 50
+    };
+    itemWithNum = {
+      ...item,
+      num: 30
     };
   });
   afterEach(async () => {
@@ -83,7 +89,8 @@ describe('Testing dy Util', {
     const result = await model.getItem(item);
     expect(result).to.deep.equal({
       ...item,
-      age: 30
+      age: 30,
+      num: 30
     });
   });
 
@@ -106,7 +113,7 @@ describe('Testing dy Util', {
   it('Testing getItem', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     const result = await model.getItem(item);
-    expect(result).to.deep.equal(item);
+    expect(result).to.deep.equal(itemWithNum);
   });
 
   it('Testing getItem throws ModelNotFound error', async ({ capture }) => {
@@ -130,21 +137,30 @@ describe('Testing dy Util', {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 55;
     const result = await model.update(item);
-    expect(result).to.deep.equal(item);
+    expect(result).to.deep.equal({
+      ...item,
+      num: 30
+    });
   });
 
   it('Testing update with conditions', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 55;
     const result = await model.update(item, { conditions: { attr: 'age', eq: 50 } });
-    expect(result).to.deep.equal(item);
+    expect(result).to.deep.equal({
+      ...item,
+      num: 30
+    });
   });
 
   it('Testing update with conditions as array', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 55;
     const result = await model.update(item, { conditions: [{ attr: 'age', eq: 50 }] });
-    expect(result).to.deep.equal(item);
+    expect(result).to.deep.equal({
+      ...item,
+      num: 30
+    });
   });
 
   it('Testing update with returnValues', async () => {
@@ -152,8 +168,8 @@ describe('Testing dy Util', {
     const result = await model.update({
       ...item,
       age: 55
-    }, { returnValues: 'all_old' });
-    expect(result).to.deep.equal(item);
+    }, { returnValues: 'none' });
+    expect(result).to.equal(undefined);
   });
 
   it('Testing update with item not found with conditions', async ({ capture }) => {
@@ -179,7 +195,7 @@ describe('Testing dy Util', {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     const result = await model.query(primaryKey);
     expect(result).to.deep.equal({
-      payload: [item],
+      payload: [itemWithNum],
       page: {
         next: null,
         index: { current: 1 },
@@ -197,7 +213,7 @@ describe('Testing dy Util', {
     })).to.deep.equal({ created: true });
     const result = await model.query(primaryKey, { limit: 1 });
     expect(result).to.deep.equal({
-      payload: [item],
+      payload: [itemWithNum],
       page: {
         next: {
           limit: 1,
@@ -230,7 +246,7 @@ describe('Testing dy Util', {
       consistent: false
     });
     expect(result).to.deep.equal({
-      payload: [item],
+      payload: [itemWithNum],
       page: {
         next: null,
         index: { current: 1 },
@@ -243,7 +259,8 @@ describe('Testing dy Util', {
     const secondItem = {
       id: primaryKey,
       name: 'name-2',
-      age: 25
+      age: 25,
+      num: 30
     };
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     expect(await model.upsert({
@@ -253,7 +270,7 @@ describe('Testing dy Util', {
     })).to.deep.equal({ created: true });
     const firstResult = await model.query(primaryKey, { limit: 1 });
     expect(firstResult).to.deep.equal({
-      payload: [item],
+      payload: [itemWithNum],
       page: {
         next: {
           limit: 1,
