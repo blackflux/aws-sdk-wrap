@@ -39,8 +39,7 @@ describe('Testing dy Util', {
       attributes: {
         id: { type: 'string', partitionKey: true },
         name: { type: 'string', sortKey: true },
-        age: { type: 'number', default: 30 },
-        num: { type: 'number', default: 30 }
+        age: { type: 'number', default: 30 }
       },
       indices: {
         targetIndex: {
@@ -57,8 +56,7 @@ describe('Testing dy Util', {
     item = {
       id: primaryKey,
       name: 'name',
-      age: 50,
-      num: 50
+      age: 50
     };
   });
   afterEach(async () => {
@@ -81,13 +79,11 @@ describe('Testing dy Util', {
 
   it('Testing upsert with default', async () => {
     delete item.age;
-    delete item.num;
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     const result = await model.getItem(item);
     expect(result).to.deep.equal({
       ...item,
-      age: 30,
-      num: 30
+      age: 30
     });
   });
 
@@ -126,10 +122,9 @@ describe('Testing dy Util', {
 
   it('Testing getItem with stubbed defaults', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    const result = await model.getItem(item, { toReturn: ['age', 'num'] });
+    const result = await model.getItem(item, { toReturn: ['age'] });
     expect(result).to.deep.equal({
-      age: 30,
-      num: 30
+      age: 30
     });
   });
 

@@ -129,16 +129,12 @@
           "S": "name"
         }
       },
-      "UpdateExpression": "SET #age = :age, #num = :num",
+      "UpdateExpression": "SET #age = :age",
       "ExpressionAttributeNames": {
-        "#age": "age",
-        "#num": "num"
+        "#age": "age"
       },
       "ExpressionAttributeValues": {
         ":age": {
-          "N": "50"
-        },
-        ":num": {
           "N": "50"
         }
       },
@@ -162,17 +158,13 @@
           "S": "name"
         }
       },
-      "UpdateExpression": "SET #age = :age, #num = :num",
+      "UpdateExpression": "SET #age = :age",
       "ExpressionAttributeNames": {
-        "#age": "age",
-        "#num": "num"
+        "#age": "age"
       },
       "ExpressionAttributeValues": {
         ":age": {
           "N": "51"
-        },
-        ":num": {
-          "N": "50"
         }
       },
       "ReturnValues": "ALL_OLD"
@@ -183,14 +175,11 @@
         "name": {
           "S": "name"
         },
-        "id": {
-          "S": "123"
-        },
         "age": {
           "N": "50"
         },
-        "num": {
-          "N": "50"
+        "id": {
+          "S": "123"
         }
       }
     },

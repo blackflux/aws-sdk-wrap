@@ -129,16 +129,12 @@
           "S": "name"
         }
       },
-      "UpdateExpression": "SET #age = if_not_exists(#age,:age), #num = if_not_exists(#num,:num)",
+      "UpdateExpression": "SET #age = if_not_exists(#age,:age)",
       "ExpressionAttributeNames": {
-        "#age": "age",
-        "#num": "num"
+        "#age": "age"
       },
       "ExpressionAttributeValues": {
         ":age": {
-          "N": "30"
-        },
-        ":num": {
           "N": "30"
         }
       },

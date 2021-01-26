@@ -129,16 +129,12 @@
           "S": "name"
         }
       },
-      "UpdateExpression": "SET #age = :age, #num = :num",
+      "UpdateExpression": "SET #age = :age",
       "ExpressionAttributeNames": {
-        "#age": "age",
-        "#num": "num"
+        "#age": "age"
       },
       "ExpressionAttributeValues": {
         ":age": {
-          "N": "50"
-        },
-        ":num": {
           "N": "50"
         }
       },

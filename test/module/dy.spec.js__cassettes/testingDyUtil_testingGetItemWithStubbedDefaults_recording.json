@@ -129,16 +129,12 @@
           "S": "name"
         }
       },
-      "UpdateExpression": "SET #age = :age, #num = :num",
+      "UpdateExpression": "SET #age = :age",
       "ExpressionAttributeNames": {
-        "#age": "age",
-        "#num": "num"
+        "#age": "age"
       },
       "ExpressionAttributeValues": {
         ":age": {
-          "N": "50"
-        },
-        ":num": {
           "N": "50"
         }
       },
@@ -163,10 +159,9 @@
         }
       },
       "ExpressionAttributeNames": {
-        "#proj1": "age",
-        "#proj2": "num"
+        "#proj1": "age"
       },
-      "ProjectionExpression": "#proj1,#proj2",
+      "ProjectionExpression": "#proj1",
       "ConsistentRead": true
     },
     "status": 200,
