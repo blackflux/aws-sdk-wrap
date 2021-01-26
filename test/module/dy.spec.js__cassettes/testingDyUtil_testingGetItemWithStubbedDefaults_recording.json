@@ -163,9 +163,10 @@
         }
       },
       "ExpressionAttributeNames": {
-        "#proj1": "age"
+        "#proj1": "age",
+        "#proj2": "num"
       },
-      "ProjectionExpression": "#proj1",
+      "ProjectionExpression": "#proj1,#proj2",
       "ConsistentRead": true
     },
     "status": 200,

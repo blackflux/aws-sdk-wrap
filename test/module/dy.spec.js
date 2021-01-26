@@ -126,8 +126,11 @@ describe('Testing dy Util', {
 
   it('Testing getItem with stubbed defaults', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
-    const result = await model.getItem(item, { toReturn: ['age'] });
-    expect(result).to.deep.equal({ age: 30 });
+    const result = await model.getItem(item, { toReturn: ['age', 'num'] });
+    expect(result).to.deep.equal({
+      age: 30,
+      num: 30
+    });
   });
 
   it('Testing update', async () => {
