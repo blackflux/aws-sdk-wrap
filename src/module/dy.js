@@ -40,8 +40,7 @@ module.exports = ({ call, getService, logger }) => ({
           ...(conditions === null ? {} : { conditions })
         });
         const created = result.Attributes === undefined;
-        const fn = created === true ? onCreate : onUpdate;
-        await fn(item);
+        await (created === true ? onCreate : onUpdate)(item);
         return { created };
       },
       update: async (item, {
