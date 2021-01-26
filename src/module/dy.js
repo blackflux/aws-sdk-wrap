@@ -22,11 +22,14 @@ module.exports = ({ call, getService, logger }) => ({
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
     const defaults = Object.entries(attributes)
-      .filter(([k, v]) => 'default' in v)
-      .map(([k, v]) => [k, typeof v.default === 'function' ? v.default() : v.default]);
+      .filter(([_, v]) => 'default' in v)
+      .map(([k, v]) => [k, v.default]);
     const setDefaults = (item, toReturn) => {
       const entries = toReturn === null ? defaults : defaults.filter(([k]) => toReturn.includes(k));
-      return { ...Object.fromEntries(entries), ...item };
+      return {
+        ...entries.reduce((prev, [k, v]) => Object.assign(prev, { [k]: v }), {}),
+        ...item
+      };
     };
     return ({
       upsert: async (item, {

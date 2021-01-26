@@ -39,7 +39,7 @@ describe('Testing dy Util', {
       attributes: {
         id: { type: 'string', partitionKey: true },
         name: { type: 'string', sortKey: true },
-        age: { type: 'number', default: () => 30 },
+        age: { type: 'number', default: 30 },
         num: { type: 'number', default: 30 }
       },
       indices: {
