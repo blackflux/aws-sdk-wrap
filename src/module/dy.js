@@ -1,18 +1,36 @@
+const assert = require('assert');
 const createModel = require('./dy/create-model');
 const { fromCursor, buildPageObject } = require('../util/paging');
+const { ModelNotFound } = require('../resources/errors');
 
 module.exports = ({ call, getService, logger }) => ({
   Model: ({
     name,
     attributes,
-    indices
+    indices,
+    onNotFound = (item) => { throw new ModelNotFound(); },
+    onUpdate = async (item) => {},
+    onCreate = async (item) => {}
   }) => {
+    assert(typeof onNotFound === 'function' && onNotFound.length === 1);
+    assert(typeof onUpdate === 'function' && onUpdate.length === 1);
+    assert(typeof onCreate === 'function' && onCreate.length === 1);
     const model = createModel({
       name,
       attributes,
       indices,
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
+    const defaults = Object.entries(attributes)
+      .filter(([_, v]) => 'default' in v)
+      .map(([k, v]) => [k, v.default]);
+    const setDefaults = (item, toReturn) => {
+      const entries = toReturn === null ? defaults : defaults.filter(([k]) => toReturn.includes(k));
+      return {
+        ...entries.reduce((prev, [k, v]) => Object.assign(prev, { [k]: v }), {}),
+        ...item
+      };
+    };
     return ({
       upsert: async (item, {
         conditions = null
@@ -21,9 +39,9 @@ module.exports = ({ call, getService, logger }) => ({
           returnValues: 'all_old',
           ...(conditions === null ? {} : { conditions })
         });
-        return {
-          created: result.Attributes === undefined
-        };
+        const created = result.Attributes === undefined;
+        await (created === true ? onCreate : onUpdate)(item);
+        return { created };
       },
       update: async (item, {
         returnValues = 'all_new',
@@ -34,15 +52,30 @@ module.exports = ({ call, getService, logger }) => ({
         if (updateConditions !== null) {
           conditions.push(...(Array.isArray(updateConditions) ? updateConditions : [updateConditions]));
         }
-        const result = await model.entity.update(item, { returnValues, conditions });
+        let result;
+        try {
+          result = await model.entity.update(item, { returnValues, conditions });
+          await onUpdate(item);
+        } catch (err) {
+          if (err.code === 'ConditionalCheckFailedException') {
+            onNotFound(item);
+          }
+          throw err;
+        }
+        if (['all_old', 'all_new'].includes(returnValues.toLowerCase())) {
+          return setDefaults(result.Attributes, null);
+        }
         return result.Attributes;
       },
-      getItemOrNull: async (key, { toReturn = null } = {}) => {
+      getItem: async (key, { toReturn = null } = {}) => {
         const result = await model.entity.get(key, {
           consistent: true,
           ...(toReturn === null ? {} : { attributes: toReturn })
         });
-        return result.Item === undefined ? null : result.Item;
+        if (result.Item === undefined) {
+          onNotFound(key);
+        }
+        return setDefaults(result.Item, toReturn);
       },
       query: async (partitionKey, {
         index = null,
@@ -71,7 +104,7 @@ module.exports = ({ call, getService, logger }) => ({
           lastEvaluatedKey: result.LastEvaluatedKey === undefined ? null : result.LastEvaluatedKey
         });
         return {
-          payload: result.Items,
+          payload: result.Items.map((item) => setDefaults(item, toReturn)),
           page
         };
       },

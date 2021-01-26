@@ -5,6 +5,7 @@ class SendMessageBatchError extends Error {
     this.name = 'SendMessageBatchError';
   }
 }
+module.exports.SendMessageBatchError = SendMessageBatchError;
 
 class MessageCollisionError extends Error {
   constructor(message) {
@@ -12,6 +13,12 @@ class MessageCollisionError extends Error {
     this.name = 'MessageCollisionError';
   }
 }
-
-module.exports.SendMessageBatchError = SendMessageBatchError;
 module.exports.MessageCollisionError = MessageCollisionError;
+
+class ModelNotFound extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'ModelNotFound';
+  }
+}
+module.exports.ModelNotFound = ModelNotFound;

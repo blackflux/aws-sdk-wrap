@@ -170,22 +170,10 @@
         }
       },
       "ConditionExpression": "attribute_exists(#attr1) AND attribute_exists(#attr2)",
-      "ReturnValues": "ALL_OLD"
+      "ReturnValues": "NONE"
     },
     "status": 200,
-    "response": {
-      "Attributes": {
-        "name": {
-          "S": "name"
-        },
-        "age": {
-          "N": "50"
-        },
-        "id": {
-          "S": "123"
-        }
-      }
-    },
+    "response": {},
     "responseIsBinary": false
   },
   {
