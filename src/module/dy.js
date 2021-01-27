@@ -48,9 +48,9 @@ module.exports = ({ call, getService, logger }) => ({
         conditions: updateConditions = null
       } = {}) => {
         const schema = model.schema;
-        const conditions = schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }));
+        const conditions = [schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
         if (updateConditions !== null) {
-          conditions.push(...(Array.isArray(updateConditions) ? updateConditions : [updateConditions]));
+          conditions.push(Array.isArray(updateConditions) ? updateConditions : [updateConditions]);
         }
         let result;
         try {
