@@ -136,8 +136,8 @@ not-encoded key representation after calling `listObjects`.
 #### dy.Model({ name: String, attributes: Object, indices: Object, onNotFound: Function, onUpdate: Function, onCreate: Function })
 Options include:
 - `onNotFound` (Function): Executed when an item is not found.
-- `onUpdate` (Function): Executed when item is updated.
-- `onCreate` (Function): Executed when item is created.
+- `onUpdate` (Function): Executed when an item is updated.
+- `onCreate` (Function): Executed when an item is created.
 Instantiates Model.<br>
 Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbox)
 
