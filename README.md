@@ -134,6 +134,10 @@ Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain t
 not-encoded key representation after calling `listObjects`.
 
 #### dy.Model({ name: String, attributes: Object, indices: Object, onNotFound: Function, onUpdate: Function, onCreate: Function })
+Options details:
+- `onNotFound` (Function): Return value is returned from corresponding function. Return value is returned from corresponding function.
+- `onUpdate` (Function): Executed after an item is updated successfully.
+- `onCreate` (Function): Executed after an item is created successfully.
 Instantiates Model.<br>
 Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbox)
 
@@ -141,6 +145,7 @@ Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbo
 Creates entry if key does not exist. Otherwise updates the item.<br>
 Options include:
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
 ##### dy.Model().update(item: Object, opts: Object)
@@ -148,12 +153,15 @@ Edits an existing item's attributes. Can only update an item if it exists.<br>
 Options include:
 - `returnValues` (String): Return item attributes as they appeared before or after the update.
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `onNotFound` (Function): Overrides Model `onNotFound` function.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
-##### dy.Model().getItemOrNull(key: String, opts: Object)
+##### dy.Model().getItem(key: String, opts: Object)
 Returns entry or null if not found.<br>
 Options include:
 - `toReturn` (Array): Fields to return.
+- `onNotFound` (Function): Overrides Model `onNotFound` function.
 Internally uses [get](https://github.com/jeremydaly/dynamodb-toolbox#getkey-options-parameters)
 
 ##### dy.Model().query(key: String, opts: Object)

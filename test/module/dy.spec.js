@@ -103,6 +103,14 @@ describe('Testing dy Util', {
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
+  it('Testing upsert with expectedErrorCodes', async () => {
+    const result = await model.upsert(item, {
+      conditions: { attr: 'name', exists: true },
+      expectedErrorCodes: ['ConditionalCheckFailedException']
+    });
+    expect(result).to.equal('ConditionalCheckFailedException');
+  });
+
   it('Testing getItem', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     const result = await model.getItem(item);
@@ -112,6 +120,18 @@ describe('Testing dy Util', {
   it('Testing getItem throws ModelNotFound error', async ({ capture }) => {
     const error = await capture(() => model.getItem(item));
     expect(error).instanceof(ModelNotFound);
+  });
+
+  it('Testing getItem onNotFound', async () => {
+    const logs = [];
+    const result = await model.getItem(item, {
+      onNotFound: (key) => {
+        logs.push('onNotFound executed');
+        return {};
+      }
+    });
+    expect(logs).to.deep.equal(['onNotFound executed']);
+    expect(result).to.deep.equal({});
   });
 
   it('Testing getItem with toReturn', async () => {
@@ -162,7 +182,7 @@ describe('Testing dy Util', {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 55;
     const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
-    expect(error).instanceof(ModelNotFound);
+    expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
   it('Testing update with unknown error', async ({ capture }) => {
@@ -175,6 +195,25 @@ describe('Testing dy Util', {
   it('Testing update with item does not exist', async ({ capture }) => {
     const error = await capture(() => model.update(item));
     expect(error).instanceof(ModelNotFound);
+  });
+
+  it('Testing update with onNotFound', async () => {
+    const logs = [];
+    const result = await model.update(item, {
+      onNotFound: (key) => {
+        logs.push('onNotFound executed');
+        return {};
+      }
+    });
+    expect(logs).to.deep.equal(['onNotFound executed']);
+    expect(result).to.deep.equal({});
+  });
+
+  it('Testing update with expectedErrorCodes', async () => {
+    const result = await model.update(item, {
+      expectedErrorCodes: ['ConditionalCheckFailedException']
+    });
+    expect(result).to.equal('ConditionalCheckFailedException');
   });
 
   it('Testing query', async () => {

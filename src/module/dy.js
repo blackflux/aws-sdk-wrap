@@ -8,11 +8,11 @@ module.exports = ({ call, getService, logger }) => ({
     name,
     attributes,
     indices,
-    onNotFound = (item) => { throw new ModelNotFound(); },
+    onNotFound: onNotFound_ = (key) => { throw new ModelNotFound(); },
     onUpdate = async (item) => {},
     onCreate = async (item) => {}
   }) => {
-    assert(typeof onNotFound === 'function' && onNotFound.length === 1);
+    assert(typeof onNotFound_ === 'function' && onNotFound_.length === 1);
     assert(typeof onUpdate === 'function' && onUpdate.length === 1);
     assert(typeof onCreate === 'function' && onCreate.length === 1);
     const model = createModel({
@@ -31,22 +31,44 @@ module.exports = ({ call, getService, logger }) => ({
         ...item
       };
     };
+    const extractKey = (item) => model.schema.KeySchema
+      .map(({ AttributeName: attr }) => attr)
+      .reduce((prev, cur) => {
+        // eslint-disable-next-line no-param-reassign
+        prev[cur] = item[cur];
+        return prev;
+      }, {});
+
     return ({
       upsert: async (item, {
-        conditions = null
+        conditions = null,
+        expectedErrorCodes = []
       } = {}) => {
-        const result = await model.entity.update(item, {
-          returnValues: 'all_old',
-          ...(conditions === null ? {} : { conditions })
-        });
+        assert(Array.isArray(expectedErrorCodes));
+        let result;
+        try {
+          result = await model.entity.update(item, {
+            returnValues: 'all_old',
+            ...(conditions === null ? {} : { conditions })
+          });
+        } catch (err) {
+          if (expectedErrorCodes.includes(err.code)) {
+            return err.code;
+          }
+          throw err;
+        }
         const created = result.Attributes === undefined;
         await (created === true ? onCreate : onUpdate)(item);
         return { created };
       },
       update: async (item, {
         returnValues = 'all_new',
-        conditions: updateConditions = null
+        conditions: updateConditions = null,
+        onNotFound = onNotFound_,
+        expectedErrorCodes = []
       } = {}) => {
+        assert(typeof onNotFound === 'function', onNotFound.length === 1);
+        assert(Array.isArray(expectedErrorCodes));
         const schema = model.schema;
         const conditions = [schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
         if (updateConditions !== null) {
@@ -57,8 +79,12 @@ module.exports = ({ call, getService, logger }) => ({
           result = await model.entity.update(item, { returnValues, conditions });
           await onUpdate(item);
         } catch (err) {
-          if (err.code === 'ConditionalCheckFailedException') {
-            onNotFound(item);
+          if (expectedErrorCodes.includes(err.code)) {
+            return err.code;
+          }
+          if (err.code === 'ConditionalCheckFailedException' && updateConditions === null) {
+            const key = extractKey(item);
+            return onNotFound(key);
           }
           throw err;
         }
@@ -67,13 +93,17 @@ module.exports = ({ call, getService, logger }) => ({
         }
         return result.Attributes;
       },
-      getItem: async (key, { toReturn = null } = {}) => {
+      getItem: async (key, {
+        toReturn = null,
+        onNotFound = onNotFound_
+      } = {}) => {
+        assert(typeof onNotFound === 'function', onNotFound.length === 1);
         const result = await model.entity.get(key, {
           consistent: true,
           ...(toReturn === null ? {} : { attributes: toReturn })
         });
         if (result.Item === undefined) {
-          onNotFound(key);
+          return onNotFound(key);
         }
         return setDefaults(result.Item, toReturn);
       },
