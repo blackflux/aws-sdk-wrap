@@ -33,7 +33,11 @@ module.exports = ({ call, getService, logger }) => ({
     };
     const extractKey = (item) => model.schema.KeySchema
       .map(({ AttributeName: attr }) => attr)
-      .reduce((prev, cur) => Object.assign(prev, { [cur]: item[cur] }), {});
+      .reduce((prev, cur) => {
+        // eslint-disable-next-line no-param-reassign
+        prev[cur] = item[cur];
+        return prev;
+      }, {});
 
     return ({
       upsert: async (item, {

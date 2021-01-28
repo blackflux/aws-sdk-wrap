@@ -11,7 +11,6 @@ const { DocumentClient } = DynamoDB;
 describe('Testing dy Util', {
   useNock: true,
   nockStripHeaders: true,
-  record: console,
   envVarsFile: '../default.env.yml'
 }, () => {
   let Model;
@@ -123,15 +122,15 @@ describe('Testing dy Util', {
     expect(error).instanceof(ModelNotFound);
   });
 
-  it('Testing getItem onNotFound', async ({ recorder }) => {
+  it('Testing getItem onNotFound', async () => {
+    const logs = [];
     const result = await model.getItem(item, {
       onNotFound: (key) => {
-        // eslint-disable-next-line no-console
-        console.log('onNotFound executed');
+        logs.push('onNotFound executed');
         return {};
       }
     });
-    expect(recorder.get()).to.deep.equal(['onNotFound executed']);
+    expect(logs).to.deep.equal(['onNotFound executed']);
     expect(result).to.deep.equal({});
   });
 
@@ -198,15 +197,15 @@ describe('Testing dy Util', {
     expect(error).instanceof(ModelNotFound);
   });
 
-  it('Testing update with onNotFound', async ({ recorder }) => {
+  it('Testing update with onNotFound', async () => {
+    const logs = [];
     const result = await model.update(item, {
       onNotFound: (key) => {
-        // eslint-disable-next-line no-console
-        console.log('onNotFound executed');
+        logs.push('onNotFound executed');
         return {};
       }
     });
-    expect(recorder.get()).to.deep.equal(['onNotFound executed']);
+    expect(logs).to.deep.equal(['onNotFound executed']);
     expect(result).to.deep.equal({});
   });
 
