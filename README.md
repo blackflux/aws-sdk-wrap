@@ -149,7 +149,7 @@ Edits an existing item's attributes. Can only update an item if it exists.<br>
 Options include:
 - `returnValues` (String): Return item attributes as they appeared before or after the update.
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
-- `onItemNotFound` (Function): Function executed when item is not found.
+- `onNotFound` (Function): Overrides Model `onNotFound` function.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
@@ -157,7 +157,7 @@ Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updateke
 Returns entry or null if not found.<br>
 Options include:
 - `toReturn` (Array): Fields to return.
-- `onItemNotFound` (Function): Function executed when item is not found.
+- `onNotFound` (Function): Overrides Model `onNotFound` function.
 Internally uses [get](https://github.com/jeremydaly/dynamodb-toolbox#getkey-options-parameters)
 
 ##### dy.Model().query(key: String, opts: Object)

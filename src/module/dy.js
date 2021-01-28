@@ -8,11 +8,11 @@ module.exports = ({ call, getService, logger }) => ({
     name,
     attributes,
     indices,
-    onNotFound = (item) => { throw new ModelNotFound(); },
+    onNotFound: onNotFound_ = (item) => { throw new ModelNotFound(); },
     onUpdate = async (item) => {},
     onCreate = async (item) => {}
   }) => {
-    assert(typeof onNotFound === 'function' && onNotFound.length === 1);
+    assert(typeof onNotFound_ === 'function' && onNotFound_.length === 1);
     assert(typeof onUpdate === 'function' && onUpdate.length === 1);
     assert(typeof onCreate === 'function' && onCreate.length === 1);
     const model = createModel({
@@ -56,10 +56,10 @@ module.exports = ({ call, getService, logger }) => ({
       update: async (item, {
         returnValues = 'all_new',
         conditions: updateConditions = null,
-        onItemNotFound = onNotFound,
+        onNotFound = onNotFound_,
         expectedErrorCodes = []
       } = {}) => {
-        assert(typeof onItemNotFound === 'function');
+        assert(typeof onNotFound === 'function', onNotFound.length === 1);
         assert(Array.isArray(expectedErrorCodes));
         const schema = model.schema;
         const conditions = [schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
@@ -75,7 +75,7 @@ module.exports = ({ call, getService, logger }) => ({
             return err.code;
           }
           if (err.code === 'ConditionalCheckFailedException' && updateConditions === null) {
-            return onItemNotFound(item);
+            return onNotFound(item);
           }
           throw err;
         }
@@ -86,15 +86,15 @@ module.exports = ({ call, getService, logger }) => ({
       },
       getItem: async (key, {
         toReturn = null,
-        onItemNotFound = onNotFound
+        onNotFound = onNotFound_
       } = {}) => {
-        assert(typeof onItemNotFound === 'function');
+        assert(typeof onNotFound === 'function', onNotFound.length === 1);
         const result = await model.entity.get(key, {
           consistent: true,
           ...(toReturn === null ? {} : { attributes: toReturn })
         });
         if (result.Item === undefined) {
-          return onItemNotFound(key);
+          return onNotFound(key);
         }
         return setDefaults(result.Item, toReturn);
       },

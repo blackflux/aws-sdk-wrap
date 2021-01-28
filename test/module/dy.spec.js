@@ -123,15 +123,15 @@ describe('Testing dy Util', {
     expect(error).instanceof(ModelNotFound);
   });
 
-  it('Testing getItem onItemNotFound', async ({ recorder }) => {
+  it('Testing getItem onNotFound', async ({ recorder }) => {
     const result = await model.getItem(item, {
-      onItemNotFound: () => {
+      onNotFound: (i) => {
         // eslint-disable-next-line no-console
-        console.log('onItemNotFound executed');
+        console.log('onNotFound executed');
         return {};
       }
     });
-    expect(recorder.get()).to.deep.equal(['onItemNotFound executed']);
+    expect(recorder.get()).to.deep.equal(['onNotFound executed']);
     expect(result).to.deep.equal({});
   });
 
@@ -198,15 +198,15 @@ describe('Testing dy Util', {
     expect(error).instanceof(ModelNotFound);
   });
 
-  it('Testing update with onItemNotFound', async ({ recorder }) => {
+  it('Testing update with onNotFound', async ({ recorder }) => {
     const result = await model.update(item, {
-      onItemNotFound: () => {
+      onNotFound: (i) => {
         // eslint-disable-next-line no-console
-        console.log('onItemNotFound executed');
+        console.log('onNotFound executed');
         return {};
       }
     });
-    expect(recorder.get()).to.deep.equal(['onItemNotFound executed']);
+    expect(recorder.get()).to.deep.equal(['onNotFound executed']);
     expect(result).to.deep.equal({});
   });
 
