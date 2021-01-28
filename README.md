@@ -134,8 +134,8 @@ Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain t
 not-encoded key representation after calling `listObjects`.
 
 #### dy.Model({ name: String, attributes: Object, indices: Object, onNotFound: Function, onUpdate: Function, onCreate: Function })
-Options include:
-- `onNotFound` (Function): Executed when an item is not found.
+Options details:
+- `onNotFound` (Function): Return value is returned from corresponding function. Return value is returned from corresponding function.
 - `onUpdate` (Function): Executed after an item is updated successfully.
 - `onCreate` (Function): Executed after an item is created successfully.
 Instantiates Model.<br>
