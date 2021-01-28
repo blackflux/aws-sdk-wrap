@@ -128,6 +128,7 @@ describe('Testing dy Util', {
       onItemNotFound: () => {
         // eslint-disable-next-line no-console
         console.log('onItemNotFound executed');
+        return {};
       }
     });
     expect(recorder.get()).to.deep.equal(['onItemNotFound executed']);
@@ -202,6 +203,7 @@ describe('Testing dy Util', {
       onItemNotFound: () => {
         // eslint-disable-next-line no-console
         console.log('onItemNotFound executed');
+        return {};
       }
     });
     expect(recorder.get()).to.deep.equal(['onItemNotFound executed']);

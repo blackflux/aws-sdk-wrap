@@ -77,8 +77,7 @@ module.exports = ({ call, getService, logger }) => ({
             return err.code;
           }
           if (err.code === 'ConditionalCheckFailedException' && updateConditions === null) {
-            onItemNotFound(item);
-            return {};
+            return onItemNotFound(item);
           }
           throw err;
         }
@@ -93,9 +92,9 @@ module.exports = ({ call, getService, logger }) => ({
           ...(toReturn === null ? {} : { attributes: toReturn })
         });
         if (result.Item === undefined) {
-          onItemNotFound(key);
+          return onItemNotFound(key);
         }
-        return result.Item === undefined ? {} : setDefaults(result.Item, toReturn);
+        return setDefaults(result.Item, toReturn);
       },
       query: async (partitionKey, {
         index = null,
