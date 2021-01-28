@@ -134,6 +134,10 @@ Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain t
 not-encoded key representation after calling `listObjects`.
 
 #### dy.Model({ name: String, attributes: Object, indices: Object, onNotFound: Function, onUpdate: Function, onCreate: Function })
+Options include:
+- `onNotFound` (Function): Executed when an item is not found.
+- `onUpdate` (Function): Executed when item is updated.
+- `onCreate` (Function): Executed when item is created.
 Instantiates Model.<br>
 Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbox)
 

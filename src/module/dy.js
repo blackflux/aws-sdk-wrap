@@ -8,7 +8,7 @@ module.exports = ({ call, getService, logger }) => ({
     name,
     attributes,
     indices,
-    onNotFound: onNotFound_ = (item) => { throw new ModelNotFound(); },
+    onNotFound: onNotFound_ = (key) => { throw new ModelNotFound(); },
     onUpdate = async (item) => {},
     onCreate = async (item) => {}
   }) => {
@@ -31,6 +31,10 @@ module.exports = ({ call, getService, logger }) => ({
         ...item
       };
     };
+    const extractKey = (item) => model.schema.KeySchema
+      .map(({ AttributeName: attr }) => attr)
+      .reduce((prev, cur) => Object.assign(prev, { [cur]: item[cur] }), {});
+
     return ({
       upsert: async (item, {
         conditions = null,
@@ -75,7 +79,8 @@ module.exports = ({ call, getService, logger }) => ({
             return err.code;
           }
           if (err.code === 'ConditionalCheckFailedException' && updateConditions === null) {
-            return onNotFound(item);
+            const key = extractKey(item);
+            return onNotFound(key);
           }
           throw err;
         }

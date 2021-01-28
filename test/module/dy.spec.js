@@ -125,7 +125,7 @@ describe('Testing dy Util', {
 
   it('Testing getItem onNotFound', async ({ recorder }) => {
     const result = await model.getItem(item, {
-      onNotFound: (i) => {
+      onNotFound: (key) => {
         // eslint-disable-next-line no-console
         console.log('onNotFound executed');
         return {};
@@ -200,7 +200,7 @@ describe('Testing dy Util', {
 
   it('Testing update with onNotFound', async ({ recorder }) => {
     const result = await model.update(item, {
-      onNotFound: (i) => {
+      onNotFound: (key) => {
         // eslint-disable-next-line no-console
         console.log('onNotFound executed');
         return {};
