@@ -37,20 +37,21 @@ module.exports = ({ call, getService, logger }) => ({
         expectedErrorCodes = []
       } = {}) => {
         assert(Array.isArray(expectedErrorCodes));
+        let result;
         try {
-          const result = await model.entity.update(item, {
+          result = await model.entity.update(item, {
             returnValues: 'all_old',
             ...(conditions === null ? {} : { conditions })
           });
-          const created = result.Attributes === undefined;
-          await (created === true ? onCreate : onUpdate)(item);
-          return { created };
         } catch (err) {
           if (expectedErrorCodes.includes(err.code)) {
             return err.code;
           }
           throw err;
         }
+        const created = result.Attributes === undefined;
+        await (created === true ? onCreate : onUpdate)(item);
+        return { created };
       },
       update: async (item, {
         returnValues = 'all_new',
@@ -65,13 +66,10 @@ module.exports = ({ call, getService, logger }) => ({
         if (updateConditions !== null) {
           conditions.push(Array.isArray(updateConditions) ? updateConditions : [updateConditions]);
         }
+        let result;
         try {
-          const result = await model.entity.update(item, { returnValues, conditions });
+          result = await model.entity.update(item, { returnValues, conditions });
           await onUpdate(item);
-          if (['all_old', 'all_new'].includes(returnValues.toLowerCase())) {
-            return setDefaults(result.Attributes, null);
-          }
-          return result.Attributes;
         } catch (err) {
           if (expectedErrorCodes.includes(err.code)) {
             return err.code;
@@ -81,6 +79,10 @@ module.exports = ({ call, getService, logger }) => ({
           }
           throw err;
         }
+        if (['all_old', 'all_new'].includes(returnValues.toLowerCase())) {
+          return setDefaults(result.Attributes, null);
+        }
+        return result.Attributes;
       },
       getItem: async (key, {
         toReturn = null,
