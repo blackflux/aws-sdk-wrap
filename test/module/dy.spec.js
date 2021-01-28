@@ -11,6 +11,7 @@ const { DocumentClient } = DynamoDB;
 describe('Testing dy Util', {
   useNock: true,
   nockStripHeaders: true,
+  record: console,
   envVarsFile: '../default.env.yml'
 }, () => {
   let Model;
@@ -103,6 +104,14 @@ describe('Testing dy Util', {
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
+  it('Testing upsert with expectedErrorCodes', async () => {
+    const result = await model.upsert(item, {
+      conditions: { attr: 'name', exists: true },
+      expectedErrorCodes: ['ConditionalCheckFailedException']
+    });
+    expect(result).to.equal('ConditionalCheckFailedException');
+  });
+
   it('Testing getItem', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     const result = await model.getItem(item);
@@ -112,6 +121,17 @@ describe('Testing dy Util', {
   it('Testing getItem throws ModelNotFound error', async ({ capture }) => {
     const error = await capture(() => model.getItem(item));
     expect(error).instanceof(ModelNotFound);
+  });
+
+  it('Testing getItem onItemNotFound', async ({ recorder }) => {
+    const result = await model.getItem(item, {
+      onItemNotFound: () => {
+        // eslint-disable-next-line no-console
+        console.log('onItemNotFound executed');
+      }
+    });
+    expect(recorder.get()).to.deep.equal(['onItemNotFound executed']);
+    expect(result).to.deep.equal({});
   });
 
   it('Testing getItem with toReturn', async () => {
@@ -162,7 +182,7 @@ describe('Testing dy Util', {
     expect(await model.upsert(item)).to.deep.equal({ created: true });
     item.age = 55;
     const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
-    expect(error).instanceof(ModelNotFound);
+    expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
   it('Testing update with unknown error', async ({ capture }) => {
@@ -175,6 +195,24 @@ describe('Testing dy Util', {
   it('Testing update with item does not exist', async ({ capture }) => {
     const error = await capture(() => model.update(item));
     expect(error).instanceof(ModelNotFound);
+  });
+
+  it('Testing update with onItemNotFound', async ({ recorder }) => {
+    const result = await model.update(item, {
+      onItemNotFound: () => {
+        // eslint-disable-next-line no-console
+        console.log('onItemNotFound executed');
+      }
+    });
+    expect(recorder.get()).to.deep.equal(['onItemNotFound executed']);
+    expect(result).to.deep.equal({});
+  });
+
+  it('Testing update with expectedErrorCodes', async () => {
+    const result = await model.update(item, {
+      expectedErrorCodes: ['ConditionalCheckFailedException']
+    });
+    expect(result).to.equal('ConditionalCheckFailedException');
   });
 
   it('Testing query', async () => {

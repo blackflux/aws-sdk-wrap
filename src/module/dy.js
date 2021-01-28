@@ -33,49 +33,69 @@ module.exports = ({ call, getService, logger }) => ({
     };
     return ({
       upsert: async (item, {
-        conditions = null
+        conditions = null,
+        expectedErrorCodes = []
       } = {}) => {
-        const result = await model.entity.update(item, {
-          returnValues: 'all_old',
-          ...(conditions === null ? {} : { conditions })
-        });
-        const created = result.Attributes === undefined;
-        await (created === true ? onCreate : onUpdate)(item);
-        return { created };
+        assert(Array.isArray(expectedErrorCodes));
+        try {
+          const result = await model.entity.update(item, {
+            returnValues: 'all_old',
+            ...(conditions === null ? {} : { conditions })
+          });
+          const created = result.Attributes === undefined;
+          await (created === true ? onCreate : onUpdate)(item);
+          return { created };
+        } catch (err) {
+          if (expectedErrorCodes.includes(err.code)) {
+            return err.code;
+          }
+          throw err;
+        }
       },
       update: async (item, {
         returnValues = 'all_new',
-        conditions: updateConditions = null
+        conditions: updateConditions = null,
+        onItemNotFound = onNotFound,
+        expectedErrorCodes = []
       } = {}) => {
+        assert(typeof onItemNotFound === 'function');
+        assert(Array.isArray(expectedErrorCodes));
         const schema = model.schema;
         const conditions = [schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
         if (updateConditions !== null) {
           conditions.push(Array.isArray(updateConditions) ? updateConditions : [updateConditions]);
         }
-        let result;
         try {
-          result = await model.entity.update(item, { returnValues, conditions });
+          const result = await model.entity.update(item, { returnValues, conditions });
           await onUpdate(item);
+          if (['all_old', 'all_new'].includes(returnValues.toLowerCase())) {
+            return setDefaults(result.Attributes, null);
+          }
+          return result.Attributes;
         } catch (err) {
-          if (err.code === 'ConditionalCheckFailedException') {
-            onNotFound(item);
+          if (expectedErrorCodes.includes(err.code)) {
+            return err.code;
+          }
+          if (err.code === 'ConditionalCheckFailedException' && updateConditions === null) {
+            onItemNotFound(item);
+            return {};
           }
           throw err;
         }
-        if (['all_old', 'all_new'].includes(returnValues.toLowerCase())) {
-          return setDefaults(result.Attributes, null);
-        }
-        return result.Attributes;
       },
-      getItem: async (key, { toReturn = null } = {}) => {
+      getItem: async (key, {
+        toReturn = null,
+        onItemNotFound = onNotFound
+      } = {}) => {
+        assert(typeof onItemNotFound === 'function');
         const result = await model.entity.get(key, {
           consistent: true,
           ...(toReturn === null ? {} : { attributes: toReturn })
         });
         if (result.Item === undefined) {
-          onNotFound(key);
+          onItemNotFound(key);
         }
-        return setDefaults(result.Item, toReturn);
+        return result.Item === undefined ? {} : setDefaults(result.Item, toReturn);
       },
       query: async (partitionKey, {
         index = null,

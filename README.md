@@ -141,6 +141,7 @@ Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbo
 Creates entry if key does not exist. Otherwise updates the item.<br>
 Options include:
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
 ##### dy.Model().update(item: Object, opts: Object)
@@ -148,12 +149,15 @@ Edits an existing item's attributes. Can only update an item if it exists.<br>
 Options include:
 - `returnValues` (String): Return item attributes as they appeared before or after the update.
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `onItemNotFound` (Function): Function executed when item is not found.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
-##### dy.Model().getItemOrNull(key: String, opts: Object)
+##### dy.Model().getItem(key: String, opts: Object)
 Returns entry or null if not found.<br>
 Options include:
 - `toReturn` (Array): Fields to return.
+- `onItemNotFound` (Function): Function executed when item is not found.
 Internally uses [get](https://github.com/jeremydaly/dynamodb-toolbox#getkey-options-parameters)
 
 ##### dy.Model().query(key: String, opts: Object)
