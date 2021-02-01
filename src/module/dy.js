@@ -59,10 +59,16 @@ module.exports = ({ call, getService, logger }) => ({
         }
         const created = result.Attributes === undefined;
         await (created === true ? onCreate : onUpdate)(item);
-        return { created };
+        const itemToReturn = {
+          ...(created === true ? {} : result.Attributes),
+          ...item
+        };
+        return {
+          created,
+          item: setDefaults(itemToReturn, null)
+        };
       },
       update: async (item, {
-        returnValues = 'all_new',
         conditions: updateConditions = null,
         onNotFound = onNotFound_,
         expectedErrorCodes = []
@@ -76,7 +82,10 @@ module.exports = ({ call, getService, logger }) => ({
         }
         let result;
         try {
-          result = await model.entity.update(item, { returnValues, conditions });
+          result = await model.entity.update(item, {
+            returnValues: 'all_new',
+            conditions
+          });
           await onUpdate(item);
         } catch (err) {
           if (expectedErrorCodes.includes(err.code)) {
@@ -88,10 +97,10 @@ module.exports = ({ call, getService, logger }) => ({
           }
           throw err;
         }
-        if (['all_old', 'all_new'].includes(returnValues.toLowerCase())) {
-          return setDefaults(result.Attributes, null);
-        }
-        return result.Attributes;
+        return {
+          created: false,
+          item: setDefaults(result.Attributes, null)
+        };
       },
       getItem: async (key, {
         toReturn = null,
@@ -134,7 +143,7 @@ module.exports = ({ call, getService, logger }) => ({
           lastEvaluatedKey: result.LastEvaluatedKey === undefined ? null : result.LastEvaluatedKey
         });
         return {
-          payload: result.Items.map((item) => setDefaults(item, toReturn)),
+          items: result.Items.map((item) => setDefaults(item, toReturn)),
           page
         };
       },
