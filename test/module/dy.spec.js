@@ -78,11 +78,11 @@ describe('Testing dy Util', {
   });
 
   it('Testing upsert with default', async () => {
+    delete item.age;
     const itemWithDefault = {
       ...item,
       age: 30
     };
-    delete item.age;
     expect(await model.upsert(item)).to.deep.equal({ created: true, item: itemWithDefault });
     const result = await model.getItem(item);
     expect(result).to.deep.equal(itemWithDefault);
