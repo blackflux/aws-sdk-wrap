@@ -151,7 +151,6 @@ Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updateke
 ##### dy.Model().update(item: Object, opts: Object)
 Edits an existing item's attributes. Can only update an item if it exists.<br>
 Options include:
-- `returnValues` (String): Return item attributes as they appeared before or after the update.
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `onNotFound` (Function): Overrides Model `onNotFound` function.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
