@@ -59,7 +59,13 @@ module.exports = ({ call, getService, logger }) => ({
         }
         const created = result.Attributes === undefined;
         await (created === true ? onCreate : onUpdate)(item);
-        return { created };
+        return {
+          created,
+          item: {
+            ...(created === true ? {} : result.Attributes),
+            ...item
+          }
+        };
       },
       update: async (item, {
         returnValues = 'all_new',
