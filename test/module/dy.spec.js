@@ -74,10 +74,7 @@ describe('Testing dy Util', {
   });
 
   it('Testing upsert item created', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
   });
 
   it('Testing upsert with default', async () => {
@@ -88,30 +85,21 @@ describe('Testing dy Util', {
     };
     expect(await model.upsert(item)).to.deep.equal({
       created: true,
-      result: itemWithDefault
+      item: itemWithDefault
     });
     const result = await model.getItem(item);
     expect(result).to.deep.equal(itemWithDefault);
   });
 
   it('Testing upsert item updated', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     item.age = 51;
-    expect(await model.upsert(item)).to.deep.equal({
-      created: false,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: false, item });
   });
 
   it('Testing upsert with conditions', async () => {
     const result = await model.upsert(item, { conditions: { attr: 'name', exists: false } });
-    expect(result).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(result).to.deep.equal({ created: true, item });
   });
 
   it('Testing upsert with ConditionalCheckFailedException', async ({ capture }) => {
@@ -128,10 +116,7 @@ describe('Testing dy Util', {
   });
 
   it('Testing getItem', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.getItem(item);
     expect(result).to.deep.equal(item);
   });
@@ -154,19 +139,13 @@ describe('Testing dy Util', {
   });
 
   it('Testing getItem with toReturn', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.getItem(item, { toReturn: ['name'] });
     expect(result).to.deep.equal({ name: 'name' });
   });
 
   it('Testing getItem with stubbed defaults', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.getItem(item, { toReturn: ['age'] });
     expect(result).to.deep.equal({
       age: 30
@@ -174,59 +153,35 @@ describe('Testing dy Util', {
   });
 
   it('Testing update', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     item.age = 55;
     const result = await model.update(item);
-    expect(result).to.deep.equal({
-      created: false,
-      result: item
-    });
+    expect(result).to.deep.equal({ created: false, item });
   });
 
   it('Testing update with conditions', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     item.age = 55;
     const result = await model.update(item, { conditions: { attr: 'age', eq: 50 } });
-    expect(result).to.deep.equal({
-      created: false,
-      result: item
-    });
+    expect(result).to.deep.equal({ created: false, item });
   });
 
   it('Testing update with conditions as array', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     item.age = 55;
     const result = await model.update(item, { conditions: [{ attr: 'age', eq: 50 }] });
-    expect(result).to.deep.equal({
-      created: false,
-      result: item
-    });
+    expect(result).to.deep.equal({ created: false, item });
   });
 
   it('Testing update with item not found with conditions', async ({ capture }) => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     item.age = 55;
     const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
   it('Testing update with unknown error', async ({ capture }) => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     item.age = 55;
     const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
     expect(error.code).to.equal('UnknownError');
@@ -257,13 +212,10 @@ describe('Testing dy Util', {
   });
 
   it('Testing query', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.query(primaryKey);
     expect(result).to.deep.equal({
-      results: [item],
+      items: [item],
       page: {
         next: null,
         index: { current: 1 },
@@ -273,10 +225,7 @@ describe('Testing dy Util', {
   });
 
   it('Testing query with limit', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const item2 = {
       id: primaryKey,
       name: 'name-2',
@@ -284,11 +233,11 @@ describe('Testing dy Util', {
     };
     expect(await model.upsert(item2)).to.deep.equal({
       created: true,
-      result: item2
+      item: item2
     });
     const result = await model.query(primaryKey, { limit: 1 });
     expect(result).to.deep.equal({
-      results: [item],
+      items: [item],
       page: {
         next: {
           limit: 1,
@@ -302,13 +251,10 @@ describe('Testing dy Util', {
   });
 
   it('Testing query with toReturn', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.query(primaryKey, { toReturn: ['name'] });
     expect(result).to.deep.equal({
-      results: [{ name: 'name' }],
+      items: [{ name: 'name' }],
       page: {
         next: null,
         index: { current: 1 },
@@ -318,16 +264,13 @@ describe('Testing dy Util', {
   });
 
   it('Testing query with index', async () => {
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.query(primaryKey, {
       index: 'targetIndex',
       consistent: false
     });
     expect(result).to.deep.equal({
-      results: [item],
+      items: [item],
       page: {
         next: null,
         index: { current: 1 },
@@ -345,21 +288,18 @@ describe('Testing dy Util', {
       ...item,
       name: 'name-3'
     };
-    expect(await model.upsert(item)).to.deep.equal({
-      created: true,
-      result: item
-    });
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     expect(await model.upsert(secondItem)).to.deep.equal({
       created: true,
-      result: secondItem
+      item: secondItem
     });
     expect(await model.upsert(thirdItem)).to.deep.equal({
       created: true,
-      result: thirdItem
+      item: thirdItem
     });
     const firstResult = await model.query(primaryKey, { limit: 2 });
     expect(firstResult).to.deep.equal({
-      results: [item, secondItem],
+      items: [item, secondItem],
       page: {
         next: {
           limit: 2,
@@ -372,7 +312,7 @@ describe('Testing dy Util', {
     });
     const secondResult = await model.query(primaryKey, { cursor: firstResult.page.next.cursor });
     expect(secondResult).to.deep.equal({
-      results: [thirdItem],
+      items: [thirdItem],
       page: {
         next: null,
         index: { current: 2 },

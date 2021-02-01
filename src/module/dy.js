@@ -65,7 +65,7 @@ module.exports = ({ call, getService, logger }) => ({
         };
         return {
           created,
-          result: setDefaults(itemToReturn, null)
+          item: setDefaults(itemToReturn, null)
         };
       },
       update: async (item, {
@@ -99,7 +99,7 @@ module.exports = ({ call, getService, logger }) => ({
         }
         return {
           created: false,
-          result: setDefaults(result.Attributes, null)
+          item: setDefaults(result.Attributes, null)
         };
       },
       getItem: async (key, {
@@ -143,7 +143,7 @@ module.exports = ({ call, getService, logger }) => ({
           lastEvaluatedKey: result.LastEvaluatedKey === undefined ? null : result.LastEvaluatedKey
         });
         return {
-          results: result.Items.map((item) => setDefaults(item, toReturn)),
+          items: result.Items.map((item) => setDefaults(item, toReturn)),
           page
         };
       },
