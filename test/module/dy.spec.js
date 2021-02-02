@@ -115,6 +115,22 @@ describe('Testing dy Util', {
     expect(result).to.equal('ConditionalCheckFailedException');
   });
 
+  it('Testing upsert with undefined attribute', async () => {
+    const result = await model.upsert({
+      id: primaryKey,
+      name: 'name',
+      age: undefined
+    });
+    expect(result).to.deep.equal({
+      created: true,
+      item: {
+        id: '123',
+        name: 'name',
+        age: 30
+      }
+    });
+  });
+
   it('Testing getItem', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.getItem(item);

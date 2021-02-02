@@ -38,6 +38,13 @@ module.exports = ({ call, getService, logger }) => ({
         prev[cur] = item[cur];
         return prev;
       }, {});
+    const pruneUndefinedAttributes = (itemRaw) => Object.entries(itemRaw)
+      .filter(([_, v]) => v !== undefined)
+      .reduce((prev, [k, v]) => {
+        // eslint-disable-next-line no-param-reassign
+        prev[k] = v;
+        return prev;
+      }, {});
 
     return ({
       upsert: async (item, {
@@ -46,8 +53,9 @@ module.exports = ({ call, getService, logger }) => ({
       } = {}) => {
         assert(Array.isArray(expectedErrorCodes));
         let result;
+        const itemPruned = pruneUndefinedAttributes(item);
         try {
-          result = await model.entity.update(item, {
+          result = await model.entity.update(itemPruned, {
             returnValues: 'all_old',
             ...(conditions === null ? {} : { conditions })
           });
@@ -58,10 +66,10 @@ module.exports = ({ call, getService, logger }) => ({
           throw err;
         }
         const created = result.Attributes === undefined;
-        await (created === true ? onCreate : onUpdate)(item);
+        await (created === true ? onCreate : onUpdate)(itemPruned);
         const itemToReturn = {
           ...(created === true ? {} : result.Attributes),
-          ...item
+          ...itemPruned
         };
         return {
           created,
@@ -80,19 +88,20 @@ module.exports = ({ call, getService, logger }) => ({
         if (updateConditions !== null) {
           conditions.push(Array.isArray(updateConditions) ? updateConditions : [updateConditions]);
         }
+        const itemPruned = pruneUndefinedAttributes(item);
         let result;
         try {
-          result = await model.entity.update(item, {
+          result = await model.entity.update(itemPruned, {
             returnValues: 'all_new',
             conditions
           });
-          await onUpdate(item);
+          await onUpdate(itemPruned);
         } catch (err) {
           if (expectedErrorCodes.includes(err.code)) {
             return err.code;
           }
           if (err.code === 'ConditionalCheckFailedException' && updateConditions === null) {
-            const key = extractKey(item);
+            const key = extractKey(itemPruned);
             return onNotFound(key);
           }
           throw err;
