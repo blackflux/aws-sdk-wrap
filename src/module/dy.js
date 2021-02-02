@@ -38,6 +38,14 @@ module.exports = ({ call, getService, logger }) => ({
         prev[cur] = item[cur];
         return prev;
       }, {});
+    const checkForUndefinedAttributes = (item) => {
+      const undefinedAttrs = Object.entries(item)
+        .filter(([_, v]) => v === undefined)
+        .map(([k, _]) => k);
+      if (undefinedAttrs.length !== 0) {
+        throw new Error(`Attributes cannot be undefined: ${undefinedAttrs.join(', ')}`);
+      }
+    };
 
     return ({
       upsert: async (item, {
@@ -45,6 +53,7 @@ module.exports = ({ call, getService, logger }) => ({
         expectedErrorCodes = []
       } = {}) => {
         assert(Array.isArray(expectedErrorCodes));
+        checkForUndefinedAttributes(item);
         let result;
         try {
           result = await model.entity.update(item, {
@@ -75,6 +84,7 @@ module.exports = ({ call, getService, logger }) => ({
       } = {}) => {
         assert(typeof onNotFound === 'function', onNotFound.length === 1);
         assert(Array.isArray(expectedErrorCodes));
+        checkForUndefinedAttributes(item);
         const schema = model.schema;
         const conditions = [schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
         if (updateConditions !== null) {
