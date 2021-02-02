@@ -115,20 +115,22 @@ describe('Testing dy Util', {
     expect(result).to.equal('ConditionalCheckFailedException');
   });
 
-  it('Testing upsert with undefined attribute', async () => {
-    const result = await model.upsert({
+  it('Testing upsert with undefined attribute', async ({ capture }) => {
+    const error = await capture(() => model.upsert({
       id: primaryKey,
       name: 'name',
       age: undefined
-    });
-    expect(result).to.deep.equal({
-      created: true,
-      item: {
-        id: '123',
-        name: 'name',
-        age: 30
-      }
-    });
+    }));
+    expect(error.message).to.equal('Attributes cannot be undefined: age');
+  });
+
+  it('Testing upsert wrong attribute type', async ({ capture }) => {
+    const error = await capture(() => model.upsert({
+      id: primaryKey,
+      name: 'name',
+      age: 'number'
+    }));
+    expect(error.message).to.equal('Could not convert \'number\' to a number for \'age\'');
   });
 
   it('Testing getItem', async () => {

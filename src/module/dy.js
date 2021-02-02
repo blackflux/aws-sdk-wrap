@@ -38,13 +38,14 @@ module.exports = ({ call, getService, logger }) => ({
         prev[cur] = item[cur];
         return prev;
       }, {});
-    const pruneUndefinedAttributes = (itemRaw) => Object.entries(itemRaw)
-      .filter(([_, v]) => v !== undefined)
-      .reduce((prev, [k, v]) => {
-        // eslint-disable-next-line no-param-reassign
-        prev[k] = v;
-        return prev;
-      }, {});
+    const checkForUndefinedAttributes = (item) => {
+      const undefinedAttrs = Object.entries(item)
+        .filter(([_, v]) => v === undefined)
+        .map(([k, _]) => k);
+      if (undefinedAttrs.length !== 0) {
+        throw new Error(`Attributes cannot be undefined: ${undefinedAttrs.join(', ')}`);
+      }
+    };
 
     return ({
       upsert: async (item, {
@@ -52,10 +53,10 @@ module.exports = ({ call, getService, logger }) => ({
         expectedErrorCodes = []
       } = {}) => {
         assert(Array.isArray(expectedErrorCodes));
+        checkForUndefinedAttributes(item);
         let result;
-        const itemPruned = pruneUndefinedAttributes(item);
         try {
-          result = await model.entity.update(itemPruned, {
+          result = await model.entity.update(item, {
             returnValues: 'all_old',
             ...(conditions === null ? {} : { conditions })
           });
@@ -66,10 +67,10 @@ module.exports = ({ call, getService, logger }) => ({
           throw err;
         }
         const created = result.Attributes === undefined;
-        await (created === true ? onCreate : onUpdate)(itemPruned);
+        await (created === true ? onCreate : onUpdate)(item);
         const itemToReturn = {
           ...(created === true ? {} : result.Attributes),
-          ...itemPruned
+          ...item
         };
         return {
           created,
@@ -83,25 +84,25 @@ module.exports = ({ call, getService, logger }) => ({
       } = {}) => {
         assert(typeof onNotFound === 'function', onNotFound.length === 1);
         assert(Array.isArray(expectedErrorCodes));
+        checkForUndefinedAttributes(item);
         const schema = model.schema;
         const conditions = [schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
         if (updateConditions !== null) {
           conditions.push(Array.isArray(updateConditions) ? updateConditions : [updateConditions]);
         }
-        const itemPruned = pruneUndefinedAttributes(item);
         let result;
         try {
-          result = await model.entity.update(itemPruned, {
+          result = await model.entity.update(item, {
             returnValues: 'all_new',
             conditions
           });
-          await onUpdate(itemPruned);
+          await onUpdate(item);
         } catch (err) {
           if (expectedErrorCodes.includes(err.code)) {
             return err.code;
           }
           if (err.code === 'ConditionalCheckFailedException' && updateConditions === null) {
-            const key = extractKey(itemPruned);
+            const key = extractKey(item);
             return onNotFound(key);
           }
           throw err;
