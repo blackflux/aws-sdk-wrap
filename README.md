@@ -158,7 +158,6 @@ Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updateke
 
 ##### dy.Model().delete(key: Object, opts: Object)
 Deletes an item. Can only delete an item if it exists.<br>
-# Edits an existing item's attributes. Can only update an item if it exists.<br>
 Options include:
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `onNotFound` (Function): Overrides Model `onNotFound` function.
