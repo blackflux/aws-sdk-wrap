@@ -85,28 +85,27 @@ module.exports = ({ call, getService, logger }) => ({
         }
         throw err;
       }
-      const resultAttributes = result.Attributes;
-      let itemToReturn;
+      const hasAttributes = result.Attributes === undefined;
       let onFn;
-      if (['update', 'upsert'].includes(fn)) {
-        const created = resultAttributes === undefined;
-        onFn = created === true ? onCreate : onUpdate;
-        itemToReturn = {
-          created,
-          item: setDefaults({
-            ...(created === true ? {} : resultAttributes),
-            ...item
-          }, null)
-        };
-      } else {
-        onFn = onDelete;
-        itemToReturn = {
-          deleted: true,
-          item: resultAttributes
-        };
+      switch (fn) {
+        case 'upsert':
+          onFn = hasAttributes === true ? onCreate : onUpdate;
+          break;
+        case 'update':
+          onFn = onUpdate;
+          break;
+        default:
+          onFn = onDelete;
       }
       await onFn(item);
-      return itemToReturn;
+      const itemToReturn = {
+        ...(hasAttributes === true ? {} : result.Attributes),
+        ...item
+      };
+      return {
+        ...(['update', 'upsert'].includes(fn) ? { created: hasAttributes } : { deleted: true }),
+        item: setDefaults(itemToReturn, null)
+      };
     };
     return ({
       upsert: compileFn('upsert'),
