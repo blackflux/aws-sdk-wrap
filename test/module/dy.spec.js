@@ -67,6 +67,7 @@ describe('Testing dy Util', {
     expect(Object.keys(model)).to.deep.equal([
       'upsert',
       'update',
+      'delete',
       'getItem',
       'query',
       'schema'
@@ -131,6 +132,49 @@ describe('Testing dy Util', {
       age: 'number'
     }));
     expect(error.message).to.equal('Could not convert \'number\' to a number for \'age\'');
+  });
+
+  it('Testing delete', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.delete(item);
+    expect(result).to.deep.equal({ deleted: true, item });
+  });
+
+  it('Testing delete throws ModelNotFound error', async ({ capture }) => {
+    const error = await capture(() => model.delete(item));
+    expect(error).instanceof(ModelNotFound);
+  });
+
+  it('Testing delete with onNotFound', async () => {
+    const logs = [];
+    const result = await model.delete(item, {
+      onNotFound: (key) => {
+        logs.push('onNotFound executed');
+        return {};
+      }
+    });
+    expect(logs).to.deep.equal(['onNotFound executed']);
+    expect(result).to.deep.equal({});
+  });
+
+  it('Testing delete with conditions', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.delete(item, { conditions: { attr: 'age', eq: 50 } });
+    expect(result).to.deep.equal({ deleted: true, item });
+  });
+
+  it('Testing delete with expectedErrorCodes', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.delete(item, {
+      conditions: { attr: 'age', eq: 1 },
+      expectedErrorCodes: ['ConditionalCheckFailedException']
+    });
+    expect(result).to.equal('ConditionalCheckFailedException');
+  });
+
+  it('Testing delete with unknown error', async ({ capture }) => {
+    const error = await capture(() => model.delete(item));
+    expect(error.code).to.equal('UnknownError');
   });
 
   it('Testing getItem', async () => {

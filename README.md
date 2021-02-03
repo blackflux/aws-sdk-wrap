@@ -156,6 +156,15 @@ Options include:
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
+##### dy.Model().delete(key: Object, opts: Object)
+Deletes an item. Can only delete an item if it exists.<br>
+# Edits an existing item's attributes. Can only update an item if it exists.<br>
+Options include:
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `onNotFound` (Function): Overrides Model `onNotFound` function.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+Internally uses [delete](https://github.com/jeremydaly/dynamodb-toolbox#deletekey-options-parameters)
+
 ##### dy.Model().getItem(key: String, opts: Object)
 Returns entry or null if not found.<br>
 Options include:

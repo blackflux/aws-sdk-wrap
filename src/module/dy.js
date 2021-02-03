@@ -10,7 +10,8 @@ module.exports = ({ call, getService, logger }) => ({
     indices,
     onNotFound: onNotFound_ = (key) => { throw new ModelNotFound(); },
     onUpdate = async (item) => {},
-    onCreate = async (item) => {}
+    onCreate = async (item) => {},
+    onDelete = async (item) => {}
   }) => {
     assert(typeof onNotFound_ === 'function' && onNotFound_.length === 1);
     assert(typeof onUpdate === 'function' && onUpdate.length === 1);
@@ -110,6 +111,33 @@ module.exports = ({ call, getService, logger }) => ({
         return {
           created: false,
           item: setDefaults(result.Attributes, null)
+        };
+      },
+      delete: async (key, {
+        conditions,
+        onNotFound = onNotFound_,
+        expectedErrorCodes = []
+      } = {}) => {
+        let result;
+        try {
+          result = await model.entity.delete(key, {
+            returnValues: 'all_old',
+            conditions
+          });
+        } catch (err) {
+          if (expectedErrorCodes.includes(err.code)) {
+            return err.code;
+          }
+          throw err;
+        }
+        const item = result.Attributes;
+        if (item === undefined) {
+          return onNotFound(key);
+        }
+        await onDelete(item);
+        return {
+          deleted: true,
+          item
         };
       },
       getItem: async (key, {
