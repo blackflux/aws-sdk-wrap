@@ -159,14 +159,16 @@
         }
       },
       "ExpressionAttributeNames": {
-        "#attr1": "age"
+        "#attr1": "id",
+        "#attr2": "name",
+        "#attr3": "age"
       },
       "ExpressionAttributeValues": {
-        ":attr1": {
+        ":attr3": {
           "N": "50"
         }
       },
-      "ConditionExpression": "#attr1 = :attr1",
+      "ConditionExpression": "(attribute_exists(#attr1) AND attribute_exists(#attr2)) AND (#attr3 = :attr3)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 200,

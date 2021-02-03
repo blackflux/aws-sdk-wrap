@@ -158,6 +158,11 @@
           "S": "name"
         }
       },
+      "ExpressionAttributeNames": {
+        "#attr1": "id",
+        "#attr2": "name"
+      },
+      "ConditionExpression": "(attribute_exists(#attr1) AND attribute_exists(#attr2))",
       "ReturnValues": "ALL_OLD"
     },
     "status": 200,

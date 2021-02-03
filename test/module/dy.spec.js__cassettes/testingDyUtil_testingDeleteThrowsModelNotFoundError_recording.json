@@ -129,14 +129,17 @@
           "S": "name"
         }
       },
+      "ExpressionAttributeNames": {
+        "#attr1": "id",
+        "#attr2": "name"
+      },
+      "ConditionExpression": "(attribute_exists(#attr1) AND attribute_exists(#attr2))",
       "ReturnValues": "ALL_OLD"
     },
-    "status": 200,
+    "status": 400,
     "response": {
-      "ConsumedCapacity": {
-        "TableName": "table-name",
-        "CapacityUnits": 1
-      }
+      "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
+      "message": "The conditional request failed"
     },
     "responseIsBinary": false
   },
