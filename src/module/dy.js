@@ -68,7 +68,7 @@ module.exports = ({ call, getService, logger }) => ({
       try {
         const dyFn = fn === 'upsert' ? 'update' : fn;
         result = await model.entity[dyFn](item, {
-          returnValues: fn === 'update' ? 'all_new' : 'all_old',
+          returnValues: 'all_old',
           ...(conditions === null ? {} : { conditions })
         });
       } catch (err) {
@@ -85,23 +85,18 @@ module.exports = ({ call, getService, logger }) => ({
         }
         throw err;
       }
-      const hasAttributes = result.Attributes === undefined;
+      const hasNoAttributes = result.Attributes === undefined;
       let onFn;
-      switch (fn) {
-        case 'upsert':
-          onFn = hasAttributes === true ? onCreate : onUpdate;
-          break;
-        case 'update':
-          onFn = onUpdate;
-          break;
-        default:
-          onFn = onDelete;
+      if (['update', 'upsert'].includes(fn)) {
+        onFn = hasNoAttributes === true ? onCreate : onUpdate;
+      } else {
+        onFn = onDelete;
       }
       await onFn(item);
       return {
-        ...(['update', 'upsert'].includes(fn) ? { created: hasAttributes } : { deleted: true }),
+        ...(['update', 'upsert'].includes(fn) ? { created: hasNoAttributes } : { deleted: true }),
         item: setDefaults({
-          ...(hasAttributes === true ? {} : result.Attributes),
+          ...(hasNoAttributes === true ? {} : result.Attributes),
           ...item
         }, null)
       };
