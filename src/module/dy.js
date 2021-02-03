@@ -98,13 +98,12 @@ module.exports = ({ call, getService, logger }) => ({
           onFn = onDelete;
       }
       await onFn(item);
-      const itemToReturn = {
-        ...(hasAttributes === true ? {} : result.Attributes),
-        ...item
-      };
       return {
         ...(['update', 'upsert'].includes(fn) ? { created: hasAttributes } : { deleted: true }),
-        item: setDefaults(itemToReturn, null)
+        item: setDefaults({
+          ...(hasAttributes === true ? {} : result.Attributes),
+          ...item
+        }, null)
       };
     };
     return ({
