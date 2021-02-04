@@ -10,7 +10,8 @@ module.exports = ({ call, getService, logger }) => ({
     indices,
     onNotFound: onNotFound_ = (key) => { throw new ModelNotFound(); },
     onUpdate = async (item) => {},
-    onCreate = async (item) => {}
+    onCreate = async (item) => {},
+    onDelete = async (item) => {}
   }) => {
     assert(typeof onNotFound_ === 'function' && onNotFound_.length === 1);
     assert(typeof onUpdate === 'function' && onUpdate.length === 1);
@@ -47,71 +48,58 @@ module.exports = ({ call, getService, logger }) => ({
       }
     };
 
-    return ({
-      upsert: async (item, {
-        conditions = null,
-        expectedErrorCodes = []
-      } = {}) => {
-        assert(Array.isArray(expectedErrorCodes));
-        checkForUndefinedAttributes(item);
-        let result;
-        try {
-          result = await model.entity.update(item, {
-            returnValues: 'all_old',
-            ...(conditions === null ? {} : { conditions })
-          });
-        } catch (err) {
-          if (expectedErrorCodes.includes(err.code)) {
-            return err.code;
-          }
-          throw err;
+    const compileFn = (fn, mustExist) => async (item, {
+      conditions: customConditions = null,
+      onNotFound = onNotFound_,
+      expectedErrorCodes = []
+    } = {}) => {
+      assert(typeof onNotFound === 'function', onNotFound.length === 1);
+      assert(Array.isArray(expectedErrorCodes));
+      checkForUndefinedAttributes(item);
+      let conditions = customConditions;
+      if (mustExist) {
+        conditions = [model.schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
+        if (customConditions !== null) {
+          conditions.push(Array.isArray(customConditions) ? customConditions : [customConditions]);
         }
-        const created = result.Attributes === undefined;
-        await (created === true ? onCreate : onUpdate)(item);
-        const itemToReturn = {
-          ...(created === true ? {} : result.Attributes),
+      }
+      let result;
+      try {
+        result = await model.entity[fn](item, {
+          returnValues: 'all_old',
+          ...(conditions === null ? {} : { conditions })
+        });
+      } catch (err) {
+        if (expectedErrorCodes.includes(err.code)) {
+          return err.code;
+        }
+        if (
+          mustExist
+          && err.code === 'ConditionalCheckFailedException'
+          && customConditions === null
+        ) {
+          return onNotFound(extractKey(item));
+        }
+        throw err;
+      }
+      const didNotExist = result.Attributes === undefined;
+      if (fn === 'update') {
+        await (didNotExist ? onCreate : onUpdate)(item);
+      } else {
+        await onDelete(item);
+      }
+      return {
+        ...(fn === 'update' ? { created: didNotExist } : { deleted: true }),
+        item: setDefaults({
+          ...(didNotExist ? {} : result.Attributes),
           ...item
-        };
-        return {
-          created,
-          item: setDefaults(itemToReturn, null)
-        };
-      },
-      update: async (item, {
-        conditions: updateConditions = null,
-        onNotFound = onNotFound_,
-        expectedErrorCodes = []
-      } = {}) => {
-        assert(typeof onNotFound === 'function', onNotFound.length === 1);
-        assert(Array.isArray(expectedErrorCodes));
-        checkForUndefinedAttributes(item);
-        const schema = model.schema;
-        const conditions = [schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
-        if (updateConditions !== null) {
-          conditions.push(Array.isArray(updateConditions) ? updateConditions : [updateConditions]);
-        }
-        let result;
-        try {
-          result = await model.entity.update(item, {
-            returnValues: 'all_new',
-            conditions
-          });
-          await onUpdate(item);
-        } catch (err) {
-          if (expectedErrorCodes.includes(err.code)) {
-            return err.code;
-          }
-          if (err.code === 'ConditionalCheckFailedException' && updateConditions === null) {
-            const key = extractKey(item);
-            return onNotFound(key);
-          }
-          throw err;
-        }
-        return {
-          created: false,
-          item: setDefaults(result.Attributes, null)
-        };
-      },
+        }, null)
+      };
+    };
+    return ({
+      upsert: compileFn('update', false),
+      update: compileFn('update', true),
+      delete: compileFn('delete', true),
       getItem: async (key, {
         toReturn = null,
         onNotFound = onNotFound_

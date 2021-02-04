@@ -143,34 +143,47 @@ Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbo
 
 ##### dy.Model().upsert(item: Object, opts: Object)
 Creates entry if key does not exist. Otherwise updates the item.<br>
-Options include:
+Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
 ##### dy.Model().update(item: Object, opts: Object)
 Edits an existing item's attributes. Can only update an item if it exists.<br>
-Options include:
+Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `onNotFound` (Function): Overrides Model `onNotFound` function.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
+
+##### dy.Model().delete(key: Object, opts: Object)
+Deletes an item. Can only delete an item if it exists.<br>
+Options include (all optional):
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `onNotFound` (Function): Overrides Model `onNotFound` function.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
+Internally uses [delete](https://github.com/jeremydaly/dynamodb-toolbox#deletekey-options-parameters)
 
 ##### dy.Model().getItem(key: String, opts: Object)
 Returns entry or null if not found.<br>
-Options include:
+Options include (all optional):
 - `toReturn` (Array): Fields to return.
 - `onNotFound` (Function): Overrides Model `onNotFound` function.
+
 Internally uses [get](https://github.com/jeremydaly/dynamodb-toolbox#getkey-options-parameters)
 
 ##### dy.Model().query(key: String, opts: Object)
 Pages through table based on primary key values.<br>
-Options include:
+Options include (all optional):
 - `index` (String): Index name.
 - `limit` (Array): Maximum number of items to retrieve.
 - `consistent` (Boolean): Enables [ConsistentRead](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html#DDB-Query-request-ConsistentRead).
 - `toReturn` (Array): Fields to return.
 - `cursor` (String): Cursor to page through query results.
+
 Internally uses [query](https://github.com/jeremydaly/dynamodb-toolbox#querypartitionkey-options-parameters)
 
 ##### dy.Model().schema
