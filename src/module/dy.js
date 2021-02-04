@@ -78,8 +78,7 @@ module.exports = ({ call, getService, logger }) => ({
           && err.code === 'ConditionalCheckFailedException'
           && customConditions === null
         ) {
-          const key = extractKey(item);
-          return onNotFound(key);
+          return onNotFound(extractKey(item));
         }
         throw err;
       }
