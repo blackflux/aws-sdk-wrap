@@ -56,10 +56,9 @@ module.exports = ({ call, getService, logger }) => ({
       assert(typeof onNotFound === 'function', onNotFound.length === 1);
       assert(Array.isArray(expectedErrorCodes));
       checkForUndefinedAttributes(item);
-      const schema = model.schema;
       let conditions = customConditions;
       if (mustExist) {
-        conditions = [schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
+        conditions = [model.schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
         if (customConditions !== null) {
           conditions.push(Array.isArray(customConditions) ? customConditions : [customConditions]);
         }
