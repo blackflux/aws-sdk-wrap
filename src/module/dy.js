@@ -84,13 +84,11 @@ module.exports = ({ call, getService, logger }) => ({
         throw err;
       }
       const didNotExist = result.Attributes === undefined;
-      let onFn;
       if (fn === 'update') {
-        onFn = didNotExist ? onCreate : onUpdate;
+        await (didNotExist ? onCreate : onUpdate)(item);
       } else {
-        onFn = onDelete;
+        await onDelete(item);
       }
-      await onFn(item);
       return {
         ...(fn === 'update' ? { created: didNotExist } : { deleted: true }),
         item: setDefaults({
