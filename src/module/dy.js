@@ -56,7 +56,6 @@ module.exports = ({ call, getService, logger }) => ({
       assert(typeof onNotFound === 'function', onNotFound.length === 1);
       assert(Array.isArray(expectedErrorCodes));
       checkForUndefinedAttributes(item);
-      const dyFn = fn === 'upsert' ? 'update' : fn;
       const schema = model.schema;
       let conditions = customConditions;
       if (mustExist) {
@@ -67,7 +66,7 @@ module.exports = ({ call, getService, logger }) => ({
       }
       let result;
       try {
-        result = await model.entity[dyFn](item, {
+        result = await model.entity[fn](item, {
           returnValues: 'all_old',
           ...(conditions === null ? {} : { conditions })
         });
@@ -87,14 +86,14 @@ module.exports = ({ call, getService, logger }) => ({
       }
       const hasNoAttributes = result.Attributes === undefined;
       let onFn;
-      if (dyFn === 'update') {
+      if (fn === 'update') {
         onFn = hasNoAttributes === true ? onCreate : onUpdate;
       } else {
         onFn = onDelete;
       }
       await onFn(item);
       return {
-        ...(dyFn === 'update' ? { created: hasNoAttributes } : { deleted: true }),
+        ...(fn === 'update' ? { created: hasNoAttributes } : { deleted: true }),
         item: setDefaults({
           ...(hasNoAttributes === true ? {} : result.Attributes),
           ...item
@@ -102,7 +101,7 @@ module.exports = ({ call, getService, logger }) => ({
       };
     };
     return ({
-      upsert: compileFn('upsert', false),
+      upsert: compileFn('update', false),
       update: compileFn('update', true),
       delete: compileFn('delete', true),
       getItem: async (key, {
