@@ -87,7 +87,7 @@ module.exports = ({ call, getService, logger }) => ({
       const didNotExist = result.Attributes === undefined;
       let onFn;
       if (fn === 'update') {
-        onFn = didNotExist === true ? onCreate : onUpdate;
+        onFn = didNotExist ? onCreate : onUpdate;
       } else {
         onFn = onDelete;
       }
