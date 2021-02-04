@@ -48,7 +48,7 @@ module.exports = ({ call, getService, logger }) => ({
       }
     };
 
-    const compileFn = (fn) => async (item, {
+    const compileFn = (fn, mustExist) => async (item, {
       conditions: customConditions = null,
       onNotFound = onNotFound_,
       expectedErrorCodes = []
@@ -56,9 +56,10 @@ module.exports = ({ call, getService, logger }) => ({
       assert(typeof onNotFound === 'function', onNotFound.length === 1);
       assert(Array.isArray(expectedErrorCodes));
       checkForUndefinedAttributes(item);
+      const dyFn = fn === 'upsert' ? 'update' : fn;
       const schema = model.schema;
       let conditions = customConditions;
-      if (['update', 'delete'].includes(fn)) {
+      if (mustExist) {
         conditions = [schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
         if (customConditions !== null) {
           conditions.push(Array.isArray(customConditions) ? customConditions : [customConditions]);
@@ -66,7 +67,6 @@ module.exports = ({ call, getService, logger }) => ({
       }
       let result;
       try {
-        const dyFn = fn === 'upsert' ? 'update' : fn;
         result = await model.entity[dyFn](item, {
           returnValues: 'all_old',
           ...(conditions === null ? {} : { conditions })
@@ -76,7 +76,7 @@ module.exports = ({ call, getService, logger }) => ({
           return err.code;
         }
         if (
-          ['update', 'delete'].includes(fn)
+          mustExist
           && err.code === 'ConditionalCheckFailedException'
           && customConditions === null
         ) {
@@ -87,14 +87,14 @@ module.exports = ({ call, getService, logger }) => ({
       }
       const hasNoAttributes = result.Attributes === undefined;
       let onFn;
-      if (['update', 'upsert'].includes(fn)) {
+      if (dyFn === 'update') {
         onFn = hasNoAttributes === true ? onCreate : onUpdate;
       } else {
         onFn = onDelete;
       }
       await onFn(item);
       return {
-        ...(['update', 'upsert'].includes(fn) ? { created: hasNoAttributes } : { deleted: true }),
+        ...(dyFn === 'update' ? { created: hasNoAttributes } : { deleted: true }),
         item: setDefaults({
           ...(hasNoAttributes === true ? {} : result.Attributes),
           ...item
@@ -102,9 +102,9 @@ module.exports = ({ call, getService, logger }) => ({
       };
     };
     return ({
-      upsert: compileFn('upsert'),
-      update: compileFn('update'),
-      delete: compileFn('delete'),
+      upsert: compileFn('upsert', false),
+      update: compileFn('update', true),
+      delete: compileFn('delete', true),
       getItem: async (key, {
         toReturn = null,
         onNotFound = onNotFound_
