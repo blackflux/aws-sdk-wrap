@@ -356,13 +356,6 @@ describe('Testing dy Util', {
     });
   });
 
-  it('Testing query with invalid sortKeyConstraint', async ({ capture }) => {
-    const error = await capture(() => model.query(primaryKey, {
-      sortKeyConstraint: { execute: 'name' }
-    }));
-    expect(error.message).to.equal('SortKeyConstraints can only be: eq, lt, lte, gt, gte, between, beginsWith');
-  });
-
   it('Testing query with multiple sortKeyConstraints', async ({ capture }) => {
     const error = await capture(() => model.query(primaryKey, {
       sortKeyConstraint: { lt: 'name', gt: 'name' }
