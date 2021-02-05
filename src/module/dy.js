@@ -47,6 +47,15 @@ module.exports = ({ call, getService, logger }) => ({
         throw new Error(`Attributes cannot be undefined: ${undefinedAttrs.join(', ')}`);
       }
     };
+    const validateSortKeyConstraint = (sortKeyConstraint) => {
+      const allowedConstraints = ['eq', 'lt', 'lte', 'gt', 'gte', 'between', 'beginsWith'];
+      if (
+        sortKeyConstraint !== null
+        && (Object.keys(sortKeyConstraint).some((c) => !allowedConstraints.includes(c)))
+      ) {
+        throw new Error(`SortKeyConstraints can only be: ${allowedConstraints.join(', ')}`);
+      }
+    };
 
     const compileFn = (fn, mustExist) => async (item, {
       conditions: customConditions = null,
@@ -118,9 +127,11 @@ module.exports = ({ call, getService, logger }) => ({
         index = null,
         limit = 20,
         consistent = true,
+        sortKeyConstraint = null,
         toReturn = null,
         cursor
       } = {}) => {
+        validateSortKeyConstraint(sortKeyConstraint);
         const {
           limit: queryLimit = limit,
           scanIndexForward = true,
@@ -132,6 +143,7 @@ module.exports = ({ call, getService, logger }) => ({
           limit: queryLimit,
           consistent,
           reverse: scanIndexForward === false,
+          ...(sortKeyConstraint === null ? {} : sortKeyConstraint),
           ...(toReturn === null ? {} : { attributes: toReturn }),
           ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
         });

@@ -341,6 +341,35 @@ describe('Testing dy Util', {
     });
   });
 
+  it('Testing query with sortKeyConstraint', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.query(primaryKey, {
+      sortKeyConstraint: { eq: 'name' }
+    });
+    expect(result).to.deep.equal({
+      items: [item],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query with invalid sortKeyConstraint', async ({ capture }) => {
+    const error = await capture(() => model.query(primaryKey, {
+      sortKeyConstraint: { execute: 'name' }
+    }));
+    expect(error.message).to.equal('SortKeyConstraints can only be: eq, lt, lte, gt, gte, between, beginsWith');
+  });
+
+  it('Testing query with multiple sortKeyConstraints', async ({ capture }) => {
+    const error = await capture(() => model.query(primaryKey, {
+      sortKeyConstraint: { lt: 'name', gt: 'name' }
+    }));
+    expect(error.message).to.equal('You can only supply one sortKey condition per query. Already using \'lt\'');
+  });
+
   it('Testing query with cursor', async () => {
     const secondItem = {
       ...item,
