@@ -181,7 +181,7 @@ Options include (all optional):
 - `index` (String): Index name.
 - `limit` (Array): Maximum number of items to retrieve.
 - `consistent` (Boolean): Enables [ConsistentRead](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html#DDB-Query-request-ConsistentRead).
-- `sortKeyConstraint` (Object): Provide a constraint for the sortKey. Constraints include: `eq`, `lt`, `lte`, `gt`, `gte`, `between`, `beginsWith`,
+- `conditions` (Object): Conditions that must be met for operation to succeed.
 - `toReturn` (Array): Fields to return.
 - `cursor` (String): Cursor to page through query results.
 

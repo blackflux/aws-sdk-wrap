@@ -1,4 +1,5 @@
 const assert = require('assert');
+const Joi = require('joi-strict');
 const createModel = require('./dy/create-model');
 const { fromCursor, buildPageObject } = require('../util/paging');
 const { ModelNotFound } = require('../resources/errors');
@@ -46,6 +47,16 @@ module.exports = ({ call, getService, logger }) => ({
       if (undefinedAttrs.length !== 0) {
         throw new Error(`Attributes cannot be undefined: ${undefinedAttrs.join(', ')}`);
       }
+    };
+    const getSortKeyByIndex = (index) => {
+      const keySchema = index === null
+        ? model.schema.KeySchema
+        : model.schema.GlobalSecondaryIndexes.find(({ IndexName }) => IndexName === index).KeySchema;
+      const sortKey = keySchema.find(({ KeyType: keyType }) => keyType === 'RANGE');
+      if (sortKey === undefined) {
+        throw new Error('SortKey not found');
+      }
+      return sortKey.AttributeName;
     };
 
     const compileFn = (fn, mustExist) => async (item, {
@@ -118,15 +129,33 @@ module.exports = ({ call, getService, logger }) => ({
         index = null,
         limit = 20,
         consistent = true,
-        sortKeyConstraint = null,
+        conditions = null,
         toReturn = null,
         cursor
       } = {}) => {
-        const allowedSortKeyConstraints = ['eq', 'lt', 'lte', 'gt', 'gte', 'between', 'beginsWith'];
-        assert(
-          sortKeyConstraint === null
-          || Object.keys(sortKeyConstraint).every((c) => allowedSortKeyConstraints.includes(c))
-        );
+        if (index !== null) {
+          const secondaryIndex = model.schema.GlobalSecondaryIndexes.find(({ IndexName }) => IndexName === index);
+          if (secondaryIndex === undefined) {
+            throw new Error(`Invalid index provided: ${index}`);
+          }
+        }
+        if (conditions !== null) {
+          Joi.assert(conditions, Joi.object({
+            attr: Joi.string().valid(getSortKeyByIndex(index))
+          }).pattern(
+            Joi.string().valid('eq', 'lt', 'lte', 'gt', 'gte', 'between', 'beginsWith'),
+            Joi.alternatives().try(
+              Joi.string(),
+              Joi.number(),
+              Joi.boolean(),
+              Joi.array().items(
+                Joi.string(),
+                Joi.number(),
+                Joi.boolean()
+              ).length(2)
+            )
+          ).length(2));
+        }
         const {
           limit: queryLimit = limit,
           scanIndexForward = true,
@@ -138,7 +167,13 @@ module.exports = ({ call, getService, logger }) => ({
           limit: queryLimit,
           consistent,
           reverse: scanIndexForward === false,
-          ...(sortKeyConstraint === null ? {} : sortKeyConstraint),
+          ...(conditions === null ? {} : Object.entries(conditions)
+            .filter(([k, _]) => k !== 'attr')
+            .reduce((prev, [k, v]) => {
+              // eslint-disable-next-line no-param-reassign
+              prev[k] = v;
+              return prev;
+            }, {})),
           ...(toReturn === null ? {} : { attributes: toReturn }),
           ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
         });

@@ -45,6 +45,9 @@ describe('Testing dy Util', {
         targetIndex: {
           partitionKey: 'id',
           sortKey: 'name'
+        },
+        idIndex: {
+          partitionKey: 'id'
         }
       },
       DocumentClient: new DocumentClient({
@@ -341,10 +344,10 @@ describe('Testing dy Util', {
     });
   });
 
-  it('Testing query with sortKeyConstraint', async () => {
+  it('Testing query with conditions', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.query(primaryKey, {
-      sortKeyConstraint: { eq: 'name' }
+      conditions: { attr: 'name', eq: 'name' }
     });
     expect(result).to.deep.equal({
       items: [item],
@@ -356,11 +359,48 @@ describe('Testing dy Util', {
     });
   });
 
-  it('Testing query with multiple sortKeyConstraints', async ({ capture }) => {
+  it('Testing with index query with conditions', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.query(primaryKey, {
+      conditions: { attr: 'name', eq: 'name' }
+    });
+    expect(result).to.deep.equal({
+      items: [item],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing with index query index only partitionKey', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.query(primaryKey, {
+      index: 'idIndex',
+      consistent: false
+    });
+    expect(result).to.deep.equal({
+      items: [item],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing with query invalid index', async ({ capture }) => {
+    const error = await capture(() => model.query(primaryKey, { index: 'invalid' }));
+    expect(error.message).to.equal('Invalid index provided: invalid');
+  });
+
+  it('Testing with query invalid sortKey', async ({ capture }) => {
     const error = await capture(() => model.query(primaryKey, {
-      sortKeyConstraint: { lt: 'name', gt: 'name' }
+      index: 'idIndex',
+      conditions: { attr: 'invalid', eq: 'name' }
     }));
-    expect(error.message).to.equal('You can only supply one sortKey condition per query. Already using \'lt\'');
+    expect(error.message).to.equal('SortKey not found');
   });
 
   it('Testing query with cursor', async () => {
