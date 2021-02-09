@@ -398,9 +398,16 @@ describe('Testing dy Util', {
 
   it('Testing query with invalid conditions', async ({ capture }) => {
     const error = await capture(() => model.query(primaryKey, {
-      conditions: { attr: 'invalid', eq: 'name' }
+      conditions: { attr: 'name', invalid: 'name' }
     }));
     expect(error.message).to.have.string('Invalid conditions provided');
+  });
+
+  it('Testing query with invalid sortKey', async ({ capture }) => {
+    const error = await capture(() => model.query(primaryKey, {
+      conditions: { attr: 'invalid', eq: 'name' }
+    }));
+    expect(error.message).to.have.string('Expected conditions.attr to be "name"');
   });
 
   it('Testing query on index without sortKey', async ({ capture }) => {
