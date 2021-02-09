@@ -59,6 +59,22 @@ module.exports = ({ call, getService, logger }) => ({
       return sortKey.AttributeName;
     };
 
+    const queryConditionSchema = Joi.object({
+      attr: Joi.string()
+    }).pattern(
+      Joi.string().valid('eq', 'lt', 'lte', 'gt', 'gte', 'between', 'beginsWith'),
+      Joi.alternatives().try(
+        Joi.string(),
+        Joi.number(),
+        Joi.boolean(),
+        Joi.array().items(
+          Joi.string(),
+          Joi.number(),
+          Joi.boolean()
+        ).length(2)
+      )
+    ).length(2);
+
     const compileFn = (fn, mustExist) => async (item, {
       conditions: customConditions = null,
       onNotFound = onNotFound_,
@@ -140,22 +156,7 @@ module.exports = ({ call, getService, logger }) => ({
           }
         }
         if (conditions !== null) {
-          const querySchema = Joi.object({
-            attr: Joi.string()
-          }).pattern(
-            Joi.string().valid('eq', 'lt', 'lte', 'gt', 'gte', 'between', 'beginsWith'),
-            Joi.alternatives().try(
-              Joi.string(),
-              Joi.number(),
-              Joi.boolean(),
-              Joi.array().items(
-                Joi.string(),
-                Joi.number(),
-                Joi.boolean()
-              ).length(2)
-            )
-          ).length(2);
-          Joi.assert(conditions, querySchema, 'Invalid conditions provided');
+          Joi.assert(conditions, queryConditionSchema, 'Invalid conditions provided');
           const attr = getSortKeyByIndex(index);
           assert(attr === conditions.attr, `Expected conditions.attr to be "${attr}"`);
         }
