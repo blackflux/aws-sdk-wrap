@@ -359,10 +359,10 @@ describe('Testing dy Util', {
     });
   });
 
-  it('Testing query with conditions sortKey not found', async () => {
+  it('Testing query with conditions sortKey unknown', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.query(primaryKey, {
-      conditions: { attr: 'name', eq: 'notFound' }
+      conditions: { attr: 'name', eq: 'unknown' }
     });
     expect(result).to.deep.equal({
       items: [],
