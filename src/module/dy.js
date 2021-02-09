@@ -54,7 +54,7 @@ module.exports = ({ call, getService, logger }) => ({
         : model.schema.GlobalSecondaryIndexes.find(({ IndexName }) => IndexName === index).KeySchema;
       const sortKey = keySchema.find(({ KeyType: keyType }) => keyType === 'RANGE');
       if (sortKey === undefined) {
-        throw new Error('SortKey not found');
+        throw new Error('No sortKey present on index');
       }
       return sortKey.AttributeName;
     };
@@ -155,7 +155,7 @@ module.exports = ({ call, getService, logger }) => ({
               ).length(2)
             )
           ).length(2);
-          Joi.assert(conditions, querySchema);
+          Joi.assert(conditions, querySchema, 'Invalid conditions provided');
         }
         const {
           limit: queryLimit = limit,

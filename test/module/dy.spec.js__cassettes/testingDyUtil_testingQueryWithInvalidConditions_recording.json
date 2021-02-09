@@ -82,7 +82,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1612562981.832,
+        "CreationDateTime": 1612894030.547,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -95,7 +95,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1612562981.832
+          "LastUpdateToPayPerRequestDateTime": 1612894030.547
         },
         "GlobalSecondaryIndexes": [
           {
@@ -121,6 +121,26 @@
             "IndexSizeBytes": 0,
             "ItemCount": 0,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
+          },
+          {
+            "IndexName": "idIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 0,
+            "ItemCount": 0,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/idIndex"
           }
         ]
       }
@@ -159,7 +179,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1612562981.832,
+        "CreationDateTime": 1612894030.547,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -172,7 +192,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1612562981.832
+          "LastUpdateToPayPerRequestDateTime": 1612894030.547
         },
         "GlobalSecondaryIndexes": [
           {
@@ -198,6 +218,26 @@
             "IndexSizeBytes": 0,
             "ItemCount": 0,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
+          },
+          {
+            "IndexName": "idIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 0,
+            "ItemCount": 0,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/idIndex"
           }
         ]
       }
