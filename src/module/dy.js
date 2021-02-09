@@ -140,7 +140,7 @@ module.exports = ({ call, getService, logger }) => ({
           }
         }
         if (conditions !== null) {
-          Joi.assert(conditions, Joi.object({
+          const querySchema = Joi.object({
             attr: Joi.string().valid(getSortKeyByIndex(index))
           }).pattern(
             Joi.string().valid('eq', 'lt', 'lte', 'gt', 'gte', 'between', 'beginsWith'),
@@ -154,7 +154,8 @@ module.exports = ({ call, getService, logger }) => ({
                 Joi.boolean()
               ).length(2)
             )
-          ).length(2));
+          ).length(2);
+          Joi.assert(conditions, querySchema);
         }
         const {
           limit: queryLimit = limit,
