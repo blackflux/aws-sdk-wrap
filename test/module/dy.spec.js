@@ -359,6 +359,21 @@ describe('Testing dy Util', {
     });
   });
 
+  it('Testing query with conditions sortKey not found', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.query(primaryKey, {
+      conditions: { attr: 'name', eq: 'notFound' }
+    });
+    expect(result).to.deep.equal({
+      items: [],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
   it('Testing secondary index with conditions', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.query(primaryKey, {
