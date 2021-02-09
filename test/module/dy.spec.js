@@ -359,26 +359,12 @@ describe('Testing dy Util', {
     });
   });
 
-  it('Testing with index query with conditions', async () => {
+  it('Testing secondary index with conditions', async () => {
     expect(await model.upsert(item)).to.deep.equal({ created: true, item });
     const result = await model.query(primaryKey, {
+      index: 'targetIndex',
+      consistent: false,
       conditions: { attr: 'name', eq: 'name' }
-    });
-    expect(result).to.deep.equal({
-      items: [item],
-      page: {
-        next: null,
-        index: { current: 1 },
-        size: 20
-      }
-    });
-  });
-
-  it('Testing with index query index only partitionKey', async () => {
-    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
-    const result = await model.query(primaryKey, {
-      index: 'idIndex',
-      consistent: false
     });
     expect(result).to.deep.equal({
       items: [item],
