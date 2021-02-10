@@ -45,6 +45,9 @@ describe('Testing dy Util', {
         targetIndex: {
           partitionKey: 'id',
           sortKey: 'name'
+        },
+        idIndex: {
+          partitionKey: 'id'
         }
       },
       DocumentClient: new DocumentClient({
@@ -339,6 +342,80 @@ describe('Testing dy Util', {
         size: 20
       }
     });
+  });
+
+  it('Testing query with conditions', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.query(primaryKey, {
+      conditions: { attr: 'name', eq: 'name' }
+    });
+    expect(result).to.deep.equal({
+      items: [item],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query with conditions sortKey unknown', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.query(primaryKey, {
+      conditions: { attr: 'name', eq: 'unknown' }
+    });
+    expect(result).to.deep.equal({
+      items: [],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query on secondary index with conditions', async () => {
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    const result = await model.query(primaryKey, {
+      index: 'targetIndex',
+      consistent: false,
+      conditions: { attr: 'name', eq: 'name' }
+    });
+    expect(result).to.deep.equal({
+      items: [item],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query on invalid index', async ({ capture }) => {
+    const error = await capture(() => model.query(primaryKey, { index: 'invalid' }));
+    expect(error.message).to.equal('Invalid index provided: invalid');
+  });
+
+  it('Testing query with invalid conditions', async ({ capture }) => {
+    const error = await capture(() => model.query(primaryKey, {
+      conditions: { attr: 'name', invalid: 'name' }
+    }));
+    expect(error.message).to.have.string('Invalid conditions provided');
+  });
+
+  it('Testing query with bad sortKey name', async ({ capture }) => {
+    const error = await capture(() => model.query(primaryKey, {
+      conditions: { attr: 'invalid', eq: 'name' }
+    }));
+    expect(error.message).to.have.string('Expected conditions.attr to be "name"');
+  });
+
+  it('Testing query on index without sortKey', async ({ capture }) => {
+    const error = await capture(() => model.query(primaryKey, {
+      index: 'idIndex',
+      conditions: { attr: 'invalid', eq: 'name' }
+    }));
+    expect(error.message).to.equal('No sortKey present on index');
   });
 
   it('Testing query with cursor', async () => {
