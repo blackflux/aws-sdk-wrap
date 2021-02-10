@@ -41,6 +41,18 @@
           "Projection": {
             "ProjectionType": "ALL"
           }
+        },
+        {
+          "IndexName": "idIndex",
+          "KeySchema": [
+            {
+              "AttributeName": "id",
+              "KeyType": "HASH"
+            }
+          ],
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
         }
       ],
       "BillingMode": "PAY_PER_REQUEST"
