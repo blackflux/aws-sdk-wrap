@@ -403,7 +403,7 @@ describe('Testing dy Util', {
     expect(error.message).to.have.string('Invalid conditions provided');
   });
 
-  it('Testing query with invalid sortKey', async ({ capture }) => {
+  it('Testing query with bad sortKey name', async ({ capture }) => {
     const error = await capture(() => model.query(primaryKey, {
       conditions: { attr: 'invalid', eq: 'name' }
     }));
