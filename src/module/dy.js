@@ -59,7 +59,7 @@ module.exports = ({ call, getService, logger }) => ({
       return sortKey.AttributeName;
     };
 
-    const queryConditionSchema = Joi.object({
+    const queryConditionsSchema = Joi.object({
       attr: Joi.string()
     }).pattern(
       Joi.string().valid('eq', 'lt', 'lte', 'gt', 'gte', 'between', 'beginsWith'),
@@ -156,7 +156,7 @@ module.exports = ({ call, getService, logger }) => ({
           }
         }
         if (conditions !== null) {
-          Joi.assert(conditions, queryConditionSchema, 'Invalid conditions provided');
+          Joi.assert(conditions, queryConditionsSchema, 'Invalid conditions provided');
           const attr = getSortKeyByIndex(index);
           assert(attr === conditions.attr, `Expected conditions.attr to be "${attr}"`);
         }
