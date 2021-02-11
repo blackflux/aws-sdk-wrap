@@ -18,9 +18,30 @@ describe('Testing dy Util', {
   let localTable;
   let item;
   let primaryKey;
+  let setupThreeItems;
 
   before(() => {
     primaryKey = '123';
+    setupThreeItems = async () => {
+      const secondItem = {
+        ...item,
+        name: 'name-2'
+      };
+      const thirdItem = {
+        ...item,
+        name: 'name-3'
+      };
+      expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+      expect(await model.upsert(secondItem)).to.deep.equal({
+        created: true,
+        item: secondItem
+      });
+      expect(await model.upsert(thirdItem)).to.deep.equal({
+        created: true,
+        item: thirdItem
+      });
+      return [item, secondItem, thirdItem];
+    };
   });
   beforeEach(async () => {
     const index = Index({
@@ -419,26 +440,10 @@ describe('Testing dy Util', {
   });
 
   it('Testing query with cursor', async () => {
-    const secondItem = {
-      ...item,
-      name: 'name-2'
-    };
-    const thirdItem = {
-      ...item,
-      name: 'name-3'
-    };
-    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
-    expect(await model.upsert(secondItem)).to.deep.equal({
-      created: true,
-      item: secondItem
-    });
-    expect(await model.upsert(thirdItem)).to.deep.equal({
-      created: true,
-      item: thirdItem
-    });
+    const [firstItem, secondItem, thirdItem] = await setupThreeItems();
     const firstResult = await model.query(primaryKey, { limit: 2 });
     expect(firstResult).to.deep.equal({
-      items: [item, secondItem],
+      items: [firstItem, secondItem],
       page: {
         next: {
           limit: 2,
@@ -456,6 +461,62 @@ describe('Testing dy Util', {
         next: null,
         index: { current: 2 },
         size: 2
+      }
+    });
+  });
+
+  it('Testing query exhaustive pagination with limit null', async () => {
+    const [firstItem, secondItem, thirdItem] = await setupThreeItems();
+    const result = await model.query(primaryKey, { limit: null });
+    expect(result).to.deep.equal({
+      items: [firstItem, secondItem, thirdItem],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: null
+      }
+    });
+  });
+
+  it('Testing query exhaustive pagination with limit not reached', async () => {
+    const [firstItem, secondItem, thirdItem] = await setupThreeItems();
+    const result = await model.query(primaryKey, { limit: 3 });
+    expect(result).to.deep.equal({
+      items: [firstItem, secondItem, thirdItem],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 3
+      }
+    });
+  });
+
+  it('Testing query with limit of 1', async () => {
+    const [firstItem] = await setupThreeItems();
+    const result = await model.query(primaryKey, { limit: 1 });
+    expect(result).to.deep.equal({
+      items: [firstItem],
+      page: {
+        next: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ==',
+          limit: 1
+        },
+        index: { current: 1 },
+        size: 1
+      }
+    });
+  });
+
+  it('Testing query with limit of 4', async () => {
+    const [firstItem, secondItem, thirdItem] = await setupThreeItems();
+    const result = await model.query(primaryKey, { limit: 4 });
+    expect(result).to.deep.equal({
+      items: [firstItem, secondItem, thirdItem],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 4
       }
     });
   });
