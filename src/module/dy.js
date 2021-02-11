@@ -141,6 +141,40 @@ module.exports = ({ call, getService, logger }) => ({
             ).length(2)
           )
         ).length(2);
+        const queryItems = async ({
+          partitionKey,
+          index,
+          queryLimit,
+          consistent,
+          scanIndexForward,
+          conditions,
+          toReturn,
+          lastEvaluatedKey: previousLastEvaluatedKey
+        }) => {
+          const items = [];
+          let lastEvaluatedKey = previousLastEvaluatedKey;
+          do {
+            // eslint-disable-next-line no-await-in-loop
+            const result = await model.entity.query(partitionKey, {
+              ...(index === null ? {} : { index }),
+              ...(queryLimit === null ? {} : { limit: queryLimit - items.length }),
+              consistent,
+              reverse: scanIndexForward === false,
+              ...(conditions === null ? {} : Object.entries(conditions)
+                .filter(([k, _]) => k !== 'attr')
+                .reduce((prev, [k, v]) => {
+                  // eslint-disable-next-line no-param-reassign
+                  prev[k] = v;
+                  return prev;
+                }, {})),
+              ...(toReturn === null ? {} : { attributes: toReturn }),
+              ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
+            });
+            items.push(...result.Items);
+            lastEvaluatedKey = result.LastEvaluatedKey;
+          } while (lastEvaluatedKey !== undefined && (queryLimit === null || items.length < queryLimit));
+          return { items, lastEvaluatedKey };
+        };
         return async (partitionKey, {
           index = null,
           limit = 20,
@@ -166,28 +200,23 @@ module.exports = ({ call, getService, logger }) => ({
             lastEvaluatedKey = null,
             currentPage = null
           } = fromCursor(cursor);
-          const result = await model.entity.query(partitionKey, {
-            ...(index === null ? {} : { index }),
-            limit: queryLimit,
+          const result = await queryItems({
+            partitionKey,
+            index,
+            queryLimit,
             consistent,
-            reverse: scanIndexForward === false,
-            ...(conditions === null ? {} : Object.entries(conditions)
-              .filter(([k, _]) => k !== 'attr')
-              .reduce((prev, [k, v]) => {
-                // eslint-disable-next-line no-param-reassign
-                prev[k] = v;
-                return prev;
-              }, {})),
-            ...(toReturn === null ? {} : { attributes: toReturn }),
-            ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
+            scanIndexForward,
+            conditions,
+            toReturn,
+            lastEvaluatedKey
           });
           const page = buildPageObject({
             currentPage: currentPage === null ? 1 : currentPage,
             limit: queryLimit,
-            lastEvaluatedKey: result.LastEvaluatedKey === undefined ? null : result.LastEvaluatedKey
+            lastEvaluatedKey: result.lastEvaluatedKey === undefined ? null : result.lastEvaluatedKey
           });
           return {
-            items: result.Items.map((item) => setDefaults(item, toReturn)),
+            items: result.items.map((item) => setDefaults(item, toReturn)),
             page
           };
         };
