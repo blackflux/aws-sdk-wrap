@@ -179,7 +179,7 @@ Internally uses [get](https://github.com/jeremydaly/dynamodb-toolbox#getkey-opti
 Pages through table based on primary key values.<br>
 Options include (all optional):
 - `index` (String): Index name.
-- `limit` (Array): Maximum number of items to retrieve.
+- `limit` (Array): Maximum number of items to retrieve. If set to `null`, will exhaustively paginate.
 - `consistent` (Boolean): Enables [ConsistentRead](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html#DDB-Query-request-ConsistentRead).
 - `conditions` (Object): Conditions that must be met for operation to succeed.
 - `toReturn` (Array): Fields to return.

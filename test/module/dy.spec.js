@@ -460,6 +460,64 @@ describe('Testing dy Util', {
     });
   });
 
+  it('Testing query exhaustive pagination with limit null', async () => {
+    const secondItem = {
+      ...item,
+      name: 'name-2'
+    };
+    const thirdItem = {
+      ...item,
+      name: 'name-3'
+    };
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    expect(await model.upsert(secondItem)).to.deep.equal({
+      created: true,
+      item: secondItem
+    });
+    expect(await model.upsert(thirdItem)).to.deep.equal({
+      created: true,
+      item: thirdItem
+    });
+    const result = await model.query(primaryKey, { limit: null });
+    expect(result).to.deep.equal({
+      items: [item, secondItem, thirdItem],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: null
+      }
+    });
+  });
+
+  it('Testing query exhaustive pagination with limit not reached', async () => {
+    const secondItem = {
+      ...item,
+      name: 'name-2'
+    };
+    const thirdItem = {
+      ...item,
+      name: 'name-3'
+    };
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    expect(await model.upsert(secondItem)).to.deep.equal({
+      created: true,
+      item: secondItem
+    });
+    expect(await model.upsert(thirdItem)).to.deep.equal({
+      created: true,
+      item: thirdItem
+    });
+    const result = await model.query(primaryKey, { limit: 3 });
+    expect(result).to.deep.equal({
+      items: [item, secondItem, thirdItem],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 3
+      }
+    });
+  });
+
   it('Testing schema', ({ fixture }) => {
     const result = model.schema;
     expect(result).to.deep.equal(fixture('table-schema'));
