@@ -141,7 +141,7 @@ module.exports = ({ call, getService, logger }) => ({
             ).length(2)
           )
         ).length(2);
-        const queryData = async ({
+        const queryItems = async ({
           partitionKey,
           index,
           queryLimit,
@@ -157,7 +157,7 @@ module.exports = ({ call, getService, logger }) => ({
             // eslint-disable-next-line no-await-in-loop
             const result = await model.entity.query(partitionKey, {
               ...(index === null ? {} : { index }),
-              ...(queryLimit === null ? {} : { limit: queryLimit }),
+              ...(queryLimit === null ? {} : { limit: queryLimit - items.length }),
               consistent,
               reverse: scanIndexForward === false,
               ...(conditions === null ? {} : Object.entries(conditions)
@@ -200,7 +200,7 @@ module.exports = ({ call, getService, logger }) => ({
             lastEvaluatedKey = null,
             currentPage = null
           } = fromCursor(cursor);
-          const result = await queryData({
+          const result = await queryItems({
             partitionKey,
             index,
             queryLimit,

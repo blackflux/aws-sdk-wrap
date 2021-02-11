@@ -82,7 +82,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1613078087.379,
+        "CreationDateTime": 1613082346.625,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -95,7 +95,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1613078087.379
+          "LastUpdateToPayPerRequestDateTime": 1613082346.625
         },
         "GlobalSecondaryIndexes": [
           {
@@ -249,8 +249,8 @@
           "S": "123"
         }
       },
-      "ConsistentRead": true,
-      "Limit": 3
+      "Limit": 1,
+      "ConsistentRead": true
     },
     "status": 200,
     "response": {
@@ -265,75 +265,18 @@
           "id": {
             "S": "123"
           }
-        },
-        {
-          "name": {
-            "S": "name-2"
-          },
-          "age": {
-            "N": "50"
-          },
-          "id": {
-            "S": "123"
-          }
         }
       ],
-      "Count": 2,
-      "ScannedCount": 2,
+      "Count": 1,
+      "ScannedCount": 1,
       "LastEvaluatedKey": {
         "name": {
-          "S": "name-2"
+          "S": "name"
         },
         "id": {
           "S": "123"
         }
       }
-    },
-    "responseIsBinary": false
-  },
-  {
-    "scope": "http://dynamodb-local:8000",
-    "method": "POST",
-    "path": "/",
-    "body": {
-      "TableName": "table-name",
-      "KeyConditionExpression": "#pk = :pk",
-      "ExpressionAttributeNames": {
-        "#pk": "id"
-      },
-      "ExpressionAttributeValues": {
-        ":pk": {
-          "S": "123"
-        }
-      },
-      "ConsistentRead": true,
-      "ExclusiveStartKey": {
-        "name": {
-          "S": "name-2"
-        },
-        "id": {
-          "S": "123"
-        }
-      },
-      "Limit": 1
-    },
-    "status": 200,
-    "response": {
-      "Items": [
-        {
-          "name": {
-            "S": "name-3"
-          },
-          "age": {
-            "N": "50"
-          },
-          "id": {
-            "S": "123"
-          }
-        }
-      ],
-      "Count": 1,
-      "ScannedCount": 1
     },
     "responseIsBinary": false
   },
@@ -369,7 +312,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1613078087.379,
+        "CreationDateTime": 1613082346.625,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -382,7 +325,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1613078087.379
+          "LastUpdateToPayPerRequestDateTime": 1613082346.625
         },
         "GlobalSecondaryIndexes": [
           {
