@@ -1,9 +1,9 @@
 const assert = require('assert');
 const DeleteItem = require('./dy/fns/delete');
-const Update = require('./dy/fns/update');
-const Upsert = require('./dy/fns/upsert');
 const GetItem = require('./dy/fns/get-item');
 const Query = require('./dy/fns/query');
+const Update = require('./dy/fns/update');
+const Upsert = require('./dy/fns/upsert');
 const createModel = require('./dy/create-model');
 const DyUtil = require('./dy/util');
 const { ModelNotFound } = require('../resources/errors');
