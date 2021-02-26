@@ -1,4 +1,9 @@
 const { DynamoDB } = require('aws-sdk');
+const expect = require('chai').expect;
+const Index = require('../src');
+const DyUtil = require('../src/module/dy');
+
+const { DocumentClient } = DynamoDB;
 
 const dynamoDB = async (cmd, params) => {
   const ddb = new DynamoDB({
@@ -17,4 +22,60 @@ module.exports.LocalTable = (model) => {
     create: async () => dynamoDB('createTable', schema),
     delete: async () => dynamoDB('deleteTable', { TableName: schema.TableName })
   };
+};
+
+module.exports.buildModel = () => {
+  const index = Index({
+    config: {
+      maxRetries: 0,
+      endpoint: process.env.DYNAMODB_ENDPOINT
+    }
+  });
+  const Model = (opts) => DyUtil({
+    call: index.call,
+    logger: null,
+    getService: index.get
+  }).Model(opts);
+  return Model({
+    name: 'table-name',
+    attributes: {
+      id: { type: 'string', partitionKey: true },
+      name: { type: 'string', sortKey: true },
+      age: { type: 'number', default: 30 }
+    },
+    indices: {
+      targetIndex: {
+        partitionKey: 'id',
+        sortKey: 'name'
+      },
+      idIndex: {
+        partitionKey: 'id'
+      }
+    },
+    DocumentClient: new DocumentClient({
+      endpoint: process.env.DYNAMODB_ENDPOINT
+    })
+  });
+};
+
+module.exports.createItems = async ({
+  count,
+  model,
+  primaryKey,
+  sortKey,
+  age
+}) => {
+  const items = [];
+  for (let i = 1; i <= count; i += 1) {
+    const name = i === 1 ? sortKey : `${sortKey}-${i}`;
+    const item = {
+      id: primaryKey,
+      name,
+      age
+    };
+    // eslint-disable-next-line no-await-in-loop
+    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    items.push(item);
+  }
+  return items;
 };
