@@ -35,6 +35,12 @@ module.exports = ({
   };
 
   return {
+    validateSecondaryIndex: (index) => {
+      const secondaryIndex = model.schema.GlobalSecondaryIndexes.find(({ IndexName }) => IndexName === index);
+      if (secondaryIndex === undefined) {
+        throw new Error(`Invalid index provided: ${index}`);
+      }
+    },
     setDefaults,
     getSortKeyByIndex: (index) => {
       const keySchema = index === null

@@ -2,7 +2,7 @@ const assert = require('assert');
 const Joi = require('joi-strict');
 const { fromCursor, buildPageObject } = require('../../../util/paging');
 
-module.exports = (model, setDefaults, getSortKeyByIndex) => {
+module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) => {
   const conditionsSchema = Joi.object({
     attr: Joi.string()
   }).pattern(
@@ -62,10 +62,7 @@ module.exports = (model, setDefaults, getSortKeyByIndex) => {
     cursor
   } = {}) => {
     if (index !== null) {
-      const secondaryIndex = model.schema.GlobalSecondaryIndexes.find(({ IndexName }) => IndexName === index);
-      if (secondaryIndex === undefined) {
-        throw new Error(`Invalid index provided: ${index}`);
-      }
+      validateSecondaryIndex(index);
     }
     if (conditions !== null) {
       Joi.assert(conditions, conditionsSchema, 'Invalid conditions provided');

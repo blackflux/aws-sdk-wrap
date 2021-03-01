@@ -2,6 +2,7 @@ const assert = require('assert');
 const DeleteItem = require('./dy/fns/delete');
 const GetItem = require('./dy/fns/get-item');
 const Query = require('./dy/fns/query');
+const Scan = require('./dy/fns/scan');
 const Update = require('./dy/fns/update');
 const Upsert = require('./dy/fns/upsert');
 const createModel = require('./dy/create-model');
@@ -28,6 +29,7 @@ module.exports = ({ call, getService, logger }) => ({
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
     const {
+      validateSecondaryIndex,
       setDefaults,
       getSortKeyByIndex,
       compileFn
@@ -44,7 +46,8 @@ module.exports = ({ call, getService, logger }) => ({
       update: Update(compileFn),
       delete: DeleteItem(compileFn),
       getItem: GetItem(model, onNotFound_, setDefaults),
-      query: Query(model, setDefaults, getSortKeyByIndex),
+      query: Query(model, validateSecondaryIndex, setDefaults, getSortKeyByIndex),
+      scan: Scan(model, validateSecondaryIndex, setDefaults),
       schema: model.schema
     });
   }
