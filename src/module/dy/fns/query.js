@@ -25,6 +25,7 @@ module.exports = (model, setDefaults, getSortKeyByIndex) => {
     consistent,
     scanIndexForward,
     conditions,
+    filters,
     toReturn,
     lastEvaluatedKey: previousLastEvaluatedKey
   }) => {
@@ -44,6 +45,7 @@ module.exports = (model, setDefaults, getSortKeyByIndex) => {
             prev[k] = v;
             return prev;
           }, {})),
+        ...(filters === null ? {} : { filters }),
         ...(toReturn === null ? {} : { attributes: toReturn }),
         ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
       });
@@ -58,6 +60,7 @@ module.exports = (model, setDefaults, getSortKeyByIndex) => {
     limit = 20,
     consistent = true,
     conditions = null,
+    filters = null,
     toReturn = null,
     cursor
   } = {}) => {
@@ -85,6 +88,7 @@ module.exports = (model, setDefaults, getSortKeyByIndex) => {
       consistent,
       scanIndexForward,
       conditions,
+      filters,
       toReturn,
       lastEvaluatedKey
     });

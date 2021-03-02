@@ -12,6 +12,7 @@ describe('Testing query', {
   let primaryKey;
   let generateItem;
   let setupThreeItems;
+  let setupThreeItemsWithMultipleAges;
 
   before(() => {
     primaryKey = '123';
@@ -20,6 +21,9 @@ describe('Testing query', {
     });
     setupThreeItems = async () => createItems({
       count: 3, model, primaryKey, sortKey: 'name', age: 50
+    });
+    setupThreeItemsWithMultipleAges = async () => createItems({
+      count: 3, multiplyAge: true, model, primaryKey, sortKey: 'name', age: 10
     });
   });
   beforeEach(async () => {
@@ -251,6 +255,84 @@ describe('Testing query', {
         next: null,
         index: { current: 1 },
         size: 4
+      }
+    });
+  });
+
+  it('Testing query with filters', async () => {
+    const [firstItem, secondItem] = await setupThreeItemsWithMultipleAges();
+    const result = await model.query(primaryKey, {
+      filters: { attr: 'age', lte: 20 }
+    });
+    expect(result).to.deep.equal({
+      items: [firstItem, secondItem],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query with filters with pagination', async () => {
+    const filters = { attr: 'age', lte: 50 };
+    const [firstItem, secondItem, thirdItem] = await setupThreeItemsWithMultipleAges();
+    const firstResult = await model.query(primaryKey, { limit: 2, filters });
+    expect(firstResult).to.deep.equal({
+      items: [firstItem, secondItem],
+      page: {
+        next: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZS0yIiwiaWQiOiIxMjMifSwiY3VycmVudFBhZ2UiOjJ9',
+          limit: 2
+        },
+        index: { current: 1 },
+        size: 2
+      }
+    });
+    const secondResult = await model.query(primaryKey, {
+      filters,
+      cursor: firstResult.page.next.cursor
+    });
+    expect(secondResult).to.deep.equal({
+      items: [thirdItem],
+      page: {
+        next: null,
+        index: { current: 2 },
+        size: 2
+      }
+    });
+  });
+
+  it('Testing query with filters with conditions', async () => {
+    const [firstItem] = await setupThreeItemsWithMultipleAges();
+    const result = await model.query(primaryKey, {
+      conditions: { attr: 'name', eq: firstItem.name },
+      filters: { attr: 'age', eq: 10 }
+    });
+    expect(result).to.deep.equal({
+      items: [firstItem],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query with filters on secondary index', async () => {
+    const [firstItem, secondItem] = await setupThreeItemsWithMultipleAges();
+    const result = await model.query(primaryKey, {
+      index: 'targetIndex',
+      consistent: false,
+      filters: { attr: 'age', lte: 20 }
+    });
+    expect(result).to.deep.equal({
+      items: [firstItem, secondItem],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
       }
     });
   });

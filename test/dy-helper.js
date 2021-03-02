@@ -60,6 +60,7 @@ module.exports.buildModel = () => {
 
 module.exports.createItems = async ({
   count,
+  multiplyAge = false,
   model,
   primaryKey,
   sortKey,
@@ -71,7 +72,7 @@ module.exports.createItems = async ({
     const item = {
       id: primaryKey,
       name,
-      age
+      age: multiplyAge !== true ? age : age * i
     };
     // eslint-disable-next-line no-await-in-loop
     expect(await model.upsert(item)).to.deep.equal({ created: true, item });
