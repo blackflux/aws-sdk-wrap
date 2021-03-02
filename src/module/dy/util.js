@@ -4,6 +4,7 @@ module.exports = ({
   attributes,
   model,
   onNotFound_,
+  onAlreadyExists_,
   onUpdate,
   onCreate,
   onDelete
@@ -49,14 +50,15 @@ module.exports = ({
     compileFn: (fn, mustExist) => async (item, {
       conditions: customConditions = null,
       onNotFound = onNotFound_,
+      onAlreadyExists = onAlreadyExists_,
       expectedErrorCodes = []
     } = {}) => {
       assert(typeof onNotFound === 'function', onNotFound.length === 1);
       assert(Array.isArray(expectedErrorCodes));
       checkForUndefinedAttributes(item);
       let conditions = customConditions;
-      if (mustExist) {
-        conditions = [model.schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: true }))];
+      if (mustExist !== null) {
+        conditions = [model.schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: mustExist }))];
         if (customConditions !== null) {
           conditions.push(Array.isArray(customConditions) ? customConditions : [customConditions]);
         }
@@ -72,22 +74,22 @@ module.exports = ({
           return err.code;
         }
         if (
-          mustExist
+          mustExist !== null
           && err.code === 'ConditionalCheckFailedException'
           && customConditions === null
         ) {
-          return onNotFound(extractKey(item));
+          return (mustExist ? onNotFound : onAlreadyExists)(extractKey(item));
         }
         throw err;
       }
       const didNotExist = result.Attributes === undefined;
-      if (fn === 'update') {
+      if (['update', 'put'].includes(fn)) {
         await (didNotExist ? onCreate : onUpdate)(item);
       } else {
         await onDelete(item);
       }
       return {
-        ...(fn === 'update' ? { created: didNotExist } : { deleted: true }),
+        ...(['update', 'put'].includes(fn) ? { created: didNotExist } : { deleted: true }),
         item: setDefaults({
           ...(didNotExist ? {} : result.Attributes),
           ...item
