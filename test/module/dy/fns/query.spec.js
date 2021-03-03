@@ -55,7 +55,7 @@ describe('Testing query', {
       name: 'name-2',
       age: 25
     };
-    expect(await model.upsert(item2)).to.deep.equal({
+    expect(await model.createOrModify(item2)).to.deep.equal({
       created: true,
       item: item2
     });

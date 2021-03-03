@@ -1,11 +1,11 @@
 const assert = require('assert');
 const Create = require('./dy/fns/create');
+const CreateOrModify = require('./dy/fns/create-or-modify');
 const DeleteItem = require('./dy/fns/delete');
 const GetItem = require('./dy/fns/get-item');
+const Modify = require('./dy/fns/modify');
 const Query = require('./dy/fns/query');
 const Scan = require('./dy/fns/scan');
-const Update = require('./dy/fns/update');
-const Upsert = require('./dy/fns/upsert');
 const createModel = require('./dy/create-model');
 const DyUtil = require('./dy/util');
 const { ModelNotFound, ModelAlreadyExists } = require('../resources/errors');
@@ -47,10 +47,10 @@ module.exports = ({ call, getService, logger }) => ({
     });
     return ({
       create: Create(compileFn),
-      upsert: Upsert(compileFn),
-      update: Update(compileFn),
+      createOrModify: CreateOrModify(compileFn),
       delete: DeleteItem(compileFn),
       getItem: GetItem(model, onNotFound_, setDefaults),
+      modify: Modify(compileFn),
       query: Query(model, validateSecondaryIndex, setDefaults, getSortKeyByIndex),
       scan: Scan(model, validateSecondaryIndex, setDefaults),
       schema: model.schema

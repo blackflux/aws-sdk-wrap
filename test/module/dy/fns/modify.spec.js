@@ -3,7 +3,7 @@ const { describe } = require('node-tdd');
 const { LocalTable, buildModel, createItems } = require('../../../dy-helper');
 const { ModelNotFound } = require('../../../../src/resources/errors');
 
-describe('Testing update', {
+describe('Testing modify', {
   useNock: true,
   nockStripHeaders: true,
   envVarsFile: '../../../default.env.yml'
@@ -26,49 +26,49 @@ describe('Testing update', {
     await localTable.delete();
   });
 
-  it('Testing update', async () => {
+  it('Testing modify', async () => {
     const [item] = await generateItem();
     item.age = 55;
-    const result = await model.update(item);
+    const result = await model.modify(item);
     expect(result).to.deep.equal({ created: false, item });
   });
 
-  it('Testing update with conditions', async () => {
+  it('Testing modify with conditions', async () => {
     const [item] = await generateItem();
     item.age = 55;
-    const result = await model.update(item, { conditions: { attr: 'age', eq: 50 } });
+    const result = await model.modify(item, { conditions: { attr: 'age', eq: 50 } });
     expect(result).to.deep.equal({ created: false, item });
   });
 
-  it('Testing update with conditions as array', async () => {
+  it('Testing modify with conditions as array', async () => {
     const [item] = await generateItem();
     item.age = 55;
-    const result = await model.update(item, { conditions: [{ attr: 'age', eq: 50 }] });
+    const result = await model.modify(item, { conditions: [{ attr: 'age', eq: 50 }] });
     expect(result).to.deep.equal({ created: false, item });
   });
 
-  it('Testing update with item not found with conditions', async ({ capture }) => {
+  it('Testing modify with item not found with conditions', async ({ capture }) => {
     const [item] = await generateItem();
     item.age = 55;
-    const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
+    const error = await capture(() => model.modify(item, { conditions: { attr: 'age', eq: 10 } }));
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
-  it('Testing update with unknown error', async ({ capture }) => {
+  it('Testing modify with unknown error', async ({ capture }) => {
     const [item] = await generateItem();
     item.age = 55;
-    const error = await capture(() => model.update(item, { conditions: { attr: 'age', eq: 10 } }));
+    const error = await capture(() => model.modify(item, { conditions: { attr: 'age', eq: 10 } }));
     expect(error.code).to.equal('UnknownError');
   });
 
-  it('Testing update with item does not exist', async ({ capture }) => {
-    const error = await capture(() => model.update({ id: '123', name: 'name', age: 50 }));
+  it('Testing modify with item does not exist', async ({ capture }) => {
+    const error = await capture(() => model.modify({ id: '123', name: 'name', age: 50 }));
     expect(error).instanceof(ModelNotFound);
   });
 
-  it('Testing update with onNotFound', async () => {
+  it('Testing modify with onNotFound', async () => {
     const logs = [];
-    const result = await model.update({ id: '123', name: 'name', age: 50 }, {
+    const result = await model.modify({ id: '123', name: 'name', age: 50 }, {
       onNotFound: (key) => {
         logs.push('onNotFound executed');
         return {};
@@ -78,8 +78,8 @@ describe('Testing update', {
     expect(result).to.deep.equal({});
   });
 
-  it('Testing update with expectedErrorCodes', async () => {
-    const result = await model.update({ id: '123', name: 'name', age: 50 }, {
+  it('Testing modify with expectedErrorCodes', async () => {
+    const result = await model.modify({ id: '123', name: 'name', age: 50 }, {
       expectedErrorCodes: ['ConditionalCheckFailedException']
     });
     expect(result).to.equal('ConditionalCheckFailedException');

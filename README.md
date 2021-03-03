@@ -141,7 +141,7 @@ Options details:
 Instantiates Model.<br>
 Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbox)
 
-##### dy.Model().upsert(item: Object, opts: Object)
+##### dy.Model().createOrModify(item: Object, opts: Object)
 Creates entry if key does not exist. Otherwise updates the item.<br>
 Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
@@ -149,7 +149,7 @@ Options include (all optional):
 
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
-##### dy.Model().update(item: Object, opts: Object)
+##### dy.Model().modify(item: Object, opts: Object)
 Edits an existing item's attributes. Can only update an item if it exists.<br>
 Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.

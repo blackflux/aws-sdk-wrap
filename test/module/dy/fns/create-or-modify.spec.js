@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const { LocalTable, buildModel } = require('../../../dy-helper');
 
-describe('Testing upsert', {
+describe('Testing create-or-modify', {
   useNock: true,
   nockStripHeaders: true,
   envVarsFile: '../../../default.env.yml'
@@ -29,17 +29,17 @@ describe('Testing upsert', {
     await localTable.delete();
   });
 
-  it('Testing upsert item created', async () => {
-    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+  it('Testing createOrModify item created', async () => {
+    expect(await model.createOrModify(item)).to.deep.equal({ created: true, item });
   });
 
-  it('Testing upsert with default', async () => {
+  it('Testing createOrModify with default', async () => {
     delete item.age;
     const itemWithDefault = {
       ...item,
       age: 30
     };
-    expect(await model.upsert(item)).to.deep.equal({
+    expect(await model.createOrModify(item)).to.deep.equal({
       created: true,
       item: itemWithDefault
     });
@@ -47,32 +47,32 @@ describe('Testing upsert', {
     expect(result).to.deep.equal(itemWithDefault);
   });
 
-  it('Testing upsert item updated', async () => {
-    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+  it('Testing createOrModify item updated', async () => {
+    expect(await model.createOrModify(item)).to.deep.equal({ created: true, item });
     item.age = 51;
-    expect(await model.upsert(item)).to.deep.equal({ created: false, item });
+    expect(await model.createOrModify(item)).to.deep.equal({ created: false, item });
   });
 
-  it('Testing upsert with conditions', async () => {
-    const result = await model.upsert(item, { conditions: { attr: 'name', exists: false } });
+  it('Testing createOrModify with conditions', async () => {
+    const result = await model.createOrModify(item, { conditions: { attr: 'name', exists: false } });
     expect(result).to.deep.equal({ created: true, item });
   });
 
-  it('Testing upsert with ConditionalCheckFailedException', async ({ capture }) => {
-    const error = await capture(() => model.upsert(item, { conditions: { attr: 'name', exists: true } }));
+  it('Testing createOrModify with ConditionalCheckFailedException', async ({ capture }) => {
+    const error = await capture(() => model.createOrModify(item, { conditions: { attr: 'name', exists: true } }));
     expect(error.code).to.equal('ConditionalCheckFailedException');
   });
 
-  it('Testing upsert with expectedErrorCodes', async () => {
-    const result = await model.upsert(item, {
+  it('Testing createOrModify with expectedErrorCodes', async () => {
+    const result = await model.createOrModify(item, {
       conditions: { attr: 'name', exists: true },
       expectedErrorCodes: ['ConditionalCheckFailedException']
     });
     expect(result).to.equal('ConditionalCheckFailedException');
   });
 
-  it('Testing upsert with undefined attribute', async ({ capture }) => {
-    const error = await capture(() => model.upsert({
+  it('Testing createOrModify with undefined attribute', async ({ capture }) => {
+    const error = await capture(() => model.createOrModify({
       id: primaryKey,
       name: 'name',
       age: undefined
@@ -80,8 +80,8 @@ describe('Testing upsert', {
     expect(error.message).to.equal('Attributes cannot be undefined: age');
   });
 
-  it('Testing upsert wrong attribute type', async ({ capture }) => {
-    const error = await capture(() => model.upsert({
+  it('Testing createOrModify wrong attribute type', async ({ capture }) => {
+    const error = await capture(() => model.createOrModify({
       id: primaryKey,
       name: 'name',
       age: 'number'
