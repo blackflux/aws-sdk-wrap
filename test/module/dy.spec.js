@@ -27,6 +27,7 @@ describe('Testing dy Util', {
       'delete',
       'getItem',
       'query',
+      'scan',
       'schema'
     ]);
   });

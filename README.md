@@ -191,10 +191,22 @@ Options include (all optional):
 - `limit` (Array): Maximum number of items to retrieve. If set to `null`, will exhaustively paginate.
 - `consistent` (Boolean): Enables [ConsistentRead](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html#DDB-Query-request-ConsistentRead).
 - `conditions` (Object): Conditions that must be met for operation to succeed.
+- `filters` (Object): Conditions to filter the query results after execution (still executed on AWS).
 - `toReturn` (Array): Fields to return.
 - `cursor` (String): Cursor to page through query results.
 
 Internally uses [query](https://github.com/jeremydaly/dynamodb-toolbox#querypartitionkey-options-parameters)
+
+##### dy.Model().scan(opts: Object)
+Scans through every item in a table or secondary index.<br>
+Options include (all optional):
+- `index` (String): Index name.
+- `limit` (Array): Maximum number of items to retrieve.
+- `consistent` (Boolean): Enables [ConsistentRead](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html#DDB-Scan-request-ConsistentRead).
+- `toReturn` (Array): Fields to return.
+- `lastEvaluatedKey` (Object): Primary key of first item to be evaluated by operation.
+
+Internally uses [scan](https://github.com/jeremydaly/dynamodb-toolbox#scanoptions-parameters)
 
 ##### dy.Model().schema
 Returns subset of cloudformation template.
