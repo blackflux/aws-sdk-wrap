@@ -5,7 +5,7 @@ const GetItem = require('./dy/fns/get-item');
 const Query = require('./dy/fns/query');
 const Scan = require('./dy/fns/scan');
 const Modify = require('./dy/fns/modify');
-const Upsert = require('./dy/fns/upsert');
+const CreateOrModify = require('./dy/fns/create-or-modify');
 const createModel = require('./dy/create-model');
 const DyUtil = require('./dy/util');
 const { ModelNotFound, ModelAlreadyExists } = require('../resources/errors');
@@ -47,7 +47,7 @@ module.exports = ({ call, getService, logger }) => ({
     });
     return ({
       create: Create(compileFn),
-      upsert: Upsert(compileFn),
+      createOrModify: CreateOrModify(compileFn),
       modify: Modify(compileFn),
       delete: DeleteItem(compileFn),
       getItem: GetItem(model, onNotFound_, setDefaults),
