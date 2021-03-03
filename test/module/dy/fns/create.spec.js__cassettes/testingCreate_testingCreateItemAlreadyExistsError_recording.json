@@ -82,7 +82,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1614713356.173,
+        "CreationDateTime": 1614796460.995,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -95,7 +95,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1614713356.173
+          "LastUpdateToPayPerRequestDateTime": 1614796460.995
         },
         "GlobalSecondaryIndexes": [
           {
@@ -183,7 +183,7 @@
       "TableName": "table-name",
       "Item": {
         "age": {
-          "N": "50"
+          "N": "100"
         },
         "id": {
           "S": "123"
@@ -203,6 +203,38 @@
     "response": {
       "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
       "message": "The conditional request failed"
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {
+      "Item": {
+        "name": {
+          "S": "name"
+        },
+        "age": {
+          "N": "50"
+        },
+        "id": {
+          "S": "123"
+        }
+      }
     },
     "responseIsBinary": false
   },
@@ -238,7 +270,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1614713356.173,
+        "CreationDateTime": 1614796460.995,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -251,7 +283,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1614713356.173
+          "LastUpdateToPayPerRequestDateTime": 1614796460.995
         },
         "GlobalSecondaryIndexes": [
           {
