@@ -175,6 +175,15 @@ Options include (all optional):
 
 Internally uses [get](https://github.com/jeremydaly/dynamodb-toolbox#getkey-options-parameters)
 
+##### dy.Model().create(item: Object, opts: Object)
+Creates entry if key does not exist. Otherwise errors.<br>
+Options include (all optional):
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `onAlreadyExists` (Function): Overrides Model `onAlreadyExists` function.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
+Internally uses [put](https://github.com/jeremydaly/dynamodb-toolbox#putitem-options-parameters)
+
 ##### dy.Model().query(key: String, opts: Object)
 Pages through table based on primary key values.<br>
 Options include (all optional):

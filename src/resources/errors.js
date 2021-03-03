@@ -22,3 +22,11 @@ class ModelNotFound extends Error {
   }
 }
 module.exports.ModelNotFound = ModelNotFound;
+
+class ModelAlreadyExists extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'ModelAlreadyExists';
+  }
+}
+module.exports.ModelAlreadyExists = ModelAlreadyExists;
