@@ -1,6 +1,7 @@
 const assert = require('assert');
 const Create = require('./dy/fns/create');
 const CreateOrModify = require('./dy/fns/create-or-modify');
+const CreateOrReplace = require('./dy/fns/create-or-replace');
 const DeleteItem = require('./dy/fns/delete');
 const GetItem = require('./dy/fns/get-item');
 const Modify = require('./dy/fns/modify');
@@ -49,6 +50,7 @@ module.exports = ({ call, getService, logger }) => ({
     return ({
       create: Create(compileFn),
       createOrModify: CreateOrModify(compileFn),
+      createOrReplace: CreateOrReplace(compileFn),
       delete: DeleteItem(compileFn),
       getItem: GetItem(model, onNotFound_, setDefaults),
       modify: Modify(compileFn),
