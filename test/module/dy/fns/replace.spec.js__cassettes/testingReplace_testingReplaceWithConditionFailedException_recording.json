@@ -82,7 +82,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1614807343.989,
+        "CreationDateTime": 1614809110.945,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -95,7 +95,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1614807343.989
+          "LastUpdateToPayPerRequestDateTime": 1614809110.945
         },
         "GlobalSecondaryIndexes": [
           {
@@ -162,6 +162,9 @@
         },
         "name": {
           "S": "name"
+        },
+        "slug": {
+          "S": "slug"
         }
       },
       "ExpressionAttributeNames": {
@@ -234,11 +237,14 @@
         "name": {
           "S": "name"
         },
+        "id": {
+          "S": "123"
+        },
         "age": {
           "N": "50"
         },
-        "id": {
-          "S": "123"
+        "slug": {
+          "S": "slug"
         }
       }
     },
@@ -276,7 +282,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1614807343.989,
+        "CreationDateTime": 1614809110.945,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -284,12 +290,12 @@
           "ReadCapacityUnits": 0,
           "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 18,
+        "TableSizeBytes": 26,
         "ItemCount": 1,
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1614807343.989
+          "LastUpdateToPayPerRequestDateTime": 1614809110.945
         },
         "GlobalSecondaryIndexes": [
           {
@@ -312,7 +318,7 @@
               "ReadCapacityUnits": 0,
               "WriteCapacityUnits": 0
             },
-            "IndexSizeBytes": 18,
+            "IndexSizeBytes": 26,
             "ItemCount": 1,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
           },
@@ -332,7 +338,7 @@
               "ReadCapacityUnits": 0,
               "WriteCapacityUnits": 0
             },
-            "IndexSizeBytes": 18,
+            "IndexSizeBytes": 26,
             "ItemCount": 1,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/idIndex"
           }

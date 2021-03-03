@@ -198,7 +198,7 @@ Options include (all optional):
 Internally uses [query](https://github.com/jeremydaly/dynamodb-toolbox#querypartitionkey-options-parameters)
 
 ##### dy.Model().replace(item: Object, opts: Object)
-Replaces entry if item exists. Otherwise errors.<br>
+Replaces entire entry if item exists. Otherwise errors.<br>
 Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `onNotFound` (Function): Overrides Model `onNotFound` function.

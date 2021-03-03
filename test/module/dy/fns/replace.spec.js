@@ -27,6 +27,7 @@ describe('Testing replace', {
     await localTable.create();
     item = {
       ...key,
+      slug: 'slug',
       age: 50
     };
     getItemOrNull = (k) => model.getItem(k, {
