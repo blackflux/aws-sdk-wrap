@@ -4,7 +4,7 @@ const DeleteItem = require('./dy/fns/delete');
 const GetItem = require('./dy/fns/get-item');
 const Query = require('./dy/fns/query');
 const Scan = require('./dy/fns/scan');
-const Update = require('./dy/fns/update');
+const Modify = require('./dy/fns/modify');
 const Upsert = require('./dy/fns/upsert');
 const createModel = require('./dy/create-model');
 const DyUtil = require('./dy/util');
@@ -48,7 +48,7 @@ module.exports = ({ call, getService, logger }) => ({
     return ({
       create: Create(compileFn),
       upsert: Upsert(compileFn),
-      update: Update(compileFn),
+      modify: Modify(compileFn),
       delete: DeleteItem(compileFn),
       getItem: GetItem(model, onNotFound_, setDefaults),
       query: Query(model, validateSecondaryIndex, setDefaults, getSortKeyByIndex),

@@ -23,7 +23,7 @@ describe('Testing dy Util', {
     expect(Object.keys(model)).to.deep.equal([
       'create',
       'upsert',
-      'update',
+      'modify',
       'delete',
       'getItem',
       'query',
