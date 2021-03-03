@@ -71,7 +71,7 @@ module.exports.createItems = async ({
     const item = {
       id: primaryKey,
       name,
-      age
+      age: Array.isArray(age) === true ? age[i - 1] : age
     };
     // eslint-disable-next-line no-await-in-loop
     expect(await model.upsert(item)).to.deep.equal({ created: true, item });
