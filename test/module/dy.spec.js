@@ -23,9 +23,9 @@ describe('Testing dy Util', {
     expect(Object.keys(model)).to.deep.equal([
       'create',
       'createOrModify',
-      'modify',
       'delete',
       'getItem',
+      'modify',
       'query',
       'scan',
       'schema'
