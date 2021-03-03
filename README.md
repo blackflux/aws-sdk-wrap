@@ -197,6 +197,15 @@ Options include (all optional):
 
 Internally uses [query](https://github.com/jeremydaly/dynamodb-toolbox#querypartitionkey-options-parameters)
 
+##### dy.Model().replace(item: Object, opts: Object)
+Replaces entire entry if item exists. Otherwise errors.<br>
+Options include (all optional):
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `onNotFound` (Function): Overrides Model `onNotFound` function.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
+Internally uses [put](https://github.com/jeremydaly/dynamodb-toolbox#putitem-options-parameters)
+
 ##### dy.Model().scan(opts: Object)
 Scans through every item in a table or secondary index.<br>
 Options include (all optional):

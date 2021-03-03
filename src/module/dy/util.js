@@ -97,7 +97,7 @@ module.exports = ({
       return {
         ...(['update', 'put'].includes(fn) ? { created: didNotExist } : { deleted: true }),
         item: setDefaults({
-          ...(didNotExist ? {} : result.Attributes),
+          ...((didNotExist || fn === 'put') ? {} : result.Attributes),
           ...item
         }, null)
       };

@@ -27,6 +27,7 @@ describe('Testing dy Util', {
       'getItem',
       'modify',
       'query',
+      'replace',
       'scan',
       'schema'
     ]);

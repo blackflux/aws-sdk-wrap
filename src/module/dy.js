@@ -5,6 +5,7 @@ const DeleteItem = require('./dy/fns/delete');
 const GetItem = require('./dy/fns/get-item');
 const Modify = require('./dy/fns/modify');
 const Query = require('./dy/fns/query');
+const Replace = require('./dy/fns/replace');
 const Scan = require('./dy/fns/scan');
 const createModel = require('./dy/create-model');
 const DyUtil = require('./dy/util');
@@ -52,6 +53,7 @@ module.exports = ({ call, getService, logger }) => ({
       getItem: GetItem(model, onNotFound_, setDefaults),
       modify: Modify(compileFn),
       query: Query(model, validateSecondaryIndex, setDefaults, getSortKeyByIndex),
+      replace: Replace(compileFn),
       scan: Scan(model, validateSecondaryIndex, setDefaults),
       schema: model.schema
     });
