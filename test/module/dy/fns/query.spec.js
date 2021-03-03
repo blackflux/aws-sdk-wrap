@@ -23,7 +23,7 @@ describe('Testing query', {
       count: 3, model, primaryKey, sortKey: 'name', age: 50
     });
     setupThreeItemsWithMultipleAges = async () => createItems({
-      count: 3, multiplyAge: true, model, primaryKey, sortKey: 'name', age: 10
+      count: 3, model, primaryKey, sortKey: 'name', age: [10, 20, 30]
     });
   });
   beforeEach(async () => {
