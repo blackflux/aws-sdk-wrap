@@ -2,7 +2,7 @@ const assert = require('assert');
 const Joi = require('joi-strict');
 const { fromCursor, buildPageObject } = require('../../../util/paging');
 
-module.exports = (model, setDefaults, getSortKeyByIndex) => {
+module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) => {
   const conditionsSchema = Joi.object({
     attr: Joi.string()
   }).pattern(
@@ -25,6 +25,7 @@ module.exports = (model, setDefaults, getSortKeyByIndex) => {
     consistent,
     scanIndexForward,
     conditions,
+    filters,
     toReturn,
     lastEvaluatedKey: previousLastEvaluatedKey
   }) => {
@@ -44,6 +45,7 @@ module.exports = (model, setDefaults, getSortKeyByIndex) => {
             prev[k] = v;
             return prev;
           }, {})),
+        ...(filters === null ? {} : { filters }),
         ...(toReturn === null ? {} : { attributes: toReturn }),
         ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
       });
@@ -58,14 +60,12 @@ module.exports = (model, setDefaults, getSortKeyByIndex) => {
     limit = 20,
     consistent = true,
     conditions = null,
+    filters = null,
     toReturn = null,
     cursor
   } = {}) => {
     if (index !== null) {
-      const secondaryIndex = model.schema.GlobalSecondaryIndexes.find(({ IndexName }) => IndexName === index);
-      if (secondaryIndex === undefined) {
-        throw new Error(`Invalid index provided: ${index}`);
-      }
+      validateSecondaryIndex(index);
     }
     if (conditions !== null) {
       Joi.assert(conditions, conditionsSchema, 'Invalid conditions provided');
@@ -85,6 +85,7 @@ module.exports = (model, setDefaults, getSortKeyByIndex) => {
       consistent,
       scanIndexForward,
       conditions,
+      filters,
       toReturn,
       lastEvaluatedKey
     });

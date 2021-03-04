@@ -41,7 +41,8 @@ module.exports.buildModel = () => {
     attributes: {
       id: { type: 'string', partitionKey: true },
       name: { type: 'string', sortKey: true },
-      age: { type: 'number', default: 30 }
+      age: { type: 'number', default: 30 },
+      slug: { type: 'string' }
     },
     indices: {
       targetIndex: {
@@ -71,10 +72,10 @@ module.exports.createItems = async ({
     const item = {
       id: primaryKey,
       name,
-      age
+      age: Array.isArray(age) === true ? age[i - 1] : age
     };
     // eslint-disable-next-line no-await-in-loop
-    expect(await model.upsert(item)).to.deep.equal({ created: true, item });
+    expect(await model.createOrModify(item)).to.deep.equal({ created: true, item });
     items.push(item);
   }
   return items;

@@ -141,7 +141,7 @@ Options details:
 Instantiates Model.<br>
 Internally uses [dynamodb-toolbox](https://github.com/jeremydaly/dynamodb-toolbox)
 
-##### dy.Model().upsert(item: Object, opts: Object)
+##### dy.Model().createOrModify(item: Object, opts: Object)
 Creates entry if key does not exist. Otherwise updates the item.<br>
 Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
@@ -149,7 +149,15 @@ Options include (all optional):
 
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
-##### dy.Model().update(item: Object, opts: Object)
+##### dy.Model().createOrReplace(item: Object, opts: Object)
+Creates entry if key does not exist. Otherwise replaces entire entry if item exists.<br>
+Options include (all optional):
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
+Internally uses [put](https://github.com/jeremydaly/dynamodb-toolbox#putitem-options-parameters)
+
+##### dy.Model().modify(item: Object, opts: Object)
 Edits an existing item's attributes. Can only update an item if it exists.<br>
 Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
@@ -175,6 +183,15 @@ Options include (all optional):
 
 Internally uses [get](https://github.com/jeremydaly/dynamodb-toolbox#getkey-options-parameters)
 
+##### dy.Model().create(item: Object, opts: Object)
+Creates entry if key does not exist. Otherwise errors.<br>
+Options include (all optional):
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `onAlreadyExists` (Function): Overrides Model `onAlreadyExists` function.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
+Internally uses [put](https://github.com/jeremydaly/dynamodb-toolbox#putitem-options-parameters)
+
 ##### dy.Model().query(key: String, opts: Object)
 Pages through table based on primary key values.<br>
 Options include (all optional):
@@ -182,10 +199,31 @@ Options include (all optional):
 - `limit` (Array): Maximum number of items to retrieve. If set to `null`, will exhaustively paginate.
 - `consistent` (Boolean): Enables [ConsistentRead](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html#DDB-Query-request-ConsistentRead).
 - `conditions` (Object): Conditions that must be met for operation to succeed.
+- `filters` (Object): Conditions to filter the query results after execution (still executed on AWS).
 - `toReturn` (Array): Fields to return.
 - `cursor` (String): Cursor to page through query results.
 
 Internally uses [query](https://github.com/jeremydaly/dynamodb-toolbox#querypartitionkey-options-parameters)
+
+##### dy.Model().replace(item: Object, opts: Object)
+Replaces entire entry if item exists. Otherwise errors.<br>
+Options include (all optional):
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `onNotFound` (Function): Overrides Model `onNotFound` function.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
+Internally uses [put](https://github.com/jeremydaly/dynamodb-toolbox#putitem-options-parameters)
+
+##### dy.Model().scan(opts: Object)
+Scans through every item in a table or secondary index.<br>
+Options include (all optional):
+- `index` (String): Index name.
+- `limit` (Array): Maximum number of items to retrieve.
+- `consistent` (Boolean): Enables [ConsistentRead](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html#DDB-Scan-request-ConsistentRead).
+- `toReturn` (Array): Fields to return.
+- `lastEvaluatedKey` (Object): Primary key of first item to be evaluated by operation.
+
+Internally uses [scan](https://github.com/jeremydaly/dynamodb-toolbox#scanoptions-parameters)
 
 ##### dy.Model().schema
 Returns subset of cloudformation template.
