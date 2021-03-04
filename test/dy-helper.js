@@ -51,6 +51,10 @@ module.exports.buildModel = () => {
       },
       idIndex: {
         partitionKey: 'id'
+      },
+      ageIndex: {
+        partitionKey: 'age',
+        sortKey: 'id'
       }
     },
     DocumentClient: new DocumentClient({
