@@ -49,10 +49,18 @@ module.exports = (kwargs) => {
     table
   });
 
-  const defined = [
+  const defined = [...new Set([
     partitionKey,
-    ...(sortKey === undefined ? [] : [sortKey])
-  ];
+    ...(sortKey === undefined ? [] : [sortKey]),
+    ...Object.entries(indices).reduce((p, [k, v]) => {
+      [v.partitionKey, v.sortKey].forEach((key) => {
+        if (key !== undefined) {
+          p.push(key);
+        }
+      });
+      return p;
+    }, [])
+  ])];
 
   const schema = {
     TableName: name,
