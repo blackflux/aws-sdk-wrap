@@ -149,6 +149,14 @@ Options include (all optional):
 
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
+##### dy.Model().createOrReplace(item: Object, opts: Object)
+Creates entry if key does not exist. Otherwise replaces entire entry if item exists.<br>
+Options include (all optional):
+- `conditions` (Object|Array): Conditions that must be met for operation to succeed.
+- `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+
+Internally uses [put](https://github.com/jeremydaly/dynamodb-toolbox#putitem-options-parameters)
+
 ##### dy.Model().modify(item: Object, opts: Object)
 Edits an existing item's attributes. Can only update an item if it exists.<br>
 Options include (all optional):
