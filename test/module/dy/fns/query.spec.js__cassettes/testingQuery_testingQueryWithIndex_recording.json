@@ -13,6 +13,10 @@
         {
           "AttributeName": "name",
           "AttributeType": "S"
+        },
+        {
+          "AttributeName": "age",
+          "AttributeType": "N"
         }
       ],
       "KeySchema": [
@@ -48,6 +52,22 @@
             {
               "AttributeName": "id",
               "KeyType": "HASH"
+            }
+          ],
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "ageIndex",
+          "KeySchema": [
+            {
+              "AttributeName": "age",
+              "KeyType": "HASH"
+            },
+            {
+              "AttributeName": "id",
+              "KeyType": "RANGE"
             }
           ],
           "Projection": {
