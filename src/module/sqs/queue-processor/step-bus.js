@@ -1,11 +1,13 @@
 const assert = require('assert');
 const Joi = require('joi-strict');
+const updateTrace = require('./update-trace');
 const { stripPayloadMeta } = require('./payload');
 
 module.exports = ({ steps, messageBus }) => {
   const messages = [];
   return {
-    push: (msgs, step) => {
+    push: (msgs, step, trace) => {
+      updateTrace(msgs, step, trace);
       assert(
         msgs.length === 0 || step.next.length !== 0,
         `No output allowed for step: ${step.name}`

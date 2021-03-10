@@ -1,7 +1,9 @@
 const assert = require('assert');
+const get = require('lodash.get');
 const Joi = require('joi-strict');
 const { Pool } = require('promise-pool-ext');
 const { wrap } = require('lambda-async');
+const { metaKey } = require('./queue-processor/payload');
 const loadSteps = require('./queue-processor/load-steps');
 const MessageBus = require('./queue-processor/message-bus');
 const StepBus = require('./queue-processor/step-bus');
@@ -62,14 +64,14 @@ module.exports = ({
         .map(([step, ctx]) => step.before(
           ctx,
           tasks.filter((e) => e[3] === step).map((e) => e[1])
-        ).then((msgs) => stepBus.push(msgs, step))));
+        ).then((msgs) => stepBus.push(msgs, step, ['<before>']))));
 
       await messageBus.flush(false);
 
       await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
         try {
           const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts[step.name][1]));
-          stepBus.push(msgs, step);
+          stepBus.push(msgs, step, get(payload, [metaKey, 'trace'], []));
         } catch (error) {
           await handleError({
             error, payload, payloadStripped, e, step, stepBus, dlqBus, logger
@@ -80,7 +82,7 @@ module.exports = ({
       await messageBus.flush(false);
 
       await Promise.all(Object.values(stepContexts)
-        .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step))));
+        .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step, ['<after>']))));
 
       await dlqBus.propagate();
       await messageBus.flush(true);

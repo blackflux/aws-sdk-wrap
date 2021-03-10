@@ -45,6 +45,7 @@ module.exports = async ({
   const temporary = failureCount < maxFailureCount
     && (Date.now() - Date.parse(timestamp)) / 1000 <= maxAgeInSec;
   const msgs = await err.onFailure({ ...kwargs, temporary });
+  const trace = get(payload, [metaKey, 'trace'], []);
   assert(Array.isArray(msgs), 'onFailure must return array of messages');
   if (temporary) {
     const msg = {
@@ -57,9 +58,9 @@ module.exports = async ({
     if (delaySeconds !== 0) {
       prepareMessage(msg, { delaySeconds });
     }
-    stepBus.push(msgs.concat(msg), step);
+    stepBus.push(msgs.concat(msg), step, trace);
   } else {
-    stepBus.push(msgs, step);
-    dlqBus.prepare([payload], step);
+    stepBus.push(msgs, step, trace);
+    dlqBus.prepare([payload], step, trace);
   }
 };
