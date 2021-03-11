@@ -6,8 +6,8 @@ module.exports = ({
   const pending = [];
   const dlqCache = {};
   return {
-    prepare: (msgs, step, trace) => {
-      updateTrace(msgs, step, trace);
+    prepare: (msgs_, step, trace) => {
+      const msgs = updateTrace(msgs_, step, trace);
       pending.push([queues[step.queue], msgs]);
     },
     propagate: async () => {

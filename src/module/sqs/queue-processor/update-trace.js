@@ -1,5 +1,6 @@
 const assert = require('assert');
 const get = require('lodash.get');
+const { clone } = require('../prepare-message');
 const { metaKey } = require('./payload');
 
 const concat = (trace, toAppend) => {
@@ -15,7 +16,8 @@ const concat = (trace, toAppend) => {
 
 module.exports = (msgs, step, trace) => {
   assert(Array.isArray(trace) || typeof trace === 'string');
-  msgs.forEach((m) => {
+  return msgs.map((msg) => {
+    const m = clone(msg);
     const meta = get(m, metaKey, {});
     meta.trace = Array.isArray(trace)
       ? concat(trace, step.name)
