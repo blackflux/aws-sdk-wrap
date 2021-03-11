@@ -1042,10 +1042,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-aws-sdk@2.859.0:
-  version "2.859.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.859.0.tgz#9cd73484e5535d678b664ac9a2b585f4e09aa691"
-  integrity sha512-1OnEpmJ72n6Y1NR+2wMPV2JFovDwM0ARwkjVKq5K1rcs7lkUuCG8N4A7Zy8hz5qwkpvig0FJFDtNmsziM+pwAA==
+aws-sdk@2.861.0:
+  version "2.861.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.861.0.tgz#5531a8aa5618a22875da626880f925121cc0c4f1"
+  integrity sha512-qb7YttyMLk0URhbNWBBZQZXDhKJy/url1GYeIlfgpQ/JQC5B2tOuJ66fPBoHyDuV6B9CQv/UorRFw1n15lvSEw==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -4082,10 +4082,10 @@ jmespath@0.15.0:
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
   integrity sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=
 
-joi-strict@1.2.10:
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/joi-strict/-/joi-strict-1.2.10.tgz#18943d6086dda90812c7616ed306f23d96a93d3c"
-  integrity sha512-0JPNIIHuqgKCB0tMXHzfjPj6fp/cl0IBz5b8oZu+HxVah9/SQhaMKCOgYOk6afj4t7k2ph64TDetd3UxGGFC3A==
+joi-strict@1.2.11:
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/joi-strict/-/joi-strict-1.2.11.tgz#237d85a0d2b2b6776a9364e350a27b17c87ce014"
+  integrity sha512-lQzZRh8iY76PDRBktFJeDJfOJFjLBBIC6GlaZlFrokCyolGO0J/AKBOCuJapV2pGI0dScF3UzV3gjkyvDAvybw==
   dependencies:
     "@hapi/joi" "17.1.1"
 
@@ -5142,10 +5142,10 @@ node-sass-tilde-importer@^1.0.2:
   dependencies:
     find-parent-dir "^0.3.0"
 
-node-tdd@2.19.2:
-  version "2.19.2"
-  resolved "https://registry.yarnpkg.com/node-tdd/-/node-tdd-2.19.2.tgz#9b73152b2aa7d8a4dec535d1ec626f7b67808fa7"
-  integrity sha512-VY65IAsspvgUHHfYl5d/gaa7C4KiJQIDEqELV66uroLBZEQVoLpQnbC+9NBHvSUYo6SxqEkNkkk+u+LHWcau3g==
+node-tdd@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/node-tdd/-/node-tdd-3.0.0.tgz#f95fbf554a2ce51d031cd275d21f46007b5ce82a"
+  integrity sha512-NVJdULCJivE1wgDqHh6FT4O+CLK0V/wtwJXire7bYl1zhlyjpZob/83N8czmbGWLd6RbiB4v+Yeq4ITSr4WTiA==
   dependencies:
     callsites "3.1.0"
     joi-strict "1.2.9"
