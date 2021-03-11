@@ -1,10 +1,13 @@
+const updateTrace = require('./update-trace');
+
 module.exports = ({
   queues, getDeadLetterQueueUrl, messageBus, globalPool
 }) => {
   const pending = [];
   const dlqCache = {};
   return {
-    prepare: (msgs, step) => {
+    prepare: (msgs, step, trace) => {
+      updateTrace(msgs, step, trace);
       pending.push([queues[step.queue], msgs]);
     },
     propagate: async () => {

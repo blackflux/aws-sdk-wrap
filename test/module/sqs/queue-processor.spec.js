@@ -131,10 +131,10 @@ describe('Testing QueueProcessor', {
   });
 
   it('Test ingesting into separate queues', async () => {
-    const result = await executor([{ name: 'step3', meta: 'meta3' }]);
+    const result = await executor([{ __meta: { trace: ['step3 * 2'] }, name: 'step3', meta: 'meta3' }]);
     expect(result).to.deep.equal([
-      { name: 'step1', meta: 'meta1' },
-      { name: 'step3', meta: 'meta3' }
+      { __meta: { trace: ['step3 * 3'] }, name: 'step1', meta: 'meta1' },
+      { __meta: { trace: ['step3 * 3'] }, name: 'step3', meta: 'meta3' }
     ]);
   });
 
@@ -147,16 +147,16 @@ describe('Testing QueueProcessor', {
   });
 
   it('Testing urgent message before others', async () => {
-    const result = await executor([{ name: 'step-urgent-message' }]);
+    const result = await executor([{ __meta: { trace: ['other'] }, name: 'step-urgent-message' }]);
     expect(result).to.deep.equal([
-      { name: 'step1', meta: 'before' },
-      { name: 'step1', meta: 'handler' }
+      { __meta: { trace: ['step-urgent-message.before()'] }, name: 'step1', meta: 'before' },
+      { __meta: { trace: ['other', 'step-urgent-message'] }, name: 'step1', meta: 'handler' }
     ]);
   });
 
   it('Testing step1 -> [step2]', async () => {
     const result = await executor([{ name: 'step1', meta: 'meta1' }]);
-    expect(result).to.deep.equal([{ name: 'step2' }]);
+    expect(result).to.deep.equal([{ __meta: { trace: ['step1'] }, name: 'step2' }]);
   });
 
   it('Testing step2 -> []', async () => {
@@ -208,12 +208,12 @@ describe('Testing QueueProcessor', {
       { name: 'parallel-step', meta: 'B' }
     ]);
     expect(result).to.deep.equal([
-      { name: 'parallel-step', meta: 'A' },
-      { name: 'parallel-step', meta: 'B' }
+      { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'A' },
+      { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'B' }
     ]);
     expect(recorder.get()).to.deep.equal([[
-      { name: 'parallel-step', meta: 'A' },
-      { name: 'parallel-step', meta: 'B' }
+      { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'A' },
+      { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'B' }
     ]]);
   });
 
@@ -233,7 +233,8 @@ describe('Testing QueueProcessor', {
       name: 'auto-retry',
       __meta: {
         failureCount: 1,
-        timestamp: '2020-05-15T19:56:35.713Z'
+        timestamp: '2020-05-15T19:56:35.713Z',
+        trace: ['auto-retry']
       }
     }]);
     expect(recorder.get()).to.deep.equal([]);
@@ -245,7 +246,8 @@ describe('Testing QueueProcessor', {
       name: 'step-auto-retry',
       __meta: {
         failureCount: 1,
-        timestamp: '2020-05-15T19:56:35.713Z'
+        timestamp: '2020-05-15T19:56:35.713Z',
+        trace: ['step-auto-retry']
       }
     }]);
     expect(recorder.get()).to.deep.equal([]);
@@ -259,7 +261,8 @@ describe('Testing QueueProcessor', {
       retrySettings,
       __meta: {
         failureCount: 1,
-        timestamp: '2020-05-15T19:56:35.713Z'
+        timestamp: '2020-05-15T19:56:35.713Z',
+        trace: ['auto-retry']
       }
     }]);
     expect(recorder.get()).to.deep.equal([]);
@@ -271,7 +274,8 @@ describe('Testing QueueProcessor', {
       name: 'auto-retry-backoff-fn',
       __meta: {
         failureCount: 1,
-        timestamp: '2020-05-15T19:56:35.713Z'
+        timestamp: '2020-05-15T19:56:35.713Z',
+        trace: ['auto-retry-backoff-fn']
       }
     }]);
     expect(recorder.get()).to.deep.equal([]);
