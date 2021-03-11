@@ -212,8 +212,8 @@ describe('Testing QueueProcessor', {
       { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'B' }
     ]);
     expect(recorder.get()).to.deep.equal([[
-      { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'A' },
-      { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'B' }
+      { name: 'parallel-step', meta: 'A' },
+      { name: 'parallel-step', meta: 'B' }
     ]]);
   });
 
