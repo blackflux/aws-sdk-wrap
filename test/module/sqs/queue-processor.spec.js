@@ -147,10 +147,10 @@ describe('Testing QueueProcessor', {
   });
 
   it('Testing urgent message before others', async () => {
-    const result = await executor([{ __meta: { trace: ['unknown'] }, name: 'step-urgent-message' }]);
+    const result = await executor([{ __meta: { trace: ['other'] }, name: 'step-urgent-message' }]);
     expect(result).to.deep.equal([
       { __meta: { trace: ['step-urgent-message.before()'] }, name: 'step1', meta: 'before' },
-      { __meta: { trace: ['unknown', 'step-urgent-message'] }, name: 'step1', meta: 'handler' }
+      { __meta: { trace: ['other', 'step-urgent-message'] }, name: 'step1', meta: 'handler' }
     ]);
   });
 
