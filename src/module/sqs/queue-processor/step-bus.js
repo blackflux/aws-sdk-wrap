@@ -6,8 +6,8 @@ const { stripPayloadMeta } = require('./payload');
 module.exports = ({ steps, messageBus }) => {
   const messages = [];
   return {
-    push: (msgs, step, trace) => {
-      updateTrace(msgs, step, trace);
+    push: (msgs_, step, trace) => {
+      const msgs = updateTrace(msgs_, step, trace);
       assert(
         msgs.length === 0 || step.next.length !== 0,
         `No output allowed for step: ${step.name}`

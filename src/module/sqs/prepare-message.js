@@ -9,6 +9,14 @@ module.exports.getUrgent = (msg) => msg[URGENT];
 module.exports.getGroupId = (msg) => msg[GROUP_ID];
 module.exports.getDelaySeconds = (msg) => msg[DELAY_SECONDS];
 
+module.exports.clone = (msg) => {
+  const m = { ...msg };
+  Object.getOwnPropertySymbols(msg).forEach((p) => {
+    m[p] = msg[p];
+  });
+  return m;
+};
+
 module.exports.prepareMessage = (msg, opts) => {
   Joi.assert(opts, Joi.object().keys({
     urgent: Joi.boolean().optional(),
