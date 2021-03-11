@@ -64,7 +64,7 @@ module.exports = ({
         .map(([step, ctx]) => step.before(
           ctx,
           tasks.filter((e) => e[3] === step).map((e) => e[1])
-        ).then((msgs) => stepBus.push(msgs, step, ['<before>']))));
+        ).then((msgs) => stepBus.push(msgs, step, 'before()'))));
 
       await messageBus.flush(false);
 
@@ -82,7 +82,7 @@ module.exports = ({
       await messageBus.flush(false);
 
       await Promise.all(Object.values(stepContexts)
-        .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step, ['<after>']))));
+        .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step, 'after()'))));
 
       await dlqBus.propagate();
       await messageBus.flush(true);

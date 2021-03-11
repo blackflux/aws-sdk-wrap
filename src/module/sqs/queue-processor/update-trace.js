@@ -14,10 +14,12 @@ const concat = (trace, toAppend) => {
 };
 
 module.exports = (msgs, step, trace) => {
-  assert(Array.isArray(trace));
+  assert(Array.isArray(trace) || typeof trace === 'string');
   msgs.forEach((m) => {
     const meta = get(m, metaKey, {});
-    meta.trace = concat(trace, step.name);
+    meta.trace = Array.isArray(trace)
+      ? concat(trace, step.name)
+      : concat([], `${step.name}.${trace}`);
     // eslint-disable-next-line no-param-reassign
     m[metaKey] = meta;
     return m;
