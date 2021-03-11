@@ -22,7 +22,6 @@ module.exports = (msgs, step, trace) => {
     meta.trace = Array.isArray(trace)
       ? concat(trace, step.name)
       : concat([], `${step.name}.${trace}`);
-    // eslint-disable-next-line no-param-reassign
     m[metaKey] = meta;
     return m;
   });
