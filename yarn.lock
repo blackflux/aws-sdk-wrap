@@ -5582,6 +5582,13 @@ object-copy@^0.1.0:
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
+object-fields@2.0.22:
+  version "2.0.22"
+  resolved "https://registry.yarnpkg.com/object-fields/-/object-fields-2.0.22.tgz#31d7943d7ad8297e86e44698df461b83a41c3215"
+  integrity sha512-RzLvuwTC4uqjF/QVLxrYnIBmcBoqrrOlgdi1zEgaZrNlpoJMgE+wQRkaJEAZlp8sx4jwxkJz+gHAa5T+WBDX/w==
+  dependencies:
+    object-scan "14.0.0"
+
 object-hash-strict@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/object-hash-strict/-/object-hash-strict-2.0.3.tgz#201aa222cc11aee22117b11defe55a0835761002"
