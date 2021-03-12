@@ -108,7 +108,7 @@
     "lodash.chunk": "4.2.0",
     "lodash.get": "4.4.2",
     "object-hash-strict": "2.0.3",
-    "promise-pool-ext": "1.3.13",
+    "promise-pool-ext": "1.3.14",
     "smart-fs": "1.12.6"
   }
 }
