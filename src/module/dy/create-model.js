@@ -45,7 +45,13 @@ module.exports = (kwargs) => {
   const entity = new toolbox.Entity({
     name,
     timestamps: false,
-    attributes,
+    attributes: Object.fromEntries(Object.entries(attributes).map(([k, v]) => {
+      if (v.type === 'set' && Array.isArray(v.default) && v.default.length === 0) {
+        const { default: _, ...newV } = v;
+        return [k, newV];
+      }
+      return [k, v];
+    })),
     table
   });
 

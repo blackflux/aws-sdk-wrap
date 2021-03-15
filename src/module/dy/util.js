@@ -1,4 +1,5 @@
 const assert = require('assert');
+const objectFields = require('object-fields');
 
 module.exports = ({
   attributes,
@@ -57,7 +58,8 @@ module.exports = ({
       conditions: customConditions = null,
       onNotFound = onNotFound_,
       onAlreadyExists = onAlreadyExists_,
-      expectedErrorCodes = []
+      expectedErrorCodes = [],
+      toReturn = null
     } = {}) => {
       assert(typeof onNotFound === 'function', onNotFound.length === 1);
       assert(Array.isArray(expectedErrorCodes));
@@ -94,13 +96,18 @@ module.exports = ({
       } else {
         await onDelete(item);
       }
-      return {
+      const r = {
         ...(['update', 'put'].includes(fn) ? { created: didNotExist } : { deleted: true }),
         item: setDefaults({
           ...((didNotExist || fn === 'put') ? {} : result.Attributes),
           ...item
         }, null)
       };
+      if (toReturn !== null) {
+        assert(toReturn.every((e) => e in attributes));
+        objectFields.Retainer(toReturn)(r.item);
+      }
+      return r;
     }
   };
 };
