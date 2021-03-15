@@ -11,33 +11,41 @@ describe('Testing get-item', {
   let model;
   let localTable;
   let generateItem;
+  let generateTable;
 
   before(() => {
     generateItem = () => createItems({
       count: 1, model, primaryKey: '123', sortKey: 'name', age: 50
     });
-  });
-  beforeEach(async () => {
-    model = buildModel();
-    localTable = LocalTable(model);
-    await localTable.create();
+    generateTable = async ({ withIds }) => {
+      model = buildModel({
+        extraAttrs: withIds === false
+          ? null
+          : { ids: { type: 'set', default: [] } }
+      });
+      localTable = LocalTable(model);
+      await localTable.create();
+    };
   });
   afterEach(async () => {
     await localTable.delete();
   });
 
   it('Testing getItem', async () => {
+    await generateTable({ withIds: false });
     const [item] = await generateItem();
     const result = await model.getItem(item);
     expect(result).to.deep.equal(item);
   });
 
   it('Testing getItem throws ModelNotFound error', async ({ capture }) => {
+    await generateTable({ withIds: false });
     const error = await capture(() => model.getItem({ id: '123', name: 'name' }));
     expect(error).instanceof(ModelNotFound);
   });
 
   it('Testing getItem onNotFound', async () => {
+    await generateTable({ withIds: false });
     const logs = [];
     const result = await model.getItem({ id: '123', name: 'name' }, {
       onNotFound: (key) => {
@@ -50,16 +58,27 @@ describe('Testing get-item', {
   });
 
   it('Testing getItem with toReturn', async () => {
+    await generateTable({ withIds: false });
     const [item] = await generateItem();
     const result = await model.getItem(item, { toReturn: ['name'] });
     expect(result).to.deep.equal({ name: 'name' });
   });
 
   it('Testing getItem with stubbed defaults', async () => {
+    await generateTable({ withIds: false });
     const [item] = await generateItem();
     const result = await model.getItem(item, { toReturn: ['age'] });
     expect(result).to.deep.equal({
       age: 30
+    });
+  });
+
+  it('Testing getItem with default empty set', async () => {
+    await generateTable({ withIds: true });
+    const { item } = await model.create({ id: '123', name: 'name', age: 50 });
+    const result = await model.getItem(item, { toReturn: ['ids'] });
+    expect(result).to.deep.equal({
+      ids: []
     });
   });
 });
