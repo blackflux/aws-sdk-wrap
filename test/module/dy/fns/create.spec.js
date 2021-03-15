@@ -116,4 +116,14 @@ describe('Testing create', {
     expect(result).to.deep.equal({});
     expect(await getItemOrNull(key)).to.deep.equal(item);
   });
+
+  it('Testing create with toReturn', async () => {
+    const result = await model.create(item, { toReturn: ['age'] });
+    expect(result).to.deep.equal(
+      {
+        created: true,
+        item: { age: 50 }
+      }
+    );
+  });
 });

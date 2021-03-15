@@ -82,4 +82,11 @@ describe('Testing create-or-replace', {
     expect(result).to.equal('ConditionalCheckFailedException');
     expect(await getItemOrNull(key)).to.deep.equal(item);
   });
+
+  it('Testing createOrReplace with toReturn', async () => {
+    expect(await model.createOrReplace(item, { toReturn: ['age'] })).to.deep.equal({
+      created: true,
+      item: { age: 50 }
+    });
+  });
 });

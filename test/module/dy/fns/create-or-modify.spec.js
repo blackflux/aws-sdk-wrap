@@ -88,4 +88,11 @@ describe('Testing create-or-modify', {
     }));
     expect(error.message).to.equal('Could not convert \'number\' to a number for \'age\'');
   });
+
+  it('Testing createOrModify with toReturn', async () => {
+    expect(await model.createOrModify(item, { toReturn: ['age'] })).to.deep.equal({
+      created: true,
+      item: { age: 50 }
+    });
+  });
 });

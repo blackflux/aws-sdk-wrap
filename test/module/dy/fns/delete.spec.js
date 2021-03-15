@@ -68,4 +68,13 @@ describe('Testing delete', {
     const error = await capture(() => model.delete({ id: '123', name: 'name' }));
     expect(error.code).to.equal('UnknownError');
   });
+
+  it('Testing delete with toReturn', async () => {
+    const [item] = await generateItem();
+    const result = await model.delete(item, { toReturn: ['age'] });
+    expect(result).to.deep.equal({
+      deleted: true,
+      item: { age: 50 }
+    });
+  });
 });
