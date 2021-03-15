@@ -17,12 +17,8 @@ describe('Testing get-item', {
     generateItem = () => createItems({
       count: 1, model, primaryKey: '123', sortKey: 'name', age: 50
     });
-    generateTable = async ({ withIds }) => {
-      model = buildModel({
-        extraAttrs: withIds === false
-          ? null
-          : { ids: { type: 'set', default: [] } }
-      });
+    generateTable = async ({ extraAttrs } = {}) => {
+      model = buildModel({ extraAttrs });
       localTable = LocalTable(model);
       await localTable.create();
     };
@@ -32,20 +28,20 @@ describe('Testing get-item', {
   });
 
   it('Testing getItem', async () => {
-    await generateTable({ withIds: false });
+    await generateTable();
     const [item] = await generateItem();
     const result = await model.getItem(item);
     expect(result).to.deep.equal(item);
   });
 
   it('Testing getItem throws ModelNotFound error', async ({ capture }) => {
-    await generateTable({ withIds: false });
+    await generateTable();
     const error = await capture(() => model.getItem({ id: '123', name: 'name' }));
     expect(error).instanceof(ModelNotFound);
   });
 
   it('Testing getItem onNotFound', async () => {
-    await generateTable({ withIds: false });
+    await generateTable();
     const logs = [];
     const result = await model.getItem({ id: '123', name: 'name' }, {
       onNotFound: (key) => {
@@ -58,14 +54,14 @@ describe('Testing get-item', {
   });
 
   it('Testing getItem with toReturn', async () => {
-    await generateTable({ withIds: false });
+    await generateTable();
     const [item] = await generateItem();
     const result = await model.getItem(item, { toReturn: ['name'] });
     expect(result).to.deep.equal({ name: 'name' });
   });
 
   it('Testing getItem with stubbed defaults', async () => {
-    await generateTable({ withIds: false });
+    await generateTable();
     const [item] = await generateItem();
     const result = await model.getItem(item, { toReturn: ['age'] });
     expect(result).to.deep.equal({
@@ -74,7 +70,7 @@ describe('Testing get-item', {
   });
 
   it('Testing getItem with default empty set', async () => {
-    await generateTable({ withIds: true });
+    await generateTable({ extraAttrs: { ids: { type: 'set', default: [] } } });
     const { item } = await model.create({ id: '123', name: 'name', age: 50 });
     const result = await model.getItem(item, { toReturn: ['ids'] });
     expect(result).to.deep.equal({

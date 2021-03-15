@@ -105,7 +105,7 @@ module.exports = ({
         }, null)
       };
       if (toReturn !== null) {
-        assert(toReturn.every((e) => e in attributes));
+        assert(toReturn.every((e) => e in attributes), 'Unknown field in "toReturn" provided');
         objectFields.Retainer(toReturn)(r.item);
       }
       return r;
