@@ -146,6 +146,7 @@ Creates entry if key does not exist. Otherwise updates the item.<br>
 Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+- `toReturn` (Array): Fields to return on item.
 
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
@@ -154,6 +155,7 @@ Creates entry if key does not exist. Otherwise replaces entire entry if item exi
 Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+- `toReturn` (Array): Fields to return on item.
 
 Internally uses [put](https://github.com/jeremydaly/dynamodb-toolbox#putitem-options-parameters)
 
@@ -163,6 +165,7 @@ Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `onNotFound` (Function): Overrides Model `onNotFound` function.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+- `toReturn` (Array): Fields to return on item.
 
 Internally uses [update](https://github.com/jeremydaly/dynamodb-toolbox#updatekey-options-parameters)
 
@@ -172,6 +175,7 @@ Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `onNotFound` (Function): Overrides Model `onNotFound` function.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+- `toReturn` (Array): Fields to return on item.
 
 Internally uses [delete](https://github.com/jeremydaly/dynamodb-toolbox#deletekey-options-parameters)
 
@@ -189,6 +193,7 @@ Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `onAlreadyExists` (Function): Overrides Model `onAlreadyExists` function.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+- `toReturn` (Array): Fields to return on item.
 
 Internally uses [put](https://github.com/jeremydaly/dynamodb-toolbox#putitem-options-parameters)
 
@@ -211,6 +216,7 @@ Options include (all optional):
 - `conditions` (Object|Array): Conditions that must be met for operation to succeed.
 - `onNotFound` (Function): Overrides Model `onNotFound` function.
 - `expectedErrorCodes` (Array): Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
+- `toReturn` (Array): Fields to return on item.
 
 Internally uses [put](https://github.com/jeremydaly/dynamodb-toolbox#putitem-options-parameters)
 

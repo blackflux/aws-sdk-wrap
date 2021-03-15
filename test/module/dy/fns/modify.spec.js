@@ -84,4 +84,12 @@ describe('Testing modify', {
     });
     expect(result).to.equal('ConditionalCheckFailedException');
   });
+
+  it('Testing modify with toReturn', async () => {
+    const [item] = await generateItem();
+    const age = 55;
+    item.age = age;
+    const result = await model.modify(item, { toReturn: ['age'] });
+    expect(result).to.deep.equal({ created: false, item: { age } });
+  });
 });

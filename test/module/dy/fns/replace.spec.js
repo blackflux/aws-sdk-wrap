@@ -97,4 +97,13 @@ describe('Testing replace', {
     expect(result).to.deep.equal({});
     expect(await getItemOrNull(key)).to.deep.equal(null);
   });
+
+  it('Testing replace with toReturn', async () => {
+    expect(await generateItem()).to.deep.equal({ created: true, item });
+    const newItem = { ...key, age: 100 };
+    expect(await model.replace(newItem, { toReturn: ['age'] })).to.deep.equal({
+      created: false,
+      item: { age: 100 }
+    });
+  });
 });

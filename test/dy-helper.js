@@ -24,7 +24,7 @@ module.exports.LocalTable = (model) => {
   };
 };
 
-module.exports.buildModel = () => {
+module.exports.buildModel = ({ extraAttrs = null } = {}) => {
   const index = Index({
     config: {
       maxRetries: 0,
@@ -42,7 +42,8 @@ module.exports.buildModel = () => {
       id: { type: 'string', partitionKey: true },
       name: { type: 'string', sortKey: true },
       age: { type: 'number', default: 30 },
-      slug: { type: 'string' }
+      slug: { type: 'string' },
+      ...(extraAttrs === null ? {} : { ...extraAttrs })
     },
     indices: {
       targetIndex: {
