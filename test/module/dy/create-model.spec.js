@@ -15,7 +15,8 @@ describe('Testing create-model.js', () => {
       indices: {
         targetIndex: {
           partitionKey: 'id',
-          sortKey: 'name'
+          sortKey: 'name',
+          projectionType: 'KEYS_ONLY'
         }
       },
       DocumentClient: new DocumentClient()
