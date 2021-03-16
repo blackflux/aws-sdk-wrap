@@ -5602,10 +5602,10 @@ object-fields@3.0.0:
   dependencies:
     object-scan "14.0.0"
 
-object-hash-strict@2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/object-hash-strict/-/object-hash-strict-2.0.3.tgz#201aa222cc11aee22117b11defe55a0835761002"
-  integrity sha512-i+6kPWz+/ZXB1ZpNWY1IZntNf1ojcF1XTqQB0uL3xTYaxkf4Po3cYyL5xWwSGangB9LHUmlbw9+o3yMF1TCedw==
+object-hash-strict@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/object-hash-strict/-/object-hash-strict-3.0.0.tgz#a0bfb993b41877dbc5c57d7e79cb43828587601d"
+  integrity sha512-lkJNnElUNg+23VhKxCg/0cpJRF2H5XqSsCFgGxWEh0H4+XksEyh5HWC9iqfAGtlAsCnqRlKFAeBugCTMj25uvw==
   dependencies:
     object-hash "2.1.1"
     object-scan "14.0.0"
