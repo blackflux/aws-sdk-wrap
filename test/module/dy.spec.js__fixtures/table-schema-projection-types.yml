@@ -1,0 +1,56 @@
+TableName: table-name
+AttributeDefinitions:
+  - AttributeName: id
+    AttributeType: S
+  - AttributeName: name
+    AttributeType: S
+  - AttributeName: age
+    AttributeType: 'N'
+  - AttributeName: slug
+    AttributeType: 'S'
+KeySchema:
+  - AttributeName: id
+    KeyType: HASH
+  - AttributeName: name
+    KeyType: RANGE
+GlobalSecondaryIndexes:
+  - IndexName: targetIndex
+    KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      - AttributeName: name
+        KeyType: RANGE
+    Projection:
+      ProjectionType: ALL
+  - IndexName: idIndex
+    KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+    Projection:
+      ProjectionType: ALL
+  - IndexName: ageIndex
+    KeySchema:
+      - AttributeName: age
+        KeyType: HASH
+      - AttributeName: id
+        KeyType: RANGE
+    Projection:
+      ProjectionType: ALL
+  - IndexName: projectionTypeKeysOnlyIndex
+    KeySchema:
+      - AttributeName: age
+        KeyType: HASH
+      - AttributeName: id
+        KeyType: RANGE
+    Projection:
+      ProjectionType: KEYS_ONLY
+  - IndexName: projectionTypeIncludeIndex
+    KeySchema:
+      - AttributeName: slug
+        KeyType: HASH
+    Projection:
+      NonKeyAttributes:
+        - age
+      ProjectionType: INCLUDE
+
+BillingMode: PAY_PER_REQUEST

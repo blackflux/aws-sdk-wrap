@@ -1,3 +1,4 @@
+const get = require('lodash.get');
 const toolbox = require('dynamodb-toolbox');
 const getFirst = require('./get-first');
 const validateKwargs = require('./validate-kwargs');
@@ -37,7 +38,20 @@ module.exports = (kwargs) => {
     name,
     partitionKey,
     ...(sortKey === undefined ? {} : { sortKey }),
-    indexes: indices,
+    indexes: {
+      ...Object.fromEntries(
+        Object.entries(indices).map(
+          ([indexName, indexDef]) => [
+            indexName,
+            Object.fromEntries(
+              Object.entries(indexDef).filter(
+                ([indexDefKey]) => ['partitionKey', 'sortKey'].includes(indexDefKey)
+              )
+            )
+          ]
+        )
+      )
+    },
     entityField: false,
     removeNullAttributes: false,
     DocumentClient
@@ -86,7 +100,8 @@ module.exports = (kwargs) => {
           sortKey: v.sortKey
         }),
         Projection: {
-          ProjectionType: 'ALL'
+          ProjectionType: get(v, 'projectionType', 'ALL'),
+          ...(v.nonKeyAttributes === undefined ? {} : { NonKeyAttributes: v.nonKeyAttributes })
         }
       }))
     }),
