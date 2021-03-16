@@ -35,7 +35,11 @@ const schema = Joi.object().keys({
     Joi.object().keys({
       partitionKey: Joi.string(),
       sortKey: Joi.string().optional(),
-      nonKeyAttributes: Joi.array().items(Joi.string()).optional(),
+      nonKeyAttributes: Joi.alternatives().conditional('projectionType', {
+        is: 'INCLUDE',
+        then: Joi.array().items(Joi.string()),
+        otherwise: Joi.forbidden()
+      }),
       projectionType: Joi.string().valid('KEYS_ONLY', 'INCLUDE', 'ALL').optional()
     })
   ).optional().min(1)
