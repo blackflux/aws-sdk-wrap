@@ -110,6 +110,6 @@
     "object-fields": "3.0.0",
     "object-hash-strict": "3.0.0",
     "promise-pool-ext": "1.3.14",
-    "smart-fs": "1.12.6"
+    "smart-fs": "2.0.0"
   }
 }
