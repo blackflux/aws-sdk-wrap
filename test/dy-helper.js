@@ -24,7 +24,10 @@ module.exports.LocalTable = (model) => {
   };
 };
 
-module.exports.buildModel = ({ extraAttrs = null } = {}) => {
+module.exports.buildModel = ({
+  extraAttrs = null,
+  extraIndices = null
+} = {}) => {
   const index = Index({
     config: {
       maxRetries: 0,
@@ -56,7 +59,8 @@ module.exports.buildModel = ({ extraAttrs = null } = {}) => {
       ageIndex: {
         partitionKey: 'age',
         sortKey: 'id'
-      }
+      },
+      ...(extraIndices === null ? {} : { ...extraIndices })
     },
     DocumentClient: new DocumentClient({
       endpoint: process.env.DYNAMODB_ENDPOINT

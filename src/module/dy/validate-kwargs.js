@@ -34,7 +34,13 @@ const schema = Joi.object().keys({
     Joi.string(),
     Joi.object().keys({
       partitionKey: Joi.string(),
-      sortKey: Joi.string().optional()
+      sortKey: Joi.string().optional(),
+      nonKeyAttributes: Joi.alternatives().conditional('projectionType', {
+        is: 'INCLUDE',
+        then: Joi.array().items(Joi.string()),
+        otherwise: Joi.forbidden()
+      }),
+      projectionType: Joi.string().valid('KEYS_ONLY', 'INCLUDE', 'ALL').optional()
     })
   ).optional().min(1)
     .custom((v, h) => {
@@ -49,7 +55,14 @@ const schema = Joi.object().keys({
 }).custom((v, h) => {
   const { attributes, indices } = v;
   if (indices !== undefined) {
-    const indexKeys = Object.values(indices).reduce((prev, cur) => prev.concat(...Object.values(cur)), []);
+    const indexKeys = [];
+    Object.values(indices).forEach((index) => {
+      Object.entries(index).forEach(([key, field]) => {
+        if (['partitionKey', 'sortKey'].includes(key)) {
+          indexKeys.push(field);
+        }
+      });
+    });
     const foundKeys = indexKeys.filter((idx) => Object.keys(attributes).includes(idx));
     if (foundKeys.length !== indexKeys.length) {
       return h.message('Indices values must match with defined attributes');
