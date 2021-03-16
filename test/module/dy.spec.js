@@ -9,17 +9,21 @@ describe('Testing dy Util', {
 }, () => {
   let model;
   let localTable;
+  let generateTable;
 
-  beforeEach(async () => {
-    model = buildModel();
-    localTable = LocalTable(model);
-    await localTable.create();
+  before(() => {
+    generateTable = async ({ extraIndices } = {}) => {
+      model = buildModel({ extraIndices });
+      localTable = LocalTable(model);
+      await localTable.create();
+    };
   });
   afterEach(async () => {
     await localTable.delete();
   });
 
-  it('Testing basic logic', () => {
+  it('Testing basic logic', async () => {
+    await generateTable();
     expect(Object.keys(model)).to.deep.equal([
       'create',
       'createOrModify',
@@ -34,8 +38,28 @@ describe('Testing dy Util', {
     ]);
   });
 
-  it('Testing schema', ({ fixture }) => {
+  it('Testing schema', async ({ fixture }) => {
+    await generateTable();
     const result = model.schema;
     expect(result).to.deep.equal(fixture('table-schema'));
+  });
+
+  it('Testing schema with ProjectionTypes', async ({ fixture }) => {
+    await generateTable({
+      extraIndices: {
+        projectionTypeKeysOnlyIndex: {
+          partitionKey: 'age',
+          sortKey: 'id',
+          projectionType: 'KEYS_ONLY'
+        },
+        projectionTypeIncludeIndex: {
+          partitionKey: 'slug',
+          nonKeyAttributes: ['age'],
+          projectionType: 'INCLUDE'
+        }
+      }
+    });
+    const result = model.schema;
+    expect(result).to.deep.equal(fixture('table-schema-projection-types'));
   });
 });

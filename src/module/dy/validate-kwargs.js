@@ -35,6 +35,7 @@ const schema = Joi.object().keys({
     Joi.object().keys({
       partitionKey: Joi.string(),
       sortKey: Joi.string().optional(),
+      nonKeyAttributes: Joi.array().items(Joi.string()).optional(),
       projectionType: Joi.string().valid('KEYS_ONLY', 'INCLUDE', 'ALL').optional()
     })
   ).optional().min(1)

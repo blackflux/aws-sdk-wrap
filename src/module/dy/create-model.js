@@ -100,7 +100,8 @@ module.exports = (kwargs) => {
           sortKey: v.sortKey
         }),
         Projection: {
-          ProjectionType: get(v, 'projectionType', 'ALL')
+          ProjectionType: get(v, 'projectionType', 'ALL'),
+          ...(v.nonKeyAttributes === undefined ? {} : { NonKeyAttributes: v.nonKeyAttributes })
         }
       }))
     }),
