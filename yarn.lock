@@ -4249,10 +4249,10 @@ kind-of@^6.0.0, kind-of@^6.0.2, kind-of@^6.0.3:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-lambda-async@1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/lambda-async/-/lambda-async-1.0.11.tgz#389fba16cdcc7c30f2eb0335be8faac3358d6c77"
-  integrity sha512-8gNC37n9LmDp7+PfgseK7tZHzW0HpatxmFzrhTGhDqZOGqlxf3TlErp4mW4ZJCMjXRff7DBFNnA49HtdKUTUAw==
+lambda-async@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/lambda-async/-/lambda-async-2.0.0.tgz#6792b79dd180ca8e0d73aba7d44e8fdd499d87fa"
+  integrity sha512-1Cm/ly+aAwWBdvm4eUMdQhQiHdF9jKVimXwWlq9iy0YipX17CCyG6Ku6/gChMhBTqcgpNSsAm2AvTZWZt0pYgA==
 
 latest-version@^3.0.0:
   version "3.1.0"
