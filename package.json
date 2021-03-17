@@ -37,7 +37,7 @@
     "@babel/cli": "7.13.10",
     "@babel/core": "7.13.10",
     "@babel/register": "7.13.8",
-    "@blackflux/eslint-plugin-rules": "2.0.1",
+    "@blackflux/eslint-plugin-rules": "2.0.3",
     "@blackflux/robo-config-plugin": "5.0.0",
     "aws-sdk": "2.865.0",
     "axios": "0.21.1",
@@ -52,7 +52,7 @@
     "eslint-plugin-markdown": "2.0.0",
     "eslint-plugin-mocha": "8.1.0",
     "js-gardener": "3.0.1",
-    "node-tdd": "3.0.1",
+    "node-tdd": "3.0.3",
     "nyc": "15.1.0",
     "semantic-release": "17.4.2"
   },
@@ -104,7 +104,7 @@
   "dependencies": {
     "dynamodb-toolbox": "0.3.3",
     "joi-strict": "2.0.0",
-    "lambda-async": "1.0.11",
+    "lambda-async": "2.0.0",
     "lodash.chunk": "4.2.0",
     "lodash.get": "4.4.2",
     "object-fields": "3.0.0",
