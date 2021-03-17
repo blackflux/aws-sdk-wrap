@@ -6152,10 +6152,10 @@ promise-inflight@^1.0.1, promise-inflight@~1.0.1:
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
   integrity sha1-mEcocL8igTL8vdhoEputEsPAKeM=
 
-promise-pool-ext@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/promise-pool-ext/-/promise-pool-ext-2.0.0.tgz#ce6e7321b67fc474d92afe5bf9c1ee4c5db01a11"
-  integrity sha512-FjI28rV7/28higYjA8JJdIMO83LCckIRjUMR0lUSkoCqZQReQVGq7Pb5XE21eHeBrxaihd9l51uml0rfJoWfHw==
+promise-pool-ext@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/promise-pool-ext/-/promise-pool-ext-2.1.0.tgz#b2541700295ab428f88d20b78bc39cfc274728f9"
+  integrity sha512-TA0kBaPIb+ggf44DkXN3pFzkIAszbiORfcV5Jfpee/l/zp77wl/aGUPOfEwI9EgkatXsXvjaPqPScuLQuvUqnQ==
   dependencies:
     joi-strict "2.0.0"
 
