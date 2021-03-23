@@ -72,9 +72,9 @@ module.exports = ({
           conditions.push(Array.isArray(customConditions) ? customConditions : [customConditions]);
         }
       }
-      let r;
+      let result;
       try {
-        r = await model.entity[fn](item, {
+        result = await model.entity[fn](item, {
           returnValues: 'all_old',
           ...(conditions === null ? {} : { conditions })
         });
@@ -91,9 +91,9 @@ module.exports = ({
         }
         throw err;
       }
-      const didNotExist = r.Attributes === undefined;
+      const didNotExist = result.Attributes === undefined;
       const resultItem = setDefaults({
-        ...((didNotExist || fn === 'put') ? {} : r.Attributes),
+        ...((didNotExist || fn === 'put') ? {} : result.Attributes),
         ...item
       }, null);
       if (['update', 'put'].includes(fn)) {
@@ -101,15 +101,14 @@ module.exports = ({
       } else {
         await onDelete(resultItem);
       }
-      const result = {
+      if (toReturn !== null) {
+        assert(toReturn.every((e) => e in attributes), 'Unknown field in "toReturn" provided');
+        objectFields.Retainer(toReturn)(resultItem);
+      }
+      return {
         ...(['update', 'put'].includes(fn) ? { created: didNotExist } : { deleted: true }),
         item: resultItem
       };
-      if (toReturn !== null) {
-        assert(toReturn.every((e) => e in attributes), 'Unknown field in "toReturn" provided');
-        objectFields.Retainer(toReturn)(result.item);
-      }
-      return result;
     }
   };
 };
