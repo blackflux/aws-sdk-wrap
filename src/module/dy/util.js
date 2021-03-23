@@ -63,7 +63,7 @@ module.exports = ({
     } = {}) => {
       assert(typeof onNotFound === 'function', onNotFound.length === 1);
       assert(Array.isArray(expectedErrorCodes));
-      assert(toReturn === null || Array.isArray(toReturn));
+      assert(toReturn === null || (Array.isArray(toReturn) && toReturn.length === new Set(toReturn).size));
       checkForUndefinedAttributes(item);
       let conditions = customConditions;
       if (mustExist !== null) {
@@ -92,23 +92,23 @@ module.exports = ({
         throw err;
       }
       const didNotExist = result.Attributes === undefined;
+      const resultItem = setDefaults({
+        ...((didNotExist || fn === 'put') ? {} : result.Attributes),
+        ...item
+      }, null);
       if (['update', 'put'].includes(fn)) {
-        await (didNotExist ? onCreate : onUpdate)(item);
+        await (didNotExist ? onCreate : onUpdate)(resultItem);
       } else {
-        await onDelete(item);
+        await onDelete(resultItem);
       }
-      const r = {
-        ...(['update', 'put'].includes(fn) ? { created: didNotExist } : { deleted: true }),
-        item: setDefaults({
-          ...((didNotExist || fn === 'put') ? {} : result.Attributes),
-          ...item
-        }, null)
-      };
       if (toReturn !== null) {
         assert(toReturn.every((e) => e in attributes), 'Unknown field in "toReturn" provided');
-        objectFields.Retainer(toReturn)(r.item);
+        objectFields.Retainer(toReturn)(resultItem);
       }
-      return r;
+      return {
+        ...(['update', 'put'].includes(fn) ? { created: didNotExist } : { deleted: true }),
+        item: resultItem
+      };
     }
   };
 };
