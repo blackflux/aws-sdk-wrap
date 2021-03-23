@@ -92,23 +92,23 @@ module.exports = ({
         throw err;
       }
       const didNotExist = result.Attributes === undefined;
+      const resultItem = setDefaults({
+        ...((didNotExist || fn === 'put') ? {} : result.Attributes),
+        ...item
+      }, null);
       if (['update', 'put'].includes(fn)) {
-        await (didNotExist ? onCreate : onUpdate)(item);
+        await (didNotExist ? onCreate : onUpdate)(resultItem);
       } else {
-        await onDelete(item);
+        await onDelete(resultItem);
       }
-      const r = {
-        ...(['update', 'put'].includes(fn) ? { created: didNotExist } : { deleted: true }),
-        item: setDefaults({
-          ...((didNotExist || fn === 'put') ? {} : result.Attributes),
-          ...item
-        }, null)
-      };
       if (toReturn !== null) {
         assert(toReturn.every((e) => e in attributes), 'Unknown field in "toReturn" provided');
-        objectFields.Retainer(toReturn)(r.item);
+        objectFields.Retainer(toReturn)(resultItem);
       }
-      return r;
+      return {
+        ...(['update', 'put'].includes(fn) ? { created: didNotExist } : { deleted: true }),
+        item: resultItem
+      };
     }
   };
 };

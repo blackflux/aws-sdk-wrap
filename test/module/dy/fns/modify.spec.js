@@ -11,22 +11,24 @@ describe('Testing modify', {
   let model;
   let localTable;
   let generateItem;
+  let generateTable;
 
   before(() => {
     generateItem = () => createItems({
       count: 1, model, primaryKey: '123', sortKey: 'name', age: 50
     });
-  });
-  beforeEach(async () => {
-    model = buildModel();
-    localTable = LocalTable(model);
-    await localTable.create();
+    generateTable = async ({ onUpdate } = {}) => {
+      model = buildModel({ onUpdate });
+      localTable = LocalTable(model);
+      await localTable.create();
+    };
   });
   afterEach(async () => {
     await localTable.delete();
   });
 
   it('Testing modify', async () => {
+    await generateTable();
     const [item] = await generateItem();
     item.age = 55;
     const result = await model.modify(item);
@@ -34,6 +36,7 @@ describe('Testing modify', {
   });
 
   it('Testing modify with conditions', async () => {
+    await generateTable();
     const [item] = await generateItem();
     item.age = 55;
     const result = await model.modify(item, { conditions: { attr: 'age', eq: 50 } });
@@ -41,6 +44,7 @@ describe('Testing modify', {
   });
 
   it('Testing modify with conditions as array', async () => {
+    await generateTable();
     const [item] = await generateItem();
     item.age = 55;
     const result = await model.modify(item, { conditions: [{ attr: 'age', eq: 50 }] });
@@ -48,6 +52,7 @@ describe('Testing modify', {
   });
 
   it('Testing modify with item not found with conditions', async ({ capture }) => {
+    await generateTable();
     const [item] = await generateItem();
     item.age = 55;
     const error = await capture(() => model.modify(item, { conditions: { attr: 'age', eq: 10 } }));
@@ -55,6 +60,7 @@ describe('Testing modify', {
   });
 
   it('Testing modify with unknown error', async ({ capture }) => {
+    await generateTable();
     const [item] = await generateItem();
     item.age = 55;
     const error = await capture(() => model.modify(item, { conditions: { attr: 'age', eq: 10 } }));
@@ -62,11 +68,13 @@ describe('Testing modify', {
   });
 
   it('Testing modify with item does not exist', async ({ capture }) => {
+    await generateTable();
     const error = await capture(() => model.modify({ id: '123', name: 'name', age: 50 }));
     expect(error).instanceof(ModelNotFound);
   });
 
   it('Testing modify with onNotFound', async () => {
+    await generateTable();
     const logs = [];
     const result = await model.modify({ id: '123', name: 'name', age: 50 }, {
       onNotFound: (key) => {
@@ -79,6 +87,7 @@ describe('Testing modify', {
   });
 
   it('Testing modify with expectedErrorCodes', async () => {
+    await generateTable();
     const result = await model.modify({ id: '123', name: 'name', age: 50 }, {
       expectedErrorCodes: ['ConditionalCheckFailedException']
     });
@@ -86,10 +95,22 @@ describe('Testing modify', {
   });
 
   it('Testing modify with toReturn', async () => {
+    await generateTable();
     const [item] = await generateItem();
     const age = 55;
     item.age = age;
     const result = await model.modify(item, { toReturn: ['age'] });
     expect(result).to.deep.equal({ created: false, item: { age } });
+  });
+
+  it('Testing modify with onUpdate', async () => {
+    const logs = [];
+    const onUpdate = (i) => { logs.push(`onUpdate executed: ${JSON.stringify(i)}`); };
+    await generateTable({ onUpdate });
+    const [item] = await generateItem();
+    item.age = 55;
+    const result = await model.modify(item);
+    expect(logs).to.deep.equal(['onUpdate executed: {"age":55,"name":"name","id":"123"}']);
+    expect(result).to.deep.equal({ created: false, item });
   });
 });
