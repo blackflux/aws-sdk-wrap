@@ -1,3 +1,5 @@
+const assert = require('assert');
+
 module.exports = (model, validateSecondaryIndex, setDefaults) => async ({
   index = null,
   limit = 20,
@@ -5,6 +7,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults) => async ({
   toReturn = null,
   lastEvaluatedKey = null
 } = {}) => {
+  assert(toReturn === null || (Array.isArray(toReturn) && toReturn.length === new Set(toReturn).size));
   if (index !== null) {
     validateSecondaryIndex(index);
   }
