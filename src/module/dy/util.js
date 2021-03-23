@@ -63,7 +63,7 @@ module.exports = ({
     } = {}) => {
       assert(typeof onNotFound === 'function', onNotFound.length === 1);
       assert(Array.isArray(expectedErrorCodes));
-      assert(toReturn === null || Array.isArray(toReturn));
+      assert(toReturn === null || (Array.isArray(toReturn) && toReturn.length === new Set(toReturn).size));
       checkForUndefinedAttributes(item);
       let conditions = customConditions;
       if (mustExist !== null) {
