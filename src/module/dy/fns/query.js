@@ -29,7 +29,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
     toReturn,
     lastEvaluatedKey: previousLastEvaluatedKey
   }) => {
-    assert(toReturn === null || toReturn.length === new Set(toReturn).size);
+    assert(toReturn === null || (Array.isArray(toReturn) && toReturn.length === new Set(toReturn).size));
     const items = [];
     let lastEvaluatedKey = previousLastEvaluatedKey;
     do {

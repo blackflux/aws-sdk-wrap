@@ -7,7 +7,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults) => async ({
   toReturn = null,
   lastEvaluatedKey = null
 } = {}) => {
-  assert(toReturn === null || toReturn.length === new Set(toReturn).size);
+  assert(toReturn === null || (Array.isArray(toReturn) && toReturn.length === new Set(toReturn).size));
   if (index !== null) {
     validateSecondaryIndex(index);
   }
