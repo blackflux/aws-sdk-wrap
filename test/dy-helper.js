@@ -26,7 +26,10 @@ module.exports.LocalTable = (model) => {
 
 module.exports.buildModel = ({
   extraAttrs = null,
-  extraIndices = null
+  extraIndices = null,
+  onUpdate = null,
+  onCreate = null,
+  onDelete = null
 } = {}) => {
   const index = Index({
     config: {
@@ -62,6 +65,9 @@ module.exports.buildModel = ({
       },
       ...(extraIndices === null ? {} : { ...extraIndices })
     },
+    ...(onUpdate === null ? {} : { onUpdate }),
+    ...(onCreate === null ? {} : { onCreate }),
+    ...(onDelete === null ? {} : { onDelete }),
     DocumentClient: new DocumentClient({
       endpoint: process.env.DYNAMODB_ENDPOINT
     })

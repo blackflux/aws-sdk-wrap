@@ -13,11 +13,17 @@ describe('Testing create', {
   let key;
   let item;
   let getItemOrNull;
+  let generateTable;
+
+  before(() => {
+    generateTable = async ({ onCreate } = {}) => {
+      model = buildModel({ onCreate });
+      localTable = LocalTable(model);
+      await localTable.create();
+    };
+  });
 
   beforeEach(async () => {
-    model = buildModel();
-    localTable = LocalTable(model);
-    await localTable.create();
     getItemOrNull = (k) => model.getItem(k, {
       onNotFound: (i) => null
     });
@@ -35,6 +41,7 @@ describe('Testing create', {
   });
 
   it('Testing create', async () => {
+    await generateTable();
     expect(await getItemOrNull(key)).to.deep.equal(null);
     const result = await model.create(item);
     expect(result).to.deep.equal(
@@ -47,6 +54,7 @@ describe('Testing create', {
   });
 
   it('Testing create with conditions', async () => {
+    await generateTable();
     expect(await getItemOrNull(key)).to.deep.equal(null);
     const result = await model.create(item, {
       conditions: { attr: 'age', ne: 1 }
@@ -61,6 +69,7 @@ describe('Testing create', {
   });
 
   it('Testing create with ConditionFailedException', async ({ capture }) => {
+    await generateTable();
     const error = await capture(() => model.create(item, {
       conditions: { attr: 'age', eq: 1 }
     }));
@@ -69,6 +78,7 @@ describe('Testing create', {
   });
 
   it('Testing create with expectedErrorCodes', async () => {
+    await generateTable();
     const result = await model.create(item, {
       conditions: { attr: 'age', eq: 1 },
       expectedErrorCodes: ['ConditionalCheckFailedException']
@@ -78,6 +88,7 @@ describe('Testing create', {
   });
 
   it('Testing create itemAlreadyExists error', async ({ capture }) => {
+    await generateTable();
     expect(await model.create(item)).to.deep.equal(
       {
         created: true,
@@ -93,6 +104,7 @@ describe('Testing create', {
   });
 
   it('Testing create itemAlreadyExists', async () => {
+    await generateTable();
     expect(await model.create(item)).to.deep.equal(
       {
         created: true,
@@ -118,6 +130,7 @@ describe('Testing create', {
   });
 
   it('Testing create with toReturn', async () => {
+    await generateTable();
     const result = await model.create(item, { toReturn: ['age'] });
     expect(result).to.deep.equal(
       {
@@ -125,5 +138,14 @@ describe('Testing create', {
         item: { age: 50 }
       }
     );
+  });
+
+  it('Testing create with onCreate', async () => {
+    const logs = [];
+    const onCreate = (i) => { logs.push(`onCreate executed: ${JSON.stringify(i)}`); };
+    await generateTable({ onCreate });
+    const result = await model.create(item);
+    expect(logs).to.deep.equal(['onCreate executed: {"age":50,"id":"123","name":"name"}']);
+    expect(result).to.deep.equal({ created: true, item });
   });
 });
