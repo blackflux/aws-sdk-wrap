@@ -12,7 +12,8 @@ const schema = Joi.object().keys({
         Joi.string(),
         Joi.number(),
         Joi.boolean(),
-        Joi.array()
+        Joi.array(),
+        Joi.object()
       ).optional()
     }).nand('partitionKey', 'sortKey')
   ).min(1).custom((v, h) => {
