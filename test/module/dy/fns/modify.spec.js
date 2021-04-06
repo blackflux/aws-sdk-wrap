@@ -123,6 +123,11 @@ describe('Testing modify', {
     };
     const result = await model.modify(updatedItem);
     expect(result).to.deep.equal({ created: false, item: updatedItem });
+    expect(await model.getItem(updatedItem)).to.deep.equal({
+      id: item.id,
+      name: item.name,
+      age: item.age
+    });
   });
 
   it('Testing modify replace set entries', async () => {
@@ -134,6 +139,12 @@ describe('Testing modify', {
     };
     const result = await model.modify(updatedItem);
     expect(result).to.deep.equal({ created: false, item: updatedItem });
+    expect(await model.getItem(updatedItem)).to.deep.equal({
+      id: item.id,
+      name: item.name,
+      age: item.age,
+      someSet: ['four', 'three']
+    });
   });
 
   it('Testing modify add entry to set', async () => {
@@ -150,6 +161,12 @@ describe('Testing modify', {
         someSet: ['one', 'two', 'three']
       }
     });
+    expect(await model.getItem(item)).to.deep.equal({
+      id: item.id,
+      name: item.name,
+      age: item.age,
+      someSet: ['one', 'three', 'two']
+    });
   });
 
   it('Testing modify add entry to new set', async () => {
@@ -159,13 +176,15 @@ describe('Testing modify', {
       ...item,
       someSet: { $add: ['one'] }
     });
+    const resultItem = {
+      ...item,
+      someSet: ['one']
+    };
     expect(result).to.deep.equal({
       created: false,
-      item: {
-        ...item,
-        someSet: ['one']
-      }
+      item: resultItem
     });
+    expect(await model.getItem(item)).to.deep.equal(resultItem);
   });
 
   it('Testing modify remove entry from set', async () => {
@@ -176,13 +195,15 @@ describe('Testing modify', {
       name: item.name,
       someSet: { $delete: ['two'] }
     });
+    const resultItem = {
+      ...item,
+      someSet: ['one']
+    };
     expect(result).to.deep.equal({
       created: false,
-      item: {
-        ...item,
-        someSet: ['one']
-      }
+      item: resultItem
     });
+    expect(await model.getItem(item)).to.deep.equal(resultItem);
   });
 
   it('Testing modify with remove', async () => {
@@ -193,14 +214,16 @@ describe('Testing modify', {
       name: item.name,
       $remove: ['slug']
     });
+    const resultItem = {
+      id: item.id,
+      name: item.name,
+      age: item.age
+    };
     expect(result).to.deep.equal({
       created: false,
-      item: {
-        id: item.id,
-        name: item.name,
-        age: item.age
-      }
+      item: resultItem
     });
+    expect(await model.getItem(item)).to.deep.equal(resultItem);
   });
 
   it('Testing modify with an empty set and remove', async () => {
@@ -215,6 +238,11 @@ describe('Testing modify', {
       $remove: ['slug']
     });
     expect(result).to.deep.equal({ created: false, item: updatedItem });
+    expect(await model.getItem(item)).to.deep.equal({
+      id: item.id,
+      name: item.name,
+      age: item.age
+    });
   });
 
   it('Testing modify with an object with $delete and $add', async () => {
@@ -236,5 +264,6 @@ describe('Testing modify', {
     };
     const result = await model.modify(updatedItem);
     expect(result).to.deep.equal({ created: false, item: updatedItem });
+    expect(await model.getItem(item)).to.deep.equal(updatedItem);
   });
 });

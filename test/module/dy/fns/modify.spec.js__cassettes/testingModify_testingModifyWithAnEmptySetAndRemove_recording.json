@@ -248,8 +248,8 @@
       "UpdateExpression": "SET #age = :age REMOVE #slug, #someSet",
       "ExpressionAttributeNames": {
         "#age": "age",
-        "#someSet": "someSet",
         "#slug": "slug",
+        "#someSet": "someSet",
         "#attr1": "id",
         "#attr2": "name"
       },
@@ -278,6 +278,38 @@
         },
         "age": {
           "N": "50"
+        }
+      }
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {
+      "Item": {
+        "name": {
+          "S": "name"
+        },
+        "age": {
+          "N": "50"
+        },
+        "id": {
+          "S": "123"
         }
       }
     },

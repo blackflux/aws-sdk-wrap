@@ -8,6 +8,6 @@ module.exports = ((sets) => (item) => {
   }
   return {
     ...Object.fromEntries(entries.filter(([k]) => !emptySets.includes(k))),
-    $remove: [...(item.$remove || []), ...emptySets]
+    $remove: '$remove' in item ? [...item.$remove, ...emptySets] : emptySets
   };
 });

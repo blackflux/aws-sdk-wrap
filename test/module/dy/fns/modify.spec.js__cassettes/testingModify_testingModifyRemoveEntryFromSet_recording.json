@@ -292,6 +292,43 @@
     "method": "POST",
     "path": "/",
     "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {
+      "Item": {
+        "name": {
+          "S": "name"
+        },
+        "id": {
+          "S": "123"
+        },
+        "someSet": {
+          "SS": [
+            "one"
+          ]
+        },
+        "age": {
+          "N": "50"
+        }
+      }
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
       "TableName": "table-name"
     },
     "status": 200,
