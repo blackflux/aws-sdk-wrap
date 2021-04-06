@@ -92,7 +92,7 @@ describe('Testing delete', {
     await generateTable({ onDelete });
     const [item] = await generateItem();
     const result = await model.delete(item);
-    expect(logs).to.deep.equal(['onDelete executed: {"age":50,"name":"name","id":"123"}']);
+    expect(logs).to.deep.equal(['onDelete executed: {"age":50,"id":"123","name":"name"}']);
     expect(result).to.deep.equal({ item, deleted: true });
   });
 });

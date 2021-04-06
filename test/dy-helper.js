@@ -79,7 +79,8 @@ module.exports.createItems = async ({
   model,
   primaryKey,
   sortKey,
-  age
+  age,
+  extraAttrs = null
 }) => {
   const items = [];
   for (let i = 1; i <= count; i += 1) {
@@ -87,7 +88,8 @@ module.exports.createItems = async ({
     const item = {
       id: primaryKey,
       name,
-      age: Array.isArray(age) === true ? age[i - 1] : age
+      age: Array.isArray(age) === true ? age[i - 1] : age,
+      ...(extraAttrs === null ? {} : extraAttrs)
     };
     // eslint-disable-next-line no-await-in-loop
     expect(await model.createOrModify(item)).to.deep.equal({ created: true, item });

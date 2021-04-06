@@ -145,7 +145,7 @@ describe('Testing create', {
     const onCreate = (i) => { logs.push(`onCreate executed: ${JSON.stringify(i)}`); };
     await generateTable({ onCreate });
     const result = await model.create(item);
-    expect(logs).to.deep.equal(['onCreate executed: {"age":50,"id":"123","name":"name"}']);
+    expect(logs).to.deep.equal(['onCreate executed: {"age":50,"name":"name","id":"123"}']);
     expect(result).to.deep.equal({ created: true, item });
   });
 });
