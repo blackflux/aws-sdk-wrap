@@ -39,7 +39,7 @@
     "@babel/register": "7.13.14",
     "@blackflux/eslint-plugin-rules": "2.0.3",
     "@blackflux/robo-config-plugin": "5.0.3",
-    "aws-sdk": "2.878.0",
+    "aws-sdk": "2.881.0",
     "axios": "0.21.1",
     "babel-eslint": "10.1.0",
     "babel-preset-latest-node": "5.5.1",
@@ -49,7 +49,7 @@
     "eslint-config-airbnb-base": "14.2.1",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-json": "2.1.2",
-    "eslint-plugin-markdown": "2.0.0",
+    "eslint-plugin-markdown": "2.0.1",
     "eslint-plugin-mocha": "8.1.0",
     "js-gardener": "3.0.3",
     "node-tdd": "3.0.4",
@@ -109,6 +109,7 @@
     "lodash.get": "4.4.2",
     "object-fields": "3.0.0",
     "object-hash-strict": "3.0.0",
+    "object-scan": "14.0.0",
     "promise-pool-ext": "2.1.1",
     "smart-fs": "2.0.2"
   }
