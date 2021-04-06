@@ -1,5 +1,7 @@
 const assert = require('assert');
 const objectFields = require('object-fields');
+const MergeAttributes = require('./util/merge-attributes');
+const GenerateUpdateItem = require('./util/generate-update-item');
 
 module.exports = ({
   attributes,
@@ -20,6 +22,9 @@ module.exports = ({
       ...item
     };
   };
+  const sets = Object.entries(attributes).filter(([_, v]) => v.type === 'set').map(([k]) => k);
+  const mergeAttributes = MergeAttributes(sets);
+  const generateUpdateItem = GenerateUpdateItem(sets);
   const extractKey = (item) => model.schema.KeySchema
     .map(({ AttributeName: attr }) => attr)
     .reduce((prev, cur) => {
@@ -74,10 +79,13 @@ module.exports = ({
       }
       let result;
       try {
-        result = await model.entity[fn](item, {
-          returnValues: 'all_old',
-          ...(conditions === null ? {} : { conditions })
-        });
+        result = await model.entity[fn](
+          fn === 'update' ? generateUpdateItem(item) : item,
+          {
+            returnValues: 'all_old',
+            ...(conditions === null ? {} : { conditions })
+          }
+        );
       } catch (err) {
         if (expectedErrorCodes.includes(err.code)) {
           return err.code;
@@ -92,10 +100,11 @@ module.exports = ({
         throw err;
       }
       const didNotExist = result.Attributes === undefined;
-      const resultItem = setDefaults({
-        ...((didNotExist || fn === 'put') ? {} : result.Attributes),
-        ...item
-      }, null);
+      const mergedItem = mergeAttributes(
+        (didNotExist || fn === 'put') ? {} : result.Attributes,
+        item
+      );
+      const resultItem = setDefaults(mergedItem, null);
       if (['update', 'put'].includes(fn)) {
         await (didNotExist ? onCreate : onUpdate)(resultItem);
       } else {
