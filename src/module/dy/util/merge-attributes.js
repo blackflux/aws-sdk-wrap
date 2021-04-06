@@ -25,9 +25,6 @@ module.exports = ((sets) => (...versions) => {
       const indexOf = field.indexOf(value);
       assert(indexOf === -1);
       field.push(value);
-      // if (indexOf === -1) { // todo: consider converting into assert
-      //   field.push(value);
-      // }
     },
     '*.$delete[*]': ({ key: [name], value }) => {
       if (!sets.includes(name)) {
@@ -38,13 +35,6 @@ module.exports = ((sets) => (...versions) => {
       const indexOf = field.indexOf(value);
       assert(indexOf !== -1);
       field.splice(indexOf, 1);
-      // if (name in result) { // todo: consider converting into assert
-      //   const field = result[name];
-      //   const indexOf = field.indexOf(value);
-      //   if (indexOf !== -1) { // todo: consider converting into assert
-      //     field.splice(indexOf, 1);
-      //   }
-      // }
     }
   };
   versions.forEach((version) => {
