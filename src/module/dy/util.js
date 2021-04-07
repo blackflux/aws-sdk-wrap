@@ -1,7 +1,7 @@
 const assert = require('assert');
 const objectFields = require('object-fields');
 const MergeAttributes = require('./util/merge-attributes');
-const GenerateItemRewriter = require('./util/generate-item-rewriter');
+const generateItemRewriter = require('./util/generate-item-rewriter');
 
 module.exports = ({
   attributes,
@@ -24,10 +24,10 @@ module.exports = ({
   };
   const sets = Object.entries(attributes).filter(([_, v]) => v.type === 'set').map(([k]) => k);
   const mergeAttributes = MergeAttributes(sets);
-  const generateItemByFn = {
-    update: GenerateItemRewriter('update', sets),
-    put: GenerateItemRewriter('put', sets),
-    delete: GenerateItemRewriter('delete', sets)
+  const itemRewriterByFn = {
+    update: generateItemRewriter('update', sets),
+    put: generateItemRewriter('put', sets),
+    delete: generateItemRewriter('delete', sets)
   };
   const extractKey = (item) => model.schema.KeySchema
     .map(({ AttributeName: attr }) => attr)
@@ -84,7 +84,7 @@ module.exports = ({
       let result;
       try {
         result = await model.entity[fn](
-          generateItemByFn[fn](item),
+          itemRewriterByFn[fn](item),
           {
             returnValues: 'all_old',
             ...(conditions === null ? {} : { conditions })
