@@ -23,8 +23,9 @@ module.exports = ((sets) => (...versions) => {
       }
       const field = result[name];
       const indexOf = field.indexOf(value);
-      assert(indexOf === -1);
-      field.push(value);
+      if (indexOf === -1) {
+        field.push(value);
+      }
     },
     '*.$delete[*]': ({ key: [name], value }) => {
       if (!sets.includes(name)) {
@@ -33,8 +34,9 @@ module.exports = ((sets) => (...versions) => {
       assert(name in result);
       const field = result[name];
       const indexOf = field.indexOf(value);
-      assert(indexOf !== -1);
-      field.splice(indexOf, 1);
+      if (indexOf !== -1) {
+        field.splice(indexOf, 1);
+      }
     }
   };
   versions.forEach((version) => {
