@@ -1,4 +1,3 @@
-const assert = require('assert');
 const objectScan = require('object-scan');
 
 module.exports = ((sets) => (...versions) => {
@@ -31,11 +30,12 @@ module.exports = ((sets) => (...versions) => {
       if (!sets.includes(name)) {
         return;
       }
-      assert(name in result);
-      const field = result[name];
-      const indexOf = field.indexOf(value);
-      if (indexOf !== -1) {
-        field.splice(indexOf, 1);
+      if (name in result) {
+        const field = result[name];
+        const indexOf = field.indexOf(value);
+        if (indexOf !== -1) {
+          field.splice(indexOf, 1);
+        }
       }
     }
   };
