@@ -302,4 +302,18 @@ describe('Testing modify', {
     });
     expect(await model.getItem(item)).to.deep.equal(resultItem);
   });
+
+  it('Testing modify delete from empty set', async () => {
+    await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
+    const [item] = await generateItem();
+    const result = await model.modify({
+      ...item,
+      someSet: { $delete: ['one'] }
+    });
+    expect(result).to.deep.equal({
+      created: false,
+      item
+    });
+    expect(await model.getItem(item)).to.deep.equal(item);
+  });
 });
