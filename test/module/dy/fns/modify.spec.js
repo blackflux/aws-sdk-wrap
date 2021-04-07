@@ -266,4 +266,40 @@ describe('Testing modify', {
     expect(result).to.deep.equal({ created: false, item: updatedItem });
     expect(await model.getItem(item)).to.deep.equal(updatedItem);
   });
+
+  it('Testing modify add existing entry to set', async () => {
+    await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
+    const [item] = await generateItem({ extraAttrs: { someSet: ['one'] } });
+    const result = await model.modify({
+      ...item,
+      someSet: { $add: ['one'] }
+    });
+    const resultItem = {
+      ...item,
+      someSet: ['one']
+    };
+    expect(result).to.deep.equal({
+      created: false,
+      item: resultItem
+    });
+    expect(await model.getItem(item)).to.deep.equal(resultItem);
+  });
+
+  it('Testing modify delete nonexistent entry from set', async () => {
+    await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
+    const [item] = await generateItem({ extraAttrs: { someSet: ['one'] } });
+    const result = await model.modify({
+      ...item,
+      someSet: { $delete: ['two'] }
+    });
+    const resultItem = {
+      ...item,
+      someSet: ['one']
+    };
+    expect(result).to.deep.equal({
+      created: false,
+      item: resultItem
+    });
+    expect(await model.getItem(item)).to.deep.equal(resultItem);
+  });
 });
