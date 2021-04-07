@@ -16,8 +16,8 @@ describe('Testing create', {
   let generateTable;
 
   before(() => {
-    generateTable = async ({ onCreate } = {}) => {
-      model = buildModel({ onCreate });
+    generateTable = async ({ onCreate, extraAttrs } = {}) => {
+      model = buildModel({ onCreate, extraAttrs });
       localTable = LocalTable(model);
       await localTable.create();
     };
@@ -147,5 +147,37 @@ describe('Testing create', {
     const result = await model.create(item);
     expect(logs).to.deep.equal(['onCreate executed: {"age":50,"name":"name","id":"123"}']);
     expect(result).to.deep.equal({ created: true, item });
+  });
+
+  it('Testing create with a set', async () => {
+    await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
+    const itemWithSet = {
+      ...item,
+      someSet: ['one', 'two']
+    };
+    const result = await model.create(itemWithSet);
+    expect(result).to.deep.equal(
+      {
+        created: true,
+        item: itemWithSet
+      }
+    );
+    expect(await getItemOrNull(key)).to.deep.equal(itemWithSet);
+  });
+
+  it('Testing create with an empty set', async () => {
+    await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
+    const itemWithSet = {
+      ...item,
+      someSet: []
+    };
+    const result = await model.create(itemWithSet);
+    expect(result).to.deep.equal(
+      {
+        created: true,
+        item: itemWithSet
+      }
+    );
+    expect(await getItemOrNull(key)).to.deep.equal(item);
   });
 });
