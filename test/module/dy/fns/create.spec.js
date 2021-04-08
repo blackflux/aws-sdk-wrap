@@ -204,7 +204,8 @@ describe('Testing create', {
   });
 
   it('Testing create with validation failure', async ({ capture }) => {
-    await generateTable({ extraAttrs: { valid: { type: 'boolean', validate: (changeset) => false } } });
+    const validate = (changeset) => false;
+    await generateTable({ extraAttrs: { valid: { type: 'boolean', validate } } });
     const itemWithValid = {
       ...item,
       valid: true
