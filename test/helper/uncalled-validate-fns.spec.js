@@ -7,7 +7,7 @@ const {
   validateAsync
 } = require('./uncalled-validate-fns');
 
-describe('Testing uncalled-validate-fn.js', () => {
+describe('Testing uncalled-validate-fns.js', () => {
   it('Testing validateNoParams is called', () => {
     expect(validateNoParams()).to.equal(true);
   });
