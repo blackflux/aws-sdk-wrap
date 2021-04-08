@@ -180,4 +180,37 @@ describe('Testing create', {
     );
     expect(await getItemOrNull(key)).to.deep.equal(item);
   });
+
+  it('Testing create with validate', async () => {
+    const logs = [];
+    const validate = (changeset) => {
+      logs.push(`validate executed: ${changeset}`);
+      return typeof changeset === 'boolean';
+    };
+    await generateTable({ extraAttrs: { valid: { type: 'boolean', validate } } });
+    const itemWithValid = {
+      ...item,
+      valid: true
+    };
+    const result = await model.create(itemWithValid);
+    expect(result).to.deep.equal(
+      {
+        created: true,
+        item: itemWithValid
+      }
+    );
+    expect(await getItemOrNull(key)).to.deep.equal(itemWithValid);
+    expect(logs).to.deep.equal(['validate executed: true']);
+  });
+
+  it('Testing create with validation failure', async ({ capture }) => {
+    await generateTable({ extraAttrs: { valid: { type: 'boolean', validate: (changeset) => false } } });
+    const itemWithValid = {
+      ...item,
+      valid: true
+    };
+    const error = await capture(() => model.create(itemWithValid));
+    expect(error.message).to.equal('Validation failure on attribute(s) : valid');
+    expect(await getItemOrNull(key)).to.deep.equal(null);
+  });
 });

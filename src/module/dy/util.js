@@ -1,6 +1,7 @@
 const assert = require('assert');
 const objectFields = require('object-fields');
 const MergeAttributes = require('./util/merge-attributes');
+const ValidateItem = require('./util/validate-item');
 const generateItemRewriter = require('./util/generate-item-rewriter');
 
 module.exports = ({
@@ -24,6 +25,7 @@ module.exports = ({
   };
   const sets = Object.entries(attributes).filter(([_, v]) => v.type === 'set').map(([k]) => k);
   const mergeAttributes = MergeAttributes(sets);
+  const validateItem = ValidateItem(attributes);
   const itemRewriterByFn = {
     update: generateItemRewriter('update', sets),
     put: generateItemRewriter('put', sets),
@@ -74,6 +76,7 @@ module.exports = ({
       assert(Array.isArray(expectedErrorCodes));
       assert(toReturn === null || (Array.isArray(toReturn) && toReturn.length === new Set(toReturn).size));
       checkForUndefinedAttributes(item);
+      validateItem(item);
       let conditions = customConditions;
       if (mustExist !== null) {
         conditions = [model.schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: mustExist }))];

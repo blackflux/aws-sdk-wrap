@@ -60,11 +60,12 @@ module.exports = (kwargs) => {
     name,
     timestamps: false,
     attributes: Object.fromEntries(Object.entries(attributes).map(([k, v]) => {
-      if (v.type === 'set' && Array.isArray(v.default) && v.default.length === 0) {
-        const { default: _, ...newV } = v;
+      const { validate, ...prunedV } = v;
+      if (prunedV.type === 'set' && Array.isArray(prunedV.default) && prunedV.default.length === 0) {
+        const { default: _, ...newV } = prunedV;
         return [k, newV];
       }
-      return [k, v];
+      return [k, prunedV];
     })),
     table
   });
