@@ -9,18 +9,19 @@ const {
 
 describe('Testing uncalled-validate-fns.js', () => {
   it('Testing validateNoParams is called', () => {
-    expect(validateNoParams()).to.equal(true);
+    expect(() => validateNoParams()).to.throw('validateNoParams was called.');
   });
 
   it('Testing validateOneParam is called', () => {
-    expect(validateOneParam('one')).to.equal(true);
+    expect(() => validateOneParam()).to.throw('validateOneParam was called.');
   });
 
   it('Testing validateTwoParams is called', () => {
-    expect(validateTwoParams('one', 'two')).to.equal(true);
+    expect(() => validateTwoParams()).to.throw('validateTwoParams was called.');
   });
 
-  it('Testing validateAsync is called', async () => {
-    expect(await validateAsync('one')).to.equal(true);
+  it('Testing validateAsync is called', async ({ capture }) => {
+    const error = await capture(() => validateAsync());
+    expect(error.message).to.equal('validateAsync was called.');
   });
 });

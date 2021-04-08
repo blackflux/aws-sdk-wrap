@@ -1,11 +1,9 @@
-module.exports = ((attributes) => {
-  const attributesWithValidate = Object.entries(attributes)
-    .filter(([_, v]) => v.validate !== undefined)
-    .reduce((prev, [k, v]) => {
-      // eslint-disable-next-line no-param-reassign
-      prev[k] = v.validate;
-      return prev;
-    }, {});
+module.exports = (attributes) => {
+  const attributesWithValidate = Object.fromEntries(
+    Object.entries(attributes)
+      .filter(([_, v]) => v.validate !== undefined)
+      .map(([k, v]) => [k, v.validate])
+  );
   return (item) => {
     if (Object.keys(attributesWithValidate).length === 0) {
       return;
@@ -17,4 +15,4 @@ module.exports = ((attributes) => {
       throw new Error(`Validation failure on attribute(s) : ${errors.join(', ')}`);
     }
   };
-});
+};
