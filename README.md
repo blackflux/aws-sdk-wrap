@@ -226,6 +226,7 @@ Options include (all optional):
 - `index` (String): Index name.
 - `limit` (Array): Maximum number of items to retrieve.
 - `consistent` (Boolean): Enables [ConsistentRead](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html#DDB-Scan-request-ConsistentRead).
+- `filters` (Object): Conditions to filter the query results after execution (still executed on AWS).
 - `toReturn` (Array): Fields to return.
 - `lastEvaluatedKey` (Object): Primary key of first item to be evaluated by operation.
 
