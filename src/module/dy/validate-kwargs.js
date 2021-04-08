@@ -14,7 +14,13 @@ const schema = Joi.object().keys({
         Joi.boolean(),
         Joi.array(),
         Joi.object()
-      ).optional()
+      ).optional(),
+      validate: Joi.function().arity(1).custom((v, h) => {
+        if (v.constructor.name === 'AsyncFunction') {
+          return h.message('Validate cannot be asynchronous');
+        }
+        return v;
+      }).optional()
     }).nand('partitionKey', 'sortKey')
   ).min(1).custom((v, h) => {
     const attributeValues = Object.values(v);

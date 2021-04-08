@@ -1,6 +1,12 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
 const validateKwargs = require('../../../src/module/dy/validate-kwargs');
+const {
+  validateNoParams,
+  validateOneParam,
+  validateTwoParams,
+  validateAsync
+} = require('../../helper/uncalled-validate-fns');
 
 describe('Testing validate-kwargs.js', () => {
   let exec;
@@ -149,5 +155,60 @@ describe('Testing validate-kwargs.js', () => {
     });
     const result = exec(kwargs);
     expect(result).to.deep.equal(kwargs);
+  });
+
+  it('Testing attribute validate function', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string', validate: validateOneParam }
+      }
+    });
+    const result = exec(kwargs);
+    expect(result).to.deep.equal(kwargs);
+  });
+
+  it('Testing attribute validate not a function', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string', validate: {} }
+      }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: "attributes.name.validate" must be of type function');
+  });
+
+  it('Testing attribute validate with low arity', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string', validate: validateNoParams }
+      }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: "attributes.name.validate" must have an arity of 1');
+  });
+
+  it('Testing attribute validate with high arity', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string', validate: validateTwoParams }
+      }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: "attributes.name.validate" must have an arity of 1');
+  });
+
+  it('Testing attribute validate cannot be async', () => {
+    const kwargs = generateKwargs({
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string', validate: validateAsync }
+      }
+    });
+    const error = exec(kwargs);
+    expect(error.message).to.equal('ValidationError: Validate cannot be asynchronous');
   });
 });
