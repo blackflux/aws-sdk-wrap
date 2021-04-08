@@ -12,12 +12,12 @@ describe('Testing scan', {
   let generateItems;
 
   before(() => {
-    generateItems = (count) => createItems({
+    generateItems = ({ count, age = null }) => createItems({
       count,
       model,
       primaryKey: '123',
       sortKey: 'name',
-      age: 50
+      age: age === null ? 50 : age
     });
   });
   beforeEach(async () => {
@@ -30,7 +30,7 @@ describe('Testing scan', {
   });
 
   it('Testing scan', async () => {
-    const [item] = await generateItems(1);
+    const [item] = await generateItems({ count: 1 });
     const result = await model.scan();
     expect(result).to.deep.equal({
       items: [item]
@@ -38,7 +38,7 @@ describe('Testing scan', {
   });
 
   it('Testing scan with toReturn', async () => {
-    const [item] = await generateItems(1);
+    const [item] = await generateItems({ count: 1 });
     const result = await model.scan({ toReturn: ['name'] });
     expect(result).to.deep.equal({
       items: [{ name: item.name }]
@@ -46,7 +46,7 @@ describe('Testing scan', {
   });
 
   it('Testing scan with index', async () => {
-    const [item] = await generateItems(1);
+    const [item] = await generateItems({ count: 1 });
     const result = await model.scan({
       index: 'targetIndex',
       consistent: false
@@ -57,7 +57,7 @@ describe('Testing scan', {
   });
 
   it('Testing scan with lastEvaluatedKey', async () => {
-    const [item1, item2, item3] = await generateItems(3);
+    const [item1, item2, item3] = await generateItems({ count: 3 });
     const limit = 2;
     const result1 = await model.scan({ limit });
     expect(result1).to.deep.equal({
@@ -77,7 +77,7 @@ describe('Testing scan', {
   });
 
   it('Testing scan with limit not reached', async () => {
-    const [item] = await generateItems(1);
+    const [item] = await generateItems({ count: 1 });
     const result = await model.scan({ limit: 2 });
     expect(result).to.deep.equal({
       items: [item]
@@ -85,7 +85,7 @@ describe('Testing scan', {
   });
 
   it('Testing scan with limit of 1', async () => {
-    const [item] = await generateItems(3);
+    const [item] = await generateItems({ count: 3 });
     const result = await model.scan({ limit: 1 });
     expect(result).to.deep.equal({
       items: [item],
@@ -97,10 +97,33 @@ describe('Testing scan', {
   });
 
   it('Testing scan with limit of 4', async () => {
-    const [firstItem, secondItem, thirdItem] = await generateItems(3);
+    const [firstItem, secondItem, thirdItem] = await generateItems({ count: 3 });
     const result = await model.scan({ limit: 4 });
     expect(result).to.deep.equal({
       items: [firstItem, secondItem, thirdItem]
+    });
+  });
+
+  it('Testing scan with filters', async () => {
+    const [firstItem, secondItem] = await generateItems({
+      count: 3,
+      age: [10, 20, 30]
+    });
+    const result = await model.scan({
+      filters: { attr: 'age', lte: 20 }
+    });
+    expect(result).to.deep.equal({
+      items: [firstItem, secondItem]
+    });
+  });
+
+  it('Testing scan with filters no result', async () => {
+    await generateItems({ count: 3 });
+    const result = await model.scan({
+      filters: { attr: 'age', eq: 0 }
+    });
+    expect(result).to.deep.equal({
+      items: []
     });
   });
 
