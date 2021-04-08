@@ -4,6 +4,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults) => async ({
   index = null,
   limit = 20,
   consistent = true,
+  filters = null,
   toReturn = null,
   lastEvaluatedKey = null
 } = {}) => {
@@ -15,6 +16,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults) => async ({
     ...(index === null ? {} : { index }),
     limit,
     consistent,
+    ...(filters === null ? {} : { filters }),
     ...(toReturn === null ? {} : { attributes: toReturn }),
     ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
   });

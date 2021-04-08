@@ -211,7 +211,7 @@ describe('Testing create', {
       valid: true
     };
     const error = await capture(() => model.create(itemWithValid));
-    expect(error.message).to.equal('Validation failure on attribute(s) : valid');
+    expect(error.message).to.equal('Validation failure on attribute(s): valid');
     expect(await getItemOrNull(key)).to.deep.equal(null);
   });
 });
