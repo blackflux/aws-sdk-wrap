@@ -12,7 +12,7 @@ module.exports = (attributes) => {
       .filter(([k, v]) => k in attributesWithValidate && attributesWithValidate[k](v) !== true)
       .map(([k, _]) => k);
     if (errors.length !== 0) {
-      throw new Error(`Validation failure on attribute(s) : ${errors.join(', ')}`);
+      throw new Error(`Validation failure on attribute(s): ${errors.join(', ')}`);
     }
   };
 };
