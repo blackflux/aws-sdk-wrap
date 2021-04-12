@@ -56,15 +56,30 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
     return { items, lastEvaluatedKey };
   };
 
-  return async (partitionKey, {
-    index = null,
-    limit = 20,
-    consistent = true,
-    conditions = null,
-    filters = null,
-    toReturn = null,
-    cursor
-  } = {}) => {
+  return async (...args) => {
+    Joi.assert(args, Joi.array().ordered(
+      Joi.string(),
+      Joi.object().keys({
+        index: Joi.string().optional(),
+        // eslint-disable-next-line newline-per-chained-call
+        limit: Joi.number().integer().allow(null).min(1).optional(),
+        consistent: Joi.boolean().optional(),
+        conditions: Joi.alternatives(Joi.object(), Joi.array()).optional(),
+        filters: Joi.alternatives(Joi.object(), Joi.array()).optional(),
+        // eslint-disable-next-line newline-per-chained-call
+        toReturn: Joi.array().items(Joi.string()).unique().min(1).optional(),
+        cursor: Joi.string().optional()
+      })
+    ));
+    const [partitionKey, {
+      index = null,
+      limit = 20,
+      consistent = true,
+      conditions = null,
+      filters = null,
+      toReturn = null,
+      cursor
+    } = {}] = args;
     if (index !== null) {
       validateSecondaryIndex(index);
     }

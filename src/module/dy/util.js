@@ -1,4 +1,5 @@
 const assert = require('assert');
+const Joi = require('joi-strict');
 const objectFields = require('object-fields');
 const MergeAttributes = require('./util/merge-attributes');
 const ValidateItem = require('./util/validate-item');
@@ -65,13 +66,25 @@ module.exports = ({
       }
       return sortKey.AttributeName;
     },
-    compileFn: (fn, mustExist) => async (item, {
-      conditions: customConditions = null,
-      onNotFound = onNotFound_,
-      onAlreadyExists = onAlreadyExists_,
-      expectedErrorCodes = [],
-      toReturn = null
-    } = {}) => {
+    compileFn: (fn, mustExist) => async (...args) => {
+      Joi.array().ordered(
+        Joi.object(),
+        Joi.object().keys({
+          conditions: Joi.alternatives(Joi.object(), Joi.array()).optional(),
+          onNotFound: Joi.function().arity(1).optional(),
+          onAlreadyExists: Joi.function().arity(1).optional(),
+          expectedErrorCodes: Joi.array().items(Joi.string()).unique().optional(),
+          // eslint-disable-next-line newline-per-chained-call
+          toReturn: Joi.array().items(Joi.string()).unique().min(1).optional()
+        })
+      );
+      const [item, {
+        conditions: customConditions = null,
+        onNotFound = onNotFound_,
+        onAlreadyExists = onAlreadyExists_,
+        expectedErrorCodes = [],
+        toReturn = null
+      } = {}] = args;
       assert(typeof onNotFound === 'function', onNotFound.length === 1);
       assert(Array.isArray(expectedErrorCodes));
       assert(toReturn === null || (Array.isArray(toReturn) && toReturn.length === new Set(toReturn).size));
