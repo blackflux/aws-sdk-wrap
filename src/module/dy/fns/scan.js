@@ -3,13 +3,13 @@ const Joi = require('joi-strict');
 
 module.exports = (model, validateSecondaryIndex, setDefaults) => async (...args) => {
   Joi.assert(args, Joi.array().ordered(Joi.object().keys({
-    index: Joi.string().allow(null).optional(),
+    index: Joi.string().optional(),
     limit: Joi.number().integer().min(1).optional(),
     consistent: Joi.boolean().optional(),
-    filters: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
+    filters: Joi.alternatives(Joi.object(), Joi.array()).optional(),
     // eslint-disable-next-line newline-per-chained-call
     toReturn: Joi.array().items(Joi.string()).unique().min(1).optional(),
-    lastEvaluatedKey: Joi.object().allow(null).optional()
+    lastEvaluatedKey: Joi.object().optional()
   })));
   const [{
     index = null,

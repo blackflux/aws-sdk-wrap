@@ -60,12 +60,12 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
     Joi.assert(args, Joi.array().ordered(
       Joi.string(),
       Joi.object().keys({
-        index: Joi.string().allow(null).optional(),
+        index: Joi.string().optional(),
         // eslint-disable-next-line newline-per-chained-call
         limit: Joi.number().integer().allow(null).min(1).optional(),
         consistent: Joi.boolean().optional(),
-        conditions: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
-        filters: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
+        conditions: Joi.alternatives(Joi.object(), Joi.array()).optional(),
+        filters: Joi.alternatives(Joi.object(), Joi.array()).optional(),
         // eslint-disable-next-line newline-per-chained-call
         toReturn: Joi.array().items(Joi.string()).unique().min(1).optional(),
         cursor: Joi.string().optional()

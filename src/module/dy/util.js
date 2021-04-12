@@ -70,7 +70,7 @@ module.exports = ({
       Joi.array().ordered(
         Joi.object(),
         Joi.object().keys({
-          conditions: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
+          conditions: Joi.alternatives(Joi.object(), Joi.array()).optional(),
           onNotFound: Joi.function().arity(1).optional(),
           onAlreadyExists: Joi.function().arity(1).optional(),
           expectedErrorCodes: Joi.array().items(Joi.string()).unique().optional(),
