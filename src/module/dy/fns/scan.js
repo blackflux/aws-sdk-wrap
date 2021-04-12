@@ -8,7 +8,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults) => async (...args)
     consistent: Joi.boolean().optional(),
     filters: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
     // eslint-disable-next-line newline-per-chained-call
-    toReturn: Joi.array().items(Joi.string()).unique().min(1).allow(null).optional(),
+    toReturn: Joi.array().items(Joi.string()).unique().min(1).optional(),
     lastEvaluatedKey: Joi.object().allow(null).optional()
   })));
   const [{

@@ -75,7 +75,7 @@ module.exports = ({
           onAlreadyExists: Joi.function().arity(1).optional(),
           expectedErrorCodes: Joi.array().items(Joi.string()).unique().optional(),
           // eslint-disable-next-line newline-per-chained-call
-          toReturn: Joi.array().items(Joi.string()).unique().min(1).allow(null).optional()
+          toReturn: Joi.array().items(Joi.string()).unique().min(1).optional()
         })
       );
       const [item, {

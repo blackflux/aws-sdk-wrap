@@ -67,7 +67,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
         conditions: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
         filters: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
         // eslint-disable-next-line newline-per-chained-call
-        toReturn: Joi.array().items(Joi.string()).unique().min(1).allow(null).optional(),
+        toReturn: Joi.array().items(Joi.string()).unique().min(1).optional(),
         cursor: Joi.string().optional()
       })
     ));
