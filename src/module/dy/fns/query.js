@@ -56,20 +56,22 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
     return { items, lastEvaluatedKey };
   };
 
-  return async (partitionKey, kwargs = {}) => {
-    Joi.assert(partitionKey, Joi.string());
-    Joi.assert(kwargs, Joi.object().keys({
-      index: Joi.string().allow(null).optional(),
-      // eslint-disable-next-line newline-per-chained-call
-      limit: Joi.number().integer().allow(null).min(1).optional(),
-      consistent: Joi.boolean().optional(),
-      conditions: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
-      filters: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
-      // eslint-disable-next-line newline-per-chained-call
-      toReturn: Joi.array().items(Joi.string()).unique().min(1).allow(null).optional(),
-      cursor: Joi.string().optional()
-    }));
-    const {
+  return async (...args) => {
+    Joi.assert(args, Joi.array().ordered(
+      Joi.string(),
+      Joi.object().keys({
+        index: Joi.string().allow(null).optional(),
+        // eslint-disable-next-line newline-per-chained-call
+        limit: Joi.number().integer().allow(null).min(1).optional(),
+        consistent: Joi.boolean().optional(),
+        conditions: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
+        filters: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
+        // eslint-disable-next-line newline-per-chained-call
+        toReturn: Joi.array().items(Joi.string()).unique().min(1).allow(null).optional(),
+        cursor: Joi.string().optional()
+      })
+    ));
+    const [partitionKey, {
       index = null,
       limit = 20,
       consistent = true,
@@ -77,7 +79,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
       filters = null,
       toReturn = null,
       cursor
-    } = kwargs;
+    } = {}] = args;
     if (index !== null) {
       validateSecondaryIndex(index);
     }

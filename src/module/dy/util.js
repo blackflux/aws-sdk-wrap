@@ -66,23 +66,25 @@ module.exports = ({
       }
       return sortKey.AttributeName;
     },
-    compileFn: (fn, mustExist) => async (item, kwargs = {}) => {
-      Joi.assert(item, Joi.object());
-      Joi.assert(kwargs, Joi.object().keys({
-        conditions: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
-        onNotFound: Joi.function().arity(1).optional(),
-        onAlreadyExists: Joi.function().arity(1).optional(),
-        expectedErrorCodes: Joi.array().items(Joi.string()).unique().optional(),
-        // eslint-disable-next-line newline-per-chained-call
-        toReturn: Joi.array().items(Joi.string()).unique().min(1).allow(null).optional()
-      }));
-      const {
+    compileFn: (fn, mustExist) => async (...args) => {
+      Joi.array().ordered(
+        Joi.object(),
+        Joi.object().keys({
+          conditions: Joi.alternatives(Joi.object(), Joi.array()).allow(null).optional(),
+          onNotFound: Joi.function().arity(1).optional(),
+          onAlreadyExists: Joi.function().arity(1).optional(),
+          expectedErrorCodes: Joi.array().items(Joi.string()).unique().optional(),
+          // eslint-disable-next-line newline-per-chained-call
+          toReturn: Joi.array().items(Joi.string()).unique().min(1).allow(null).optional()
+        })
+      );
+      const [item, {
         conditions: customConditions = null,
         onNotFound = onNotFound_,
         onAlreadyExists = onAlreadyExists_,
         expectedErrorCodes = [],
         toReturn = null
-      } = kwargs;
+      } = {}] = args;
       assert(typeof onNotFound === 'function', onNotFound.length === 1);
       assert(Array.isArray(expectedErrorCodes));
       assert(toReturn === null || (Array.isArray(toReturn) && toReturn.length === new Set(toReturn).size));
