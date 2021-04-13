@@ -1,17 +1,29 @@
 const objectScan = require('object-scan');
 
-module.exports = ((sets) => (...versions) => {
+module.exports = ({ sets, numbers }) => (...versions) => {
   const result = {};
   const logic = {
     '*': ({ property: name, value }) => {
       if (name === '$remove') {
         delete result[name];
-      } else if (!sets.includes(name) || Array.isArray(value)) {
-        result[name] = value;
+        return;
       }
+      if (
+        (sets.includes(name) || numbers.includes(name))
+        && value.constructor === Object
+      ) {
+        return;
+      }
+      result[name] = value;
     },
     '$remove[*]': ({ value }) => {
       delete result[value];
+    },
+    '*.$add': ({ key: [name], value }) => {
+      if (!numbers.includes(name)) {
+        return;
+      }
+      result[name] = (name in result ? result[name] : 0) + value;
     },
     '*.$add[*]': ({ key: [name], value }) => {
       if (!sets.includes(name)) {
@@ -47,4 +59,4 @@ module.exports = ((sets) => (...versions) => {
     })(version);
   });
   return result;
-});
+};
