@@ -25,7 +25,8 @@ module.exports = ({
     };
   };
   const sets = Object.entries(attributes).filter(([_, v]) => v.type === 'set').map(([k]) => k);
-  const mergeAttributes = MergeAttributes(sets);
+  const numbers = Object.entries(attributes).filter(([_, v]) => v.type === 'number').map(([k]) => k);
+  const mergeAttributes = MergeAttributes({ sets, numbers });
   const validateItem = ValidateItem(attributes);
   const itemRewriterByFn = {
     update: generateItemRewriter('update', sets),
