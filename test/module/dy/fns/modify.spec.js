@@ -105,7 +105,9 @@ describe('Testing modify', {
 
   it('Testing modify with onUpdate', async () => {
     const logs = [];
-    const onUpdate = (i) => { logs.push(`onUpdate executed: ${JSON.stringify(i)}`); };
+    const onUpdate = (i) => {
+      logs.push(`onUpdate executed: ${JSON.stringify(i)}`);
+    };
     await generateTable({ onUpdate });
     const [item] = await generateItem();
     item.age = 55;
@@ -315,5 +317,41 @@ describe('Testing modify', {
       item
     });
     expect(await model.getItem(item)).to.deep.equal(item);
+  });
+
+  it('Testing modify with number and $add', async () => {
+    await generateTable();
+    const [item] = await generateItem();
+    const expectedItem = {
+      ...item,
+      age: item.age + 1
+    };
+    const result = await model.modify({
+      ...item,
+      age: { $add: 1 }
+    });
+    expect(result).to.deep.equal({
+      created: false,
+      item: expectedItem
+    });
+    expect(await model.getItem(item)).to.deep.equal(expectedItem);
+  });
+
+  it('Testing modify with empty number and $add', async () => {
+    await generateTable({ extraAttrs: { someNumber: { type: 'number' } } });
+    const [item] = await generateItem();
+    const expectedItem = {
+      ...item,
+      someNumber: 1
+    };
+    const result = await model.modify({
+      ...item,
+      someNumber: { $add: 1 }
+    });
+    expect(result).to.deep.equal({
+      created: false,
+      item: expectedItem
+    });
+    expect(await model.getItem(item)).to.deep.equal(expectedItem);
   });
 });
