@@ -2247,10 +2247,10 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
-dynamodb-toolbox@0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/dynamodb-toolbox/-/dynamodb-toolbox-0.3.3.tgz#77343085813c053fa5e123c4a1332ff0e133d953"
-  integrity sha512-6kA+H5rve1OI38XTHbBa06kf+EIzEItxJW/3MoCqhi3YAXdk4uxPIbEu0f+xyd/s8fQRBF7i7ibJnICpDY6g2Q==
+dynamodb-toolbox@0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/dynamodb-toolbox/-/dynamodb-toolbox-0.3.4.tgz#5cd74536d88ae2901375dce0041fac0424c91e95"
+  integrity sha512-5J4f4EMkcO8jJw/TDAVG4Vy0tlCaDOMYILutPUe1fvTFSuw0QKIYPifY17bAj1QKkx2tB96dLEXNntmWoWvDng==
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
