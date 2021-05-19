@@ -241,15 +241,14 @@
       "UpdateExpression": "ADD #age :age",
       "ExpressionAttributeNames": {
         "#age": "age",
-        "#attr1": "id",
-        "#attr2": "name"
+        "#attr1": "id"
       },
       "ExpressionAttributeValues": {
         ":age": {
           "N": "1"
         }
       },
-      "ConditionExpression": "(attribute_exists(#attr1) AND attribute_exists(#attr2))",
+      "ConditionExpression": "attribute_exists(#attr1)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 200,
