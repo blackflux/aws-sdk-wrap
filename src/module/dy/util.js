@@ -93,7 +93,9 @@ module.exports = ({
       validateItem(item);
       let conditions = customConditions;
       if (mustExist !== null) {
-        conditions = [model.schema.KeySchema.map(({ AttributeName: attr }) => ({ attr, exists: mustExist }))];
+        conditions = [model.schema.KeySchema
+          .filter(({ KeyType }) => KeyType === 'HASH')
+          .map(({ AttributeName: attr }) => ({ attr, exists: mustExist }))];
         if (customConditions !== null) {
           conditions.push(Array.isArray(customConditions) ? customConditions : [customConditions]);
         }

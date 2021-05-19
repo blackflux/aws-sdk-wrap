@@ -194,18 +194,17 @@
       "ExpressionAttributeNames": {
         "#age": "age",
         "#attr1": "id",
-        "#attr2": "name",
-        "#attr3": "age"
+        "#attr2": "age"
       },
       "ExpressionAttributeValues": {
         ":age": {
           "N": "55"
         },
-        ":attr3": {
+        ":attr2": {
           "N": "10"
         }
       },
-      "ConditionExpression": "(attribute_exists(#attr1) AND attribute_exists(#attr2)) AND (#attr3 = :attr3)",
+      "ConditionExpression": "(attribute_exists(#attr1)) AND (#attr2 = :attr2)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 400,
