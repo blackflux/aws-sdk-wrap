@@ -254,7 +254,7 @@
           ]
         }
       },
-      "ConditionExpression": "(attribute_exists(#attr1))",
+      "ConditionExpression": "attribute_exists(#attr1)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 200,

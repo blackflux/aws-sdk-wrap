@@ -187,7 +187,7 @@
       "ExpressionAttributeNames": {
         "#attr1": "id"
       },
-      "ConditionExpression": "(attribute_not_exists(#attr1))",
+      "ConditionExpression": "attribute_not_exists(#attr1)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 200,
@@ -214,7 +214,7 @@
       "ExpressionAttributeNames": {
         "#attr1": "id"
       },
-      "ConditionExpression": "(attribute_not_exists(#attr1))",
+      "ConditionExpression": "attribute_not_exists(#attr1)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 400,

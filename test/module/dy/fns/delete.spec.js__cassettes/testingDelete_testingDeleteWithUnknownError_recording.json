@@ -165,7 +165,7 @@
       "ExpressionAttributeNames": {
         "#attr1": "id"
       },
-      "ConditionExpression": "(attribute_exists(#attr1))"
+      "ConditionExpression": "attribute_exists(#attr1)"
     },
     "status": 400,
     "response": "Error",
