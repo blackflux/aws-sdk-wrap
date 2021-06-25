@@ -19,9 +19,9 @@ module.exports = ({
         assert(queueUrl !== undefined);
         const groupIdFunction = steps[msg.name].groupIdFunction;
         if (groupIdFunction !== null) {
-          prepareMessage(msg, {
-            groupId: groupIdFunction(msg)
-          });
+          const groupId = groupIdFunction(msg);
+          assert(typeof groupId === 'string', msg);
+          prepareMessage(msg, { groupId });
         }
         const delay = steps[msg.name].delay;
         assert(delay !== undefined);
