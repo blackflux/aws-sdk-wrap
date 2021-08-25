@@ -74,8 +74,8 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
     ));
     const [partitionKey, {
       index = null,
-      limit = 20,
-      scanIndexForward = true,
+      limit = undefined,
+      scanIndexForward = undefined,
       consistent = true,
       conditions = null,
       filters = null,
@@ -91,11 +91,15 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
       assert(attr === conditions.attr, `Expected conditions.attr to be "${attr}"`);
     }
     const {
-      limit: queryLimit = limit,
-      scanIndexForward: queryScanIndexForward = scanIndexForward,
+      limit: queryLimit = 20,
+      scanIndexForward: queryScanIndexForward = true,
       lastEvaluatedKey = null,
       currentPage = null
-    } = fromCursor(cursor);
+    } = {
+      ...fromCursor(cursor),
+      ...(limit === undefined ? {} : { limit }),
+      ...(scanIndexForward === undefined ? {} : { scanIndexForward })
+    };
     const result = await queryItems({
       partitionKey,
       index,
