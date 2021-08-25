@@ -23,7 +23,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
     index,
     queryLimit,
     consistent,
-    scanIndexForward,
+    queryScanIndexForward,
     conditions,
     filters,
     toReturn,
@@ -38,7 +38,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
         ...(index === null ? {} : { index }),
         ...(queryLimit === null ? {} : { limit: queryLimit - items.length }),
         consistent,
-        reverse: scanIndexForward === false,
+        reverse: queryScanIndexForward === false,
         ...(conditions === null ? {} : Object.entries(conditions)
           .filter(([k, _]) => k !== 'attr')
           .reduce((prev, [k, v]) => {
@@ -63,6 +63,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
         index: Joi.string().optional(),
         // eslint-disable-next-line newline-per-chained-call
         limit: Joi.number().integer().allow(null).min(1).optional(),
+        scanIndexForward: Joi.boolean().optional(),
         consistent: Joi.boolean().optional(),
         conditions: Joi.alternatives(Joi.object(), Joi.array()).optional(),
         filters: Joi.alternatives(Joi.object(), Joi.array()).optional(),
@@ -73,7 +74,8 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
     ));
     const [partitionKey, {
       index = null,
-      limit = 20,
+      limit = undefined,
+      scanIndexForward = undefined,
       consistent = true,
       conditions = null,
       filters = null,
@@ -89,17 +91,21 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
       assert(attr === conditions.attr, `Expected conditions.attr to be "${attr}"`);
     }
     const {
-      limit: queryLimit = limit,
-      scanIndexForward = true,
+      limit: queryLimit = 20,
+      scanIndexForward: queryScanIndexForward = true,
       lastEvaluatedKey = null,
       currentPage = null
-    } = fromCursor(cursor);
+    } = {
+      ...fromCursor(cursor),
+      ...(limit === undefined ? {} : { limit }),
+      ...(scanIndexForward === undefined ? {} : { scanIndexForward })
+    };
     const result = await queryItems({
       partitionKey,
       index,
       queryLimit,
       consistent,
-      scanIndexForward,
+      queryScanIndexForward,
       conditions,
       filters,
       toReturn,
@@ -108,6 +114,7 @@ module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex)
     const page = buildPageObject({
       currentPage: currentPage === null ? 1 : currentPage,
       limit: queryLimit,
+      scanIndexForward: queryScanIndexForward,
       lastEvaluatedKey: result.lastEvaluatedKey === undefined ? null : result.lastEvaluatedKey
     });
     return {

@@ -24,12 +24,14 @@ module.exports.fromCursor = (cursor = null) => {
   };
 };
 
-module.exports.buildPageObject = ({ currentPage, limit, lastEvaluatedKey }) => {
+module.exports.buildPageObject = ({
+  currentPage, limit, scanIndexForward, lastEvaluatedKey
+}) => {
   const next = lastEvaluatedKey === null ? null : { limit };
   if (next !== null) {
     next.cursor = toCursor({
       lastEvaluatedKey,
-      scanIndexForward: true,
+      scanIndexForward,
       currentPage: currentPage + 1,
       ...next
     });
