@@ -365,4 +365,36 @@ describe('Testing query', {
       }
     });
   });
+
+  it('Testing query with cursor overrides scanIndexForward', async () => {
+    const [firstItem, secondItem, thirdItem] = await setupThreeItems();
+    const firstResult = await model.query(primaryKey, {
+      scanIndexForward: false,
+      limit: 2
+    });
+    expect(firstResult).to.deep.equal({
+      items: [thirdItem, secondItem],
+      page: {
+        next: {
+          limit: 2,
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6ZmFsc2UsImxhc3RFdmFsdWF0ZWRLZXkiOnsibmFtZSI6Im5hbWUtMiIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+        },
+        index: { current: 1 },
+        size: 2
+      }
+    });
+    const secondResult = await model.query(primaryKey, {
+      cursor: firstResult.page.next.cursor,
+      scanIndexForward: true
+    });
+    expect(secondResult).to.deep.equal({
+      items: [firstItem],
+      page: {
+        next: null,
+        index: { current: 2 },
+        size: 2
+      }
+    });
+  });
 });
