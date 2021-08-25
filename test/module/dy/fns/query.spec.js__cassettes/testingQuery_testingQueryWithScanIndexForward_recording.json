@@ -106,7 +106,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1629826454.747,
+        "CreationDateTime": 1629926520.955,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -119,7 +119,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1629826454.747
+          "LastUpdateToPayPerRequestDateTime": 1629926520.955
         },
         "GlobalSecondaryIndexes": [
           {
@@ -392,6 +392,53 @@
     "method": "POST",
     "path": "/",
     "body": {
+      "TableName": "table-name",
+      "KeyConditionExpression": "#pk = :pk",
+      "ExpressionAttributeNames": {
+        "#pk": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":pk": {
+          "S": "123"
+        }
+      },
+      "Limit": 2,
+      "ScanIndexForward": false,
+      "ConsistentRead": true,
+      "ExclusiveStartKey": {
+        "name": {
+          "S": "name-2"
+        },
+        "id": {
+          "S": "123"
+        }
+      }
+    },
+    "status": 200,
+    "response": {
+      "Items": [
+        {
+          "name": {
+            "S": "name"
+          },
+          "age": {
+            "N": "50"
+          },
+          "id": {
+            "S": "123"
+          }
+        }
+      ],
+      "Count": 1,
+      "ScannedCount": 1
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
       "TableName": "table-name"
     },
     "status": 200,
@@ -423,7 +470,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1629826454.747,
+        "CreationDateTime": 1629926520.955,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -436,7 +483,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1629826454.747
+          "LastUpdateToPayPerRequestDateTime": 1629926520.955
         },
         "GlobalSecondaryIndexes": [
           {
