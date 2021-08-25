@@ -27,6 +27,7 @@ describe('Testing paging', () => {
     const result = buildPageObject({
       currentPage: 0,
       limit: 20,
+      scanIndexForward: true,
       lastEvaluatedKey: { id: '123', name: 'name' }
     });
     expect(result).to.deep.equal({
