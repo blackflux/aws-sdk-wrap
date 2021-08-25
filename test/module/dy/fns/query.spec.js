@@ -368,13 +368,6 @@ describe('Testing query', {
       cursor: firstResult.page.next.cursor,
       scanIndexForward: true
     });
-    expect(thirdResult).to.deep.equal({
-      items: [firstItem],
-      page: {
-        next: null,
-        index: { current: 2 },
-        size: 2
-      }
-    });
+    expect(thirdResult).to.deep.equal(secondResult);
   });
 });
