@@ -67,7 +67,7 @@ module.exports = (stepsDir, queues) => fs
       );
       assert(
         retry === null || next.includes(name),
-        'Step must be defined in next when retry defined.'
+        'Step name must be defined in "next" when "retry" defined.'
       );
       return {
         name,
