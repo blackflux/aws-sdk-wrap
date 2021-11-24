@@ -65,6 +65,10 @@ module.exports = (stepsDir, queues) => fs
         typeof after === 'function' && after.length === 1,
         'Invalid after() definition for step.'
       );
+      assert(
+        retry === null || next.includes(name),
+        'Step must be defined in next when retry defined.'
+      );
       return {
         name,
         handler: (payload, ...args) => {
