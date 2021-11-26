@@ -5,7 +5,11 @@ docker run \
   -p 0.0.0.0:8000:8000 \
   -d amazon/dynamodb-local
 
-docker build -t lambda-environment-node ./docker &&
+docker build \
+  -t lambda-environment-node \
+  --network="host" \
+  -f docker/Dockerfile \
+  . &&
 docker run \
   --link dynamodb-local \
   -u`id -u`:`id -g` \
