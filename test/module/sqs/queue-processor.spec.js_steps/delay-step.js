@@ -11,7 +11,9 @@ module.exports.schema = Joi.object().keys({
 
 module.exports.before = async (context, payloads) => [];
 module.exports.handler = async (payload, event, context) => new Promise(
-  (resolve) => setTimeout(() => resolve([]), payload.delay)
+  (resolve) => {
+    setTimeout(() => resolve([]), payload.delay);
+  }
 );
 module.exports.after = async (context) => [];
 
