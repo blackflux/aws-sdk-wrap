@@ -1,5 +1,7 @@
 const Joi = require('joi-strict');
 
+module.exports.name = 'step-auto-retry';
+
 module.exports.queue = 'one';
 
 module.exports.retry = {

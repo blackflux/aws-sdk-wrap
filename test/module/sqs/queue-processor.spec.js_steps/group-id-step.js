@@ -1,6 +1,8 @@
 const Joi = require('joi-strict');
 const objectHash = require('object-hash-strict');
 
+module.exports.name = 'group-id-step';
+
 module.exports.queue = 'one';
 
 module.exports.groupIdFunction = (msg) => objectHash(msg);

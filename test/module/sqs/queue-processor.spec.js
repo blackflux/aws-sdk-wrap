@@ -1,7 +1,21 @@
 const expect = require('chai').expect;
+const fs = require('smart-fs');
+const path = require('path');
 const { describe } = require('node-tdd');
 const Index = require('../../../src/index');
 const { getDelaySeconds, prepareMessage } = require('../../../src/module/sqs/prepare-message');
+const stepAutoRetry = require('./queue-processor.spec.js_steps/auto-retry');
+const stepAutoRetryBackoffFn = require('./queue-processor.spec.js_steps/auto-retry-backoff-fn');
+const stepBadOutput = require('./queue-processor.spec.js_steps/bad-output');
+const stepDelayStep = require('./queue-processor.spec.js_steps/delay-step');
+const stepDisallowedOutput = require('./queue-processor.spec.js_steps/disallowed-output');
+const stepGroupIdStep = require('./queue-processor.spec.js_steps/group-id-step');
+const stepParallelStep = require('./queue-processor.spec.js_steps/parallel-step');
+const stepStep1 = require('./queue-processor.spec.js_steps/step1');
+const stepStep2 = require('./queue-processor.spec.js_steps/step2');
+const stepStep3 = require('./queue-processor.spec.js_steps/step3');
+const stepStepAutoRetry = require('./queue-processor.spec.js_steps/step-auto-retry');
+const stepUrgentMessage = require('./queue-processor.spec.js_steps/step-urgent-message');
 
 describe('Testing QueueProcessor', {
   useNock: true,
@@ -19,7 +33,20 @@ describe('Testing QueueProcessor', {
         one: process.env.QUEUE_URL_ONE,
         two: process.env.QUEUE_URL_TWO
       },
-      stepsDir: `${__filename}_steps`,
+      steps: [
+        stepAutoRetry,
+        stepAutoRetryBackoffFn,
+        stepBadOutput,
+        stepDelayStep,
+        stepDisallowedOutput,
+        stepGroupIdStep,
+        stepParallelStep,
+        stepStep1,
+        stepStep2,
+        stepStep3,
+        stepStepAutoRetry,
+        stepUrgentMessage
+      ],
       ingestSteps: ['step1', 'step3', 'group-id-step', 'step-urgent-message']
     });
     executor = (records, queue = null) => new Promise((resolve, reject) => {
@@ -54,51 +81,8 @@ describe('Testing QueueProcessor', {
   });
 
   it('Visualize', async () => {
-    expect(processor.digraph()).to.deep.equal([
-      '# Visualize at http://viz-js.com/',
-      'digraph G {',
-      '  subgraph cluster_0 {',
-      '    label="one";',
-      '    style=filled;',
-      '    color=lightgrey;',
-      '    node [label="node",style=filled,color=white];',
-      '    autoRetryBackoffFn [label="auto-retry-backoff-fn"];',
-      '    autoRetry [label="auto-retry",color=red];',
-      '    badOutput [label="bad-output"];',
-      '    delayStep [label="delay-step",color=red];',
-      '    disallowedOutput [label="disallowed-output"];',
-      '    groupIdStep [label="group-id-step"];',
-      '    stepAutoRetry [label="step-auto-retry"];',
-      '    stepUrgentMessage [label="step-urgent-message",color=red];',
-      '    step1 [label="step1"];',
-      '  }',
-      '  subgraph cluster_1 {',
-      '    label="two";',
-      '    style=filled;',
-      '    color=lightgrey;',
-      '    node [label="node",style=filled,color=white];',
-      '    parallelStep [label="parallel-step",color=red,shape=doublecircle];',
-      '    step2 [label="step2"];',
-      '    step3 [label="step3",shape=doublecircle];',
-      '  }',
-      '  ',
-      '  _ingest [shape=Mdiamond,label=ingest];',
-      '  _ingest -> step1;',
-      '  _ingest -> step3;',
-      '  _ingest -> groupIdStep;',
-      '  _ingest -> stepUrgentMessage;',
-      '  ',
-      '  autoRetryBackoffFn -> autoRetryBackoffFn;',
-      '  autoRetry -> autoRetry;',
-      '  badOutput -> step2;',
-      '  parallelStep -> parallelStep;',
-      '  stepAutoRetry -> stepAutoRetry;',
-      '  stepUrgentMessage -> step1;',
-      '  step1 -> step2;',
-      '  step3 -> step1;',
-      '  step3 -> step3;',
-      '}'
-    ]);
+    const r = fs.smartWrite(path.join(__dirname, 'digraph.dot'), processor.digraph());
+    expect(r).to.equal(false);
   });
 
   it('Testing bad queue provided', () => {

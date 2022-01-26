@@ -54,7 +54,8 @@
     "js-gardener": "3.0.3",
     "node-tdd": "3.1.0",
     "nyc": "15.1.0",
-    "semantic-release": "17.4.7"
+    "semantic-release": "17.4.7",
+    "smart-fs": "2.0.3"
   },
   "peerDependencies": {
     "aws-sdk": "^2.296.0"
@@ -110,7 +111,6 @@
     "object-fields": "3.0.1",
     "object-hash-strict": "3.0.1",
     "object-scan": "17.1.0",
-    "promise-pool-ext": "2.1.2",
-    "smart-fs": "2.0.3"
+    "promise-pool-ext": "2.1.2"
   }
 }

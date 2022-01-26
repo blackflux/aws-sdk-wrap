@@ -1,6 +1,8 @@
 const Joi = require('joi-strict');
 const { RetryError } = require('../../../../src/module/sqs/errors');
 
+module.exports.name = 'auto-retry';
+
 module.exports.queue = 'one';
 
 module.exports.schema = Joi.object().keys({
