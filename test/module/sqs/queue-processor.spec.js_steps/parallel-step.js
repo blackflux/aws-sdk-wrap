@@ -1,5 +1,7 @@
 const Joi = require('joi-strict');
 
+module.exports.name = 'parallel-step';
+
 module.exports.queue = 'two';
 
 module.exports.schema = Joi.object().keys({

@@ -1,6 +1,8 @@
 const Joi = require('joi-strict');
 const { prepareMessage } = require('../../../../src/module/sqs/prepare-message');
 
+module.exports.name = 'step1';
+
 module.exports.queue = 'one';
 
 module.exports.schema = Joi.object().keys({

@@ -22,11 +22,15 @@ module.exports = ({
   Joi.assert(opts, Joi.object().keys({
     // queue urls can be undefined when QueueProcessor is instantiated.
     queues: Joi.object().pattern(Joi.string(), Joi.string().optional()),
-    stepsDir: Joi.string(),
+    steps: Joi.array().items(Joi.object()),
     ingestSteps: Joi.array().unique().min(1).items(Joi.string())
   }));
-  const { queues, stepsDir, ingestSteps } = opts;
-  const steps = loadSteps(stepsDir, queues);
+  const {
+    queues,
+    steps: stepsRaw,
+    ingestSteps
+  } = opts;
+  const steps = loadSteps(stepsRaw, queues);
   assert(
     Object.keys(queues).every((queue) => Object.values(steps).some((step) => queue === step.queue)),
     'Unused queue(s) defined.'
