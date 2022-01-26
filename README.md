@@ -76,7 +76,7 @@ The available sendMessageBatch `options` are detailed below.
 
 Return the Dead Letter Queue Url configured for the passed queue url
 
-#### sqs.QueueProcessor({ queueUrls: String[], stepsDir: String, ingestSteps: String[] })
+#### sqs.QueueProcessor({ queueUrls: String[], steps: Array<Object>, ingestSteps: String[] })
 
 Initialize a queue processor lambda handler with steps. Steps need to be defined in the steps directory as separate `STEPNAME.js` files. Each queueUrl used by a step must be defined in queueUrls.
 

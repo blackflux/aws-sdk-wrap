@@ -1,5 +1,7 @@
 const Joi = require('joi-strict');
 
+module.exports.name = 'delay-step';
+
 module.exports.queue = 'one';
 
 module.exports.timeout = 1;

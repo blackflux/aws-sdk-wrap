@@ -1,17 +1,13 @@
 const assert = require('assert');
-const fs = require('smart-fs');
-const path = require('path');
 const Joi = require('joi-strict');
 const { Pool } = require('promise-pool-ext');
 const errors = require('../errors');
 
-module.exports = (stepsDir, queues) => fs
-  .readdirSync(stepsDir)
-  .reduce((p, step) => Object.assign(p, {
-    [step.slice(0, -3)]: (() => {
-      const name = step.slice(0, -3);
-      const stepLogic = fs.smartRead(path.join(stepsDir, step));
+module.exports = (steps, queues) => steps
+  .reduce((p, logic) => Object.assign(p, {
+    [logic.name]: (() => {
       const {
+        name,
         schema,
         handler,
         next,
@@ -22,7 +18,8 @@ module.exports = (stepsDir, queues) => fs
         groupIdFunction = null,
         before = async (stepContext, payloads) => [],
         after = async (stepContext) => []
-      } = stepLogic;
+      } = logic;
+      assert(typeof name === 'string', 'Step name must be a string.');
       assert(Joi.isSchema(schema) === true, 'Schema not a Joi schema.');
       assert(
         typeof handler === 'function' && handler.length === 3,
@@ -87,7 +84,7 @@ module.exports = (stepsDir, queues) => fs
         groupIdFunction,
         before,
         after,
-        isParallel: typeof stepLogic.before === 'function' && typeof stepLogic.after === 'function'
+        isParallel: typeof logic.before === 'function' && typeof logic.after === 'function'
       };
     })()
   }), {});
