@@ -89,6 +89,7 @@ Each `step` should export:
  - `retry = null` (optional): Declare object that is then used to instantiate `RetryError` internally
  - `timeout = 900` (optional): Timeout for individual step. Should allow for extra overhead for message management / processing and account for concurrency.
  - `groupIdFunction = undefined` (optional): Generator function for the groupId. Takes step payload as parameter
+ - `deduplicationIdFunction = undefined` (optional): Generator function for the deduplicationId. Takes step payload as parameter
  - `before<function(stepContext, payloads[]): steps>` (optional): called before first step is executed
  - `after<function(stepContext): steps>` (optional):
 
@@ -110,6 +111,7 @@ Please see tests for example.
 Prepare message object with options. Currently options include:
 - `delaySeconds` (integer): used to set the delay for a specific message. Supersedes the corresponding batch option.
 - `groupId` (string): group id for the message, can only be set for steps that do not define `groupIdFunction`
+- `deduplicationId` (string): deduplication id for the message, can only be set for steps that do not define `deduplicationIdFunction`
 - `urgent` (boolean): message is immediately enqueued if returned from before or handler, instead of at the very end
 
 #### s3.putGzipObject({ bucket: String, key: String, data: Object })
