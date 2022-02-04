@@ -16,6 +16,7 @@ module.exports = (steps, queues) => steps
         retry = null,
         timeout = 900,
         groupIdFunction = null,
+        deduplicationIdFunction = null,
         before = async (stepContext, payloads) => [],
         after = async (stepContext) => []
       } = logic;
@@ -55,6 +56,11 @@ module.exports = (steps, queues) => steps
         'groupIdFunction must be a function taking one argument.'
       );
       assert(
+        deduplicationIdFunction === null
+        || (typeof deduplicationIdFunction === 'function' && deduplicationIdFunction.length === 1),
+        'deduplicationIdFunction must be a function taking one argument.'
+      );
+      assert(
         typeof before === 'function' && before.length === 2,
         'Invalid before() definition for step.'
       );
@@ -82,6 +88,7 @@ module.exports = (steps, queues) => steps
           timeout: timeout * 1000
         }),
         groupIdFunction,
+        deduplicationIdFunction,
         before,
         after,
         isParallel: typeof logic.before === 'function' && typeof logic.after === 'function'
