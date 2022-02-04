@@ -3,7 +3,7 @@
     "scope": "https://sqs.us-west-2.amazonaws.com:443",
     "method": "POST",
     "path": "/",
-    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.Id=197338d19599dc3c72e89abd68c10fbfd9cca974&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22group-id-step%22%2C%22meta%22%3A%22meta1%22%7D&SendMessageBatchRequestEntry.1.MessageDeduplicationId=2e86fd4abefc261133d2bfcb9f573259ca0366af&SendMessageBatchRequestEntry.1.MessageGroupId=197338d19599dc3c72e89abd68c10fbfd9cca974&Version=2012-11-05",
+    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.Id=197338d19599dc3c72e89abd68c10fbfd9cca974&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22group-id-step%22%2C%22meta%22%3A%22meta1%22%7D&SendMessageBatchRequestEntry.1.MessageDeduplicationId=197338d19599dc3c72e89abd68c10fbfd9cca974&SendMessageBatchRequestEntry.1.MessageGroupId=197338d19599dc3c72e89abd68c10fbfd9cca974&Version=2012-11-05",
     "status": 200,
     "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>197338d19599dc3c72e89abd68c10fbfd9cca974</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>a363d225d837c551f0c30f5cef1fe784</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>"
   }

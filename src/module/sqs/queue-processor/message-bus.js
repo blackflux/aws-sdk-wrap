@@ -23,6 +23,12 @@ module.exports = ({
           assert(typeof groupId === 'string', msg);
           prepareMessage(msg, { groupId });
         }
+        const deduplicationIdFunction = steps[msg.name].deduplicationIdFunction;
+        if (deduplicationIdFunction !== null) {
+          const deduplicationId = deduplicationIdFunction(msg);
+          assert(typeof deduplicationId === 'string', msg);
+          prepareMessage(msg, { deduplicationId });
+        }
         const delay = steps[msg.name].delay;
         assert(delay !== undefined);
         if (delay !== 0) {

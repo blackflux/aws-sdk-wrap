@@ -3,10 +3,12 @@ const Joi = require('joi-strict');
 
 const URGENT = Symbol('urgent');
 const GROUP_ID = Symbol('group-id');
+const DEDUPLICATION_ID = Symbol('deduplication-id');
 const DELAY_SECONDS = Symbol('delay-seconds');
 
 module.exports.getUrgent = (msg) => msg[URGENT];
 module.exports.getGroupId = (msg) => msg[GROUP_ID];
+module.exports.getDeduplicationId = (msg) => msg[DEDUPLICATION_ID];
 module.exports.getDelaySeconds = (msg) => msg[DELAY_SECONDS];
 
 module.exports.clone = (msg) => {
@@ -21,6 +23,7 @@ module.exports.prepareMessage = (msg, opts) => {
   Joi.assert(opts, Joi.object().keys({
     urgent: Joi.boolean().optional(),
     groupId: Joi.string().optional(),
+    deduplicationId: Joi.string().optional(),
     // eslint-disable-next-line newline-per-chained-call
     delaySeconds: Joi.number().integer().min(0).max(15 * 60).optional()
   }));
@@ -37,6 +40,18 @@ module.exports.prepareMessage = (msg, opts) => {
     );
     Object.defineProperty(msg, GROUP_ID, {
       value: opts.groupId,
+      writable: false
+    });
+  }
+  if (opts.deduplicationId !== undefined) {
+    assert(
+      typeof opts.deduplicationId === 'string'
+      && opts.deduplicationId.length <= 128
+      && opts.deduplicationId.length !== 0,
+      `Invalid Message Group Id ( MessageDeduplicationId = ${opts.deduplicationId} )`
+    );
+    Object.defineProperty(msg, DEDUPLICATION_ID, {
+      value: opts.deduplicationId,
       writable: false
     });
   }
