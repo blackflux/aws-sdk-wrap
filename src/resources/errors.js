@@ -1,8 +1,9 @@
 // eslint-disable-next-line max-classes-per-file
 class SendMessageBatchError extends Error {
-  constructor(message) {
+  constructor(message, failedMessages) {
     super(message);
     this.name = 'SendMessageBatchError';
+    this.failedMessages = failedMessages;
   }
 }
 module.exports.SendMessageBatchError = SendMessageBatchError;
