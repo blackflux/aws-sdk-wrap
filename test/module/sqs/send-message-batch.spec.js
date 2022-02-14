@@ -101,8 +101,14 @@ describe('Testing sendMessageBatch', {
       expect(err).instanceof(SendMessageBatchError);
       expect(err.context).to.deep.equal({
         failedMessages: [
-          // eslint-disable-next-line max-len
-          '{"type":"webhook","url":"https://some-url.com/path","meta":"c53be1ec6a664cb0820aa5fa8b9915ea","event":{"name":"event_name"}}'
+          {
+            type: 'webhook',
+            url: 'https://some-url.com/path',
+            meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
+            event: {
+              name: 'event_name'
+            }
+          }
         ]
       });
     }

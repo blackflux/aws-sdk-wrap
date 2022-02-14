@@ -7,6 +7,8 @@ const objectHash = require('object-hash-strict');
 const { getGroupId, getDeduplicationId, getDelaySeconds } = require('./prepare-message');
 const { SendMessageBatchError, MessageCollisionError } = require('../../resources/errors');
 
+const msgRaw = Symbol('msg-raw');
+
 const sleep = util.promisify(setTimeout);
 
 const sendBatch = async (sqsBatch, queueUrl, {
@@ -59,6 +61,7 @@ const transformMessages = ({ messages, batchDelaySeconds }) => {
     result[id] = {
       Id: id,
       MessageBody: JSON.stringify(msg),
+      [msgRaw]: msg,
       ...(msgGroupId === undefined ? {} : {
         MessageGroupId: msgGroupId,
         MessageDeduplicationId: objectHash({
@@ -111,7 +114,7 @@ module.exports = ({ call, getService, logger }) => async (opts) => {
       rtn: 'parent'
     }))(messageChunks);
     throw new SendMessageBatchError(JSON.stringify(result), {
-      failedMessages: failedMessages.map(({ MessageBody }) => MessageBody)
+      failedMessages: failedMessages.map((msg) => msg[msgRaw])
     });
   }
   return result;
