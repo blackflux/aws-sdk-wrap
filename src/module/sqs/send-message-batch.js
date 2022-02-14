@@ -105,20 +105,14 @@ module.exports = ({ call, getService, logger }) => async (opts) => {
       logger
     })));
   if (messages.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
-    const failed = objectScan(['[*][*].Failed[*].Id'], ({
-      filterFn: ({ value, context }) => {
-        context.add(value);
-      }
-    }))(result, new Set());
-    const messagesById = objectScan(['[*][*]'], ({
-      filterFn: ({ value, context }) => {
-        context[value.Id] = value.MessageBody;
-      }
-    }))(messageChunks, {});
-    const failedMessages = Object.entries(messagesById)
-      .filter(([k, _]) => failed.has(k))
-      .map(([_, v]) => v);
-    throw new SendMessageBatchError(JSON.stringify(result), failedMessages);
+    const failedIds = objectScan(['[*][*].Failed[*].Id'], ({ rtn: 'value' }))(result);
+    const failedMessages = objectScan(['[*][*].Id'], ({
+      filterFn: ({ value }) => failedIds.includes(value),
+      rtn: 'parent'
+    }))(messageChunks);
+    throw new SendMessageBatchError(JSON.stringify(result), {
+      failedMessages: failedMessages.map(({ MessageBody }) => MessageBody)
+    });
   }
   return result;
 };
