@@ -38,7 +38,7 @@ module.exports = ({
     tasks.push([[...msgs], queueUrl]);
   };
   return {
-    addDlqMessage: (msgs, queueUrl) => {
+    addDlqMessages: (queueUrl, msgs) => {
       msgs.forEach((msg) => {
         prepareGroupId(msg, steps);
         prepareDeduplicationId(msg, steps);
