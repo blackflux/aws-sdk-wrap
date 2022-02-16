@@ -99,6 +99,18 @@ describe('Testing sendMessageBatch', {
       });
     } catch (err) {
       expect(err).instanceof(SendMessageBatchError);
+      expect(err.context).to.deep.equal({
+        failedMessages: [
+          {
+            type: 'webhook',
+            url: 'https://some-url.com/path',
+            meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
+            event: {
+              name: 'event_name'
+            }
+          }
+        ]
+      });
     }
   });
 
