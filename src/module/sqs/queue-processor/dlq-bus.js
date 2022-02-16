@@ -23,7 +23,7 @@ module.exports = ({
         });
       await globalPool(fns);
       inProgress.forEach(([url, msgs]) => {
-        messageBus.addDlqMessages(dlqCache[url], msgs);
+        messageBus.addDlqMessages(msgs, dlqCache[url]);
       });
     }
   };
