@@ -1,10 +1,13 @@
 const util = require('util');
 const chunk = require('lodash.chunk');
 const get = require('lodash.get');
+const objectScan = require('object-scan');
 const Joi = require('joi-strict');
 const objectHash = require('object-hash-strict');
 const { getGroupId, getDeduplicationId, getDelaySeconds } = require('./prepare-message');
 const { SendMessageBatchError, MessageCollisionError } = require('../../resources/errors');
+
+const msgRaw = Symbol('msg-raw');
 
 const sleep = util.promisify(setTimeout);
 
@@ -58,6 +61,7 @@ const transformMessages = ({ messages, batchDelaySeconds }) => {
     result[id] = {
       Id: id,
       MessageBody: JSON.stringify(msg),
+      [msgRaw]: msg,
       ...(msgGroupId === undefined ? {} : {
         MessageGroupId: msgGroupId,
         MessageDeduplicationId: objectHash({
@@ -104,7 +108,14 @@ module.exports = ({ call, getService, logger }) => async (opts) => {
       logger
     })));
   if (messages.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
-    throw new SendMessageBatchError(JSON.stringify(result));
+    const failedIds = objectScan(['[*][*].Failed[*].Id'], ({ rtn: 'value' }))(result);
+    const failedMessages = objectScan(['[*][*].Id'], ({
+      filterFn: ({ value }) => failedIds.includes(value),
+      rtn: 'parent'
+    }))(messageChunks);
+    throw new SendMessageBatchError(JSON.stringify(result), {
+      failedMessages: failedMessages.map((msg) => msg[msgRaw])
+    });
   }
   return result;
 };
