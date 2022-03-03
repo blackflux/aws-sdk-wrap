@@ -135,8 +135,9 @@ limit is reached or no more keys are available. Uses [s3:listObjectsV2](https://
 Returns a non-ASCII key representation for an encoded s3 key. Useful to obtain the
 not-encoded key representation after calling `listObjects`.
 
-#### dy.Model({ name: String, attributes: Object, indices: Object, onNotFound: Function, onUpdate: Function, onCreate: Function })
+#### dy.Model({ name: String, attributes: Object, indices: Object, timestamps: Boolean, onNotFound: Function, onUpdate: Function, onCreate: Function })
 Options details:
+- `timestamps` (Boolean): Automatically add and manage `created` and `modified` attributes.
 - `onNotFound` (Function): Return value is returned from corresponding function. Return value is returned from corresponding function.
 - `onUpdate` (Function): Executed after an item is updated successfully.
 - `onCreate` (Function): Executed after an item is created successfully.

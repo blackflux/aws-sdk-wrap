@@ -28,6 +28,7 @@ module.exports.buildModel = ({
   extraAttrs = null,
   extraIndices = null,
   onUpdate = null,
+  timestamps = null,
   onCreate = null,
   onDelete = null
 } = {}) => {
@@ -65,6 +66,7 @@ module.exports.buildModel = ({
       },
       ...(extraIndices === null ? {} : { ...extraIndices })
     },
+    ...(timestamps === null ? {} : { timestamps }),
     ...(onUpdate === null ? {} : { onUpdate }),
     ...(onCreate === null ? {} : { onCreate }),
     ...(onDelete === null ? {} : { onDelete }),

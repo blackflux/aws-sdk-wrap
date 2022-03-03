@@ -17,6 +17,7 @@ module.exports = ({ call, getService, logger }) => ({
     name,
     attributes,
     indices,
+    timestamps,
     onNotFound: onNotFound_ = (key) => { throw new ModelNotFound(); },
     onAlreadyExists: onAlreadyExists_ = (key) => { throw new ModelAlreadyExists(); },
     onUpdate = async (item) => {},
@@ -31,6 +32,7 @@ module.exports = ({ call, getService, logger }) => ({
       name,
       attributes,
       indices,
+      timestamps,
       DocumentClient: getService('DynamoDB.DocumentClient')
     });
     const {

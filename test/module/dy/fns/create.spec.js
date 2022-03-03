@@ -6,6 +6,7 @@ const { ModelAlreadyExists } = require('../../../../src/resources/errors');
 describe('Testing create', {
   useNock: true,
   nockStripHeaders: true,
+  timestamp: '2022-03-03T17:58:54.603Z',
   envVarsFile: '../../../default.env.yml'
 }, () => {
   let model;
@@ -16,8 +17,8 @@ describe('Testing create', {
   let generateTable;
 
   before(() => {
-    generateTable = async ({ onCreate, extraAttrs } = {}) => {
-      model = buildModel({ onCreate, extraAttrs });
+    generateTable = async ({ onCreate, extraAttrs, timestamps } = {}) => {
+      model = buildModel({ onCreate, extraAttrs, timestamps });
       localTable = LocalTable(model);
       await localTable.create();
     };
@@ -213,5 +214,18 @@ describe('Testing create', {
     const error = await capture(() => model.create(itemWithValid));
     expect(error.message).to.equal('Validation failure on attribute(s): valid');
     expect(await getItemOrNull(key)).to.deep.equal(null);
+  });
+
+  it('Testing create with timestamps enabled', async ({ capture }) => {
+    await generateTable({ timestamps: true });
+    const result = await model.create(item);
+    expect(result).to.deep.equal({ created: true, item });
+    const timestamps = await model.getItem(key, {
+      toReturn: ['created', 'modified']
+    });
+    expect(timestamps).to.deep.equal({
+      created: '2022-03-03T17:58:54.603Z',
+      modified: '2022-03-03T17:58:54.603Z'
+    });
   });
 });

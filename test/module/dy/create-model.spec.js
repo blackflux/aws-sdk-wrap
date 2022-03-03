@@ -81,4 +81,17 @@ describe('Testing create-model.js', () => {
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
+
+  it('Testing with timestamps attribute', () => {
+    const r = createModel({
+      name: 'table-name',
+      attributes: {
+        id: { type: 'string', partitionKey: true },
+        name: { type: 'string' }
+      },
+      timestamps: true,
+      DocumentClient: new DocumentClient()
+    });
+    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+  });
 });

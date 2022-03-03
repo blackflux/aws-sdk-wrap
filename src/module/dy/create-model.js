@@ -28,6 +28,7 @@ module.exports = (kwargs) => {
     name,
     attributes,
     indices = {},
+    timestamps = false,
     DocumentClient
   } = validateKwargs(kwargs);
 
@@ -58,7 +59,7 @@ module.exports = (kwargs) => {
   });
   const entity = new toolbox.Entity({
     name,
-    timestamps: false,
+    timestamps,
     attributes: Object.fromEntries(Object.entries(attributes).map(([k, v]) => {
       const { validate, ...prunedV } = v;
       if (prunedV.type === 'set' && Array.isArray(prunedV.default) && prunedV.default.length === 0) {

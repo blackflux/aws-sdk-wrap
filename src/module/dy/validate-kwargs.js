@@ -58,6 +58,7 @@ const schema = Joi.object().keys({
       }
       return v;
     }),
+  timestamps: Joi.boolean().optional(),
   DocumentClient: Joi.object()
 }).custom((v, h) => {
   const { attributes, indices } = v;

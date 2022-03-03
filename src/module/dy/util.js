@@ -134,7 +134,7 @@ module.exports = ({
         await onDelete(resultItem);
       }
       if (toReturn !== null) {
-        assert(toReturn.every((e) => e in attributes), 'Unknown field in "toReturn" provided');
+        assert(toReturn.every((e) => e in resultItem), 'Unknown field in "toReturn" provided');
         objectFields.Retainer(toReturn)(resultItem);
       }
       return {
