@@ -22,7 +22,7 @@ module.exports = ({
     return {
       ...entries.reduce(
         (prev, [k, v]) => Object
-          .assign(prev, { [k]: (typeof v === 'function' ? v() : v) }),
+          .assign(prev, { [k]: typeof v === 'function' ? v() : v }),
         {}
       ),
       ...item
