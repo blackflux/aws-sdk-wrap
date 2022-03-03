@@ -1,0 +1,376 @@
+[
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name",
+      "AttributeDefinitions": [
+        {
+          "AttributeName": "id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "name",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "age",
+          "AttributeType": "N"
+        }
+      ],
+      "KeySchema": [
+        {
+          "AttributeName": "id",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "name",
+          "KeyType": "RANGE"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "targetIndex",
+          "KeySchema": [
+            {
+              "AttributeName": "id",
+              "KeyType": "HASH"
+            },
+            {
+              "AttributeName": "name",
+              "KeyType": "RANGE"
+            }
+          ],
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "idIndex",
+          "KeySchema": [
+            {
+              "AttributeName": "id",
+              "KeyType": "HASH"
+            }
+          ],
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "ageIndex",
+          "KeySchema": [
+            {
+              "AttributeName": "age",
+              "KeyType": "HASH"
+            },
+            {
+              "AttributeName": "id",
+              "KeyType": "RANGE"
+            }
+          ],
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "BillingMode": "PAY_PER_REQUEST"
+    },
+    "status": 200,
+    "response": {
+      "TableDescription": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "name",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "age",
+            "AttributeType": "N"
+          }
+        ],
+        "TableName": "table-name",
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "name",
+            "KeyType": "RANGE"
+          }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": 1646344875.568,
+        "ProvisionedThroughput": {
+          "LastIncreaseDateTime": 0,
+          "LastDecreaseDateTime": 0,
+          "NumberOfDecreasesToday": 0,
+          "ReadCapacityUnits": 0,
+          "WriteCapacityUnits": 0
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
+        "BillingModeSummary": {
+          "BillingMode": "PAY_PER_REQUEST",
+          "LastUpdateToPayPerRequestDateTime": 1646344875.568
+        },
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "targetIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "name",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 0,
+            "ItemCount": 0,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
+          },
+          {
+            "IndexName": "ageIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "age",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 0,
+            "ItemCount": 0,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/ageIndex"
+          },
+          {
+            "IndexName": "idIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 0,
+            "ItemCount": 0,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/idIndex"
+          }
+        ]
+      }
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name"
+        }
+      },
+      "UpdateExpression": "SET #age = :age, #created = if_not_exists(#created,:created)",
+      "ExpressionAttributeNames": {
+        "#age": "age",
+        "#created": "created"
+      },
+      "ExpressionAttributeValues": {
+        ":age": {
+          "N": "50"
+        },
+        ":created": {
+          "S": "2022-03-03T22:00:55.980Z"
+        }
+      },
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 200,
+    "response": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name"
+    },
+    "status": 200,
+    "response": {
+      "TableDescription": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "name",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "age",
+            "AttributeType": "N"
+          }
+        ],
+        "TableName": "table-name",
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "name",
+            "KeyType": "RANGE"
+          }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": 1646344875.568,
+        "ProvisionedThroughput": {
+          "LastIncreaseDateTime": 0,
+          "LastDecreaseDateTime": 0,
+          "NumberOfDecreasesToday": 0,
+          "ReadCapacityUnits": 0,
+          "WriteCapacityUnits": 0
+        },
+        "TableSizeBytes": 49,
+        "ItemCount": 1,
+        "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
+        "BillingModeSummary": {
+          "BillingMode": "PAY_PER_REQUEST",
+          "LastUpdateToPayPerRequestDateTime": 1646344875.568
+        },
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "targetIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "name",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 49,
+            "ItemCount": 1,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
+          },
+          {
+            "IndexName": "ageIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "age",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 49,
+            "ItemCount": 1,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/ageIndex"
+          },
+          {
+            "IndexName": "idIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 49,
+            "ItemCount": 1,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/idIndex"
+          }
+        ]
+      }
+    },
+    "responseIsBinary": false
+  }
+]

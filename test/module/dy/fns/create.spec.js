@@ -6,7 +6,8 @@ const { ModelAlreadyExists } = require('../../../../src/resources/errors');
 describe('Testing create', {
   useNock: true,
   nockStripHeaders: true,
-  envVarsFile: '../../../default.env.yml'
+  envVarsFile: '../../../default.env.yml',
+  timestamp: '2022-03-03T22:00:55.980Z'
 }, () => {
   let model;
   let localTable;
@@ -44,6 +45,26 @@ describe('Testing create', {
     await generateTable();
     expect(await getItemOrNull(key)).to.deep.equal(null);
     const result = await model.create(item);
+    expect(result).to.deep.equal(
+      {
+        created: true,
+        item
+      }
+    );
+    expect(await getItemOrNull(key)).to.deep.equal(item);
+  });
+
+  it('Testing create with default "created"', async () => {
+    await generateTable({
+      extraAttrs: {
+        created: {
+          type: 'string',
+          default: () => new Date().toISOString()
+        }
+      }
+    });
+    expect(await getItemOrNull(key)).to.deep.equal(null);
+    const result = await model.createOrModify(item);
     expect(result).to.deep.equal(
       {
         created: true,
@@ -142,7 +163,9 @@ describe('Testing create', {
 
   it('Testing create with onCreate', async () => {
     const logs = [];
-    const onCreate = (i) => { logs.push(`onCreate executed: ${JSON.stringify(i)}`); };
+    const onCreate = (i) => {
+      logs.push(`onCreate executed: ${JSON.stringify(i)}`);
+    };
     await generateTable({ onCreate });
     const result = await model.create(item);
     expect(logs).to.deep.equal(['onCreate executed: {"age":50,"name":"name","id":"123"}']);
