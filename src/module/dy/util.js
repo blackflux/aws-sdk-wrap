@@ -20,7 +20,11 @@ module.exports = ({
   const setDefaults = (item, toReturn) => {
     const entries = toReturn === null ? defaults : defaults.filter(([k]) => toReturn.includes(k));
     return {
-      ...entries.reduce((prev, [k, v]) => Object.assign(prev, { [k]: v }), {}),
+      ...entries.reduce(
+        (prev, [k, v]) => Object
+          .assign(prev, { [k]: typeof v === 'function' ? v() : v }),
+        {}
+      ),
       ...item
     };
   };

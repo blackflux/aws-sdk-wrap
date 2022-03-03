@@ -13,7 +13,8 @@ const schema = Joi.object().keys({
         Joi.number(),
         Joi.boolean(),
         Joi.array(),
-        Joi.object()
+        Joi.object(),
+        Joi.function()
       ).optional(),
       validate: Joi.function().arity(1).custom((v, h) => {
         if (v.constructor.name === 'AsyncFunction') {
