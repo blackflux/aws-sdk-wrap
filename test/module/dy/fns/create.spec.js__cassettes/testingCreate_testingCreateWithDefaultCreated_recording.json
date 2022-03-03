@@ -106,7 +106,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1646344875.568,
+        "CreationDateTime": 1646345293.347,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -119,7 +119,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1646344875.568
+          "LastUpdateToPayPerRequestDateTime": 1646345293.347
         },
         "GlobalSecondaryIndexes": [
           {
@@ -253,6 +253,41 @@
     "method": "POST",
     "path": "/",
     "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {
+      "Item": {
+        "name": {
+          "S": "name"
+        },
+        "id": {
+          "S": "123"
+        },
+        "created": {
+          "S": "2022-03-03T22:00:55.980Z"
+        },
+        "age": {
+          "N": "50"
+        }
+      }
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
       "TableName": "table-name"
     },
     "status": 200,
@@ -284,7 +319,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1646344875.568,
+        "CreationDateTime": 1646345293.347,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -297,7 +332,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1646344875.568
+          "LastUpdateToPayPerRequestDateTime": 1646345293.347
         },
         "GlobalSecondaryIndexes": [
           {

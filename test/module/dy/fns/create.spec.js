@@ -65,13 +65,17 @@ describe('Testing create', {
     });
     expect(await getItemOrNull(key)).to.deep.equal(null);
     const result = await model.createOrModify(item);
+    const itemWithDefault = {
+      ...item,
+      created: new Date().toISOString()
+    };
     expect(result).to.deep.equal(
       {
         created: true,
-        item
+        item: itemWithDefault
       }
     );
-    expect(await getItemOrNull(key)).to.deep.equal(item);
+    expect(await getItemOrNull(key)).to.deep.equal(itemWithDefault);
   });
 
   it('Testing create with conditions', async () => {
