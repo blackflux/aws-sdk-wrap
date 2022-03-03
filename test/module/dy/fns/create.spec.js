@@ -6,8 +6,7 @@ const { ModelAlreadyExists } = require('../../../../src/resources/errors');
 describe('Testing create', {
   useNock: true,
   nockStripHeaders: true,
-  envVarsFile: '../../../default.env.yml',
-  timestamp: '2022-03-03T22:00:55.980Z'
+  envVarsFile: '../../../default.env.yml'
 }, () => {
   let model;
   let localTable;
@@ -52,30 +51,6 @@ describe('Testing create', {
       }
     );
     expect(await getItemOrNull(key)).to.deep.equal(item);
-  });
-
-  it('Testing create with default "created"', async () => {
-    await generateTable({
-      extraAttrs: {
-        created: {
-          type: 'string',
-          default: () => new Date().toISOString()
-        }
-      }
-    });
-    expect(await getItemOrNull(key)).to.deep.equal(null);
-    const result = await model.createOrModify(item);
-    const itemWithDefault = {
-      ...item,
-      created: new Date().toISOString()
-    };
-    expect(result).to.deep.equal(
-      {
-        created: true,
-        item: itemWithDefault
-      }
-    );
-    expect(await getItemOrNull(key)).to.deep.equal(itemWithDefault);
   });
 
   it('Testing create with conditions', async () => {
