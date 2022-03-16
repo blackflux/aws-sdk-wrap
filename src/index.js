@@ -41,7 +41,15 @@ module.exports = (opts = {}) => {
     return services[serviceLower];
   };
 
-  const call = (action, params, { expectedErrorCodes = [], meta = null, logger: logger_ = logger } = {}) => {
+  const call = (
+    action,
+    params,
+    {
+      expectedErrorCodes = [],
+      meta = null,
+      logger: logger_ = logger
+    } = {}
+  ) => {
     assert(typeof action === 'string');
     assert(params instanceof Object && !Array.isArray(params));
     assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every((e) => typeof e === 'string'));
