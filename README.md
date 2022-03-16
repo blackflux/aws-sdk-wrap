@@ -273,6 +273,17 @@ Default: `[]`
 
 Provide string list of expected AWS error codes. Promise succeeds on expected error with error code as string.
 
+#### meta
+
+Type: `object`<br>
+Default: `null`
+
+Provide additional debug information for failure case.
+
+#### logger
+
+Used to overwrite global logger. Set to `null` to prevent logging of errors.
+
 ### SendMessageBatch Options
 
 #### batchSize
