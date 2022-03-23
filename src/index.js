@@ -5,6 +5,7 @@ const Joi = require('joi-strict');
 const Dy = require('./module/dy');
 const S3 = require('./module/s3');
 const Sqs = require('./module/sqs');
+const Lambda = require('./module/lambda');
 const errors = require('./resources/errors');
 
 const lookupCache = new Map();
@@ -80,6 +81,7 @@ module.exports = (opts = {}) => {
     dy: Dy({ call, getService, logger }),
     s3: S3({ call, logger }),
     sqs: Sqs({ call, getService, logger }),
+    lambda: Lambda({ call, logger }),
     errors
   };
 };
