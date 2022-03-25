@@ -11,36 +11,21 @@ module.exports = ({
       },
       { expectedErrorCodes: ['ResourceNotFoundException'] }
     );
-    const aliasExists = aliasResult !== 'ResourceNotFoundException';
-
-    if (concurrency === 0) {
-      if (aliasExists) {
-        await call('lambda:deleteProvisionedConcurrencyConfig', {
-          FunctionName: functionName,
-          Qualifier: aliasName
-        });
-        await call('lambda:deleteAlias', {
-          FunctionName: functionName,
-          Name: aliasName
-        });
-      }
+    if (aliasResult === 'ResourceNotFoundException') {
       return;
     }
-
-    const { Version } = await call('lambda:publishVersion', {
-      FunctionName: functionName
-    });
-
-    await call(aliasExists ? 'lambda:updateAlias' : 'lambda:createAlias', {
-      FunctionName: functionName,
-      FunctionVersion: Version,
-      Name: aliasName
-    });
-    await call('lambda:putProvisionedConcurrencyConfig', {
-      FunctionName: functionName,
-      Qualifier: aliasName,
-      ProvisionedConcurrentExecutions: concurrency
-    });
+    if (concurrency === 0) {
+      await call('lambda:deleteProvisionedConcurrencyConfig', {
+        FunctionName: functionName,
+        Qualifier: aliasName
+      });
+    } else {
+      await call('lambda:putProvisionedConcurrencyConfig', {
+        FunctionName: functionName,
+        Qualifier: aliasName,
+        ProvisionedConcurrentExecutions: concurrency
+      });
+    }
   };
 
   const queryHistory = async (functionName, StartTime, EndTime, Period) => {
@@ -73,7 +58,7 @@ module.exports = ({
       functionName,
       datetime = null,
       aliasName = 'provisioned',
-      enabled = true,
+      enabledSsmSettingKey = 'PROVISIONED_CONCURRENCY_ENABLED',
       PERIOD_IN_SECONDS = 300,
       WEEK_IN_SECONDS = 60 * 60 * 24 * 7,
       LOOK_AHEAD_PERIODS = 1,
@@ -109,24 +94,48 @@ module.exports = ({
         return value;
       };
 
-      return async (event, context) => {
-        if (enabled) {
-          const unix = Math.round(datetime === null ? new Date() : datetime / 1000);
+      return (restore = false) => async (event, context) => {
+        const r = await call(
+          'lambda:getProvisionedConcurrencyConfig',
+          {
+            FunctionName: functionName,
+            Qualifier: aliasName
+          },
+          { expectedErrorCodes: ['ProvisionedConcurrencyConfigNotFoundException'] }
+        );
 
-          const unixFloor = unix - (unix % PERIOD_IN_SECONDS);
-          const StartTime = unixFloor - WEEK_IN_SECONDS * LOOK_BEHIND_WEEKS;
-          const unixCeil = unixFloor + PERIOD_IN_SECONDS;
-          const EndTime = unixCeil - WEEK_IN_SECONDS + PERIOD_IN_SECONDS * LOOK_AHEAD_PERIODS;
-
-          const { MetricDataResults } = await queryHistory(functionName, StartTime, EndTime, PERIOD_IN_SECONDS);
-          const { Timestamps, Values } = MetricDataResults[0];
-
-          const desiredConcurrency = computeDesiredConcurrency(Timestamps, Values);
-
-          await updateProvisionedConcurrency(functionName, desiredConcurrency, aliasName);
-        } else {
-          await updateProvisionedConcurrency(functionName, 0, aliasName);
+        if (restore === true) {
+          if (r === 'ProvisionedConcurrencyConfigNotFoundException') {
+            await updateProvisionedConcurrency(functionName, 1, aliasName);
+          }
+          return;
         }
+
+        if (r?.Status === 'IN_PROGRESS') {
+          return;
+        }
+
+        const { Parameter: { Value } } = await call('ssm:getParameter', {
+          Name: enabledSsmSettingKey
+        });
+        if (Value !== 'true') {
+          await updateProvisionedConcurrency(functionName, 0, aliasName);
+          return;
+        }
+
+        const unix = Math.round(datetime === null ? new Date() : datetime / 1000);
+
+        const unixFloor = unix - (unix % PERIOD_IN_SECONDS);
+        const StartTime = unixFloor - WEEK_IN_SECONDS * LOOK_BEHIND_WEEKS;
+        const unixCeil = unixFloor + PERIOD_IN_SECONDS;
+        const EndTime = unixCeil - WEEK_IN_SECONDS + PERIOD_IN_SECONDS * LOOK_AHEAD_PERIODS;
+
+        const { MetricDataResults } = await queryHistory(functionName, StartTime, EndTime, PERIOD_IN_SECONDS);
+        const { Timestamps, Values } = MetricDataResults[0];
+
+        const desiredConcurrency = computeDesiredConcurrency(Timestamps, Values);
+
+        await updateProvisionedConcurrency(functionName, desiredConcurrency, aliasName);
       };
     }
   };
