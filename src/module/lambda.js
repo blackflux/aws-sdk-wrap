@@ -56,7 +56,6 @@ module.exports = ({
   return {
     FunctionScaler: ({
       functionName,
-      datetime = null,
       aliasName = 'provisioned',
       enabledSsmSettingKey = 'PROVISIONED_CONCURRENCY_ENABLED',
       PERIOD_IN_SECONDS = 300,
@@ -94,7 +93,7 @@ module.exports = ({
         return value;
       };
 
-      return (restore = false) => async (event, context) => {
+      return (restore) => async (event, context) => {
         const r = await call(
           'lambda:getProvisionedConcurrencyConfig',
           {
@@ -123,7 +122,7 @@ module.exports = ({
           return;
         }
 
-        const unix = Math.round(datetime === null ? new Date() : datetime / 1000);
+        const unix = Math.round(new Date() / 1000);
 
         const unixFloor = unix - (unix % PERIOD_IN_SECONDS);
         const StartTime = unixFloor - WEEK_IN_SECONDS * LOOK_BEHIND_WEEKS;

@@ -17,6 +17,7 @@ describe('Testing index', { useNock: true }, () => {
       'dy',
       's3',
       'sqs',
+      'lambda',
       'errors'
     ]);
   });

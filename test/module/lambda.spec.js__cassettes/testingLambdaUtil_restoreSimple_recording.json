@@ -1,0 +1,111 @@
+[
+  {
+    "scope": "https://lambda.us-west-2.amazonaws.com:443",
+    "method": "GET",
+    "path": "/2019-09-30/functions/service-search-api-local-dev-apiRouter/provisioned-concurrency?Qualifier=provisioned",
+    "body": "",
+    "status": 404,
+    "response": {
+      "Type": "User",
+      "message": "No Provisioned Concurrency Config found for this function"
+    },
+    "rawHeaders": [
+      "Date",
+      "Thu, 24 Mar 2022 22:00:05 GMT",
+      "Content-Type",
+      "application/json",
+      "Content-Length",
+      "85",
+      "Connection",
+      "keep-alive",
+      "x-amzn-RequestId",
+      "61ab1cd0-c52c-4959-8323-01766a237336",
+      "x-amzn-ErrorType",
+      "ProvisionedConcurrencyConfigNotFoundException"
+    ],
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": 0,
+      "host": "lambda.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "https://lambda.us-west-2.amazonaws.com:443",
+    "method": "GET",
+    "path": "/2015-03-31/functions/service-search-api-local-dev-apiRouter/aliases/provisioned",
+    "body": "",
+    "status": 200,
+    "response": {
+      "AliasArn": "arn:aws:lambda:us-west-2:936169050387:function:service-search-api-prod-apiRouter:provisioned",
+      "Description": "",
+      "FunctionVersion": "9",
+      "Name": "provisioned",
+      "RevisionId": "67146193-c04e-4254-a023-33b87f77fdf4",
+      "RoutingConfig": null
+    },
+    "rawHeaders": [
+      "Date",
+      "Mon, 21 Mar 2022 21:42:40 GMT",
+      "Content-Type",
+      "application/json",
+      "Content-Length",
+      "240",
+      "Connection",
+      "keep-alive",
+      "x-amzn-RequestId",
+      "7a0237bb-d57d-408a-a030-578cc368adff"
+    ],
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": 0,
+      "host": "lambda.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "https://lambda.us-west-2.amazonaws.com:443",
+    "method": "PUT",
+    "path": "/2019-09-30/functions/service-search-api-local-dev-apiRouter/provisioned-concurrency?Qualifier=provisioned",
+    "body": {
+      "ProvisionedConcurrentExecutions": 1
+    },
+    "status": 200,
+    "response": {
+      "AliasArn": "arn:aws:lambda:us-west-2:936169050387:function:service-search-api-prod-apiRouter:provisioned",
+      "Description": "",
+      "FunctionVersion": "9",
+      "Name": "provisioned",
+      "RevisionId": "645db239-2cf2-44ab-bd14-7428f61c1823",
+      "RoutingConfig": null
+    },
+    "rawHeaders": [
+      "Date",
+      "Mon, 21 Mar 2022 21:42:40 GMT",
+      "Content-Type",
+      "application/json",
+      "Content-Length",
+      "240",
+      "Connection",
+      "keep-alive",
+      "x-amzn-RequestId",
+      "f81bf284-93fb-4045-9478-f54ec59b0da4"
+    ],
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/json",
+      "host": "lambda.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    },
+    "responseIsBinary": false
+  }
+]
