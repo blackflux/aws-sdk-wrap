@@ -1,1 +1,1 @@
-module.exports = (compileFn) => compileFn('update', true);
+export default (compileFn) => compileFn('update', true);

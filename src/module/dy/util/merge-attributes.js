@@ -1,6 +1,6 @@
-const objectScan = require('object-scan');
+import objectScan from 'object-scan';
 
-module.exports = ({ sets, numbers }) => (...versions) => {
+export default ({ sets, numbers }) => (...versions) => {
   const result = {};
   const logic = {
     '*': ({ property: name, value }) => {

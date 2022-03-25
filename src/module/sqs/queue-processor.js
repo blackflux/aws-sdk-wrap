@@ -1,18 +1,18 @@
-const assert = require('assert');
-const get = require('lodash.get');
-const Joi = require('joi-strict');
-const { Pool } = require('promise-pool-ext');
-const { wrap } = require('lambda-async');
-const { metaKey } = require('./queue-processor/payload');
-const loadSteps = require('./queue-processor/load-steps');
-const MessageBus = require('./queue-processor/message-bus');
-const StepBus = require('./queue-processor/step-bus');
-const DlqBus = require('./queue-processor/dlq-bus');
-const Digraph = require('./queue-processor/digraph');
-const processEvent = require('./queue-processor/process-event');
-const handleError = require('./queue-processor/handle-error');
+import assert from 'assert';
+import get from 'lodash.get';
+import Joi from 'joi-strict';
+import { Pool } from 'promise-pool-ext';
+import { wrap } from 'lambda-async';
+import { metaKey } from './queue-processor/payload.js';
+import loadSteps from './queue-processor/load-steps.js';
+import MessageBus from './queue-processor/message-bus.js';
+import StepBus from './queue-processor/step-bus.js';
+import DlqBus from './queue-processor/dlq-bus.js';
+import Digraph from './queue-processor/digraph.js';
+import processEvent from './queue-processor/process-event.js';
+import handleError from './queue-processor/handle-error.js';
 
-module.exports = ({
+export default ({
   sendMessageBatch,
   getDeadLetterQueueUrl,
   logger

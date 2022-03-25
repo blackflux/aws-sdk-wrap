@@ -1,21 +1,21 @@
-const Joi = require('joi-strict');
-const { RetryError } = require('../../../../src/module/sqs/errors');
+import Joi from 'joi-strict';
+import { RetryError } from '../../../../src/module/sqs/errors.js';
 
-module.exports.name = 'auto-retry';
+export const name = 'auto-retry';
 
-module.exports.queue = 'one';
+export const queue = 'one';
 
-module.exports.schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   name: Joi.string().valid('auto-retry'),
   retrySettings: Joi.object().optional()
 });
 
-module.exports.before = async (context, payloads) => [];
-module.exports.handler = async (payload, event, context) => {
+export const before = async (context, payloads) => [];
+export const handler = async (payload, event, context) => {
   throw new RetryError(payload.retrySettings);
 };
-module.exports.after = async (context) => [];
+export const after = async (context) => [];
 
-module.exports.next = ['auto-retry'];
+export const next = ['auto-retry'];
 
-module.exports.delay = 0;
+export const delay = 0;

@@ -1,10 +1,10 @@
-const SendMessageBatch = require('./sqs/send-message-batch');
-const GetDeadLetterQueueUrl = require('./sqs/get-dead-letter-queue-url');
-const QueueProcessor = require('./sqs/queue-processor');
-const { prepareMessage } = require('./sqs/prepare-message');
-const errors = require('./sqs/errors');
+import SendMessageBatch from './sqs/send-message-batch.js';
+import GetDeadLetterQueueUrl from './sqs/get-dead-letter-queue-url.js';
+import QueueProcessor from './sqs/queue-processor.js';
+import { prepareMessage } from './sqs/prepare-message.js';
+import * as errors from './sqs/errors.js';
 
-module.exports = ({ call, getService, logger }) => {
+export default ({ call, getService, logger }) => {
   const sendMessageBatch = SendMessageBatch({ call, getService, logger });
   const getDeadLetterQueueUrl = GetDeadLetterQueueUrl({ call });
   return {

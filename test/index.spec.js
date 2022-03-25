@@ -1,7 +1,10 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const DocumentClient = require('aws-sdk').DynamoDB.DocumentClient;
-const Index = require('../src/index');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import AWS from 'aws-sdk';
+import Index from '../src/index.js';
+
+const { DynamoDB } = AWS;
+const { DocumentClient } = DynamoDB;
 
 describe('Testing index', { useNock: true }, () => {
   let aws;

@@ -1,33 +1,29 @@
 // eslint-disable-next-line max-classes-per-file
-class SendMessageBatchError extends Error {
+export class SendMessageBatchError extends Error {
   constructor(message, context) {
     super(message);
     this.name = 'SendMessageBatchError';
     this.context = context;
   }
 }
-module.exports.SendMessageBatchError = SendMessageBatchError;
 
-class MessageCollisionError extends Error {
+export class MessageCollisionError extends Error {
   constructor(message) {
     super(message);
     this.name = 'MessageCollisionError';
   }
 }
-module.exports.MessageCollisionError = MessageCollisionError;
 
-class ModelNotFound extends Error {
+export class ModelNotFound extends Error {
   constructor(message) {
     super(message);
     this.name = 'ModelNotFound';
   }
 }
-module.exports.ModelNotFound = ModelNotFound;
 
-class ModelAlreadyExists extends Error {
+export class ModelAlreadyExists extends Error {
   constructor(message) {
     super(message);
     this.name = 'ModelAlreadyExists';
   }
 }
-module.exports.ModelAlreadyExists = ModelAlreadyExists;

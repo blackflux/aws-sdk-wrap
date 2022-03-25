@@ -1,21 +1,21 @@
-const expect = require('chai').expect;
-const fs = require('smart-fs');
-const path = require('path');
-const { describe } = require('node-tdd');
-const Index = require('../../../src/index');
-const { getDelaySeconds, prepareMessage } = require('../../../src/module/sqs/prepare-message');
-const stepAutoRetry = require('./queue-processor.spec.js_steps/auto-retry');
-const stepAutoRetryBackoffFn = require('./queue-processor.spec.js_steps/auto-retry-backoff-fn');
-const stepBadOutput = require('./queue-processor.spec.js_steps/bad-output');
-const stepDelayStep = require('./queue-processor.spec.js_steps/delay-step');
-const stepDisallowedOutput = require('./queue-processor.spec.js_steps/disallowed-output');
-const stepGroupIdStep = require('./queue-processor.spec.js_steps/group-id-step');
-const stepParallelStep = require('./queue-processor.spec.js_steps/parallel-step');
-const stepStep1 = require('./queue-processor.spec.js_steps/step1');
-const stepStep2 = require('./queue-processor.spec.js_steps/step2');
-const stepStep3 = require('./queue-processor.spec.js_steps/step3');
-const stepStepAutoRetry = require('./queue-processor.spec.js_steps/step-auto-retry');
-const stepUrgentMessage = require('./queue-processor.spec.js_steps/step-urgent-message');
+import { expect } from 'chai';
+import fs from 'smart-fs';
+import path from 'path';
+import { describe } from 'node-tdd';
+import Index from '../../../src/index.js';
+import { getDelaySeconds, prepareMessage } from '../../../src/module/sqs/prepare-message.js';
+import * as stepAutoRetry from './queue-processor.spec.js_steps/auto-retry.js';
+import * as stepAutoRetryBackoffFn from './queue-processor.spec.js_steps/auto-retry-backoff-fn.js';
+import * as stepBadOutput from './queue-processor.spec.js_steps/bad-output.js';
+import * as stepDelayStep from './queue-processor.spec.js_steps/delay-step.js';
+import * as stepDisallowedOutput from './queue-processor.spec.js_steps/disallowed-output.js';
+import * as stepGroupIdStep from './queue-processor.spec.js_steps/group-id-step.js';
+import * as stepParallelStep from './queue-processor.spec.js_steps/parallel-step.js';
+import * as stepStep1 from './queue-processor.spec.js_steps/step1.js';
+import * as stepStep2 from './queue-processor.spec.js_steps/step2.js';
+import * as stepStep3 from './queue-processor.spec.js_steps/step3.js';
+import * as stepStepAutoRetry from './queue-processor.spec.js_steps/step-auto-retry.js';
+import * as stepUrgentMessage from './queue-processor.spec.js_steps/step-urgent-message.js';
 
 describe('Testing QueueProcessor', {
   useNock: true,
@@ -81,7 +81,7 @@ describe('Testing QueueProcessor', {
   });
 
   it('Visualize', async () => {
-    const r = fs.smartWrite(path.join(__dirname, 'digraph.dot'), processor.digraph());
+    const r = fs.smartWrite(path.join(fs.dirname(import.meta.url), 'digraph.dot'), processor.digraph());
     expect(r).to.equal(false);
   });
 

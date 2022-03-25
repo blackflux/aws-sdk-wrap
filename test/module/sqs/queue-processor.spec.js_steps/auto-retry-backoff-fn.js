@@ -1,20 +1,20 @@
-const Joi = require('joi-strict');
-const { RetryError } = require('../../../../src/module/sqs/errors');
+import Joi from 'joi-strict';
+import { RetryError } from '../../../../src/module/sqs/errors.js';
 
-module.exports.name = 'auto-retry-backoff-fn';
+export const name = 'auto-retry-backoff-fn';
 
-module.exports.queue = 'one';
+export const queue = 'one';
 
-module.exports.schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   name: Joi.string().valid('auto-retry-backoff-fn')
 });
 
-module.exports.handler = async (payload, event, context) => {
+export const handler = async (payload, event, context) => {
   throw new RetryError({
     backoffInSec: ({ failureCount }) => Math.min(failureCount * 10, 15 * 60)
   });
 };
 
-module.exports.next = ['auto-retry-backoff-fn'];
+export const next = ['auto-retry-backoff-fn'];
 
-module.exports.delay = 0;
+export const delay = 0;

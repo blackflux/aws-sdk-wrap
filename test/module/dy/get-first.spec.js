@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const getFirst = require('../../../src/module/dy/get-first');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import getFirst from '../../../src/module/dy/get-first.js';
 
 describe('Testing get-first.js', () => {
   let fn;

@@ -1,21 +1,21 @@
-const Joi = require('joi-strict');
+import Joi from 'joi-strict';
 
-module.exports.name = 'step-auto-retry';
+export const name = 'step-auto-retry';
 
-module.exports.queue = 'one';
+export const queue = 'one';
 
-module.exports.retry = {
+export const retry = {
   maxFailureCount: 10
 };
 
-module.exports.schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   name: Joi.string().valid('step-auto-retry')
 });
 
-module.exports.handler = async (payload, event, context) => {
+export const handler = async (payload, event, context) => {
   throw new Error();
 };
 
-module.exports.next = ['step-auto-retry'];
+export const next = ['step-auto-retry'];
 
-module.exports.delay = 0;
+export const delay = 0;

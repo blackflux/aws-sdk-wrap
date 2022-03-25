@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const Index = require('../../../src/index');
-const GetDeadLetterQueueUrl = require('../../../src/module/sqs/get-dead-letter-queue-url');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import Index from '../../../src/index.js';
+import GetDeadLetterQueueUrl from '../../../src/module/sqs/get-dead-letter-queue-url.js';
 
 describe('Testing getDeadLetterQueueUrl', {
   useNock: true,

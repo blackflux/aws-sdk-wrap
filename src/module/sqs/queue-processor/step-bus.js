@@ -1,9 +1,9 @@
-const assert = require('assert');
-const Joi = require('joi-strict');
-const updateTrace = require('./update-trace');
-const { stripPayloadMeta } = require('./payload');
+import assert from 'assert';
+import Joi from 'joi-strict';
+import updateTrace from './update-trace.js';
+import { stripPayloadMeta } from './payload.js';
 
-module.exports = ({ steps, messageBus }) => {
+export default ({ steps, messageBus }) => {
   const messages = [];
   return {
     push: (msgs_, step, trace) => {

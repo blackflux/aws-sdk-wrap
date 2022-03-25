@@ -1,4 +1,4 @@
-module.exports = (attributes) => {
+export default (attributes) => {
   const attributesWithValidate = Object.fromEntries(
     Object.entries(attributes)
       .filter(([_, v]) => v.validate !== undefined)

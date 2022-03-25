@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const Index = require('../../src');
-const S3Module = require('../../src/module/s3');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import Index from '../../src/index.js';
+import S3Module from '../../src/module/s3.js';
 
 describe('Testing s3 Util', {
   useNock: true,
@@ -78,6 +78,7 @@ describe('Testing s3 Util', {
     expect(result.continuationToken).to.equal('continuationToken');
     expect(result.isTruncated).to.equal(true);
     expect(result).to.deep.equal([{
+      ChecksumAlgorithm: [],
       ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
       Key: 'key',
       Size: 135,
@@ -94,6 +95,7 @@ describe('Testing s3 Util', {
     expect(result.continuationToken).to.equal(undefined);
     expect(result.isTruncated).to.equal(undefined);
     expect(result).to.deep.equal([{
+      ChecksumAlgorithm: [],
       ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
       Key: 'key',
       Size: 135,
@@ -107,6 +109,7 @@ describe('Testing s3 Util', {
       prefix: 'prefix'
     });
     expect(result).to.deep.equal([{
+      ChecksumAlgorithm: [],
       ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
       Key: 'prefix',
       Size: 135,
@@ -121,12 +124,14 @@ describe('Testing s3 Util', {
     });
     expect(result).to.deep.equal([
       {
+        ChecksumAlgorithm: [],
         ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
         Key: 'key',
         Size: 135,
         StorageClass: 'STANDARD'
       },
       {
+        ChecksumAlgorithm: [],
         ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
         Key: 'key2',
         Size: 130,
@@ -142,18 +147,21 @@ describe('Testing s3 Util', {
     });
     expect(result).to.deep.equal([
       {
+        ChecksumAlgorithm: [],
         ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
         Key: '2020-03-30T15:00:00.000Z/key1',
         Size: 135,
         StorageClass: 'STANDARD'
       },
       {
+        ChecksumAlgorithm: [],
         ETag: '"ede7147e166b322902e0e8fc33f4a876"',
         Key: '2020-03-30T15:05:00.000Z/key2',
         Size: 217,
         StorageClass: 'STANDARD'
       },
       {
+        ChecksumAlgorithm: [],
         ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
         Key: '2020-03-30T15:10:00.000Z',
         Size: 135,
@@ -169,12 +177,14 @@ describe('Testing s3 Util', {
     });
     expect(result).to.deep.equal([
       {
+        ChecksumAlgorithm: [],
         ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
         Key: '2020-03-30T15:00:00.000Z/key1',
         Size: 135,
         StorageClass: 'STANDARD'
       },
       {
+        ChecksumAlgorithm: [],
         ETag: '"ede7147e166b322902e0e8fc33f4a876"',
         Key: '2020-03-30T15:10:00.000Z',
         Size: 217,
@@ -190,6 +200,7 @@ describe('Testing s3 Util', {
     });
     expect(result).to.deep.equal([
       {
+        ChecksumAlgorithm: [],
         ETag: '"a32d8ca2be8b6454d40b230fcc4a2fc4"',
         Key: '2020-03-30T15:00:00.000Z/key1',
         Size: 135,

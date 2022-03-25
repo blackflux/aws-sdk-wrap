@@ -8,8 +8,7 @@ docker run \
 docker build \
   -t lambda-environment-node \
   --network="host" \
-  -f docker/Dockerfile \
-  . &&
+  docker/. &&
 docker run \
   --link dynamodb-local \
   -u`id -u`:`id -g` \

@@ -1,12 +1,12 @@
-const assert = require('assert');
-const get = require('lodash.get');
-const AWS = require('aws-sdk');
-const Joi = require('joi-strict');
-const Dy = require('./module/dy');
-const S3 = require('./module/s3');
-const Sqs = require('./module/sqs');
-const Lambda = require('./module/lambda');
-const errors = require('./resources/errors');
+import assert from 'assert';
+import get from 'lodash.get';
+import AWS from 'aws-sdk';
+import Joi from 'joi-strict';
+import Dy from './module/dy.js';
+import S3 from './module/s3.js';
+import Sqs from './module/sqs.js';
+import Lambda from './module/lambda.js';
+import * as errors from './resources/errors.js';
 
 const lookupCache = new Map();
 const getAttr = (obj, key) => { // case insensitive lookup
@@ -17,7 +17,7 @@ const getAttr = (obj, key) => { // case insensitive lookup
   return lookupCache.get(obj)[key.toLowerCase()];
 };
 
-module.exports = (opts = {}) => {
+export default (opts = {}) => {
   Joi.assert(opts, Joi.object().keys({
     config: Joi.object().optional(),
     configService: Joi.object().optional(),

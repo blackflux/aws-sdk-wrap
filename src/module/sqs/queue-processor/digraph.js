@@ -1,4 +1,4 @@
-module.exports = ({
+export default ({
   queues, ingestSteps, steps
 }) => () => {
   const formatStep = (step) => step.replace(/-([a-z])/g, ($1) => $1.slice(1).toUpperCase());

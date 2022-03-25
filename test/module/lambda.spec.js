@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const Index = require('../../src');
-const Lambda = require('../../src/module/lambda');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import Index from '../../src/index.js';
+import Lambda from '../../src/module/lambda.js';
 
 describe('Testing lambda Util', {
   useNock: true,
