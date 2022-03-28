@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
+import AWS from 'aws-sdk';
 import Index from '../../../src/index.js';
 import GetDeadLetterQueueUrl from '../../../src/module/sqs/get-dead-letter-queue-url.js';
 
@@ -11,7 +12,12 @@ describe('Testing getDeadLetterQueueUrl', {
   let aws;
   let getDeadLetterQueueUrl;
   before(() => {
-    aws = Index({ logger: console });
+    aws = Index({
+      logger: console,
+      services: {
+        sqs: AWS.SQS
+      }
+    });
     getDeadLetterQueueUrl = GetDeadLetterQueueUrl({ call: aws.call });
   });
 

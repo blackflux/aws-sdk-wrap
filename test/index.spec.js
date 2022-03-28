@@ -9,7 +9,13 @@ const { DocumentClient } = DynamoDB;
 describe('Testing index', { useNock: true }, () => {
   let aws;
   before(() => {
-    aws = Index();
+    aws = Index({
+      services: {
+        'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient,
+        'DynamoDB.Converter': AWS.DynamoDB.Converter,
+        S3: AWS.S3
+      }
+    });
   });
 
   it('Testing exports', () => {
@@ -26,7 +32,7 @@ describe('Testing index', { useNock: true }, () => {
   });
 
   it('Testing global configuration', () => {
-    expect(aws.updateGlobalConfig({})).to.equal(undefined);
+    expect(aws.updateGlobalConfig(aws, {})).to.equal(undefined);
   });
 
   it('Testing nested get', () => {
@@ -34,16 +40,13 @@ describe('Testing index', { useNock: true }, () => {
     expect(aws.get('DynamoDB.Converter')).to.be.a('object');
   });
 
-  it('Testing Exception', async () => {
-    try {
-      await aws.call('s3:putObject', {});
-    } catch (e) {
-      expect(e.message).to.equal(
-        'There were 2 validation errors:\n* MissingRequiredParameter: '
-        + 'Missing required key \'Bucket\' in params\n* MissingRequiredParameter: '
-        + 'Missing required key \'Key\' in params'
-      );
-    }
+  it('Testing Exception', async ({ capture }) => {
+    const error = await capture(() => aws.call('s3:putObject', {}));
+    expect(error.message).to.equal(
+      'There were 2 validation errors:\n* MissingRequiredParameter: '
+      + 'Missing required key \'Bucket\' in params\n* MissingRequiredParameter: '
+      + 'Missing required key \'Key\' in params'
+    );
   });
 
   it('Testing Expected Exception', async () => {
@@ -51,21 +54,22 @@ describe('Testing index', { useNock: true }, () => {
     expect(code).to.equal('MultipleValidationErrors');
   });
 
-  it('Testing Exception with Logger', async () => {
-    try {
-      await Index({
-        logger: {
-          warn: (msg) => {
-            expect(msg).to.contain('Request failed for s3.putObject()');
-          }
+  it('Testing Exception with Logger', async ({ capture }) => {
+    const awsCustomLogger = Index({
+      logger: {
+        warn: (msg) => {
+          expect(msg).to.contain('Request failed for s3.putObject()');
         }
-      }).call('s3:putObject', {});
-    } catch (e) {
-      expect(e.message).to.equal(
-        'There were 2 validation errors:\n* MissingRequiredParameter: '
-        + 'Missing required key \'Bucket\' in params\n* MissingRequiredParameter: '
-        + 'Missing required key \'Key\' in params'
-      );
-    }
+      },
+      services: {
+        s3: AWS.S3
+      }
+    });
+    const err = await capture(() => awsCustomLogger.call('s3:putObject', {}));
+    expect(err.message).to.equal(
+      'There were 2 validation errors:\n* MissingRequiredParameter: '
+      + 'Missing required key \'Bucket\' in params\n* MissingRequiredParameter: '
+      + 'Missing required key \'Key\' in params'
+    );
   });
 });

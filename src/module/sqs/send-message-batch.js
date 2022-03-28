@@ -4,6 +4,7 @@ import get from 'lodash.get';
 import objectScan from 'object-scan';
 import Joi from 'joi-strict';
 import objectHash from 'object-hash-strict';
+import crypto from 'crypto';
 import { getGroupId, getDeduplicationId, getDelaySeconds } from './prepare-message.js';
 import { SendMessageBatchError, MessageCollisionError } from '../../resources/errors.js';
 
@@ -35,7 +36,9 @@ const sendBatch = async (sqsBatch, queueUrl, {
     if (pending.length !== 0 && logger !== null) {
       logger.warn(`Failed to submit (some) message(s)\nRetrying: [${
         pending
-          .map(({ Id, MessageBody }) => `( Id = ${Id} , MD5 = ${getService('util.crypto').md5(MessageBody, 'hex')} )`)
+          .map(({ Id, MessageBody }) => `( Id = ${Id} , MD5 = ${
+            crypto.createHash('md5').update(MessageBody).digest('hex')
+          } )`)
           .join(', ')
       }]`);
     }

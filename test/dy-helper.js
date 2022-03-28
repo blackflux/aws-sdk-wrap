@@ -36,6 +36,9 @@ export const buildModel = ({
     config: {
       maxRetries: 0,
       endpoint: process.env.DYNAMODB_ENDPOINT
+    },
+    services: {
+      'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient
     }
   });
   const Model = (opts) => DyUtil({

@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import fs from 'smart-fs';
 import path from 'path';
 import { describe } from 'node-tdd';
+import AWS from 'aws-sdk';
 import Index from '../../../src/index.js';
 import { getDelaySeconds, prepareMessage } from '../../../src/module/sqs/prepare-message.js';
 import * as stepAutoRetry from './queue-processor.spec.js_steps/auto-retry.js';
@@ -27,7 +28,12 @@ describe('Testing QueueProcessor', {
   let processor;
   let executor;
   beforeEach(() => {
-    aws = Index({ logger: console });
+    aws = Index({
+      logger: console,
+      services: {
+        sqs: AWS.SQS
+      }
+    });
     processor = aws.sqs.QueueProcessor({
       queues: {
         one: process.env.QUEUE_URL_ONE,
