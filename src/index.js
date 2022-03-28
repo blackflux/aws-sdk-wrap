@@ -1,6 +1,5 @@
 import assert from 'assert';
 import get from 'lodash.get';
-import AWS from 'aws-sdk';
 import Joi from 'joi-strict';
 import Dy from './module/dy.js';
 import S3 from './module/s3.js';
@@ -8,38 +7,36 @@ import Sqs from './module/sqs.js';
 import Lambda from './module/lambda.js';
 import * as errors from './resources/errors.js';
 
-const lookupCache = new Map();
-const getAttr = (obj, key) => { // case insensitive lookup
-  if (!lookupCache.has(obj)) {
-    lookupCache.set(obj, Object.entries(obj)
-      .reduce((prev, [k, v]) => Object.assign(prev, { [k.toLowerCase()]: v }), {}));
-  }
-  return lookupCache.get(obj)[key.toLowerCase()];
-};
-
 export default (opts = {}) => {
   Joi.assert(opts, Joi.object().keys({
+    services: Joi.object().pattern(Joi.string(), Joi.any()),
     config: Joi.object().optional(),
     configService: Joi.object().optional(),
     logger: Joi.any().optional()
   }));
-  const services = {};
+  const servicesCache = {};
+  const services = Object.fromEntries(
+    Object
+      .entries(get(opts, 'services', {}))
+      .map(([k, v]) => [k.toLowerCase(), v])
+  );
   const config = get(opts, 'config', {});
   const configService = get(opts, 'configService', {});
   const logger = get(opts, 'logger', null);
 
   const getService = (service) => {
     const serviceLower = service.toLowerCase();
-    if (services[serviceLower] === undefined) {
-      const Service = serviceLower.split('.').reduce(getAttr, AWS);
+    if (servicesCache[serviceLower] === undefined) {
+      assert(services[serviceLower] !== undefined, `Service "${serviceLower}" not injected.`);
+      const Service = services[serviceLower];
       try {
-        services[serviceLower] = new Service(get(configService, serviceLower, config));
+        servicesCache[serviceLower] = new Service(get(configService, serviceLower, config));
       } catch (e) {
         assert(e instanceof TypeError);
-        services[serviceLower] = Service;
+        servicesCache[serviceLower] = Service;
       }
     }
-    return services[serviceLower];
+    return servicesCache[serviceLower];
   };
 
   const call = (
@@ -75,7 +72,7 @@ export default (opts = {}) => {
   };
 
   return {
-    updateGlobalConfig: (cfg) => AWS.config.update(cfg),
+    updateGlobalConfig: (AWS, cfg) => AWS.config.update(cfg),
     call,
     get: getService,
     dy: Dy({ call, getService, logger }),
