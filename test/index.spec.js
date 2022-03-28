@@ -32,7 +32,7 @@ describe('Testing index', { useNock: true }, () => {
   });
 
   it('Testing global configuration', () => {
-    expect(aws.updateGlobalConfig(aws, {})).to.equal(undefined);
+    expect(aws.updateGlobalConfig(AWS, {})).to.equal(undefined);
   });
 
   it('Testing nested get', () => {

@@ -55,9 +55,7 @@
     "node-tdd": "3.3.2",
     "smart-fs": "2.1.0"
   },
-  "peerDependencies": {
-    "aws-sdk": "^2.296.0"
-  },
+  "peerDependencies": {},
   "licenses": [
     {
       "type": "MIT",

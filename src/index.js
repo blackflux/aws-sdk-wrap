@@ -1,6 +1,5 @@
 import assert from 'assert';
 import get from 'lodash.get';
-import AWS from 'aws-sdk';
 import Joi from 'joi-strict';
 import Dy from './module/dy.js';
 import S3 from './module/s3.js';
@@ -73,7 +72,7 @@ export default (opts = {}) => {
   };
 
   return {
-    updateGlobalConfig: (cfg) => AWS.config.update(cfg),
+    updateGlobalConfig: (aws, cfg) => aws.config.update(cfg),
     call,
     get: getService,
     dy: Dy({ call, getService, logger }),
