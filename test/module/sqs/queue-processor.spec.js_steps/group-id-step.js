@@ -1,18 +1,18 @@
-const Joi = require('joi-strict');
-const objectHash = require('object-hash-strict');
+import Joi from 'joi-strict';
+import objectHash from 'object-hash-strict';
 
-module.exports.name = 'group-id-step';
+export const name = 'group-id-step';
 
-module.exports.queue = 'one';
+export const queue = 'one';
 
-module.exports.groupIdFunction = (msg) => objectHash(msg);
-module.exports.deduplicationIdFunction = (msg) => objectHash(msg);
+export const groupIdFunction = (msg) => objectHash(msg);
+export const deduplicationIdFunction = (msg) => objectHash(msg);
 
-module.exports.schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   name: Joi.string().valid('group-id-step'),
   meta: Joi.string()
 });
 
-module.exports.handler = async (payload, event, context) => [];
+export const handler = async (payload, event, context) => [];
 
-module.exports.next = [];
+export const next = [];

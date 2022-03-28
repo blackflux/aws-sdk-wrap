@@ -1,8 +1,8 @@
-const assert = require('assert');
-const Joi = require('joi-strict');
-const { fromCursor, buildPageObject } = require('../../../util/paging');
+import assert from 'assert';
+import Joi from 'joi-strict';
+import { fromCursor, buildPageObject } from '../../../util/paging.js';
 
-module.exports = (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) => {
+export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) => {
   const conditionsSchema = Joi.object({
     attr: Joi.string()
   }).pattern(

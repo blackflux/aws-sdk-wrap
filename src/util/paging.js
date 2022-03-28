@@ -7,7 +7,7 @@ const toCursor = ({
   limit, scanIndexForward, lastEvaluatedKey, currentPage
 });
 
-module.exports.fromCursor = (cursor = null) => {
+export const fromCursor = (cursor = null) => {
   let cursorPayload = {};
   if (cursor !== null) {
     try {
@@ -24,7 +24,7 @@ module.exports.fromCursor = (cursor = null) => {
   };
 };
 
-module.exports.buildPageObject = ({
+export const buildPageObject = ({
   currentPage, limit, scanIndexForward, lastEvaluatedKey
 }) => {
   const next = lastEvaluatedKey === null ? null : { limit };

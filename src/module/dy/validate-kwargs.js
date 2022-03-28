@@ -1,4 +1,4 @@
-const Joi = require('joi-strict');
+import Joi from 'joi-strict';
 
 const schema = Joi.object().keys({
   name: Joi.string(),
@@ -79,7 +79,7 @@ const schema = Joi.object().keys({
   return v;
 });
 
-module.exports = (kwargs) => {
+export default (kwargs) => {
   const result = schema.validate(kwargs);
   if (result.error) {
     throw new Error(result.error);

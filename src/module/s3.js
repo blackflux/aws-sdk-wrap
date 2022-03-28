@@ -1,11 +1,11 @@
-const util = require('util');
-const zlib = require('zlib');
-const get = require('lodash.get');
-const Joi = require('joi-strict');
+import util from 'util';
+import zlib from 'zlib';
+import get from 'lodash.get';
+import Joi from 'joi-strict';
 
 const sleep = util.promisify(setTimeout);
 
-module.exports = ({
+export default ({
   call,
   backoffFunction = (count) => 30 * (count ** 2),
   maxRetries = 10

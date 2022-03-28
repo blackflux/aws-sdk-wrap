@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const { LocalTable, buildModel } = require('../../../dy-helper');
-const { ModelNotFound } = require('../../../../src/resources/errors');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import { LocalTable, buildModel } from '../../../dy-helper.js';
+import { ModelNotFound } from '../../../../src/resources/errors.js';
 
 describe('Testing replace', {
   useNock: true,

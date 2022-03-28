@@ -1,0 +1,70 @@
+[
+  {
+    "scope": "https://lambda.us-west-2.amazonaws.com:443",
+    "method": "GET",
+    "path": "/2019-09-30/functions/service-search-api-local-dev-apiRouter/provisioned-concurrency?Qualifier=provisioned",
+    "body": "",
+    "status": 404,
+    "response": {
+      "Type": "User",
+      "message": "No Provisioned Concurrency Config found for this function"
+    },
+    "rawHeaders": [
+      "Date",
+      "Thu, 24 Mar 2022 22:00:05 GMT",
+      "Content-Type",
+      "application/json",
+      "Content-Length",
+      "85",
+      "Connection",
+      "keep-alive",
+      "x-amzn-RequestId",
+      "61ab1cd0-c52c-4959-8323-01766a237336",
+      "x-amzn-ErrorType",
+      "ProvisionedConcurrencyConfigNotFoundException"
+    ],
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": 0,
+      "host": "lambda.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "https://lambda.us-west-2.amazonaws.com:443",
+    "method": "GET",
+    "path": "/2015-03-31/functions/service-search-api-local-dev-apiRouter/aliases/provisioned",
+    "body": "",
+    "status": 404,
+    "response": {
+      "Message": "Cannot find alias arn: arn:aws:lambda:us-west-2:292425509451:function:service-search-api-dev-apiRouter:provisioned",
+      "Type": "User"
+    },
+    "rawHeaders": [
+      "Date",
+      "Mon, 21 Mar 2022 21:37:20 GMT",
+      "Content-Type",
+      "application/json",
+      "Content-Length",
+      "142",
+      "Connection",
+      "keep-alive",
+      "x-amzn-RequestId",
+      "358c10f3-25a3-4853-b120-15c1959dd1c1",
+      "x-amzn-ErrorType",
+      "ResourceNotFoundException"
+    ],
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": 0,
+      "host": "lambda.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    },
+    "responseIsBinary": false
+  }
+]

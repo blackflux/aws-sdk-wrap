@@ -1,18 +1,18 @@
-const assert = require('assert');
-const Create = require('./dy/fns/create');
-const CreateOrModify = require('./dy/fns/create-or-modify');
-const CreateOrReplace = require('./dy/fns/create-or-replace');
-const DeleteItem = require('./dy/fns/delete');
-const GetItem = require('./dy/fns/get-item');
-const Modify = require('./dy/fns/modify');
-const Query = require('./dy/fns/query');
-const Replace = require('./dy/fns/replace');
-const Scan = require('./dy/fns/scan');
-const createModel = require('./dy/create-model');
-const DyUtil = require('./dy/util');
-const { ModelNotFound, ModelAlreadyExists } = require('../resources/errors');
+import assert from 'assert';
+import Create from './dy/fns/create.js';
+import CreateOrModify from './dy/fns/create-or-modify.js';
+import CreateOrReplace from './dy/fns/create-or-replace.js';
+import DeleteItem from './dy/fns/delete.js';
+import GetItem from './dy/fns/get-item.js';
+import Modify from './dy/fns/modify.js';
+import Query from './dy/fns/query.js';
+import Replace from './dy/fns/replace.js';
+import Scan from './dy/fns/scan.js';
+import createModel from './dy/create-model.js';
+import DyUtil from './dy/util.js';
+import { ModelNotFound, ModelAlreadyExists } from '../resources/errors.js';
 
-module.exports = ({ call, getService, logger }) => ({
+export default ({ call, getService, logger }) => ({
   Model: ({
     name,
     attributes,

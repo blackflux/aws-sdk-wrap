@@ -1,13 +1,13 @@
-const Joi = require('joi-strict');
+import Joi from 'joi-strict';
 
-module.exports.name = 'bad-output';
+export const name = 'bad-output';
 
-module.exports.queue = 'one';
+export const queue = 'one';
 
-module.exports.schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   name: Joi.string().valid('bad-output')
 });
 
-module.exports.handler = async (payload, event, context) => [{ name: 'unknown-step' }];
+export const handler = async (payload, event, context) => [{ name: 'unknown-step' }];
 
-module.exports.next = ['step2'];
+export const next = ['step2'];

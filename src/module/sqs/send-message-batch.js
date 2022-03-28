@@ -1,11 +1,11 @@
-const util = require('util');
-const chunk = require('lodash.chunk');
-const get = require('lodash.get');
-const objectScan = require('object-scan');
-const Joi = require('joi-strict');
-const objectHash = require('object-hash-strict');
-const { getGroupId, getDeduplicationId, getDelaySeconds } = require('./prepare-message');
-const { SendMessageBatchError, MessageCollisionError } = require('../../resources/errors');
+import util from 'util';
+import chunk from 'lodash.chunk';
+import get from 'lodash.get';
+import objectScan from 'object-scan';
+import Joi from 'joi-strict';
+import objectHash from 'object-hash-strict';
+import { getGroupId, getDeduplicationId, getDelaySeconds } from './prepare-message.js';
+import { SendMessageBatchError, MessageCollisionError } from '../../resources/errors.js';
 
 const msgRaw = Symbol('msg-raw');
 
@@ -78,7 +78,7 @@ const transformMessages = ({ messages, batchDelaySeconds }) => {
   return Object.values(result);
 };
 
-module.exports = ({ call, getService, logger }) => async (opts) => {
+export default ({ call, getService, logger }) => async (opts) => {
   Joi.assert(opts, Joi.object().keys({
     messages: Joi.array(),
     queueUrl: Joi.string(),

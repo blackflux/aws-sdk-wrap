@@ -1,28 +1,28 @@
-const Joi = require('joi-strict');
+import Joi from 'joi-strict';
 
-module.exports.name = 'parallel-step';
+export const name = 'parallel-step';
 
-module.exports.queue = 'two';
+export const queue = 'two';
 
-module.exports.schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   name: Joi.string().valid('parallel-step'),
   meta: Joi.string()
 });
 
-module.exports.before = async (context, payloads) => {
+export const before = async (context, payloads) => {
   // eslint-disable-next-line no-console
   console.log(payloads);
   context.store = [];
   return [];
 };
 
-module.exports.handler = async (payload, event, context) => {
+export const handler = async (payload, event, context) => {
   context.store.push(payload);
   return [];
 };
 
-module.exports.after = async (context) => context.store;
+export const after = async (context) => context.store;
 
-module.exports.next = ['parallel-step'];
+export const next = ['parallel-step'];
 
-module.exports.delay = 15;
+export const delay = 15;

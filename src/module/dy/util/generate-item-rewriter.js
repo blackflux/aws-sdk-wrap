@@ -1,4 +1,4 @@
-module.exports = ((fn, sets) => (item) => {
+export default ((fn, sets) => (item) => {
   if (fn === 'delete') {
     return item;
   }

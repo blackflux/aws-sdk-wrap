@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const Index = require('../../../src/index');
-const { SendMessageBatchError, MessageCollisionError } = require('../../../src/resources/errors');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import Index from '../../../src/index.js';
+import { SendMessageBatchError, MessageCollisionError } from '../../../src/resources/errors.js';
 
 describe('Testing sendMessageBatch', {
   useNock: true,
@@ -83,35 +83,32 @@ describe('Testing sendMessageBatch', {
     expect(result).to.deep.equal([]);
   });
 
-  it('Testing Send message batch error', async () => {
-    try {
-      await aws.sqs.sendMessageBatch({
-        messages: [{
+  it('Testing Send message batch error', async ({ capture }) => {
+    const err = await capture(() => aws.sqs.sendMessageBatch({
+      messages: [{
+        type: 'webhook',
+        url: 'https://some-url.com/path',
+        meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
+        event: {
+          name: 'event_name'
+        }
+      }],
+      queueUrl: process.env.QUEUE_URL_ONE,
+      maxRetries: 1
+    }));
+    expect(err).instanceof(SendMessageBatchError);
+    expect(err.context).to.deep.equal({
+      failedMessages: [
+        {
           type: 'webhook',
           url: 'https://some-url.com/path',
           meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
           event: {
             name: 'event_name'
           }
-        }],
-        queueUrl: process.env.QUEUE_URL_ONE,
-        maxRetries: 1
-      });
-    } catch (err) {
-      expect(err).instanceof(SendMessageBatchError);
-      expect(err.context).to.deep.equal({
-        failedMessages: [
-          {
-            type: 'webhook',
-            url: 'https://some-url.com/path',
-            meta: 'c53be1ec6a664cb0820aa5fa8b9915ea',
-            event: {
-              name: 'event_name'
-            }
-          }
-        ]
-      });
-    }
+        }
+      ]
+    });
   });
 
   it('Testing maxDelaySeconds option', async () => {

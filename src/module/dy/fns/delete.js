@@ -1,1 +1,1 @@
-module.exports = (compileFn) => compileFn('delete', true);
+export default (compileFn) => compileFn('delete', true);

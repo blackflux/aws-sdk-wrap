@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const { fromCursor, buildPageObject } = require('../../src/util/paging');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import { fromCursor, buildPageObject } from '../../src/util/paging.js';
 
 describe('Testing paging', () => {
   it('Testing fromCursor', () => {

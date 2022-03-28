@@ -1,11 +1,11 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const {
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import {
   validateNoParams,
   validateOneParam,
   validateTwoParams,
   validateAsync
-} = require('./uncalled-validate-fns');
+} from './uncalled-validate-fns.js';
 
 describe('Testing uncalled-validate-fns.js', () => {
   it('Testing validateNoParams is called', () => {

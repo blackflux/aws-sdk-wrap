@@ -1,6 +1,6 @@
-const Joi = require('joi-strict');
+import Joi from 'joi-strict';
 
-class RetryError extends Error {
+export class RetryError extends Error {
   constructor(kwargs = {}) {
     super();
     this.name = this.constructor.name;
@@ -39,4 +39,3 @@ class RetryError extends Error {
     this.onFailure = onFailure;
   }
 }
-module.exports.RetryError = RetryError;
