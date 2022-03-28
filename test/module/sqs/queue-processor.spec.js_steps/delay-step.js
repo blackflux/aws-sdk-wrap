@@ -1,22 +1,22 @@
-const Joi = require('joi-strict');
+import Joi from 'joi-strict';
 
-module.exports.name = 'delay-step';
+export const name = 'delay-step';
 
-module.exports.queue = 'one';
+export const queue = 'one';
 
-module.exports.timeout = 1;
+export const timeout = 1;
 
-module.exports.schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   name: Joi.string().valid('delay-step'),
   delay: Joi.number().integer().min(0)
 });
 
-module.exports.before = async (context, payloads) => [];
-module.exports.handler = async (payload, event, context) => new Promise(
+export const before = async (context, payloads) => [];
+export const handler = async (payload, event, context) => new Promise(
   (resolve) => {
     setTimeout(() => resolve([]), payload.delay);
   }
 );
-module.exports.after = async (context) => [];
+export const after = async (context) => [];
 
-module.exports.next = [];
+export const next = [];

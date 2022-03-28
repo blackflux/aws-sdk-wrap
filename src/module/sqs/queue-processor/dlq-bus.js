@@ -1,6 +1,6 @@
-const updateTrace = require('./update-trace');
+import updateTrace from './update-trace.js';
 
-module.exports = ({
+export default ({
   queues, getDeadLetterQueueUrl, messageBus, globalPool
 }) => {
   const pending = [];

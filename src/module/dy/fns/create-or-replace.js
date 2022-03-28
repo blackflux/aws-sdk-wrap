@@ -1,1 +1,1 @@
-module.exports = (compileFn) => compileFn('put', null);
+export default (compileFn) => compileFn('put', null);

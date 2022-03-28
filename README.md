@@ -32,9 +32,9 @@ Ensure required peer dependencies are available.
 
 <!-- eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
-const aws = require('aws-sdk-wrap')();
+import AWS from 'aws-sdk-wrap';
 
-aws
+AWS()
   .call('s3:putObject', { /* ... */ })
   .then(/* ... */)
   .catch(/* ... */);

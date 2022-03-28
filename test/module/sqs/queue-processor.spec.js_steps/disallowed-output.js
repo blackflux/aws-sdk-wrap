@@ -1,13 +1,13 @@
-const Joi = require('joi-strict');
+import Joi from 'joi-strict';
 
-module.exports.name = 'disallowed-output';
+export const name = 'disallowed-output';
 
-module.exports.queue = 'one';
+export const queue = 'one';
 
-module.exports.schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   name: Joi.string().valid('disallowed-output')
 });
 
-module.exports.handler = async (payload, event, context) => [{ name: 'step2' }];
+export const handler = async (payload, event, context) => [{ name: 'step2' }];
 
-module.exports.next = [];
+export const next = [];

@@ -1,7 +1,7 @@
-const assert = require('assert');
-const { stripPayloadMeta } = require('./payload');
+import assert from 'assert';
+import { stripPayloadMeta } from './payload.js';
 
-module.exports = ({ event, steps }) => {
+export default ({ event, steps }) => {
   const stepContexts = {};
   const tasks = event.Records
     .map((e) => {

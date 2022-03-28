@@ -1,11 +1,11 @@
-const assert = require('assert');
-const Joi = require('joi-strict');
-const objectFields = require('object-fields');
-const MergeAttributes = require('./util/merge-attributes');
-const ValidateItem = require('./util/validate-item');
-const generateItemRewriter = require('./util/generate-item-rewriter');
+import assert from 'assert';
+import Joi from 'joi-strict';
+import objectFields from 'object-fields';
+import MergeAttributes from './util/merge-attributes.js';
+import ValidateItem from './util/validate-item.js';
+import generateItemRewriter from './util/generate-item-rewriter.js';
 
-module.exports = ({
+export default ({
   attributes,
   model,
   onNotFound_,

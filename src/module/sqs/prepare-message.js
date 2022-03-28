@@ -1,17 +1,17 @@
-const assert = require('assert');
-const Joi = require('joi-strict');
+import assert from 'assert';
+import Joi from 'joi-strict';
 
 const URGENT = Symbol('urgent');
 const GROUP_ID = Symbol('group-id');
 const DEDUPLICATION_ID = Symbol('deduplication-id');
 const DELAY_SECONDS = Symbol('delay-seconds');
 
-module.exports.getUrgent = (msg) => msg[URGENT];
-module.exports.getGroupId = (msg) => msg[GROUP_ID];
-module.exports.getDeduplicationId = (msg) => msg[DEDUPLICATION_ID];
-module.exports.getDelaySeconds = (msg) => msg[DELAY_SECONDS];
+export const getUrgent = (msg) => msg[URGENT];
+export const getGroupId = (msg) => msg[GROUP_ID];
+export const getDeduplicationId = (msg) => msg[DEDUPLICATION_ID];
+export const getDelaySeconds = (msg) => msg[DELAY_SECONDS];
 
-module.exports.clone = (msg) => {
+export const clone = (msg) => {
   const m = { ...msg };
   Object.getOwnPropertySymbols(msg).forEach((p) => {
     m[p] = msg[p];
@@ -19,7 +19,7 @@ module.exports.clone = (msg) => {
   return m;
 };
 
-module.exports.prepareMessage = (msg, opts) => {
+export const prepareMessage = (msg, opts) => {
   Joi.assert(opts, Joi.object().keys({
     urgent: Joi.boolean().optional(),
     groupId: Joi.string().optional(),

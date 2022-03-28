@@ -1,12 +1,12 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const validateKwargs = require('../../../src/module/dy/validate-kwargs');
-const {
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import validateKwargs from '../../../src/module/dy/validate-kwargs.js';
+import {
   validateNoParams,
   validateOneParam,
   validateTwoParams,
   validateAsync
-} = require('../../helper/uncalled-validate-fns');
+} from '../../helper/uncalled-validate-fns.js';
 
 describe('Testing validate-kwargs.js', () => {
   let exec;

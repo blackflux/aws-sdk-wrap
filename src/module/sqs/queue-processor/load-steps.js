@@ -1,9 +1,9 @@
-const assert = require('assert');
-const Joi = require('joi-strict');
-const { Pool } = require('promise-pool-ext');
-const errors = require('../errors');
+import assert from 'assert';
+import Joi from 'joi-strict';
+import { Pool } from 'promise-pool-ext';
+import { RetryError } from '../errors.js';
 
-module.exports = (steps, queues) => steps
+export default (steps, queues) => steps
   .reduce((p, logic) => Object.assign(p, {
     [logic.name]: (() => {
       const {
@@ -82,7 +82,7 @@ module.exports = (steps, queues) => steps
         next,
         queue,
         delay,
-        retry: retry !== null ? new errors.RetryError(retry) : retry,
+        retry: retry !== null ? new RetryError(retry) : retry,
         pool: Pool({
           concurrency: Number.MAX_SAFE_INTEGER,
           timeout: timeout * 1000

@@ -1,14 +1,14 @@
-const assert = require('assert');
-const get = require('lodash.get');
-const { prepareMessage } = require('../prepare-message');
-const errors = require('../errors');
-const { metaKey } = require('./payload');
+import assert from 'assert';
+import get from 'lodash.get';
+import { prepareMessage } from '../prepare-message.js';
+import { RetryError } from '../errors.js';
+import { metaKey } from './payload.js';
 
-module.exports = async ({
+export default async ({
   error, payload, payloadStripped, e, step, stepBus, dlqBus, logger
 }) => {
   let err = error;
-  if (!(err instanceof errors.RetryError)) {
+  if (!(err instanceof RetryError)) {
     if (step.retry === null) {
       throw err;
     } else {

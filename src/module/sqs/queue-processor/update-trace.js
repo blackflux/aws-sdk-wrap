@@ -1,7 +1,7 @@
-const assert = require('assert');
-const get = require('lodash.get');
-const { clone } = require('../prepare-message');
-const { metaKey } = require('./payload');
+import assert from 'assert';
+import get from 'lodash.get';
+import { clone } from '../prepare-message.js';
+import { metaKey } from './payload.js';
 
 const concat = (trace, toAppend) => {
   if (trace.length === 0) {
@@ -14,7 +14,7 @@ const concat = (trace, toAppend) => {
   return trace.slice(0, -1).concat(`${last} * ${parseInt(count, 10) + 1}`);
 };
 
-module.exports = (msgs, step, trace) => {
+export default (msgs, step, trace) => {
   assert(Array.isArray(trace) || typeof trace === 'string');
   return msgs.map((msg) => {
     const m = clone(msg);

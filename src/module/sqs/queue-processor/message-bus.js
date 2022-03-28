@@ -1,5 +1,5 @@
-const assert = require('assert');
-const { prepareMessage, getUrgent } = require('../prepare-message');
+import assert from 'assert';
+import { prepareMessage, getUrgent } from '../prepare-message.js';
 
 const prepareGroupId = (msg, steps) => {
   const groupIdFunction = steps[msg.name].groupIdFunction;
@@ -27,7 +27,7 @@ const prepareDelay = (msg, steps) => {
   }
 };
 
-module.exports = ({
+export default ({
   sendMessageBatch,
   queues,
   steps,

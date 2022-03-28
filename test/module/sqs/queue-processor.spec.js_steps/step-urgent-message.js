@@ -1,26 +1,26 @@
-const axios = require('axios');
-const Joi = require('joi-strict');
-const { prepareMessage } = require('../../../../src/module/sqs/prepare-message');
+import axios from 'axios';
+import Joi from 'joi-strict';
+import { prepareMessage } from '../../../../src/module/sqs/prepare-message.js';
 
-module.exports.name = 'step-urgent-message';
+export const name = 'step-urgent-message';
 
-module.exports.queue = 'one';
+export const queue = 'one';
 
-module.exports.schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   name: Joi.string().valid('step-urgent-message')
 });
 
-module.exports.before = async (context, payloads) => {
+export const before = async (context, payloads) => {
   const msg = { name: 'step1', meta: 'before' };
   prepareMessage(msg, { urgent: true });
   return [msg];
 };
-module.exports.handler = async (payload, event, context) => {
+export const handler = async (payload, event, context) => {
   await axios.get('https://api.github.com/users/mapbox');
   return [{ name: 'step1', meta: 'handler' }];
 };
-module.exports.after = async (context) => [];
+export const after = async (context) => [];
 
-module.exports.next = ['step1'];
+export const next = ['step1'];
 
-module.exports.delay = 0;
+export const delay = 0;

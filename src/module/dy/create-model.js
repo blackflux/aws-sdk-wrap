@@ -1,7 +1,7 @@
-const get = require('lodash.get');
-const toolbox = require('dynamodb-toolbox');
-const getFirst = require('./get-first');
-const validateKwargs = require('./validate-kwargs');
+import get from 'lodash.get';
+import toolbox from 'dynamodb-toolbox';
+import getFirst from './get-first.js';
+import validateKwargs from './validate-kwargs.js';
 
 const generateKeySchema = ({ partitionKey, sortKey = null }) => ({
   KeySchema: [
@@ -23,7 +23,7 @@ const convertType = (t) => {
   }
 };
 
-module.exports = (kwargs) => {
+export default (kwargs) => {
   const {
     name,
     attributes,

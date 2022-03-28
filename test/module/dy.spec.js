@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const { LocalTable, buildModel } = require('../dy-helper');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import { LocalTable, buildModel } from '../dy-helper.js';
 
 describe('Testing dy Util', {
   useNock: true,

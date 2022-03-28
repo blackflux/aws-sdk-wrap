@@ -1,4 +1,4 @@
-module.exports = ({ call }) => async (queueUrl) => {
+export default ({ call }) => async (queueUrl) => {
   const result = await call('sqs:getQueueAttributes', {
     QueueUrl: queueUrl,
     AttributeNames: ['RedrivePolicy']

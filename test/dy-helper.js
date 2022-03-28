@@ -1,8 +1,9 @@
-const { DynamoDB } = require('aws-sdk');
-const expect = require('chai').expect;
-const Index = require('../src');
-const DyUtil = require('../src/module/dy');
+import AWS from 'aws-sdk';
+import { expect } from 'chai';
+import Index from '../src/index.js';
+import DyUtil from '../src/module/dy.js';
 
+const { DynamoDB } = AWS;
 const { DocumentClient } = DynamoDB;
 
 const dynamoDB = async (cmd, params) => {
@@ -16,7 +17,7 @@ const dynamoDB = async (cmd, params) => {
   return ddb[cmd](params).promise();
 };
 
-module.exports.LocalTable = (model) => {
+export const LocalTable = (model) => {
   const schema = model.schema;
   return {
     create: async () => dynamoDB('createTable', schema),
@@ -24,7 +25,7 @@ module.exports.LocalTable = (model) => {
   };
 };
 
-module.exports.buildModel = ({
+export const buildModel = ({
   extraAttrs = null,
   extraIndices = null,
   onUpdate = null,
@@ -74,7 +75,7 @@ module.exports.buildModel = ({
   });
 };
 
-module.exports.createItems = async ({
+export const createItems = async ({
   count,
   model,
   primaryKey,

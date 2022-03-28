@@ -1,7 +1,7 @@
-const assert = require('assert');
-const Joi = require('joi-strict');
+import assert from 'assert';
+import Joi from 'joi-strict';
 
-module.exports = (model, validateSecondaryIndex, setDefaults) => async (...args) => {
+export default (model, validateSecondaryIndex, setDefaults) => async (...args) => {
   Joi.assert(args, Joi.array().ordered(Joi.object().keys({
     index: Joi.string().optional(),
     limit: Joi.number().integer().min(1).optional(),

@@ -1,8 +1,11 @@
-const expect = require('chai').expect;
-const { DocumentClient } = require('aws-sdk').DynamoDB;
-const { describe } = require('node-tdd');
-const createModel = require('../../../src/module/dy/create-model');
-const { validateOneParam } = require('../../helper/uncalled-validate-fns');
+import { expect } from 'chai';
+import AWS from 'aws-sdk';
+import { describe } from 'node-tdd';
+import createModel from '../../../src/module/dy/create-model.js';
+import { validateOneParam } from '../../helper/uncalled-validate-fns.js';
+
+const { DynamoDB } = AWS;
+const { DocumentClient } = DynamoDB;
 
 describe('Testing create-model.js', () => {
   it('Testing basic logic', () => {
