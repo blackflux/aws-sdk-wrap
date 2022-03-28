@@ -1,3 +1,4 @@
+import AWS from 'aws-sdk';
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import Index from '../../src/index.js';
@@ -15,7 +16,12 @@ describe('Testing lambda Util', {
     lambda = Lambda({
       call: Index({
         logger: console,
-        config: { maxRetries: 0 }
+        config: { maxRetries: 0 },
+        services: {
+          Lambda: AWS.Lambda,
+          SSM: AWS.SSM,
+          CloudWatch: AWS.CloudWatch
+        }
       }).call
     });
     scaler = lambda.FunctionScaler({

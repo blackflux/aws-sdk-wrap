@@ -30,11 +30,16 @@ Ensure required peer dependencies are available.
 
 ## Usage
 
-<!-- eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies -->
+<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
 import AWS from 'aws-sdk-wrap';
+import aws from 'aws-sdk';
 
-AWS()
+AWS({
+  services: {
+    S3: aws.S3
+  }
+})
   .call('s3:putObject', { /* ... */ })
   .then(/* ... */)
   .catch(/* ... */);
@@ -61,9 +66,9 @@ The available call `options` are detailed below.
 
 Get the service from the underlying `aws-sdk` without initializing it. Possible to access nested paths.
 
-#### updateGlobalConfig(config: Object)
+#### updateGlobalConfig(AWS, config: Object)
 
-Updates the global aws config of the underlying `aws-sdk` via `AWS.config.update`.
+Updates the global aws config of the passed `aws-sdk` via `AWS.config.update`.
 In most cases this should not be necessary to use.
 
 #### sqs.sendMessageBatch({ messages: Array, queueUrl: String /* ... other options ... */ })

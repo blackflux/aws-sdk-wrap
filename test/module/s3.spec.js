@@ -1,3 +1,4 @@
+import AWS from 'aws-sdk';
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import Index from '../../src/index.js';
@@ -15,7 +16,10 @@ describe('Testing s3 Util', {
     S3 = (opts = {}) => S3Module({
       call: Index({
         logger: console,
-        config: { maxRetries: 0 }
+        config: { maxRetries: 0 },
+        services: {
+          S3: AWS.S3
+        }
       }).call,
       ...opts
     });

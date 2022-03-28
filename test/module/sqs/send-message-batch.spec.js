@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
+import AWS from 'aws-sdk';
 import Index from '../../../src/index.js';
 import { SendMessageBatchError, MessageCollisionError } from '../../../src/resources/errors.js';
 
@@ -10,7 +11,12 @@ describe('Testing sendMessageBatch', {
 }, () => {
   let aws;
   before(() => {
-    aws = Index({ logger: console });
+    aws = Index({
+      logger: console,
+      services: {
+        sqs: AWS.SQS
+      }
+    });
   });
 
   it('Testing send message success', async () => {
