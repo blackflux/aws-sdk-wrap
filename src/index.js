@@ -72,7 +72,7 @@ export default (opts = {}) => {
   };
 
   return {
-    updateGlobalConfig: (aws, cfg) => aws.config.update(cfg),
+    updateGlobalConfig: (AWS, cfg) => AWS.config.update(cfg),
     call,
     get: getService,
     dy: Dy({ call, getService, logger }),
