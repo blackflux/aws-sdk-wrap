@@ -100,7 +100,12 @@ export default ({
             FunctionName: functionName,
             Qualifier: aliasName
           },
-          { expectedErrorCodes: ['ProvisionedConcurrencyConfigNotFoundException'] }
+          {
+            expectedErrorCodes: [
+              'ProvisionedConcurrencyConfigNotFoundException',
+              'ResourceNotFoundException'
+            ]
+          }
         );
 
         if (restore === true) {
