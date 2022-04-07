@@ -1,3 +1,5 @@
+import assert from 'assert';
+
 export default ({
   call,
   logger
@@ -143,6 +145,7 @@ export default ({
         const { Timestamps, Values } = MetricDataResults[0];
 
         const desiredConcurrency = computeDesiredConcurrency(Timestamps, Values);
+        assert(Number.isSafeInteger(desiredConcurrency), desiredConcurrency);
 
         await updateProvisionedConcurrency(functionName, desiredConcurrency, aliasName);
       };
