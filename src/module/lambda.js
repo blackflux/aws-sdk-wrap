@@ -75,9 +75,6 @@ export default ({
             }
           }
         }
-        if (results.length === 0) {
-          return 0;
-        }
 
         const factor = (x) => 1.0 / (x * 0.3 + 1);
         let value = 0;
@@ -86,7 +83,10 @@ export default ({
           const idx = LOOK_BEHIND_WEEKS - week - 1;
           let max = 0;
           for (let period = 0; period <= LOOK_AHEAD_PERIODS; period += 1) {
-            max = Math.max(max, results[week * (LOOK_AHEAD_PERIODS + 1) + period][1]);
+            const i = week * (LOOK_AHEAD_PERIODS + 1) + period;
+            if (results.length < i) {
+              max = Math.max(max, results[i][1]);
+            }
           }
           const fact = factor(idx);
           value += max * fact;
