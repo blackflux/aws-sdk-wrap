@@ -72,7 +72,7 @@ export default ({
         for (let week = 0; week < LOOK_BEHIND_WEEKS; week += 1) {
           for (let period = 0; period <= LOOK_AHEAD_PERIODS; period += 1) {
             const idx = week * WEEK_PERIODS + period;
-            if (timestamps.length < idx && values.length < idx) {
+            if (idx < timestamps.length && idx < values.length) {
               results.push([timestamps[idx], values[idx]]);
             }
           }
@@ -86,7 +86,7 @@ export default ({
           let max = 0;
           for (let period = 0; period <= LOOK_AHEAD_PERIODS; period += 1) {
             const i = week * (LOOK_AHEAD_PERIODS + 1) + period;
-            if (results.length < i) {
+            if (i < results.length) {
               max = Math.max(max, results[i][1]);
             }
           }
