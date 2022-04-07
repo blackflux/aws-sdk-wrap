@@ -70,8 +70,13 @@ export default ({
         for (let week = 0; week < LOOK_BEHIND_WEEKS; week += 1) {
           for (let period = 0; period <= LOOK_AHEAD_PERIODS; period += 1) {
             const idx = week * WEEK_PERIODS + period;
-            results.push([timestamps[idx], values[idx]]);
+            if (timestamps.length < idx && values.length < idx) {
+              results.push([timestamps[idx], values[idx]]);
+            }
           }
+        }
+        if (results.length === 0) {
+          return 0;
         }
 
         const factor = (x) => 1.0 / (x * 0.3 + 1);
