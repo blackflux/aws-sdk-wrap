@@ -67,8 +67,14 @@ export default ({
     }) => {
       const WEEK_PERIODS = WEEK_IN_SECONDS / PERIOD_IN_SECONDS;
 
-      const computeDesiredConcurrency = (startTime, timestamps, values) => {
-        const obj = Object.fromEntries(timestamps.map((e, idx) => [e.toISOString(), values[idx]]));
+      const computeDesiredConcurrency = (startTime, endTime, timestamps, values) => {
+        const obj = {};
+        for (let c = startTime; c < endTime; c += PERIOD_IN_SECONDS) {
+          obj[new Date(c * 1000).toISOString()] = 0;
+        }
+        for (let idx = 0; idx < timestamps.length; idx += 1) {
+          obj[timestamps[idx].toISOString()] = values[idx];
+        }
         const results = [];
         for (let week = 0; week < LOOK_BEHIND_WEEKS; week += 1) {
           for (let period = 0; period <= LOOK_AHEAD_PERIODS; period += 1) {
@@ -144,7 +150,7 @@ export default ({
         const { MetricDataResults } = await queryHistory(functionName, StartTime, EndTime, PERIOD_IN_SECONDS);
         const { Timestamps, Values } = MetricDataResults[0];
 
-        const desiredConcurrency = computeDesiredConcurrency(StartTime, Timestamps, Values);
+        const desiredConcurrency = computeDesiredConcurrency(StartTime, EndTime, Timestamps, Values);
         assert(Number.isSafeInteger(desiredConcurrency), desiredConcurrency);
 
         await updateProvisionedConcurrency(functionName, desiredConcurrency, aliasName);
