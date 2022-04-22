@@ -1,0 +1,117 @@
+[
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Key": {
+        "id": {
+          "S": "lock-name-timeout"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {
+      "Item": {
+        "owner": {
+          "S": "dy-alchemy-lock-manager"
+        },
+        "leaseDurationMs": {
+          "N": "1000"
+        },
+        "guid": {
+          "B": "a4ayc/80/OGda4BO/1o/V0etpOqiLx1JwB5S3beHW0ucLk2P6X2IFDDeTnVLQgW5wnzpZxUjHP/EM3NAyxECgA=="
+        },
+        "id": {
+          "S": "lock-name-timeout"
+        },
+        "fencingToken": {
+          "N": "2"
+        }
+      }
+    }
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "3"
+        },
+        "leaseDurationMs": {
+          "N": "10000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "wqtFqmQxmOiT9lQzmZCV7p0kDjMEfp1+uONbfWl8QA2uqYgYo1KyKz7JCFWXxUWXVoSbNDyJSgKHFMm5r0Graw=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-name-timeout"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#partitionKey) or (guid = :guid and fencingToken = :fencingToken)",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":fencingToken": {
+          "N": "2"
+        },
+        ":guid": {
+          "B": "a4ayc/80/OGda4BO/1o/V0etpOqiLx1JwB5S3beHW0ucLk2P6X2IFDDeTnVLQgW5wnzpZxUjHP/EM3NAyxECgA=="
+        }
+      }
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "3"
+        },
+        "leaseDurationMs": {
+          "N": "1"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "wqtFqmQxmOiT9lQzmZCV7p0kDjMEfp1+uONbfWl8QA2uqYgYo1KyKz7JCFWXxUWXVoSbNDyJSgKHFMm5r0Graw=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-name-timeout"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#partitionKey) and guid = :guid",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":guid": {
+          "B": "wqtFqmQxmOiT9lQzmZCV7p0kDjMEfp1+uONbfWl8QA2uqYgYo1KyKz7JCFWXxUWXVoSbNDyJSgKHFMm5r0Graw=="
+        }
+      }
+    },
+    "status": 200,
+    "response": {}
+  }
+]

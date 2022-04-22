@@ -61,5 +61,5 @@ export default ({ call, getService, logger }) => ({
       schema: model.schema
     });
   },
-  lockManager: LockManager({ getService, logger })
+  LockManager: LockManager({ getService, logger })
 });

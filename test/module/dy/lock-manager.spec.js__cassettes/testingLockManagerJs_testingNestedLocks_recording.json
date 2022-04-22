@@ -1,0 +1,180 @@
+[
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Key": {
+        "id": {
+          "S": "lock-name-outer"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "1"
+        },
+        "leaseDurationMs": {
+          "N": "10000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "52y14skG/9ovu39ztSdu/ClmlaHBV8xSjXV73KCYnSGnhb93IrcWiiZIrMYdeL/w9WFtS6oPpLu4FJBkY27pVA=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-name-outer"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#partitionKey)",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      }
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Key": {
+        "id": {
+          "S": "lock-name-inner"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "1"
+        },
+        "leaseDurationMs": {
+          "N": "10000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "ptjKhxxhs4leLGG3xwm153/Gad4Q0QcaVVRE4ksVHm4taZnJKDtl9w+1ZFtPtOYzw2noiWdgueJbxUbJhI435g=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-name-inner"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#partitionKey)",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      }
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "1"
+        },
+        "leaseDurationMs": {
+          "N": "1"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "ptjKhxxhs4leLGG3xwm153/Gad4Q0QcaVVRE4ksVHm4taZnJKDtl9w+1ZFtPtOYzw2noiWdgueJbxUbJhI435g=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-name-inner"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#partitionKey) and guid = :guid",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":guid": {
+          "B": "ptjKhxxhs4leLGG3xwm153/Gad4Q0QcaVVRE4ksVHm4taZnJKDtl9w+1ZFtPtOYzw2noiWdgueJbxUbJhI435g=="
+        }
+      }
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "1"
+        },
+        "leaseDurationMs": {
+          "N": "1"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "52y14skG/9ovu39ztSdu/ClmlaHBV8xSjXV73KCYnSGnhb93IrcWiiZIrMYdeL/w9WFtS6oPpLu4FJBkY27pVA=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-name-outer"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#partitionKey) and guid = :guid",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":guid": {
+          "B": "52y14skG/9ovu39ztSdu/ClmlaHBV8xSjXV73KCYnSGnhb93IrcWiiZIrMYdeL/w9WFtS6oPpLu4FJBkY27pVA=="
+        }
+      }
+    },
+    "status": 200,
+    "response": {}
+  }
+]

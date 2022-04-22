@@ -1,0 +1,91 @@
+[
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Key": {
+        "id": {
+          "S": "lock-name"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "id": {
+          "S": "lock-name"
+        },
+        "fencingToken": {
+          "N": "1"
+        },
+        "leaseDurationMs": {
+          "N": "10000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "ZMqfZsh9wCfFLOl9fKz4yXizZBkhg7R2q4sVdNicCjjUDmxAwEjVgmdxLzIo3tmw1oR8Od2YqmrH4ayUVAAyaA=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#partitionKey)",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      }
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "id": {
+          "S": "lock-name"
+        },
+        "fencingToken": {
+          "N": "1"
+        },
+        "leaseDurationMs": {
+          "N": "1"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "ZMqfZsh9wCfFLOl9fKz4yXizZBkhg7R2q4sVdNicCjjUDmxAwEjVgmdxLzIo3tmw1oR8Od2YqmrH4ayUVAAyaA=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#partitionKey) and guid = :guid",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":guid": {
+          "B": "ZMqfZsh9wCfFLOl9fKz4yXizZBkhg7R2q4sVdNicCjjUDmxAwEjVgmdxLzIo3tmw1oR8Od2YqmrH4ayUVAAyaA=="
+        }
+      }
+    },
+    "status": 200,
+    "response": {}
+  }
+]

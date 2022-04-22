@@ -1,0 +1,52 @@
+[
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Key": {
+        "id": {
+          "S": "lock-failure"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "1"
+        },
+        "leaseDurationMs": {
+          "N": "10000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "vSbKPFGEfkjN4CgBMiCGrKDsg7koZ5lhATqNBy2i0wW1y9IMKrfSWTT798OoA4DOsjsV1M8X/l4uFE9p0LLAeQ=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-failure"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#partitionKey)",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      }
+    },
+    "status": 400,
+    "response": {}
+  }
+]

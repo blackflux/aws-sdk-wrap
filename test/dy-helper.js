@@ -25,6 +25,25 @@ export const LocalTable = (model) => {
   };
 };
 
+export const buildLockManager = () => {
+  const index = Index({
+    config: {
+      region: 'us-west-2',
+      accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
+      secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+    },
+    services: {
+      'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient
+    }
+  });
+  const { LockManager } = DyUtil({
+    call: index.call,
+    logger: console,
+    getService: index.get
+  });
+  return LockManager;
+};
+
 export const buildModel = ({
   extraAttrs = null,
   extraIndices = null,

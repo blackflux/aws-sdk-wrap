@@ -20,16 +20,17 @@ export default ({ getService, logger }) => (lockTable, {
     }
     return lockClient;
   };
+  // https://github.com/blackflux/dy-alchemy/blob/83d52df5ac5450ff2ae979c586bd9b22ff7ef489/test/modules/lock-manager.spec.js
   return {
     lock: (lockName) => new Promise((resolve, reject) => {
       const client = getLockClient();
       client.acquireLock(lockName, (err, lock) => {
         if (err) {
-          reject(err);
+          return reject(err);
         }
         lock.on('error', (error) => Promise.resolve(error)
           .then((e) => logger.info(`Error: Failed to renew heartbeat for lock ${lockName}\n${e}`)));
-        resolve({
+        return resolve({
           release: () => new Promise((res, rej) => {
             lock.release((e) => (e ? rej(e) : res()));
           }),

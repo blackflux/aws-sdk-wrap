@@ -1,0 +1,91 @@
+[
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Key": {
+        "id": {
+          "S": "lock-release-failure"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "1"
+        },
+        "leaseDurationMs": {
+          "N": "10000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "5qchlX/M5CKJEtq7QbzbEOJkmE3gh/9YxE07sWXefj4JjlWRG9QFjrPK9fcgOziGlK90m+Pnd2yeqEQNrXLk7g=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-release-failure"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#partitionKey)",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      }
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "1"
+        },
+        "leaseDurationMs": {
+          "N": "1"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "5qchlX/M5CKJEtq7QbzbEOJkmE3gh/9YxE07sWXefj4JjlWRG9QFjrPK9fcgOziGlK90m+Pnd2yeqEQNrXLk7g=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-release-failure"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#partitionKey) and guid = :guid",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":guid": {
+          "B": "5qchlX/M5CKJEtq7QbzbEOJkmE3gh/9YxE07sWXefj4JjlWRG9QFjrPK9fcgOziGlK90m+Pnd2yeqEQNrXLk7g=="
+        }
+      }
+    },
+    "status": 400,
+    "response": {}
+  }
+]
