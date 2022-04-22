@@ -28,7 +28,7 @@ export default ({ getService, logger }) => (lockTable, {
           reject(err);
         }
         lock.on('error', (error) => Promise.resolve(error)
-          .then((e) => logger.error(`Error: Failed to renew heartbeat for lock ${lockName}\n${e}`)));
+          .then((e) => logger.info(`Error: Failed to renew heartbeat for lock ${lockName}\n${e}`)));
         resolve({
           release: () => new Promise((res, rej) => {
             lock.release((e) => (e ? rej(e) : res()));
