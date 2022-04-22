@@ -10,6 +10,7 @@ import Replace from './dy/fns/replace.js';
 import Scan from './dy/fns/scan.js';
 import createModel from './dy/create-model.js';
 import DyUtil from './dy/util.js';
+import LockManager from './dy/lock-manager.js';
 import { ModelNotFound, ModelAlreadyExists } from '../resources/errors.js';
 
 export default ({ call, getService, logger }) => ({
@@ -59,5 +60,6 @@ export default ({ call, getService, logger }) => ({
       scan: Scan(model, validateSecondaryIndex, setDefaults),
       schema: model.schema
     });
-  }
+  },
+  lockManager: LockManager({ getService, logger })
 });
