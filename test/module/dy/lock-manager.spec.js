@@ -4,7 +4,7 @@ import { buildLockManager } from '../../dy-helper.js';
 
 describe('Testing lock-manager.js', {
   timestamp: '2022-04-22T18:13:41.000Z',
-  timeout: 5000,
+  timeout: 55000,
   useNock: true,
   record: console,
   cryptoSeed: 'f0df70e4-e3d5-45ca-bc6c-9b17f606dcc6',
@@ -39,7 +39,7 @@ describe('Testing lock-manager.js', {
   it('Testing Lock Failure', async ({ capture }) => {
     const locker = LockManager('lock-table-name');
     const err = await capture(() => locker.lock('lock-failure'));
-    expect(String(err)).to.equal('UnknownError: null');
+    expect(String(err)).to.equal('Error: Failed to acquire lock.');
   });
 
   it('Testing Lock Release Failure', async ({ capture }) => {
