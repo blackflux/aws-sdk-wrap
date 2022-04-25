@@ -39,7 +39,13 @@ describe('Testing lock-manager.js', {
   it('Testing Lock Failure', async ({ capture }) => {
     const locker = LockManager('lock-table-name');
     const err = await capture(() => locker.lock('lock-failure'));
-    expect(String(err)).to.equal('UnknownError: null');
+    expect(String(err)).to.equal('Error: Failed to acquire lock.');
+  });
+
+  it('Testing retryCount', async ({ capture }) => {
+    const locker = LockManager('lock-table-name', { retryCount: 1 });
+    const lock = await locker.lock('lock-failure');
+    await lock.release();
   });
 
   it('Testing Lock Release Failure', async ({ capture }) => {

@@ -47,6 +47,9 @@
       }
     },
     "status": 400,
-    "response": {}
+    "response": {
+      "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
+      "message": "The conditional request failed"
+    }
   }
 ]
