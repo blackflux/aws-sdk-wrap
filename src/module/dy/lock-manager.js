@@ -3,7 +3,8 @@ import DynamoDBLockClient from 'dynamodb-lock-client';
 export default ({ getService, logger }) => (lockTable, {
   owner = 'aws-sdk-wrap-lock-manager',
   leaseDurationMs = 10000,
-  heartbeatPeriodMs
+  heartbeatPeriodMs,
+  retryCount = 0
 } = {}) => {
   let lockClient = null;
   const getLockClient = () => {
@@ -14,6 +15,7 @@ export default ({ getService, logger }) => (lockTable, {
         partitionKey: 'id',
         leaseDurationMs,
         heartbeatPeriodMs,
+        retryCount,
         trustLocalTime: true,
         owner
       });
