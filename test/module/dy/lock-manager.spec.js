@@ -42,7 +42,7 @@ describe('Testing lock-manager.js', {
     expect(String(err)).to.equal('Error: Failed to acquire lock.');
   });
 
-  it('Testing retryCount', async ({ capture }) => {
+  it('Testing retryCount', async () => {
     const locker = LockManager('lock-table-name', { retryCount: 1 });
     const lock = await locker.lock('lock-failure');
     await lock.release();
