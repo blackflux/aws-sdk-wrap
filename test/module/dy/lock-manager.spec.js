@@ -4,7 +4,7 @@ import { buildLockManager } from '../../dy-helper.js';
 
 describe('Testing lock-manager.js', {
   timestamp: '2022-04-22T18:13:41.000Z',
-  timeout: 55000,
+  timeout: 5000,
   useNock: true,
   record: console,
   cryptoSeed: 'f0df70e4-e3d5-45ca-bc6c-9b17f606dcc6',
