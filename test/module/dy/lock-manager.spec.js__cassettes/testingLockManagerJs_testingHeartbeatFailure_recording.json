@@ -1,0 +1,120 @@
+[
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Key": {
+        "id": {
+          "S": "lock-name-heartbeat-failure"
+        }
+      },
+      "ConsistentRead": true
+    },
+    "status": 200,
+    "response": {
+      "Item": {
+        "owner": {
+          "S": "dy-alchemy-lock-manager"
+        },
+        "leaseDurationMs": {
+          "N": "1"
+        },
+        "guid": {
+          "B": "1HNeOiZeFu7gP1lxi5tdAwGcB9i2xR+Q2jpmbuwTqzUMCBc4KFg/xuzW7NvMp7aTnEnCQq1RB+Od63sKWZa5Aw=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-name-heartbeat-failure"
+        },
+        "fencingToken": {
+          "N": "7"
+        }
+      }
+    }
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "8"
+        },
+        "leaseDurationMs": {
+          "N": "1000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-name-heartbeat-failure"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#partitionKey) or (guid = :guid and fencingToken = :fencingToken)",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":fencingToken": {
+          "N": "7"
+        },
+        ":guid": {
+          "B": "1HNeOiZeFu7gP1lxi5tdAwGcB9i2xR+Q2jpmbuwTqzUMCBc4KFg/xuzW7NvMp7aTnEnCQq1RB+Od63sKWZa5Aw=="
+        }
+      }
+    },
+    "status": 200,
+    "response": {}
+  },
+  {
+    "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "fencingToken": {
+          "N": "8"
+        },
+        "leaseDurationMs": {
+          "N": "1000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "id": {
+          "S": "lock-name-heartbeat-failure"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#partitionKey) and guid = :guid",
+      "ExpressionAttributeNames": {
+        "#partitionKey": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":guid": {
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
+        }
+      }
+    },
+    "status": 400,
+    "response": {}
+  }
+]
