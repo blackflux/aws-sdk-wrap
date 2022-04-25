@@ -32,7 +32,7 @@
           "S": "aws-sdk-wrap-lock-manager"
         },
         "guid": {
-          "B": "52y14skG/9ovu39ztSdu/ClmlaHBV8xSjXV73KCYnSGnhb93IrcWiiZIrMYdeL/w9WFtS6oPpLu4FJBkY27pVA=="
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
         },
         "lockAcquiredTimeUnixMs": {
           "N": "1650651221000"
@@ -82,7 +82,7 @@
           "S": "aws-sdk-wrap-lock-manager"
         },
         "guid": {
-          "B": "ptjKhxxhs4leLGG3xwm153/Gad4Q0QcaVVRE4ksVHm4taZnJKDtl9w+1ZFtPtOYzw2noiWdgueJbxUbJhI435g=="
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
         },
         "lockAcquiredTimeUnixMs": {
           "N": "1650651221000"
@@ -116,7 +116,7 @@
           "S": "aws-sdk-wrap-lock-manager"
         },
         "guid": {
-          "B": "ptjKhxxhs4leLGG3xwm153/Gad4Q0QcaVVRE4ksVHm4taZnJKDtl9w+1ZFtPtOYzw2noiWdgueJbxUbJhI435g=="
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
         },
         "lockAcquiredTimeUnixMs": {
           "N": "1650651221000"
@@ -131,7 +131,7 @@
       },
       "ExpressionAttributeValues": {
         ":guid": {
-          "B": "ptjKhxxhs4leLGG3xwm153/Gad4Q0QcaVVRE4ksVHm4taZnJKDtl9w+1ZFtPtOYzw2noiWdgueJbxUbJhI435g=="
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
         }
       }
     },
@@ -155,7 +155,7 @@
           "S": "aws-sdk-wrap-lock-manager"
         },
         "guid": {
-          "B": "52y14skG/9ovu39ztSdu/ClmlaHBV8xSjXV73KCYnSGnhb93IrcWiiZIrMYdeL/w9WFtS6oPpLu4FJBkY27pVA=="
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
         },
         "lockAcquiredTimeUnixMs": {
           "N": "1650651221000"
@@ -170,7 +170,7 @@
       },
       "ExpressionAttributeValues": {
         ":guid": {
-          "B": "52y14skG/9ovu39ztSdu/ClmlaHBV8xSjXV73KCYnSGnhb93IrcWiiZIrMYdeL/w9WFtS6oPpLu4FJBkY27pVA=="
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
         }
       }
     },

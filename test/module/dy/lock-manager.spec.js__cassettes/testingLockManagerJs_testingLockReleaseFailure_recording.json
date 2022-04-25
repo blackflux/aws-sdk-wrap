@@ -32,7 +32,7 @@
           "S": "aws-sdk-wrap-lock-manager"
         },
         "guid": {
-          "B": "5qchlX/M5CKJEtq7QbzbEOJkmE3gh/9YxE07sWXefj4JjlWRG9QFjrPK9fcgOziGlK90m+Pnd2yeqEQNrXLk7g=="
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
         },
         "lockAcquiredTimeUnixMs": {
           "N": "1650651221000"
@@ -66,7 +66,7 @@
           "S": "aws-sdk-wrap-lock-manager"
         },
         "guid": {
-          "B": "5qchlX/M5CKJEtq7QbzbEOJkmE3gh/9YxE07sWXefj4JjlWRG9QFjrPK9fcgOziGlK90m+Pnd2yeqEQNrXLk7g=="
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
         },
         "lockAcquiredTimeUnixMs": {
           "N": "1650651221000"
@@ -81,7 +81,7 @@
       },
       "ExpressionAttributeValues": {
         ":guid": {
-          "B": "5qchlX/M5CKJEtq7QbzbEOJkmE3gh/9YxE07sWXefj4JjlWRG9QFjrPK9fcgOziGlK90m+Pnd2yeqEQNrXLk7g=="
+          "B": "Tl6aWRwQVEw4TErNaRegLOiqABr/BlQ6NBAlADydmURMVtEaXw3lPCpcap2J1PEGRAx46q6Z3JCjfTDH8xuQhw=="
         }
       }
     },

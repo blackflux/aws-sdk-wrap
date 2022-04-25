@@ -7,7 +7,8 @@ describe('Testing lock-manager.js', {
   timeout: 55000,
   useNock: true,
   record: console,
-  cryptoSeed: 'f0df70e4-e3d5-45ca-bc6c-9b17f606dcc6'
+  cryptoSeed: 'f0df70e4-e3d5-45ca-bc6c-9b17f606dcc6',
+  cryptoSeedReseed: true
 }, () => {
   let LockManager;
 
@@ -29,7 +30,6 @@ describe('Testing lock-manager.js', {
     await lockOuter.release();
   });
 
-  // TODO: figure me out...
   it('Testing Lock Timeout', async () => {
     const locker = LockManager('lock-table-name');
     const lock = await locker.lock('lock-name-timeout');

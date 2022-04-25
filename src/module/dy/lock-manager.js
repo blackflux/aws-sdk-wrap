@@ -20,7 +20,6 @@ export default ({ getService, logger }) => (lockTable, {
     }
     return lockClient;
   };
-  // https://github.com/blackflux/dy-alchemy/blob/83d52df5ac5450ff2ae979c586bd9b22ff7ef489/test/modules/lock-manager.spec.js
   return {
     lock: (lockName) => new Promise((resolve, reject) => {
       const client = getLockClient();
