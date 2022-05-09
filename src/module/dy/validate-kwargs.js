@@ -15,7 +15,7 @@ const schema = Joi.object().keys({
         Joi.array(),
         Joi.object(),
         Joi.function()
-      ).optional(),
+      ).optional().allow(null),
       validate: Joi.function().arity(1).custom((v, h) => {
         if (v.constructor.name === 'AsyncFunction') {
           return h.message('Validate cannot be asynchronous');
