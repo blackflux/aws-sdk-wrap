@@ -5,7 +5,7 @@ const schema = Joi.object().keys({
   attributes: Joi.object().pattern(
     Joi.string(),
     Joi.object().keys({
-      type: Joi.string().valid('string', 'boolean', 'number', 'list', 'map', 'binary', 'set'),
+      type: Joi.string().valid('string', 'boolean', 'number', 'list', 'map', 'set', 'binary'),
       partitionKey: Joi.boolean().valid(true).optional(),
       sortKey: Joi.boolean().valid(true).optional(),
       default: Joi.alternatives().try(
