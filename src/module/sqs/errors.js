@@ -12,7 +12,8 @@ export class RetryError extends Error {
         Joi.number().integer().min(0).max(900),
         Joi.function()
       ).optional(),
-      onFailure: Joi.function().optional()
+      onFailure: Joi.function().optional(),
+      target: Joi.function().optional()
     }));
 
     const {
@@ -30,12 +31,14 @@ export class RetryError extends Error {
           logger.warn(`Permanent Retry Failure\n${JSON.stringify({ limits, meta, payload })}`);
         }
         return [];
-      }
+      },
+      target = ({ temporary }) => (temporary === false ? 'dlq' : 'queue')
     } = kwargs;
 
     this.maxFailureCount = maxFailureCount;
     this.maxAgeInSec = maxAgeInSec;
     this.backoffInSec = backoffInSec;
     this.onFailure = onFailure;
+    this.target = target;
   }
 }
