@@ -17,9 +17,11 @@ import * as stepStep2 from './queue-processor.spec.js_steps/step2.js';
 import * as stepStep3 from './queue-processor.spec.js_steps/step3.js';
 import * as stepStepAutoRetry from './queue-processor.spec.js_steps/step-auto-retry.js';
 import * as stepUrgentMessage from './queue-processor.spec.js_steps/step-urgent-message.js';
+import nockReqHeaderOverwrite from '../../req-header-overwrite.js';
 
 describe('Testing QueueProcessor', {
   useNock: true,
+  nockReqHeaderOverwrite,
   record: console,
   envVarsFile: 'config.env.yml',
   timestamp: '2020-05-15T19:56:35.713Z'

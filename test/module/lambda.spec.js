@@ -3,9 +3,11 @@ import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import Index from '../../src/index.js';
 import Lambda from '../../src/module/lambda.js';
+import nockReqHeaderOverwrite from '../req-header-overwrite.js';
 
 describe('Testing lambda Util', {
   useNock: true,
+  nockReqHeaderOverwrite,
   timeout: 10000,
   envVarsFile: '../default.env.yml',
   timestamp: '2022-03-21T21:39:36.492Z'
