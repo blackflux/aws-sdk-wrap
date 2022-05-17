@@ -3,9 +3,11 @@ import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import Index from '../../src/index.js';
 import S3Module from '../../src/module/s3.js';
+import nockReqHeaderOverwrite from '../req-header-overwrite.js';
 
 describe('Testing s3 Util', {
   useNock: true,
+  nockReqHeaderOverwrite,
   timeout: 10000,
   envVarsFile: '../default.env.yml'
 }, () => {

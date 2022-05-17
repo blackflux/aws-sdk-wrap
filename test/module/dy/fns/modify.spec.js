@@ -2,9 +2,12 @@ import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import { LocalTable, buildModel, createItems } from '../../../dy-helper.js';
 import { ModelNotFound } from '../../../../src/resources/errors.js';
+import nockReqHeaderOverwrite from '../../../req-header-overwrite.js';
 
 describe('Testing modify', {
+  timestamp: '2022-05-17T18:21:22.341Z',
   useNock: true,
+  nockReqHeaderOverwrite,
   nockStripHeaders: true,
   envVarsFile: '../../../default.env.yml'
 }, () => {

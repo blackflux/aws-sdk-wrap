@@ -1,11 +1,13 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import { buildLockManager } from '../../dy-helper.js';
+import nockReqHeaderOverwrite from '../../req-header-overwrite.js';
 
 describe('Testing lock-manager.js', {
   timestamp: '2022-04-22T18:13:41.000Z',
   timeout: 5000,
   useNock: true,
+  nockReqHeaderOverwrite,
   record: console,
   cryptoSeed: 'f0df70e4-e3d5-45ca-bc6c-9b17f606dcc6',
   cryptoSeedReseed: true

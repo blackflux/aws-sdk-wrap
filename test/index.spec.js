@@ -2,11 +2,16 @@ import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import AWS from 'aws-sdk';
 import Index from '../src/index.js';
+import nockReqHeaderOverwrite from './req-header-overwrite.js';
 
 const { DynamoDB } = AWS;
 const { DocumentClient } = DynamoDB;
 
-describe('Testing index', { useNock: true }, () => {
+describe('Testing index', {
+  timestamp: '2022-05-17T18:21:22.341Z',
+  useNock: true,
+  nockReqHeaderOverwrite
+}, () => {
   let aws;
   before(() => {
     aws = Index({

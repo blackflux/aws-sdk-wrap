@@ -5,6 +5,14 @@
     "path": "/key",
     "body": "",
     "status": 404,
-    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>key</Key><RequestId>1971DDCB25E1BDFD</RequestId><HostId>1qyUUgDhQNh0BwFOoX8Mp8DkoGugDRBqPJZgGPxI5vKBK2xfigyQe93wh5ufGwNc2W8O7lNdmFM=</HostId></Error>"
+    "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>key</Key><RequestId>1971DDCB25E1BDFD</RequestId><HostId>1qyUUgDhQNh0BwFOoX8Mp8DkoGugDRBqPJZgGPxI5vKBK2xfigyQe93wh5ufGwNc2W8O7lNdmFM=</HostId></Error>",
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": 0,
+      "host": "test-bucket-name.s3.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    }
   }
 ]
