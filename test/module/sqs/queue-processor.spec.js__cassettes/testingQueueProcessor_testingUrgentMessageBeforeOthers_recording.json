@@ -5,7 +5,16 @@
     "path": "/",
     "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.Id=0eb254c6af2343d718f8794ed7a8b5db87d83af2&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22step1%22%2C%22meta%22%3A%22before%22%2C%22__meta%22%3A%7B%22trace%22%3A%5B%22step-urgent-message.before%28%29%22%5D%7D%7D&Version=2012-11-05",
     "status": 200,
-    "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>0eb254c6af2343d718f8794ed7a8b5db87d83af2</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>06f28ec471eb903c66bdef0bed83653c</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>"
+    "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>0eb254c6af2343d718f8794ed7a8b5db87d83af2</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>06f28ec471eb903c66bdef0bed83653c</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>",
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+      "host": "sqs.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    }
   },
   {
     "scope": "https://api.github.com:443",
@@ -13,7 +22,12 @@
     "path": "/users/mapbox",
     "status": 200,
     "response": {},
-    "responseIsBinary": false
+    "responseIsBinary": false,
+    "reqheaders": {
+      "accept": "application/json, text/plain, */*",
+      "host": "api.github.com",
+      "user-agent": "axios/0.26.1"
+    }
   },
   {
     "scope": "https://sqs.us-west-2.amazonaws.com:443",
@@ -21,6 +35,15 @@
     "path": "/",
     "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.Id=f85cb89c9ab50802b6ad128d681c4be094ca40b4&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22step1%22%2C%22meta%22%3A%22handler%22%2C%22__meta%22%3A%7B%22trace%22%3A%5B%22other%22%2C%22step-urgent-message%22%5D%7D%7D&Version=2012-11-05",
     "status": 200,
-    "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>f85cb89c9ab50802b6ad128d681c4be094ca40b4</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>9aec80cf382e1390fbec1854841fa15c</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>"
+    "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>f85cb89c9ab50802b6ad128d681c4be094ca40b4</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>9aec80cf382e1390fbec1854841fa15c</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>",
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+      "host": "sqs.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    }
   }
 ]

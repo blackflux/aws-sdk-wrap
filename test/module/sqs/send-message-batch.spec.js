@@ -3,9 +3,12 @@ import { describe } from 'node-tdd';
 import AWS from 'aws-sdk';
 import Index from '../../../src/index.js';
 import { SendMessageBatchError, MessageCollisionError } from '../../../src/resources/errors.js';
+import nockReqHeaderOverwrite from '../../req-header-overwrite.js';
 
 describe('Testing sendMessageBatch', {
+  timestamp: '2022-05-17T18:21:22.341Z',
   useNock: true,
+  nockReqHeaderOverwrite,
   record: console,
   envVarsFile: 'config.env.yml'
 }, () => {

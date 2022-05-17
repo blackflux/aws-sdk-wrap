@@ -1,9 +1,11 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import { LocalTable, buildModel } from '../../../dy-helper.js';
+import nockReqHeaderOverwrite from '../../../req-header-overwrite.js';
 
 describe('Testing create-or-modify', {
   useNock: true,
+  nockReqHeaderOverwrite,
   nockStripHeaders: true,
   envVarsFile: '../../../default.env.yml',
   timestamp: '2022-03-03T22:00:55.980Z'

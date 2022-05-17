@@ -5,6 +5,14 @@
     "path": "/key",
     "body": "",
     "status": 404,
-    "response": ""
+    "response": "",
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": 0,
+      "host": "test-bucket-name.s3.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    }
   }
 ]

@@ -13,7 +13,17 @@
       "ConsistentRead": true
     },
     "status": 200,
-    "response": {}
+    "response": {},
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "x-amz-target": "DynamoDB_20120810.GetItem"
+    }
   },
   {
     "scope": "https://dynamodb.us-west-2.amazonaws.com:443",
@@ -50,6 +60,16 @@
     "response": {
       "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
       "message": "The conditional request failed"
+    },
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "x-amz-target": "DynamoDB_20120810.PutItem"
     }
   }
 ]
