@@ -65,7 +65,7 @@ export default (opts = {}) => {
     try {
       const response = await getService(service)[funcName](params).promise();
       onCallIfSet({
-        error: null,
+        error: undefined,
         response,
         action,
         params,
@@ -77,7 +77,7 @@ export default (opts = {}) => {
     } catch (e) {
       if (expectedErrorCodes.indexOf(e.code) !== -1) {
         onCallIfSet({
-          error: null,
+          error: undefined,
           response: e.code,
           action,
           params,
@@ -97,7 +97,7 @@ export default (opts = {}) => {
       }
       onCallIfSet({
         error: e,
-        response: null,
+        response: undefined,
         action,
         params,
         expectedErrorCodes,
