@@ -13,13 +13,16 @@ describe('Testing index', {
   nockReqHeaderOverwrite
 }, () => {
   let aws;
-  before(() => {
+  let logs;
+  beforeEach(() => {
+    logs = [];
     aws = Index({
       services: {
         'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient,
         'DynamoDB.Converter': AWS.DynamoDB.Converter,
         S3: AWS.S3
-      }
+      },
+      onCall: (...kwargs) => logs.push(kwargs)
     });
   });
 
@@ -57,6 +60,15 @@ describe('Testing index', {
   it('Testing Expected Exception', async () => {
     const code = await aws.call('s3:putObject', {}, { expectedErrorCodes: ['MultipleValidationErrors'] });
     expect(code).to.equal('MultipleValidationErrors');
+    expect(logs).to.deep.equal([[{
+      error: undefined,
+      response: 'MultipleValidationErrors',
+      action: 's3:putObject',
+      params: {},
+      expectedErrorCodes: ['MultipleValidationErrors'],
+      meta: null,
+      logger: null
+    }]]);
   });
 
   it('Testing Exception with Logger', async ({ capture }) => {
