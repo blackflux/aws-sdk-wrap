@@ -63,7 +63,9 @@ export default ({
       PERIOD_IN_SECONDS = 300,
       WEEK_IN_SECONDS = 60 * 60 * 24 * 7,
       LOOK_AHEAD_PERIODS = 1,
-      LOOK_BEHIND_WEEKS = 8
+      LOOK_BEHIND_WEEKS = 8,
+      MIN_VALUE = 0,
+      MAX_VALUE = 100
     }) => {
       const WEEK_PERIODS = WEEK_IN_SECONDS / PERIOD_IN_SECONDS;
 
@@ -150,7 +152,13 @@ export default ({
         const { MetricDataResults } = await queryHistory(functionName, StartTime, EndTime, PERIOD_IN_SECONDS);
         const { Timestamps, Values } = MetricDataResults[0];
 
-        const desiredConcurrency = computeDesiredConcurrency(StartTime, EndTime, Timestamps, Values);
+        const desiredConcurrency = Math.max(
+          MIN_VALUE,
+          Math.min(
+            MAX_VALUE,
+            computeDesiredConcurrency(StartTime, EndTime, Timestamps, Values)
+          )
+        );
         assert(Number.isSafeInteger(desiredConcurrency), desiredConcurrency);
 
         await updateProvisionedConcurrency(functionName, desiredConcurrency, aliasName);
