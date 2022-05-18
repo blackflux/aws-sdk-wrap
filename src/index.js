@@ -12,7 +12,8 @@ export default (opts = {}) => {
     services: Joi.object().pattern(Joi.string(), Joi.any()),
     config: Joi.object().optional(),
     configService: Joi.object().optional(),
-    logger: Joi.any().optional()
+    logger: Joi.any().optional(),
+    onCall: Joi.function().optional()
   }));
   const servicesCache = {};
   const services = Object.fromEntries(
@@ -23,6 +24,12 @@ export default (opts = {}) => {
   const config = get(opts, 'config', {});
   const configService = get(opts, 'configService', {});
   const logger = get(opts, 'logger', null);
+
+  const onCallIfSet = (kwargs) => {
+    if (opts.onCall !== undefined) {
+      opts.onCall(kwargs);
+    }
+  };
 
   const getService = (service) => {
     const serviceLower = service.toLowerCase();
@@ -39,7 +46,7 @@ export default (opts = {}) => {
     return servicesCache[serviceLower];
   };
 
-  const call = (
+  const call = async (
     action,
     params,
     {
@@ -55,8 +62,29 @@ export default (opts = {}) => {
     assert(splitIndex !== -1, 'Bad Action Provided.');
     const service = action.slice(0, splitIndex);
     const funcName = action.slice(splitIndex + 1);
-    return getService(service)[funcName](params).promise().catch((e) => {
+    try {
+      const response = await getService(service)[funcName](params).promise();
+      onCallIfSet({
+        error: null,
+        response,
+        action,
+        params,
+        expectedErrorCodes,
+        meta,
+        logger
+      });
+      return response;
+    } catch (e) {
       if (expectedErrorCodes.indexOf(e.code) !== -1) {
+        onCallIfSet({
+          error: null,
+          response: e.code,
+          action,
+          params,
+          expectedErrorCodes,
+          meta,
+          logger
+        });
         return e.code;
       }
       if (logger_ !== null) {
@@ -67,8 +95,17 @@ export default (opts = {}) => {
           ...(meta === null ? {} : { meta })
         })}`);
       }
+      onCallIfSet({
+        error: e,
+        response: null,
+        action,
+        params,
+        expectedErrorCodes,
+        meta,
+        logger
+      });
       throw e;
-    });
+    }
   };
 
   return {

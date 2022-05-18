@@ -244,6 +244,10 @@ Returns subset of cloudformation template.
 
 ### Init Options
 
+#### services
+
+...
+
 #### logger
 
 Type: `Logger`<br>
@@ -268,6 +272,10 @@ Type: `Object`<br>
 Default: `{}`
 
 Declare service specific configurations. E.g. `configService = { dynamodb: { ... } }`.
+
+#### onCall
+
+...
 
 ### Call Options
 
