@@ -61,6 +61,7 @@ describe('Testing index', {
     const code = await aws.call('s3:putObject', {}, { expectedErrorCodes: ['MultipleValidationErrors'] });
     expect(code).to.equal('MultipleValidationErrors');
     expect(logs).to.deep.equal([[{
+      status: '2xx',
       kwargs: [
         's3:putObject',
         {},

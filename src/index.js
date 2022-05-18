@@ -74,6 +74,7 @@ export default (opts = {}) => {
     } catch (e) {
       if (expectedErrorCodes.indexOf(e.code) !== -1) {
         onCallIfSet({
+          status: '2xx',
           kwargs,
           error: undefined,
           response: e.code
@@ -82,6 +83,7 @@ export default (opts = {}) => {
       }
       if (logger_ !== null) {
         logger_.warn(`Request failed for ${service}.${funcName}()\n${JSON.stringify({
+          status: '4xx',
           errorName: get(e, 'constructor.name'),
           errorDetails: e,
           requestParams: params,
@@ -89,6 +91,7 @@ export default (opts = {}) => {
         })}`);
       }
       onCallIfSet({
+        status: '5xx',
         kwargs,
         error: e,
         response: undefined
