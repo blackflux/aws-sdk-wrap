@@ -278,6 +278,9 @@ Declare service specific configurations. E.g. `configService = { dynamodb: { ...
 
 #### onCall
 
+Type: `Function`<br>
+Default: `() => {}`
+
 Callback function that is called everytime after the AWS service is called, containing all
 information about the call and response.
 
