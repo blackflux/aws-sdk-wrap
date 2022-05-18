@@ -50,12 +50,13 @@ export default (opts = {}) => {
     const [
       action,
       params,
-      {
-        expectedErrorCodes = [],
-        meta = null,
-        logger: logger_ = logger
-      } = {}
+      options = {}
     ] = kwargs;
+    const {
+      expectedErrorCodes = [],
+      meta = null,
+      logger: logger_ = logger
+    } = options;
     assert(typeof action === 'string');
     assert(params instanceof Object && !Array.isArray(params));
     assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every((e) => typeof e === 'string'));
@@ -67,7 +68,9 @@ export default (opts = {}) => {
       const response = await getService(service)[funcName](params).promise();
       onCallIfSet({
         status: '2xx',
-        kwargs,
+        action,
+        params,
+        options,
         error: undefined,
         response
       });
@@ -75,9 +78,11 @@ export default (opts = {}) => {
     } catch (e) {
       if (expectedErrorCodes.indexOf(e.code) !== -1) {
         onCallIfSet({
+          action,
+          params,
+          options,
           status: '4xx',
-          kwargs,
-          error: undefined,
+          error: e,
           response: e.code
         });
         return e.code;
@@ -92,7 +97,9 @@ export default (opts = {}) => {
       }
       onCallIfSet({
         status: '5xx',
-        kwargs,
+        action,
+        params,
+        options,
         error: e,
         response: undefined
       });

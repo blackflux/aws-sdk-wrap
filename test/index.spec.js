@@ -60,18 +60,15 @@ describe('Testing index', {
   it('Testing Expected Exception', async () => {
     const code = await aws.call('s3:putObject', {}, { expectedErrorCodes: ['MultipleValidationErrors'] });
     expect(code).to.equal('MultipleValidationErrors');
-    expect(logs).to.deep.equal([[{
-      status: '2xx',
-      kwargs: [
-        's3:putObject',
-        {},
-        {
-          expectedErrorCodes: ['MultipleValidationErrors']
-        }
-      ],
-      error: undefined,
+    expect(logs).to.deep.contains([{
+      status: '4xx',
+      action: 's3:putObject',
+      params: {},
+      options: {
+        expectedErrorCodes: ['MultipleValidationErrors']
+      },
       response: 'MultipleValidationErrors'
-    }]]);
+    }]);
   });
 
   it('Testing Exception with Logger', async ({ capture }) => {
