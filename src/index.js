@@ -66,6 +66,7 @@ export default (opts = {}) => {
     try {
       const response = await getService(service)[funcName](params).promise();
       onCallIfSet({
+        status: '2xx',
         kwargs,
         error: undefined,
         response
@@ -74,7 +75,7 @@ export default (opts = {}) => {
     } catch (e) {
       if (expectedErrorCodes.indexOf(e.code) !== -1) {
         onCallIfSet({
-          status: '2xx',
+          status: '4xx',
           kwargs,
           error: undefined,
           response: e.code
@@ -83,7 +84,6 @@ export default (opts = {}) => {
       }
       if (logger_ !== null) {
         logger_.warn(`Request failed for ${service}.${funcName}()\n${JSON.stringify({
-          status: '4xx',
           errorName: get(e, 'constructor.name'),
           errorDetails: e,
           requestParams: params,
