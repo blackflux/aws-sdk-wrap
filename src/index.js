@@ -12,7 +12,8 @@ export default (opts = {}) => {
     services: Joi.object().pattern(Joi.string(), Joi.any()),
     config: Joi.object().optional(),
     configService: Joi.object().optional(),
-    logger: Joi.any().optional()
+    logger: Joi.any().optional(),
+    onCall: Joi.function().optional()
   }));
   const servicesCache = {};
   const services = Object.fromEntries(
@@ -23,6 +24,12 @@ export default (opts = {}) => {
   const config = get(opts, 'config', {});
   const configService = get(opts, 'configService', {});
   const logger = get(opts, 'logger', null);
+
+  const onCallIfSet = (kwargs) => {
+    if (opts.onCall !== undefined) {
+      opts.onCall(kwargs);
+    }
+  };
 
   const getService = (service) => {
     const serviceLower = service.toLowerCase();
@@ -39,15 +46,17 @@ export default (opts = {}) => {
     return servicesCache[serviceLower];
   };
 
-  const call = (
-    action,
-    params,
-    {
+  const call = async (...kwargs) => {
+    const [
+      action,
+      params,
+      options = {}
+    ] = kwargs;
+    const {
       expectedErrorCodes = [],
       meta = null,
       logger: logger_ = logger
-    } = {}
-  ) => {
+    } = options;
     assert(typeof action === 'string');
     assert(params instanceof Object && !Array.isArray(params));
     assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every((e) => typeof e === 'string'));
@@ -55,8 +64,27 @@ export default (opts = {}) => {
     assert(splitIndex !== -1, 'Bad Action Provided.');
     const service = action.slice(0, splitIndex);
     const funcName = action.slice(splitIndex + 1);
-    return getService(service)[funcName](params).promise().catch((e) => {
+    try {
+      const response = await getService(service)[funcName](params).promise();
+      onCallIfSet({
+        action,
+        params,
+        options,
+        status: '2xx',
+        error: undefined,
+        response
+      });
+      return response;
+    } catch (e) {
       if (expectedErrorCodes.indexOf(e.code) !== -1) {
+        onCallIfSet({
+          action,
+          params,
+          options,
+          status: '4xx',
+          error: e,
+          response: e.code
+        });
         return e.code;
       }
       if (logger_ !== null) {
@@ -67,8 +95,16 @@ export default (opts = {}) => {
           ...(meta === null ? {} : { meta })
         })}`);
       }
+      onCallIfSet({
+        action,
+        params,
+        options,
+        status: '5xx',
+        error: e,
+        response: undefined
+      });
       throw e;
-    });
+    }
   };
 
   return {
