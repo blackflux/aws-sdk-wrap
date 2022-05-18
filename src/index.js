@@ -46,15 +46,16 @@ export default (opts = {}) => {
     return servicesCache[serviceLower];
   };
 
-  const call = async (
-    action,
-    params,
-    {
-      expectedErrorCodes = [],
-      meta = null,
-      logger: logger_ = logger
-    } = {}
-  ) => {
+  const call = async (...kwargs) => {
+    const [
+      action,
+      params,
+      {
+        expectedErrorCodes = [],
+        meta = null,
+        logger: logger_ = logger
+      } = {}
+    ] = kwargs;
     assert(typeof action === 'string');
     assert(params instanceof Object && !Array.isArray(params));
     assert(Array.isArray(expectedErrorCodes) && expectedErrorCodes.every((e) => typeof e === 'string'));
@@ -65,25 +66,17 @@ export default (opts = {}) => {
     try {
       const response = await getService(service)[funcName](params).promise();
       onCallIfSet({
+        kwargs,
         error: undefined,
-        response,
-        action,
-        params,
-        expectedErrorCodes,
-        meta,
-        logger
+        response
       });
       return response;
     } catch (e) {
       if (expectedErrorCodes.indexOf(e.code) !== -1) {
         onCallIfSet({
+          kwargs,
           error: undefined,
-          response: e.code,
-          action,
-          params,
-          expectedErrorCodes,
-          meta,
-          logger
+          response: e.code
         });
         return e.code;
       }
@@ -96,13 +89,9 @@ export default (opts = {}) => {
         })}`);
       }
       onCallIfSet({
+        kwargs,
         error: e,
-        response: undefined,
-        action,
-        params,
-        expectedErrorCodes,
-        meta,
-        logger
+        response: undefined
       });
       throw e;
     }
