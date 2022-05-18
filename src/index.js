@@ -67,10 +67,10 @@ export default (opts = {}) => {
     try {
       const response = await getService(service)[funcName](params).promise();
       onCallIfSet({
-        status: '2xx',
         action,
         params,
         options,
+        status: '2xx',
         error: undefined,
         response
       });
@@ -96,10 +96,10 @@ export default (opts = {}) => {
         })}`);
       }
       onCallIfSet({
-        status: '5xx',
         action,
         params,
         options,
+        status: '5xx',
         error: e,
         response: undefined
       });
