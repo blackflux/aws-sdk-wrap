@@ -246,7 +246,10 @@ Returns subset of cloudformation template.
 
 #### services
 
-...
+Type: `Object`<br>
+Default: *N/A*
+
+AWS Services that should be available for this utility.
 
 #### logger
 
@@ -275,7 +278,8 @@ Declare service specific configurations. E.g. `configService = { dynamodb: { ...
 
 #### onCall
 
-...
+Callback function that is called everytime after the AWS service is called, containing all
+information about the call and response.
 
 ### Call Options
 
