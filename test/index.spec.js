@@ -22,7 +22,7 @@ describe('Testing index', {
         'DynamoDB.Converter': AWS.DynamoDB.Converter,
         S3: AWS.S3
       },
-      onCall: (...kwargs) => logs.push(kwargs)
+      onCall: (kwargs) => logs.push(kwargs)
     });
   });
 
@@ -60,7 +60,7 @@ describe('Testing index', {
   it('Testing Expected Exception', async () => {
     const code = await aws.call('s3:putObject', {}, { expectedErrorCodes: ['MultipleValidationErrors'] });
     expect(code).to.equal('MultipleValidationErrors');
-    expect(logs).to.deep.contains([{
+    expect(logs[0]).to.deep.includes({
       status: '4xx',
       action: 's3:putObject',
       params: {},
@@ -68,7 +68,7 @@ describe('Testing index', {
         expectedErrorCodes: ['MultipleValidationErrors']
       },
       response: 'MultipleValidationErrors'
-    }]);
+    });
   });
 
   it('Testing Exception with Logger', async ({ capture }) => {
