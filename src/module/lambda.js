@@ -134,6 +134,13 @@ export default ({
           return;
         }
 
+        if (
+          typeof r?.LastModified === 'string'
+          && Date.now() - new Date(r.LastModified) < ((PERIOD_IN_SECONDS * 1000) / 2)
+        ) {
+          return;
+        }
+
         const { Parameter: { Value } } = await call('ssm:getParameter', {
           Name: enabledSsmSettingKey
         });

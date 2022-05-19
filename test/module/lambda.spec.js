@@ -61,6 +61,10 @@ describe('Testing lambda Util', {
     await scaler(false)();
   });
 
+  it('Dynamic Last Update Too Recent', async () => {
+    await scaler(false)();
+  });
+
   it('Dynamic Zero', async () => {
     await scaler(false)();
   });

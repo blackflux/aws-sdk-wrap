@@ -1,0 +1,26 @@
+[
+  {
+    "scope": "https://lambda.us-west-2.amazonaws.com:443",
+    "method": "GET",
+    "path": "/2019-09-30/functions/service-search-api-local-dev-apiRouter/provisioned-concurrency?Qualifier=provisioned",
+    "body": "",
+    "status": 200,
+    "response": {
+      "AllocatedProvisionedConcurrentExecutions": 1,
+      "AvailableProvisionedConcurrentExecutions": 1,
+      "LastModified": "2022-03-21T21:39:00+0000",
+      "RequestedProvisionedConcurrentExecutions": 1,
+      "Status": "READY",
+      "StatusReason": null
+    },
+    "reqheaders": {
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": 0,
+      "host": "lambda.us-west-2.amazonaws.com",
+      "user-agent": "^aws-sdk-nodejs/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+    },
+    "responseIsBinary": false
+  }
+]
