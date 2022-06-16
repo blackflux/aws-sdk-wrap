@@ -76,7 +76,7 @@ export default ({
         Joi.object(),
         Joi.object().keys({
           conditions: Joi.alternatives(Joi.object(), Joi.array()).optional(),
-          onNotFound: Joi.function().arity(1).optional(),
+          onNotFound: Joi.function().minArity(1).maxArity(2).optional(),
           onAlreadyExists: Joi.function().arity(1).optional(),
           expectedErrorCodes: Joi.array().items(Joi.string()).unique().optional(),
           // eslint-disable-next-line newline-per-chained-call

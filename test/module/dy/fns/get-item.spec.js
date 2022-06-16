@@ -17,9 +17,16 @@ describe('Testing get-item', {
   let generateTable;
 
   before(() => {
-    generateItem = () => createItems({
-      count: 1, model, primaryKey: '123', sortKey: 'name', age: 50
-    });
+    generateItem = async () => {
+      const [item] = await createItems({
+        count: 1, model, primaryKey: '123', sortKey: 'name', age: 50
+      });
+      const key = {
+        id: item.id,
+        name: item.name
+      };
+      return { key, item };
+    };
     generateTable = async ({ extraAttrs } = {}) => {
       model = buildModel({ extraAttrs });
       localTable = LocalTable(model);
@@ -32,41 +39,51 @@ describe('Testing get-item', {
 
   it('Testing getItem', async () => {
     await generateTable();
-    const [item] = await generateItem();
-    const result = await model.getItem(item);
+    const { key, item } = await generateItem();
+    const result = await model.getItem(key);
     expect(result).to.deep.equal(item);
   });
 
-  it('Testing getItem throws ModelNotFound error', async ({ capture }) => {
+  it('Testing getItem throws ModelNotFound error (Query Filter)', async ({ capture }) => {
     await generateTable();
     const error = await capture(() => model.getItem({ id: '123', name: 'name' }));
     expect(error).instanceof(ModelNotFound);
   });
 
-  it('Testing getItem onNotFound', async () => {
+  it('Testing getItem onNotFound (Memory Filter)', async ({ capture }) => {
     await generateTable();
-    const logs = [];
-    const result = await model.getItem({ id: '123', name: 'name' }, {
-      onNotFound: (key) => {
-        logs.push('onNotFound executed');
-        return {};
-      }
+    const { key } = await generateItem();
+    const r = await model.getItem({ ...key, age: 10 }, {
+      onNotFound: (arg1, arg2) => [arg1, arg2]
     });
-    expect(logs).to.deep.equal(['onNotFound executed']);
-    expect(result).to.deep.equal({});
+    expect(r).to.deep.equal([
+      { age: 10, name: 'name', id: '123' },
+      { error: 'item_attribute_mismatch' }
+    ]);
+  });
+
+  it('Testing getItem onNotFound (Query Filter)', async () => {
+    await generateTable();
+    const r = await model.getItem({ id: '123', name: 'name' }, {
+      onNotFound: (arg1, arg2) => [arg1, arg2]
+    });
+    expect(r).to.deep.equal([
+      { id: '123', name: 'name' },
+      { error: 'item_not_found' }
+    ]);
   });
 
   it('Testing getItem with toReturn', async () => {
     await generateTable();
-    const [item] = await generateItem();
-    const result = await model.getItem(item, { toReturn: ['name'] });
+    const { key } = await generateItem();
+    const result = await model.getItem(key, { toReturn: ['name'] });
     expect(result).to.deep.equal({ name: 'name' });
   });
 
   it('Testing getItem with stubbed defaults', async () => {
     await generateTable();
-    const [item] = await generateItem();
-    const result = await model.getItem(item, { toReturn: ['age'] });
+    const { key } = await generateItem();
+    const result = await model.getItem(key, { toReturn: ['age'] });
     expect(result).to.deep.equal({
       age: 30
     });
@@ -75,7 +92,8 @@ describe('Testing get-item', {
   it('Testing getItem with default empty set', async () => {
     await generateTable({ extraAttrs: { ids: { type: 'set', default: [] } } });
     const { item } = await model.create({ id: '123', name: 'name', age: 50 });
-    const result = await model.getItem(item, { toReturn: ['ids'] });
+    const key = { id: item.id, name: item.name };
+    const result = await model.getItem(key, { toReturn: ['ids'] });
     expect(result).to.deep.equal({
       ids: []
     });
