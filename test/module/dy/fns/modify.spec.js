@@ -17,9 +17,13 @@ describe('Testing modify', {
   let generateTable;
 
   before(() => {
-    generateItem = ({ extraAttrs } = {}) => createItems({
-      count: 1, model, primaryKey: '123', sortKey: 'name', age: 50, extraAttrs
-    });
+    generateItem = async ({ extraAttrs } = {}) => {
+      const [item] = await createItems({
+        count: 1, model, primaryKey: '123', sortKey: 'name', age: 50, extraAttrs
+      });
+      const key = { id: item.id, name: item.name };
+      return { key, item };
+    };
     generateTable = async ({ onUpdate, extraAttrs } = {}) => {
       model = buildModel({ onUpdate, extraAttrs });
       localTable = LocalTable(model);
@@ -32,7 +36,7 @@ describe('Testing modify', {
 
   it('Testing modify', async () => {
     await generateTable();
-    const [item] = await generateItem();
+    const { item } = await generateItem();
     item.age = 55;
     const result = await model.modify(item);
     expect(result).to.deep.equal({ created: false, item });
@@ -40,7 +44,7 @@ describe('Testing modify', {
 
   it('Testing modify with conditions', async () => {
     await generateTable();
-    const [item] = await generateItem();
+    const { item } = await generateItem();
     item.age = 55;
     const result = await model.modify(item, { conditions: { attr: 'age', eq: 50 } });
     expect(result).to.deep.equal({ created: false, item });
@@ -48,7 +52,7 @@ describe('Testing modify', {
 
   it('Testing modify with conditions as array', async () => {
     await generateTable();
-    const [item] = await generateItem();
+    const { item } = await generateItem();
     item.age = 55;
     const result = await model.modify(item, { conditions: [{ attr: 'age', eq: 50 }] });
     expect(result).to.deep.equal({ created: false, item });
@@ -56,7 +60,7 @@ describe('Testing modify', {
 
   it('Testing modify with item not found with conditions', async ({ capture }) => {
     await generateTable();
-    const [item] = await generateItem();
+    const { item } = await generateItem();
     item.age = 55;
     const error = await capture(() => model.modify(item, { conditions: { attr: 'age', eq: 10 } }));
     expect(error.code).to.equal('ConditionalCheckFailedException');
@@ -64,7 +68,7 @@ describe('Testing modify', {
 
   it('Testing modify with unknown error', async ({ capture }) => {
     await generateTable();
-    const [item] = await generateItem();
+    const { item } = await generateItem();
     item.age = 55;
     const error = await capture(() => model.modify(item, { conditions: { attr: 'age', eq: 10 } }));
     expect(error.code).to.equal('UnknownError');
@@ -99,7 +103,7 @@ describe('Testing modify', {
 
   it('Testing modify with toReturn', async () => {
     await generateTable();
-    const [item] = await generateItem();
+    const { item } = await generateItem();
     const age = 55;
     item.age = age;
     const result = await model.modify(item, { toReturn: ['age'] });
@@ -112,7 +116,7 @@ describe('Testing modify', {
       logs.push(`onUpdate executed: ${JSON.stringify(i)}`);
     };
     await generateTable({ onUpdate });
-    const [item] = await generateItem();
+    const { item } = await generateItem();
     item.age = 55;
     const result = await model.modify(item);
     expect(logs).to.deep.equal(['onUpdate executed: {"age":55,"id":"123","name":"name"}']);
@@ -121,14 +125,14 @@ describe('Testing modify', {
 
   it('Testing modify with an empty set', async () => {
     await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
-    const [item] = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
+    const { key, item } = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
     const updatedItem = {
       ...item,
       someSet: []
     };
     const result = await model.modify(updatedItem);
     expect(result).to.deep.equal({ created: false, item: updatedItem });
-    expect(await model.getItem(updatedItem)).to.deep.equal({
+    expect(await model.getItem(key)).to.deep.equal({
       id: item.id,
       name: item.name,
       age: item.age
@@ -137,14 +141,14 @@ describe('Testing modify', {
 
   it('Testing modify replace set entries', async () => {
     await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
-    const [item] = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
+    const { key, item } = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
     const updatedItem = {
       ...item,
       someSet: ['three', 'four']
     };
     const result = await model.modify(updatedItem);
     expect(result).to.deep.equal({ created: false, item: updatedItem });
-    expect(await model.getItem(updatedItem)).to.deep.equal({
+    expect(await model.getItem(key)).to.deep.equal({
       id: item.id,
       name: item.name,
       age: item.age,
@@ -154,7 +158,7 @@ describe('Testing modify', {
 
   it('Testing modify add entry to set', async () => {
     await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
-    const [item] = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
+    const { key, item } = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
     const result = await model.modify({
       ...item,
       someSet: { $add: ['three'] }
@@ -166,7 +170,7 @@ describe('Testing modify', {
         someSet: ['one', 'two', 'three']
       }
     });
-    expect(await model.getItem(item)).to.deep.equal({
+    expect(await model.getItem(key)).to.deep.equal({
       id: item.id,
       name: item.name,
       age: item.age,
@@ -176,7 +180,7 @@ describe('Testing modify', {
 
   it('Testing modify add entry to new set', async () => {
     await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
-    const [item] = await generateItem();
+    const { key, item } = await generateItem();
     const result = await model.modify({
       ...item,
       someSet: { $add: ['one'] }
@@ -189,12 +193,12 @@ describe('Testing modify', {
       created: false,
       item: resultItem
     });
-    expect(await model.getItem(item)).to.deep.equal(resultItem);
+    expect(await model.getItem(key)).to.deep.equal(resultItem);
   });
 
   it('Testing modify remove entry from set', async () => {
     await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
-    const [item] = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
+    const { key, item } = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
     const result = await model.modify({
       id: item.id,
       name: item.name,
@@ -208,12 +212,12 @@ describe('Testing modify', {
       created: false,
       item: resultItem
     });
-    expect(await model.getItem(item)).to.deep.equal(resultItem);
+    expect(await model.getItem(key)).to.deep.equal(resultItem);
   });
 
   it('Testing modify with remove', async () => {
     await generateTable();
-    const [item] = await generateItem({ extraAttrs: { slug: 'some-slug' } });
+    const { key, item } = await generateItem({ extraAttrs: { slug: 'some-slug' } });
     const result = await model.modify({
       id: item.id,
       name: item.name,
@@ -228,12 +232,12 @@ describe('Testing modify', {
       created: false,
       item: resultItem
     });
-    expect(await model.getItem(item)).to.deep.equal(resultItem);
+    expect(await model.getItem(key)).to.deep.equal(resultItem);
   });
 
   it('Testing modify with an empty set and remove', async () => {
     await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
-    const [item] = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
+    const { key, item } = await generateItem({ extraAttrs: { someSet: ['one', 'two'] } });
     const updatedItem = {
       ...item,
       someSet: []
@@ -243,7 +247,7 @@ describe('Testing modify', {
       $remove: ['slug']
     });
     expect(result).to.deep.equal({ created: false, item: updatedItem });
-    expect(await model.getItem(item)).to.deep.equal({
+    expect(await model.getItem(key)).to.deep.equal({
       id: item.id,
       name: item.name,
       age: item.age
@@ -252,7 +256,7 @@ describe('Testing modify', {
 
   it('Testing modify with an object with $delete and $add', async () => {
     await generateTable({ extraAttrs: { someObject: { type: 'map' } } });
-    const [item] = await generateItem({
+    const { key, item } = await generateItem({
       extraAttrs: {
         someObject: {
           $add: ['a'],
@@ -269,12 +273,12 @@ describe('Testing modify', {
     };
     const result = await model.modify(updatedItem);
     expect(result).to.deep.equal({ created: false, item: updatedItem });
-    expect(await model.getItem(item)).to.deep.equal(updatedItem);
+    expect(await model.getItem(key)).to.deep.equal(updatedItem);
   });
 
   it('Testing modify add existing entry to set', async () => {
     await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
-    const [item] = await generateItem({ extraAttrs: { someSet: ['one'] } });
+    const { key, item } = await generateItem({ extraAttrs: { someSet: ['one'] } });
     const result = await model.modify({
       ...item,
       someSet: { $add: ['one'] }
@@ -287,12 +291,12 @@ describe('Testing modify', {
       created: false,
       item: resultItem
     });
-    expect(await model.getItem(item)).to.deep.equal(resultItem);
+    expect(await model.getItem(key)).to.deep.equal(resultItem);
   });
 
   it('Testing modify delete nonexistent entry from set', async () => {
     await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
-    const [item] = await generateItem({ extraAttrs: { someSet: ['one'] } });
+    const { key, item } = await generateItem({ extraAttrs: { someSet: ['one'] } });
     const result = await model.modify({
       ...item,
       someSet: { $delete: ['two'] }
@@ -305,12 +309,12 @@ describe('Testing modify', {
       created: false,
       item: resultItem
     });
-    expect(await model.getItem(item)).to.deep.equal(resultItem);
+    expect(await model.getItem(key)).to.deep.equal(resultItem);
   });
 
   it('Testing modify delete from empty set', async () => {
     await generateTable({ extraAttrs: { someSet: { type: 'set' } } });
-    const [item] = await generateItem();
+    const { key, item } = await generateItem();
     const result = await model.modify({
       ...item,
       someSet: { $delete: ['one'] }
@@ -319,12 +323,12 @@ describe('Testing modify', {
       created: false,
       item
     });
-    expect(await model.getItem(item)).to.deep.equal(item);
+    expect(await model.getItem(key)).to.deep.equal(item);
   });
 
   it('Testing modify with number and $add', async () => {
     await generateTable();
-    const [item] = await generateItem();
+    const { key, item } = await generateItem();
     const expectedItem = {
       ...item,
       age: item.age + 1
@@ -337,12 +341,12 @@ describe('Testing modify', {
       created: false,
       item: expectedItem
     });
-    expect(await model.getItem(item)).to.deep.equal(expectedItem);
+    expect(await model.getItem(key)).to.deep.equal(expectedItem);
   });
 
   it('Testing modify with empty number and $add', async () => {
     await generateTable({ extraAttrs: { someNumber: { type: 'number' } } });
-    const [item] = await generateItem();
+    const { key, item } = await generateItem();
     const expectedItem = {
       ...item,
       someNumber: 1
@@ -355,6 +359,6 @@ describe('Testing modify', {
       created: false,
       item: expectedItem
     });
-    expect(await model.getItem(item)).to.deep.equal(expectedItem);
+    expect(await model.getItem(key)).to.deep.equal(expectedItem);
   });
 });

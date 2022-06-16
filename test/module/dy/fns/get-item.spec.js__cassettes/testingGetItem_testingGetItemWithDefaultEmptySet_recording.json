@@ -257,14 +257,23 @@
         }
       },
       "ExpressionAttributeNames": {
-        "#proj1": "ids"
+        "#proj1": "ids",
+        "#proj2": "id",
+        "#proj3": "name"
       },
-      "ProjectionExpression": "#proj1",
+      "ProjectionExpression": "#proj1,#proj2,#proj3",
       "ConsistentRead": true
     },
     "status": 200,
     "response": {
-      "Item": {}
+      "Item": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name"
+        }
+      }
     },
     "responseIsBinary": false,
     "reqheaders": {
@@ -273,7 +282,7 @@
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
       "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "5becacc35c2be32ef752eb5fb7e5bb01f9a78a0a5bf5e95cceb0745bb9b05325",
+      "x-amz-content-sha256": "0588eac27661641d06ae9ea15c839ed1884c82c8c63aade0b90143e35f375679",
       "x-amz-date": "20220517T182122Z",
       "x-amz-target": "DynamoDB_20120810.GetItem"
     }
