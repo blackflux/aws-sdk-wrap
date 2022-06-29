@@ -119,15 +119,18 @@ describe('Testing QueueProcessor', {
     const result = await processor.ingest([{ name: 'group-id-step', meta: 'meta1' }]);
     expect(result).to.equal(undefined);
     const r = await executor([{ name: 'group-id-step', meta: 'meta1' }]);
-    expect(r).to.deep.equal([]);
+    expect(r).to.deep.equal({ batchItemFailures: [], __next: [] });
   });
 
   it('Test ingesting into separate queues', async () => {
     const result = await executor([{ __meta: { trace: ['step3 * 2'] }, name: 'step3', meta: 'meta3' }]);
-    expect(result).to.deep.equal([
-      { __meta: { trace: ['step3 * 3'] }, name: 'step1', meta: 'meta1' },
-      { __meta: { trace: ['step3 * 3'] }, name: 'step3', meta: 'meta3' }
-    ]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: [
+        { __meta: { trace: ['step3 * 3'] }, name: 'step1', meta: 'meta1' },
+        { __meta: { trace: ['step3 * 3'] }, name: 'step3', meta: 'meta3' }
+      ]
+    });
   });
 
   it('Testing ingest for two messages', async () => {
@@ -140,34 +143,46 @@ describe('Testing QueueProcessor', {
 
   it('Testing urgent message before others', async () => {
     const result = await executor([{ __meta: { trace: ['other'] }, name: 'step-urgent-message' }]);
-    expect(result).to.deep.equal([
-      { __meta: { trace: ['step-urgent-message.before()'] }, name: 'step1', meta: 'before' },
-      { __meta: { trace: ['other', 'step-urgent-message'] }, name: 'step1', meta: 'handler' }
-    ]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: [
+        { __meta: { trace: ['step-urgent-message.before()'] }, name: 'step1', meta: 'before' },
+        { __meta: { trace: ['other', 'step-urgent-message'] }, name: 'step1', meta: 'handler' }
+      ]
+    });
   });
 
   it('Testing step1 -> [step2]', async () => {
     const result = await executor([{ name: 'step1', meta: 'meta1' }]);
-    expect(result).to.deep.equal([{ __meta: { trace: ['step1'] }, name: 'step2' }]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: [{ __meta: { trace: ['step1'] }, name: 'step2' }]
+    });
   });
 
   it('Testing step2 -> []', async () => {
     const result = await executor([{ name: 'step2' }]);
-    expect(result).to.deep.equal([]);
+    expect(result).to.deep.equal({ batchItemFailures: [], __next: [] });
   });
 
-  it('Testing bad-output', async ({ capture }) => {
-    const result = await capture(() => executor([{ name: 'bad-output' }]));
-    expect(result.message).to.equal(
-      'Unexpected/Invalid next step(s) returned for: bad-output '
-      + '[\n  {\n    "name" \u001b[31m[1]\u001b[0m: "unknown-step"\n  }\n]'
-      + '\n\u001b[31m\n[1] "[0].name" must be [step2]\u001b[0m'
-    );
+  it('Testing bad-output', async () => {
+    const result = await executor([{ name: 'bad-output' }]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [{
+        itemIdentifier: '11d6ee51-4cc7-4302-9e22-7cd8afdaadf5'
+      }],
+      __next: []
+    });
   });
 
-  it('Testing disallowed-output', async ({ capture }) => {
-    const result = await capture(() => executor([{ name: 'disallowed-output' }]));
-    expect(result.message).to.equal('No output allowed for step: disallowed-output');
+  it('Testing disallowed-output', async () => {
+    const result = await executor([{ name: 'disallowed-output' }]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [{
+        itemIdentifier: '11d6ee51-4cc7-4302-9e22-7cd8afdaadf5'
+      }],
+      __next: []
+    });
   });
 
   it('Testing unknown-step', async ({ capture }) => {
@@ -185,13 +200,14 @@ describe('Testing QueueProcessor', {
     expect(result.message).to.equal('Invalid Event Received: ["element"]');
   });
 
-  it('Testing invalid step payload', async ({ capture }) => {
-    const result = await capture(() => executor([{ name: 'step1', unexpected: 'value', meta: 'meta1' }]));
-    expect(result.message).to.equal(
-      'Invalid payload received for step: step1 '
-      + '{\n  "name": "step1",\n  "meta": "meta1",\n  "unexpected" \u001b[31m[1]\u001b[0m: "value"\n}\n\u001b[31m\n'
-      + '[1] "unexpected" is not allowed\u001b[0m'
-    );
+  it('Testing invalid step payload', async () => {
+    const result = await executor([{ name: 'step1', unexpected: 'value', meta: 'meta1' }]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [{
+        itemIdentifier: '11d6ee51-4cc7-4302-9e22-7cd8afdaadf5'
+      }],
+      __next: []
+    });
   });
 
   it('Testing multiple records (success)', async ({ recorder }) => {
@@ -199,77 +215,100 @@ describe('Testing QueueProcessor', {
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
     ]);
-    expect(result).to.deep.equal([
-      { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'A' },
-      { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'B' }
-    ]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: [
+        { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'A' },
+        { __meta: { trace: ['parallel-step.after()'] }, name: 'parallel-step', meta: 'B' }
+      ]
+    });
     expect(recorder.get()).to.deep.equal([[
       { name: 'parallel-step', meta: 'A' },
       { name: 'parallel-step', meta: 'B' }
     ]]);
   });
 
-  it('Testing timeout error', async ({ capture }) => {
-    const result = await capture(() => executor([{ name: 'delay-step', delay: 2000 }]));
-    expect(result.message).to.deep.equal('Promise "" timed out after 1000 ms');
+  it('Testing timeout error', async () => {
+    const result = await executor([{ name: 'delay-step', delay: 2000 }]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [{
+        itemIdentifier: '11d6ee51-4cc7-4302-9e22-7cd8afdaadf5'
+      }],
+      __next: []
+    });
   });
 
   it('Testing timeout ok', async () => {
     const result = await executor([{ name: 'delay-step', delay: 500 }]);
-    expect(result).to.deep.equal([]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: []
+    });
   });
 
   it('Test auto retry', async ({ recorder }) => {
     const result = await executor([{ name: 'auto-retry' }]);
-    expect(result).to.deep.equal([{
-      name: 'auto-retry',
-      __meta: {
-        failureCount: 1,
-        timestamp: '2020-05-15T19:56:35.713Z',
-        trace: ['auto-retry']
-      }
-    }]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: [{
+        name: 'auto-retry',
+        __meta: {
+          failureCount: 1,
+          timestamp: '2020-05-15T19:56:35.713Z',
+          trace: ['auto-retry']
+        }
+      }]
+    });
     expect(recorder.get()).to.deep.equal([]);
   });
 
   it('Test auto retry (from step)', async ({ recorder }) => {
     const result = await executor([{ name: 'step-auto-retry' }]);
-    expect(result).to.deep.equal([{
-      name: 'step-auto-retry',
-      __meta: {
-        failureCount: 1,
-        timestamp: '2020-05-15T19:56:35.713Z',
-        trace: ['step-auto-retry']
-      }
-    }]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: [{
+        name: 'step-auto-retry',
+        __meta: {
+          failureCount: 1,
+          timestamp: '2020-05-15T19:56:35.713Z',
+          trace: ['step-auto-retry']
+        }
+      }]
+    });
     expect(recorder.get()).to.deep.equal([]);
   });
 
   it('Test auto retry (backoff)', async ({ recorder }) => {
     const retrySettings = { backoffInSec: 60 };
     const result = await executor([{ name: 'auto-retry', retrySettings }]);
-    expect(result).to.deep.equal([{
-      name: 'auto-retry',
-      retrySettings,
-      __meta: {
-        failureCount: 1,
-        timestamp: '2020-05-15T19:56:35.713Z',
-        trace: ['auto-retry']
-      }
-    }]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: [{
+        name: 'auto-retry',
+        retrySettings,
+        __meta: {
+          failureCount: 1,
+          timestamp: '2020-05-15T19:56:35.713Z',
+          trace: ['auto-retry']
+        }
+      }]
+    });
     expect(recorder.get()).to.deep.equal([]);
   });
 
   it('Test auto retry (backoff function)', async ({ recorder }) => {
     const result = await executor([{ name: 'auto-retry-backoff-fn' }]);
-    expect(result).to.deep.equal([{
-      name: 'auto-retry-backoff-fn',
-      __meta: {
-        failureCount: 1,
-        timestamp: '2020-05-15T19:56:35.713Z',
-        trace: ['auto-retry-backoff-fn']
-      }
-    }]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: [{
+        name: 'auto-retry-backoff-fn',
+        __meta: {
+          failureCount: 1,
+          timestamp: '2020-05-15T19:56:35.713Z',
+          trace: ['auto-retry-backoff-fn']
+        }
+      }]
+    });
     expect(recorder.get()).to.deep.equal([]);
   });
 
@@ -290,7 +329,10 @@ describe('Testing QueueProcessor', {
         timestamp: '2020-05-15T19:55:35.712Z'
       }
     }]);
-    expect(result).to.deep.equal([]);
+    expect(result).to.deep.equal({
+      batchItemFailures: [],
+      __next: []
+    });
     expect(recorder.get()).to.deep.equal([
       'Permanent Retry Failure\n{'
       + '"limits":{"maxFailureCount":10,"maxAgeInSec":9007199254740991},'
@@ -314,7 +356,7 @@ describe('Testing QueueProcessor', {
         timestamp: '2020-05-15T19:55:35.712Z'
       }
     }]);
-    expect(result).to.deep.equal([]);
+    expect(result).to.deep.equal({ batchItemFailures: [], __next: [] });
     expect(recorder.get()).to.deep.equal([
       'Permanent Retry Failure\n{'
       + '"limits":{"maxFailureCount":10,"maxAgeInSec":60},'
