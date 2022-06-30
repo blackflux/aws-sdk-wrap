@@ -72,16 +72,29 @@ export default ({
 
       await messageBus.flush(false);
 
+      const result = {
+        // https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#services-sqs-batchfailurereporting
+        batchItemFailures: []
+      };
       await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
         try {
           const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts[step.name][1]));
           stepBus.push(msgs, step, get(payload, [metaKey, 'trace'], []));
         } catch (error) {
-          await handleError({
+          const handled = await handleError({
             error, payload, payloadStripped, e, step, stepBus, dlqBus, logger
           });
+          if (handled !== true) {
+            result.batchItemFailures.push({
+              itemIdentifier: e.messageId
+            });
+          }
         }
       }));
+
+      if (result.batchItemFailures.length !== 0) {
+        logger.warn(`Failed to process (some) message(s)\nRetrying: ${JSON.stringify(result.batchItemFailures)}`);
+      }
 
       await messageBus.flush(false);
 
@@ -90,7 +103,9 @@ export default ({
 
       await dlqBus.propagate();
       await messageBus.flush(true);
-      return stepBus.get();
+      // eslint-disable-next-line no-underscore-dangle
+      result.__next = stepBus.get();
+      return result;
     });
   };
 

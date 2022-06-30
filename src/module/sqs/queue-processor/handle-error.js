@@ -10,10 +10,9 @@ export default async ({
   let err = error;
   if (!(err instanceof RetryError)) {
     if (step.retry === null) {
-      throw err;
-    } else {
-      err = step.retry;
+      return false;
     }
+    err = step.retry;
   }
   const maxFailureCount = err.maxFailureCount;
   const maxAgeInSec = err.maxAgeInSec;
@@ -65,4 +64,5 @@ export default async ({
     stepBus.push(msgs, step, trace);
     dlqBus.prepare([payload], step, trace);
   }
+  return true;
 };
