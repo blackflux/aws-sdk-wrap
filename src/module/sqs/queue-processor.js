@@ -3,6 +3,7 @@ import get from 'lodash.get';
 import Joi from 'joi-strict';
 import { Pool } from 'promise-pool-ext';
 import { wrap } from 'lambda-async';
+import { abbrev } from 'lambda-monitor-logger';
 import { metaKey } from './queue-processor/payload.js';
 import loadSteps from './queue-processor/load-steps.js';
 import MessageBus from './queue-processor/message-bus.js';
@@ -53,59 +54,73 @@ export default ({
     }
     return wrap(async (event) => {
       const { tasks, stepContexts } = processEvent({ event, steps });
-      if (queue !== null && !tasks.every((e) => e[3].queue === queue)) {
-        throw new Error(
-          `Bad step "${tasks.find((e) => e[3].queue !== queue)[3].name}" for handler "${queue}" provided`
-        );
-      }
-
-      const stepBus = StepBus({ steps, messageBus });
-      const dlqBus = DlqBus({
-        queues, getDeadLetterQueueUrl, messageBus, globalPool
-      });
-
-      await Promise.all(Object.values(stepContexts)
-        .map(([step, ctx]) => step.before(
-          ctx,
-          tasks.filter((e) => e[3] === step).map((e) => e[1])
-        ).then((msgs) => stepBus.push(msgs, step, 'before()'))));
-
-      await messageBus.flush(false);
-
-      const result = {
-        // https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#services-sqs-batchfailurereporting
-        batchItemFailures: []
-      };
-      await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
-        try {
-          const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts[step.name][1]));
-          stepBus.push(msgs, step, get(payload, [metaKey, 'trace'], []));
-        } catch (error) {
-          const handled = await handleError({
-            error, payload, payloadStripped, e, step, stepBus, dlqBus, logger
-          });
-          if (handled !== true) {
-            result.batchItemFailures.push({
-              itemIdentifier: e.messageId
-            });
-          }
+      try {
+        if (queue !== null && !tasks.every((e) => e[3].queue === queue)) {
+          throw new Error(
+            `Bad step "${tasks.find((e) => e[3].queue !== queue)[3].name}" for handler "${queue}" provided`
+          );
         }
-      }));
 
-      if (result.batchItemFailures.length !== 0) {
-        logger.warn(`Failed to process (some) message(s)\nRetrying: ${JSON.stringify(result.batchItemFailures)}`);
+        const stepBus = StepBus({ steps, messageBus });
+        const dlqBus = DlqBus({
+          queues, getDeadLetterQueueUrl, messageBus, globalPool
+        });
+
+        await Promise.all(Object.values(stepContexts)
+          .map(([step, ctx]) => step.before(
+            ctx,
+            tasks.filter((e) => e[3] === step).map((e) => e[1])
+          ).then((msgs) => stepBus.push(msgs, step, 'before()'))));
+
+        await messageBus.flush(false);
+
+        const result = {
+          // https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#services-sqs-batchfailurereporting
+          batchItemFailures: []
+        };
+        await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
+          try {
+            const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts[step.name][1]));
+            stepBus.push(msgs, step, get(payload, [metaKey, 'trace'], []));
+          } catch (error) {
+            const handled = await handleError({
+              error, payload, payloadStripped, e, step, stepBus, dlqBus, logger
+            });
+            if (handled !== true) {
+              result.batchItemFailures.push({
+                itemIdentifier: e.messageId
+              });
+            }
+          }
+        }));
+
+        if (result.batchItemFailures.length !== 0) {
+          logger.warn(`Failed to process (some) message(s)\nRetrying: ${JSON.stringify(result.batchItemFailures)}`);
+        }
+
+        await messageBus.flush(false);
+
+        await Promise.all(Object.values(stepContexts)
+          .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step, 'after()'))));
+
+        await dlqBus.propagate();
+        await messageBus.flush(true);
+        // eslint-disable-next-line no-underscore-dangle
+        result.__next = stepBus.get();
+        return result;
+      } catch (err) {
+        const result = {
+          __error: err.message,
+          batchItemFailures: tasks
+            .map((t) => ({ itemIdentifier: t[2].messageId }))
+        };
+        logger.warn([
+          'Failed to process all message(s)',
+          `Retrying: ${JSON.stringify(result.batchItemFailures)}`,
+          `Error: ${abbrev(err)}`
+        ].join('\n'));
+        return result;
       }
-
-      await messageBus.flush(false);
-
-      await Promise.all(Object.values(stepContexts)
-        .map(([step, ctx]) => step.after(ctx).then((msgs) => stepBus.push(msgs, step, 'after()'))));
-
-      await dlqBus.propagate();
-      await messageBus.flush(true);
-      // eslint-disable-next-line no-underscore-dangle
-      result.__next = stepBus.get();
-      return result;
     });
   };
 

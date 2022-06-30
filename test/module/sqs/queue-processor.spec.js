@@ -98,9 +98,19 @@ describe('Testing QueueProcessor', {
       .to.throw('Unknown queue "unknown" for handler provided');
   });
 
-  it('Testing bad step for handler', async ({ capture }) => {
-    const err = await capture(() => executor([{ name: 'group-id-step', meta: 'meta1' }], 'two'));
-    expect(err.message).to.equal('Bad step "group-id-step" for handler "two" provided');
+  it('Testing bad step for handler', async ({ recorder }) => {
+    const err = await executor([{ name: 'group-id-step', meta: 'meta1' }], 'two');
+    expect(err).to.deep.equal({
+      __error: 'Bad step "group-id-step" for handler "two" provided',
+      batchItemFailures: [{ itemIdentifier: '11d6ee51-4cc7-4302-9e22-7cd8afdaadf5' }]
+    });
+    const logs = recorder.get();
+    expect(logs.length).to.equal(1);
+    expect(logs[0].startsWith([
+      'Failed to process all message(s)',
+      'Retrying: [{"itemIdentifier":"11d6ee51-4cc7-4302-9e22-7cd8afdaadf5"}]',
+      'Error: Error: Bad step "group-id-step" for handler "two" provided at '
+    ].join('\n'))).to.equal(true);
   });
 
   it('Testing ingest', async () => {
