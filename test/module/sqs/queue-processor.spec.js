@@ -107,7 +107,7 @@ describe('Testing QueueProcessor', {
     const logs = recorder.get();
     expect(logs.length).to.equal(1);
     expect(logs[0].startsWith([
-      'Unrecoverable exception while processing event',
+      'Failed to process all message(s)',
       'Retrying: [{"itemIdentifier":"11d6ee51-4cc7-4302-9e22-7cd8afdaadf5"}]',
       'Error: Error: Bad step "group-id-step" for handler "two" provided at '
     ].join('\n'))).to.equal(true);

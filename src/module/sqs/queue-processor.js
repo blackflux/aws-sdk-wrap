@@ -115,7 +115,7 @@ export default ({
             .map((t) => ({ itemIdentifier: t[2].messageId }))
         };
         logger.warn([
-          'Unrecoverable exception while processing event',
+          'Failed to process all message(s)',
           `Retrying: ${JSON.stringify(result.batchItemFailures)}`,
           `Error: ${abbrev(err)}`
         ].join('\n'));
