@@ -92,6 +92,10 @@ export default ({
         }
       }));
 
+      if (result.batchItemFailures.length !== 0) {
+        logger.warn(`Failed to process (some) message(s)\nRetrying: ${JSON.stringify(result.batchItemFailures)}`);
+      }
+
       await messageBus.flush(false);
 
       await Promise.all(Object.values(stepContexts)

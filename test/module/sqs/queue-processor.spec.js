@@ -165,7 +165,7 @@ describe('Testing QueueProcessor', {
     expect(result).to.deep.equal({ batchItemFailures: [], __next: [] });
   });
 
-  it('Testing bad-output', async () => {
+  it('Testing bad-output', async ({ recorder }) => {
     const result = await executor([{ name: 'bad-output' }]);
     expect(result).to.deep.equal({
       batchItemFailures: [{
@@ -173,6 +173,9 @@ describe('Testing QueueProcessor', {
       }],
       __next: []
     });
+    expect(recorder.get()).to.deep.equal([
+      'Failed to process (some) message(s)\nRetrying: [{"itemIdentifier":"11d6ee51-4cc7-4302-9e22-7cd8afdaadf5"}]'
+    ]);
   });
 
   it('Testing disallowed-output', async () => {
