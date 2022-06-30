@@ -84,7 +84,7 @@ export default ({
           const handled = await handleError({
             error, payload, payloadStripped, e, step, stepBus, dlqBus, logger
           });
-          if (handled === false) {
+          if (handled !== true) {
             result.batchItemFailures.push({
               itemIdentifier: e.messageId
             });
