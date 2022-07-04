@@ -110,7 +110,7 @@ export default ({
         return result;
       } catch (err) {
         const result = {
-          __error: err.message,
+          __error: get(err, 'message', String(err)),
           batchItemFailures: tasks
             .map((t) => ({ itemIdentifier: t[2].messageId }))
         };
