@@ -18,7 +18,7 @@ digraph G {
   subgraph cluster_1 {
     label="two";
     style=filled;
-    color=lightgrey;
+    color="#ffaaaa";
     node [label="node",style=filled,color=white];
     parallelStep [label="parallel-step",color=red,shape=doublecircle];
     step2 [label="step2"];
