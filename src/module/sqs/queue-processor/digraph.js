@@ -4,13 +4,13 @@ export default ({
   const formatStep = (step) => step.replace(/-([a-z])/g, ($1) => $1.slice(1).toUpperCase());
 
   const result = [
-    ...Object.keys(queues)
-      .map((queue, idx) => [
+    ...Object.entries(queues)
+      .map(([queue, url], idx) => [
         `subgraph cluster_${idx} {`,
         ...[
           `label="${queue}";`,
           'style=filled;',
-          'color=lightgrey;',
+          `color=${url.endsWith('.fifo') ? '"#ffaaaa"' : 'lightgrey'};`,
           'node [label="node",style=filled,color=white];',
           ...Object
             .values(steps)
