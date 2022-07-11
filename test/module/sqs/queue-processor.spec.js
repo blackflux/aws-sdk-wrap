@@ -183,9 +183,14 @@ describe('Testing QueueProcessor', {
       }],
       __next: []
     });
-    expect(recorder.get()).to.deep.equal([
-      'Failed to process (some) message(s)\nRetrying: [{"itemIdentifier":"11d6ee51-4cc7-4302-9e22-7cd8afdaadf5"}]'
-    ]);
+    const logs = recorder.get();
+    expect(logs.length).to.equal(1);
+    expect(logs[0].startsWith([
+      'Failed to process (some) message(s)',
+      'Retrying: [{"itemIdentifier":"11d6ee51-4cc7-4302-9e22-7cd8afdaadf5"}]',
+      'Error(s):',
+      '{ Error [ValidationError]: Unexpected/Invalid next step(s) returned for: bad-output [ {'
+    ].join('\n'))).to.equal(true);
   });
 
   it('Testing disallowed-output', async () => {
