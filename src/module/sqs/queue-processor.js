@@ -78,6 +78,7 @@ export default ({
           // https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#services-sqs-batchfailurereporting
           batchItemFailures: []
         };
+        const errors = [];
         await Promise.all(tasks.map(async ([payload, payloadStripped, e, step]) => {
           try {
             const msgs = await step.pool(() => step.handler(payloadStripped, e, stepContexts[step.name][1]));
@@ -90,12 +91,18 @@ export default ({
               result.batchItemFailures.push({
                 itemIdentifier: e.messageId
               });
+              errors.push(error);
             }
           }
         }));
 
         if (result.batchItemFailures.length !== 0) {
-          logger.warn(`Failed to process (some) message(s)\nRetrying: ${JSON.stringify(result.batchItemFailures)}`);
+          logger.warn([
+            'Failed to process (some) message(s)',
+            `Retrying: ${JSON.stringify(result.batchItemFailures)}`,
+            'Error(s):',
+            ...errors.map((e) => abbrev(e))
+          ].join('\n'));
         }
 
         await messageBus.flush(false);
