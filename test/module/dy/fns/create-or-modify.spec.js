@@ -48,6 +48,20 @@ describe('Testing create-or-modify', {
     expect(await model.createOrModify(item)).to.deep.equal({ created: true, item });
   });
 
+  it('Testing createOrModify with default null', async ({ capture }) => {
+    await generateTable({
+      extraAttrs: {
+        scope: {
+          type: 'list',
+          default: null
+        }
+      }
+    });
+    expect(await getItemOrNull(key)).to.deep.equal(null);
+    const err = await capture(() => model.createOrModify(item));
+    expect(err.message).to.equal('Cannot convert undefined or null to object');
+  });
+
   it('Testing createOrModify with default function', async () => {
     await generateTable({
       extraAttrs: {
