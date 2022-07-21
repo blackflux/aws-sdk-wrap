@@ -23,15 +23,16 @@ export default ({
   Joi.assert(opts, Joi.object().keys({
     // queue urls can be undefined when QueueProcessor is instantiated.
     queues: Joi.object().pattern(Joi.string(), Joi.string().optional()),
-    steps: Joi.array().items(Joi.object()),
-    ingestSteps: Joi.array().unique().min(1).items(Joi.string())
+    steps: Joi.array().items(Joi.object())
   }));
   const {
     queues,
-    steps: stepsRaw,
-    ingestSteps
+    steps: stepsRaw
   } = opts;
   const steps = loadSteps(stepsRaw, queues);
+  const ingestSteps = Object.values(steps)
+    .filter(({ ingest }) => ingest === true)
+    .map(({ name }) => name);
   assert(
     Object.keys(queues).every((queue) => Object.values(steps).some((step) => queue === step.queue)),
     'Unused queue(s) defined.'

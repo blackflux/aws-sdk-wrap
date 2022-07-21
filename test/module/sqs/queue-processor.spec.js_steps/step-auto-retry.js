@@ -4,6 +4,8 @@ export const name = 'step-auto-retry';
 
 export const queue = 'one';
 
+export const ingest = false;
+
 export const retry = {
   maxFailureCount: 10
 };

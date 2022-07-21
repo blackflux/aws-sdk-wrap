@@ -6,6 +6,8 @@ export const name = 'step-urgent-message';
 
 export const queue = 'one';
 
+export const ingest = true;
+
 export const schema = Joi.object().keys({
   name: Joi.string().valid('step-urgent-message')
 });

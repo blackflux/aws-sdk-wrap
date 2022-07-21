@@ -54,8 +54,7 @@ describe('Testing QueueProcessor', {
         stepStep3,
         stepStepAutoRetry,
         stepUrgentMessage
-      ],
-      ingestSteps: ['step1', 'step3', 'group-id-step', 'step-urgent-message']
+      ]
     });
     executor = (records, queue = null) => new Promise((resolve, reject) => {
       processor.handler(queue)({

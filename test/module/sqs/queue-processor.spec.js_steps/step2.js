@@ -4,6 +4,8 @@ export const name = 'step2';
 
 export const queue = 'two';
 
+export const ingest = false;
+
 export const schema = Joi.object().keys({
   name: Joi.string().valid('step2')
 });

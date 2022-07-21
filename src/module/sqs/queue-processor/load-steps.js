@@ -12,6 +12,7 @@ export default (steps, queues) => steps
         handler,
         next,
         queue,
+        ingest,
         delay = 0,
         retry = null,
         timeout = 900,
@@ -33,6 +34,10 @@ export default (steps, queues) => steps
       assert(
         Object.keys(queues).includes(queue),
         'Step has invalid / not allowed queue defined.'
+      );
+      assert(
+        typeof ingest === 'boolean',
+        'Step has to have "ingest" defined.'
       );
       assert(
         Number.isInteger(delay) && delay >= 0 && delay <= 15 * 60,
@@ -81,6 +86,7 @@ export default (steps, queues) => steps
         schema,
         next,
         queue,
+        ingest,
         delay,
         retry: retry !== null ? new RetryError(retry) : retry,
         pool: Pool({

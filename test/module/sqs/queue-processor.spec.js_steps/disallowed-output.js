@@ -4,6 +4,8 @@ export const name = 'disallowed-output';
 
 export const queue = 'one';
 
+export const ingest = false;
+
 export const schema = Joi.object().keys({
   name: Joi.string().valid('disallowed-output')
 });
