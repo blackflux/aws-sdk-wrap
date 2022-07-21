@@ -4,6 +4,8 @@ export const name = 'delay-step';
 
 export const queue = 'one';
 
+export const ingest = false;
+
 export const timeout = 1;
 
 export const schema = Joi.object().keys({

@@ -4,6 +4,8 @@ export const name = 'parallel-step';
 
 export const queue = 'two';
 
+export const ingest = false;
+
 export const schema = Joi.object().keys({
   name: Joi.string().valid('parallel-step'),
   meta: Joi.string()

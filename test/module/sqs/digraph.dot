@@ -26,9 +26,9 @@ digraph G {
   }
   
   _ingest [shape=Mdiamond,label=ingest];
+  _ingest -> groupIdStep;
   _ingest -> step1;
   _ingest -> step3;
-  _ingest -> groupIdStep;
   _ingest -> stepUrgentMessage;
   
   autoRetry -> autoRetry;
