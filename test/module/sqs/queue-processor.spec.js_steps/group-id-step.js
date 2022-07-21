@@ -5,6 +5,8 @@ export const name = 'group-id-step';
 
 export const queue = 'one';
 
+export const ingest = true;
+
 export const groupIdFunction = (msg) => objectHash(msg);
 export const deduplicationIdFunction = (msg) => objectHash(msg);
 

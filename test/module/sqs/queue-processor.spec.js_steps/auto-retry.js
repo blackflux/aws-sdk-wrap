@@ -5,6 +5,8 @@ export const name = 'auto-retry';
 
 export const queue = 'one';
 
+export const ingest = false;
+
 export const schema = Joi.object().keys({
   name: Joi.string().valid('auto-retry'),
   retrySettings: Joi.object().optional()
