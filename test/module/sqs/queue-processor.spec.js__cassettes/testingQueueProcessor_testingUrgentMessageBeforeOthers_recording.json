@@ -26,7 +26,7 @@
     "reqheaders": {
       "accept": "application/json, text/plain, */*",
       "host": "api.github.com",
-      "user-agent": "axios/0.26.1"
+      "user-agent": "axios/0.27.2"
     }
   },
   {
