@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '@blackflux/axios';
 import Joi from 'joi-strict';
 import { prepareMessage } from '../../../../src/module/sqs/prepare-message.js';
 
