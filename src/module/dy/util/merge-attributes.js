@@ -10,7 +10,7 @@ export default ({ sets, numbers }) => (...versions) => {
       }
       if (
         (sets.includes(name) || numbers.includes(name))
-        && value.constructor === Object
+        && value?.constructor === Object
       ) {
         return;
       }
