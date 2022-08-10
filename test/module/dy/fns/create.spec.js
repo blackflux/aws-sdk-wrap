@@ -56,7 +56,7 @@ describe('Testing create', {
     expect(await getItemOrNull(key)).to.deep.equal(item);
   });
 
-  it('Testing create with null number', async ({ capture }) => {
+  it('Testing create with null number', async () => {
     await generateTable({
       extraAttrs: {
         num: { type: 'number' }
@@ -64,8 +64,13 @@ describe('Testing create', {
     });
     const itemWithNullNumber = { ...item, num: null };
     expect(await getItemOrNull(key)).to.deep.equal(null);
-    const err = await capture(() => model.create(itemWithNullNumber));
-    expect(err.message).to.equal('Cannot read properties of null (reading \'constructor\')');
+    const result = await model.create(itemWithNullNumber);
+    expect(result).to.deep.equal(
+      {
+        created: true,
+        item: itemWithNullNumber
+      }
+    );
   });
 
   it('Testing create with conditions', async () => {
