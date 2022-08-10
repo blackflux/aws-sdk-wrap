@@ -56,6 +56,23 @@ describe('Testing create', {
     expect(await getItemOrNull(key)).to.deep.equal(item);
   });
 
+  it('Testing create with null number', async () => {
+    await generateTable({
+      extraAttrs: {
+        num: { type: 'number' }
+      }
+    });
+    const itemWithNullNumber = { ...item, num: null };
+    expect(await getItemOrNull(key)).to.deep.equal(null);
+    const result = await model.create(itemWithNullNumber);
+    expect(result).to.deep.equal(
+      {
+        created: true,
+        item: itemWithNullNumber
+      }
+    );
+  });
+
   it('Testing create with conditions', async () => {
     await generateTable();
     expect(await getItemOrNull(key)).to.deep.equal(null);
