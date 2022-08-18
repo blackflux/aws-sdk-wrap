@@ -48,7 +48,8 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) =
           }, {})),
         ...(filters === null ? {} : { filters }),
         ...(toReturn === null ? {} : { attributes: toReturn }),
-        ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
+        ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey }),
+        entity: model.table.name
       });
       items.push(...result.Items);
       lastEvaluatedKey = result.LastEvaluatedKey;

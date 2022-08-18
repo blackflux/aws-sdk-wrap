@@ -29,7 +29,8 @@ export default (model, validateSecondaryIndex, setDefaults) => async (...args) =
     consistent,
     ...(filters === null ? {} : { filters }),
     ...(toReturn === null ? {} : { attributes: toReturn }),
-    ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
+    ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey }),
+    entity: model.table.name
   });
   return {
     items: result.Items.map((item) => setDefaults(item, toReturn)),
