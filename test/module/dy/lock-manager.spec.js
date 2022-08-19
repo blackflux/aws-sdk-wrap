@@ -21,7 +21,7 @@ describe('Testing lock-manager.js', {
     const LockManager = buildLockManager();
     lockManager = LockManager('lock-table-name', { leaseDurationMs: 100 });
     // eslint-disable-next-line no-underscore-dangle
-    localTable = LocalTable(lockManager._model());
+    localTable = LocalTable(lockManager._model);
     await localTable.create();
   });
   afterEach(async () => {
@@ -86,7 +86,7 @@ describe('Testing lock-manager.js', {
   it('Testing already locked, but expired', async ({ capture }) => {
     const lock1 = await lockManager.lock('lock-name');
     // eslint-disable-next-line no-underscore-dangle
-    await lockManager._model().modify({
+    await lockManager._model.modify({
       id: 'lock-name',
       lockAcquiredTimeUnixMs: (new Date() / 1) - 1000
     });

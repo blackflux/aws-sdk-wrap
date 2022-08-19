@@ -5,7 +5,7 @@ export default ({ Model }) => (lockTable, {
   leaseDurationMs = 10000
 } = {}) => {
   let mdl;
-  const mkModel = () => {
+  const getModelCached = () => {
     if (mdl === undefined) {
       mdl = Model({
         name: lockTable,
@@ -21,9 +21,11 @@ export default ({ Model }) => (lockTable, {
     return mdl;
   };
   return {
-    _model: mkModel,
+    get _model() {
+      return getModelCached();
+    },
     lock: async (lockName) => {
-      const model = mkModel();
+      const model = getModelCached();
       const nowInMs = new Date() / 1;
       const lockResult = await model.createOrReplace({
         id: lockName,
