@@ -30,7 +30,9 @@ export const buildLockManager = () => {
     config: {
       region: 'us-west-2',
       accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
-      secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+      secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+      maxRetries: 0,
+      endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
       'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient

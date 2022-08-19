@@ -1,43 +1,57 @@
-import DynamoDBLockClient from 'dynamodb-lock-client';
+import crypto from 'crypto';
 
-export default ({ getService, logger }) => (lockTable, {
+export default ({ Model }) => (lockTable, {
   owner = 'aws-sdk-wrap-lock-manager',
-  leaseDurationMs = 10000,
-  heartbeatPeriodMs,
-  retryCount = 0
+  leaseDurationMs = 10000
 } = {}) => {
-  let lockClient = null;
-  const getLockClient = () => {
-    if (lockClient == null) {
-      lockClient = new DynamoDBLockClient.FailOpen({
-        dynamodb: getService('DynamoDB.DocumentClient'),
-        lockTable,
-        partitionKey: 'id',
-        leaseDurationMs,
-        heartbeatPeriodMs,
-        retryCount,
-        trustLocalTime: true,
-        owner
-      });
+  const model = Model({
+    name: lockTable,
+    attributes: {
+      id: { type: 'string', partitionKey: true },
+      guid: { type: 'string' },
+      leaseDurationMs: { type: 'number' },
+      lockAcquiredTimeUnixMs: { type: 'number' },
+      owner: { type: 'string' }
     }
-    return lockClient;
-  };
+  });
   return {
-    lock: (lockName) => new Promise((resolve, reject) => {
-      const client = getLockClient();
-      client.acquireLock(lockName, (err, lock) => {
-        if (err) {
-          return reject(err);
-        }
-        lock.on('error', (error) => Promise.resolve(error)
-          .then((e) => logger.info(`Error: Failed to renew heartbeat for lock ${lockName}\n${e}`)));
-        return resolve({
-          release: () => new Promise((res, rej) => {
-            lock.release((e) => (e ? rej(e) : res()));
-          }),
-          fencingToken: lock.fencingToken
-        });
+    _model: model,
+    schema: model.schema,
+    lock: async (lockName) => {
+      const nowInMs = new Date() / 1;
+      const guid = crypto.randomUUID();
+      const lock = {
+        id: lockName,
+        guid,
+        leaseDurationMs,
+        lockAcquiredTimeUnixMs: nowInMs,
+        owner
+      };
+      const lockedResult = await model.createOrReplace(lock, {
+        conditions: [
+          { attr: 'id', exists: false },
+          { or: true, attr: 'lockAcquiredTimeUnixMs', lt: nowInMs - leaseDurationMs }
+        ],
+        expectedErrorCodes: ['ConditionalCheckFailedException']
       });
-    })
+      if (lockedResult === 'ConditionalCheckFailedException') {
+        throw new Error('Failed to acquire lock.');
+      }
+      return {
+        lock,
+        release: async () => {
+          const releasedResult = await model.delete({
+            id: lockName
+          }, {
+            conditions: { attr: 'guid', eq: guid },
+            expectedErrorCodes: ['ConditionalCheckFailedException']
+          });
+          if (releasedResult === 'ConditionalCheckFailedException') {
+            throw new Error('Failed to release lock.');
+          }
+          return true;
+        }
+      };
+    }
   };
 };

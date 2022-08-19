@@ -1,0 +1,318 @@
+[
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "AttributeDefinitions": [
+        {
+          "AttributeName": "id",
+          "AttributeType": "S"
+        }
+      ],
+      "KeySchema": [
+        {
+          "AttributeName": "id",
+          "KeyType": "HASH"
+        }
+      ],
+      "BillingMode": "PAY_PER_REQUEST"
+    },
+    "status": 200,
+    "response": {
+      "TableDescription": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "TableName": "lock-table-name",
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": 1660930210.315,
+        "ProvisionedThroughput": {
+          "LastIncreaseDateTime": 0,
+          "LastDecreaseDateTime": 0,
+          "NumberOfDecreasesToday": 0,
+          "ReadCapacityUnits": 0,
+          "WriteCapacityUnits": 0
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/lock-table-name",
+        "BillingModeSummary": {
+          "BillingMode": "PAY_PER_REQUEST",
+          "LastUpdateToPayPerRequestDateTime": 1660930210.315
+        }
+      }
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "id": {
+          "S": "lock-name"
+        },
+        "guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        "leaseDurationMs": {
+          "N": "100"
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        }
+      },
+      "ExpressionAttributeNames": {
+        "#attr1": "id",
+        "#attr2": "lockAcquiredTimeUnixMs"
+      },
+      "ExpressionAttributeValues": {
+        ":attr2": {
+          "N": "1650651220900"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#attr1) OR #attr2 < :attr2",
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 200,
+    "response": {},
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "id": {
+          "S": "lock-name"
+        },
+        "guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        "leaseDurationMs": {
+          "N": "100"
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        }
+      },
+      "ExpressionAttributeNames": {
+        "#attr1": "id",
+        "#attr2": "lockAcquiredTimeUnixMs"
+      },
+      "ExpressionAttributeValues": {
+        ":attr2": {
+          "N": "1650651220900"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#attr1) OR #attr2 < :attr2",
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 400,
+    "response": {
+      "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
+      "Message": "The conditional request failed"
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Key": {
+        "id": {
+          "S": "lock-name"
+        }
+      },
+      "ExpressionAttributeNames": {
+        "#attr1": "id",
+        "#attr2": "guid"
+      },
+      "ExpressionAttributeValues": {
+        ":attr2": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#attr1) AND (#attr2 = :attr2)",
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 200,
+    "response": {
+      "Attributes": {
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        "id": {
+          "S": "lock-name"
+        },
+        "leaseDurationMs": {
+          "N": "100"
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        }
+      }
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Item": {
+        "id": {
+          "S": "lock-name"
+        },
+        "guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        "leaseDurationMs": {
+          "N": "100"
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        }
+      },
+      "ExpressionAttributeNames": {
+        "#attr1": "id",
+        "#attr2": "lockAcquiredTimeUnixMs"
+      },
+      "ExpressionAttributeValues": {
+        ":attr2": {
+          "N": "1650651220900"
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#attr1) OR #attr2 < :attr2",
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 200,
+    "response": {},
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name",
+      "Key": {
+        "id": {
+          "S": "lock-name"
+        }
+      },
+      "ExpressionAttributeNames": {
+        "#attr1": "id",
+        "#attr2": "guid"
+      },
+      "ExpressionAttributeValues": {
+        ":attr2": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#attr1) AND (#attr2 = :attr2)",
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 200,
+    "response": {
+      "Attributes": {
+        "owner": {
+          "S": "aws-sdk-wrap-lock-manager"
+        },
+        "guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        "id": {
+          "S": "lock-name"
+        },
+        "leaseDurationMs": {
+          "N": "100"
+        },
+        "lockAcquiredTimeUnixMs": {
+          "N": "1650651221000"
+        }
+      }
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "lock-table-name"
+    },
+    "status": 200,
+    "response": {
+      "TableDescription": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "TableName": "lock-table-name",
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": 1660930210.315,
+        "ProvisionedThroughput": {
+          "LastIncreaseDateTime": 0,
+          "LastDecreaseDateTime": 0,
+          "NumberOfDecreasesToday": 0,
+          "ReadCapacityUnits": 0,
+          "WriteCapacityUnits": 0
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/lock-table-name",
+        "BillingModeSummary": {
+          "BillingMode": "PAY_PER_REQUEST",
+          "LastUpdateToPayPerRequestDateTime": 1660930210.315
+        }
+      }
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  }
+]
