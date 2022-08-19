@@ -18,7 +18,7 @@ export default ({ Model }) => (lockTable, {
     _model: model,
     lock: async (lockName) => {
       const nowInMs = new Date() / 1;
-      const lockedResult = await model.createOrReplace({
+      const lock = await model.createOrReplace({
         id: lockName,
         guid: crypto.randomUUID(),
         leaseDurationMs,
@@ -31,16 +31,16 @@ export default ({ Model }) => (lockTable, {
         ],
         expectedErrorCodes: ['ConditionalCheckFailedException']
       });
-      if (lockedResult === 'ConditionalCheckFailedException') {
+      if (lock === 'ConditionalCheckFailedException') {
         throw new Error('Failed to acquire lock.');
       }
       return {
-        lock: lockedResult,
+        lock,
         release: async () => {
           const releasedResult = await model.delete({
             id: lockName
           }, {
-            conditions: { attr: 'guid', eq: lockedResult?.item?.guid },
+            conditions: { attr: 'guid', eq: lock?.item?.guid },
             expectedErrorCodes: ['ConditionalCheckFailedException']
           });
           if (releasedResult === 'ConditionalCheckFailedException') {
