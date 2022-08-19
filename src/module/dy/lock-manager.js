@@ -4,19 +4,26 @@ export default ({ Model }) => (lockTable, {
   owner = 'aws-sdk-wrap-lock-manager',
   leaseDurationMs = 10000
 } = {}) => {
-  const model = Model({
-    name: lockTable,
-    attributes: {
-      id: { type: 'string', partitionKey: true },
-      guid: { type: 'string' },
-      leaseDurationMs: { type: 'number' },
-      lockAcquiredTimeUnixMs: { type: 'number' },
-      owner: { type: 'string' }
+  let mdl;
+  const mkModel = () => {
+    if (mdl === undefined) {
+      mdl = Model({
+        name: lockTable,
+        attributes: {
+          id: { type: 'string', partitionKey: true },
+          guid: { type: 'string' },
+          leaseDurationMs: { type: 'number' },
+          lockAcquiredTimeUnixMs: { type: 'number' },
+          owner: { type: 'string' }
+        }
+      });
     }
-  });
+    return mdl;
+  };
   return {
-    _model: model,
+    _model: mkModel,
     lock: async (lockName) => {
+      const model = mkModel();
       const nowInMs = new Date() / 1;
       const lockResult = await model.createOrReplace({
         id: lockName,
