@@ -30,7 +30,7 @@ describe('Testing lock-manager.js', {
 
   it('Testing basic locking', async () => {
     const lock = await lockManager.lock('lock-name');
-    expect(typeof lock.release).to.equal('function');
+    expect(typeof lock.release).to.deep.equal('function');
     expect(lock.lock).to.deep.equal({
       created: true,
       item: {
@@ -42,18 +42,45 @@ describe('Testing lock-manager.js', {
       }
     });
     const r = await lock.release('lock-name');
-    expect(r).to.equal(true);
+    expect(r).to.deep.equal({
+      deleted: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
+    });
   });
 
   it('Testing already locked', async ({ capture }) => {
     const lock1 = await lockManager.lock('lock-name');
     const err = await capture(() => lockManager.lock('lock-name'));
-    expect(String(err)).to.equal('Error: Failed to acquire lock.');
+    expect(String(err)).to.deep.equal('Error: Failed to acquire lock.');
     const r1 = await lock1.release('lock-name');
-    expect(r1).to.equal(true);
+    expect(r1).to.deep.equal({
+      deleted: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
+    });
     const lock2 = await lockManager.lock('lock-name');
     const r2 = await lock2.release('lock-name');
-    expect(r2).to.equal(true);
+    expect(r2).to.deep.equal({
+      deleted: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
+    });
   });
 
   it('Testing already locked, but expired', async ({ capture }) => {
@@ -75,14 +102,23 @@ describe('Testing lock-manager.js', {
       }
     });
     const r2 = await lock2.release('lock-name');
-    expect(r2).to.equal(true);
+    expect(r2).to.deep.equal({
+      deleted: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
+    });
     const err = await capture(() => lock1.release('lock-name'));
-    expect(String(err)).to.equal('Error: Failed to release lock.');
+    expect(String(err)).to.deep.equal('Error: Failed to release lock.');
   });
 
   it('Testing only one lock can succeed', async () => {
     const genPromise = () => lockManager.lock('lock-name').then(() => 'ok').catch(() => 'err');
     const r = await Promise.all(Array.from({ length: 100 }).map(genPromise));
-    expect(r.filter((e) => e === 'ok').length).to.equal(1);
+    expect(r.filter((e) => e === 'ok').length).to.deep.equal(1);
   });
 });

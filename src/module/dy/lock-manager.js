@@ -46,7 +46,7 @@ export default ({ Model }) => (lockTable, {
           if (releaseResult === 'ConditionalCheckFailedException') {
             throw new Error('Failed to release lock.');
           }
-          return true;
+          return releaseResult;
         }
       };
     }
