@@ -38,7 +38,7 @@ export default ({ Model }) => (lockTable, {
         throw new Error('Failed to acquire lock.');
       }
       return {
-        lock,
+        lock: lockedResult?.item,
         release: async () => {
           const releasedResult = await model.delete({
             id: lockName
