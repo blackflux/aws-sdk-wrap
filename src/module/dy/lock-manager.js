@@ -19,14 +19,13 @@ export default ({ Model }) => (lockTable, {
     lock: async (lockName) => {
       const nowInMs = new Date() / 1;
       const guid = crypto.randomUUID();
-      const lock = {
+      const lockedResult = await model.createOrReplace({
         id: lockName,
         guid,
         leaseDurationMs,
         lockAcquiredTimeUnixMs: nowInMs,
         owner
-      };
-      const lockedResult = await model.createOrReplace(lock, {
+      }, {
         conditions: [
           { attr: 'id', exists: false },
           { or: true, attr: 'lockAcquiredTimeUnixMs', lt: nowInMs - leaseDurationMs }
