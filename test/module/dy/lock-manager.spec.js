@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import { buildLockManager } from '../../dy-helper.js';
+import { buildLockManager, LocalTable } from '../../dy-helper.js';
 import nockReqHeaderOverwrite from '../../req-header-overwrite.js';
 
 describe('Testing lock-manager.js', {
@@ -8,65 +8,117 @@ describe('Testing lock-manager.js', {
   timeout: 5000,
   useNock: true,
   nockReqHeaderOverwrite,
+  nockStripHeaders: true,
   record: console,
   cryptoSeed: 'f0df70e4-e3d5-45ca-bc6c-9b17f606dcc6',
-  cryptoSeedReseed: true
+  cryptoSeedReseed: true,
+  envVarsFile: '../../default.env.yml'
 }, () => {
-  let LockManager;
+  let lockManager;
+  let localTable;
 
-  before(() => {
-    LockManager = buildLockManager();
+  beforeEach(async () => {
+    const LockManager = buildLockManager();
+    lockManager = LockManager('lock-table-name', { leaseDurationMs: 100 });
+    // eslint-disable-next-line no-underscore-dangle
+    localTable = LocalTable(lockManager._model);
+    await localTable.create();
+  });
+  afterEach(async () => {
+    await localTable.delete();
   });
 
-  it('Testing Basic Setup', async () => {
-    const locker = LockManager('lock-table-name');
-    const lock = await locker.lock('lock-name');
-    await lock.release('lock-name');
-  });
-
-  it('Testing Nested Locks', async () => {
-    const locker = LockManager('lock-table-name');
-    const lockOuter = await locker.lock('lock-name-outer');
-    const lockInner = await locker.lock('lock-name-inner');
-    await lockInner.release();
-    await lockOuter.release();
-  });
-
-  it('Testing Lock Timeout', async () => {
-    const locker = LockManager('lock-table-name');
-    const lock = await locker.lock('lock-name-timeout');
-    await lock.release();
-  });
-
-  it('Testing Lock Failure', async ({ capture }) => {
-    const locker = LockManager('lock-table-name');
-    const err = await capture(() => locker.lock('lock-failure'));
-    expect(String(err)).to.equal('Error: Failed to acquire lock.');
-  });
-
-  it('Testing retryCount', async () => {
-    const locker = LockManager('lock-table-name', { retryCount: 1 });
-    const lock = await locker.lock('lock-failure');
-    await lock.release();
-  });
-
-  it('Testing Lock Release Failure', async ({ capture }) => {
-    const locker = LockManager('lock-table-name');
-    const lock = await locker.lock('lock-release-failure');
-    const err = await capture(() => lock.release());
-    expect(String(err)).to.equal('UnknownError: null');
-  });
-
-  it('Testing Heartbeat Failure', async ({ recorder }) => {
-    const lockerHeartbeat = LockManager('lock-table-name', {
-      leaseDurationMs: 1000,
-      heartbeatPeriodMs: 600
+  it('Testing basic locking', async () => {
+    const lock = await lockManager.lock('lock-name');
+    expect(typeof lock.release).to.deep.equal('function');
+    expect(lock.lock).to.deep.equal({
+      created: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
     });
-    await lockerHeartbeat.lock('lock-name-heartbeat-failure');
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000);
+    const r = await lock.release('lock-name');
+    expect(r).to.deep.equal({
+      deleted: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
     });
-    expect(recorder.get()).to.deep
-      .equal(['Error: Failed to renew heartbeat for lock lock-name-heartbeat-failure\nUnknownError: null']);
+  });
+
+  it('Testing already locked', async ({ capture }) => {
+    const lock1 = await lockManager.lock('lock-name');
+    const err = await capture(() => lockManager.lock('lock-name'));
+    expect(String(err)).to.deep.equal('Error: Failed to acquire lock.');
+    const r1 = await lock1.release('lock-name');
+    expect(r1).to.deep.equal({
+      deleted: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
+    });
+    const lock2 = await lockManager.lock('lock-name');
+    const r2 = await lock2.release('lock-name');
+    expect(r2).to.deep.equal({
+      deleted: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
+    });
+  });
+
+  it('Testing already locked, but expired', async ({ capture }) => {
+    const lock1 = await lockManager.lock('lock-name');
+    // eslint-disable-next-line no-underscore-dangle
+    await lockManager._model.modify({
+      id: 'lock-name',
+      lockAcquiredTimeUnixMs: (new Date() / 1) - 1000
+    });
+    const lock2 = await lockManager.lock('lock-name');
+    expect(lock2.lock).to.deep.equal({
+      created: false,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
+    });
+    const r2 = await lock2.release('lock-name');
+    expect(r2).to.deep.equal({
+      deleted: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
+    });
+    const err = await capture(() => lock1.release('lock-name'));
+    expect(String(err)).to.deep.equal('Error: Failed to release lock.');
+  });
+
+  it('Testing only one lock can succeed', async () => {
+    const genPromise = () => lockManager.lock('lock-name').then(() => 'ok').catch(() => 'err');
+    const r = await Promise.all(Array.from({ length: 100 }).map(genPromise));
+    expect(r.filter((e) => e === 'ok').length).to.deep.equal(1);
   });
 });

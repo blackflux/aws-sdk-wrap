@@ -13,8 +13,8 @@ import DyUtil from './dy/util.js';
 import LockManager from './dy/lock-manager.js';
 import { ModelNotFound, ModelAlreadyExists } from '../resources/errors.js';
 
-export default ({ call, getService, logger }) => ({
-  Model: ({
+export default ({ call, getService, logger }) => {
+  const Model = ({
     name,
     attributes,
     indices,
@@ -60,6 +60,10 @@ export default ({ call, getService, logger }) => ({
       scan: Scan(model, validateSecondaryIndex, setDefaults),
       schema: model.schema
     });
-  },
-  LockManager: LockManager({ getService, logger })
-});
+  };
+
+  return {
+    Model,
+    LockManager: LockManager({ Model })
+  };
+};
