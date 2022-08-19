@@ -32,7 +32,9 @@ export default ({ Model }) => (lockTable, {
         expectedErrorCodes: ['ConditionalCheckFailedException']
       });
       if (lockResult === 'ConditionalCheckFailedException') {
-        throw new Error('Failed to acquire lock.');
+        const err = new Error('Failed to acquire lock.');
+        err.code = 'FailedToAcquireLock';
+        throw err;
       }
       return {
         lock: lockResult,
@@ -44,7 +46,9 @@ export default ({ Model }) => (lockTable, {
             expectedErrorCodes: ['ConditionalCheckFailedException']
           });
           if (releaseResult === 'ConditionalCheckFailedException') {
-            throw new Error('Failed to release lock.');
+            const err = new Error('Failed to release lock.');
+            err.code = 'FailedToReleaseLock';
+            throw err;
           }
           return releaseResult;
         }
