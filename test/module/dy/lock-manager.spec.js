@@ -20,7 +20,8 @@ describe('Testing lock-manager.js', {
   beforeEach(async () => {
     const LockManager = buildLockManager();
     lockManager = LockManager('lock-table-name', { leaseDurationMs: 100 });
-    localTable = LocalTable({ schema: lockManager.schema });
+    // eslint-disable-next-line no-underscore-dangle
+    localTable = LocalTable({ schema: lockManager._model.schema });
     await localTable.create();
   });
   afterEach(async () => {
@@ -31,11 +32,14 @@ describe('Testing lock-manager.js', {
     const lock = await lockManager.lock('lock-name');
     expect(typeof lock.release).to.equal('function');
     expect(lock.lock).to.deep.equal({
-      guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
-      id: 'lock-name',
-      leaseDurationMs: 100,
-      lockAcquiredTimeUnixMs: 1650651221000,
-      owner: 'aws-sdk-wrap-lock-manager'
+      created: true,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
     });
     const r = await lock.release('lock-name');
     expect(r).to.equal(true);
@@ -60,6 +64,16 @@ describe('Testing lock-manager.js', {
       lockAcquiredTimeUnixMs: (new Date() / 1) - 1000
     });
     const lock2 = await lockManager.lock('lock-name');
+    expect(lock2.lock).to.deep.equal({
+      created: false,
+      item: {
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'lock-name',
+        leaseDurationMs: 100,
+        lockAcquiredTimeUnixMs: 1650651221000,
+        owner: 'aws-sdk-wrap-lock-manager'
+      }
+    });
     const r2 = await lock2.release('lock-name');
     expect(r2).to.equal(true);
     const err = await capture(() => lock1.release('lock-name'));

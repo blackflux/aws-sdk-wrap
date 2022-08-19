@@ -16,7 +16,6 @@ export default ({ Model }) => (lockTable, {
   });
   return {
     _model: model,
-    schema: model.schema,
     lock: async (lockName) => {
       const nowInMs = new Date() / 1;
       const guid = crypto.randomUUID();
@@ -38,7 +37,7 @@ export default ({ Model }) => (lockTable, {
         throw new Error('Failed to acquire lock.');
       }
       return {
-        lock: lockedResult?.item,
+        lock: lockedResult,
         release: async () => {
           const releasedResult = await model.delete({
             id: lockName
