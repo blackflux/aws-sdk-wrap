@@ -18,10 +18,9 @@ export default ({ Model }) => (lockTable, {
     _model: model,
     lock: async (lockName) => {
       const nowInMs = new Date() / 1;
-      const guid = crypto.randomUUID();
       const lockedResult = await model.createOrReplace({
         id: lockName,
-        guid,
+        guid: crypto.randomUUID(),
         leaseDurationMs,
         lockAcquiredTimeUnixMs: nowInMs,
         owner
@@ -41,7 +40,7 @@ export default ({ Model }) => (lockTable, {
           const releasedResult = await model.delete({
             id: lockName
           }, {
-            conditions: { attr: 'guid', eq: guid },
+            conditions: { attr: 'guid', eq: lockedResult?.item?.guid },
             expectedErrorCodes: ['ConditionalCheckFailedException']
           });
           if (releasedResult === 'ConditionalCheckFailedException') {
