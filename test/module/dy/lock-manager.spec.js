@@ -21,7 +21,7 @@ describe('Testing lock-manager.js', {
     const LockManager = buildLockManager();
     lockManager = LockManager('lock-table-name', { leaseDurationMs: 100 });
     // eslint-disable-next-line no-underscore-dangle
-    localTable = LocalTable({ schema: lockManager._model.schema });
+    localTable = LocalTable(lockManager._model);
     await localTable.create();
   });
   afterEach(async () => {
