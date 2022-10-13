@@ -59,7 +59,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) =
 
   return async (...args) => {
     Joi.assert(args, Joi.array().ordered(
-      Joi.string(),
+      Joi.alternatives().try(Joi.string(), Joi.number()),
       Joi.object().keys({
         index: Joi.string().optional(),
         // eslint-disable-next-line newline-per-chained-call
