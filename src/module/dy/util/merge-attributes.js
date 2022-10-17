@@ -1,6 +1,8 @@
+import clonedeep from 'lodash.clonedeep';
 import objectScan from 'object-scan';
 
 export default ({ sets, numbers }) => (...versions) => {
+  const clonedVersions = clonedeep(versions);
   const result = {};
   const logic = {
     '*': ({ property: name, value }) => {
@@ -51,7 +53,7 @@ export default ({ sets, numbers }) => (...versions) => {
       }
     }
   };
-  versions.forEach((version) => {
+  clonedVersions.forEach((version) => {
     objectScan(Object.keys(logic), {
       filterFn: (kwargs) => {
         kwargs.matchedBy.forEach((k) => logic[k](kwargs));

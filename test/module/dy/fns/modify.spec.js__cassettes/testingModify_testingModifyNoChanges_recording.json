@@ -88,6 +88,10 @@
           {
             "AttributeName": "name",
             "AttributeType": "S"
+          },
+          {
+            "AttributeName": "age",
+            "AttributeType": "N"
           }
         ],
         "TableName": "table-name",
@@ -102,7 +106,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1611260621.114,
+        "CreationDateTime": 1666026433.999,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -115,7 +119,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1611260621.114
+          "LastUpdateToPayPerRequestDateTime": 1666026433.999
         },
         "GlobalSecondaryIndexes": [
           {
@@ -141,21 +145,56 @@
             "IndexSizeBytes": 0,
             "ItemCount": 0,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
+          },
+          {
+            "IndexName": "ageIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "age",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 0,
+            "ItemCount": 0,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/ageIndex"
+          },
+          {
+            "IndexName": "idIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 0,
+            "ItemCount": 0,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/idIndex"
           }
         ]
       }
     },
-    "responseIsBinary": false,
-    "reqheaders": {
-      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
-      "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-amz-json-1.0",
-      "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "9cb199cd346e70dbfd8556cfdff4a37e6ac8bbf1a859d99ce09d776c0e9d1c6d",
-      "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.CreateTable"
-    }
+    "reqheaders": {},
+    "responseIsBinary": false
   },
   {
     "scope": "http://dynamodb-local:8000",
@@ -184,17 +223,8 @@
     },
     "status": 200,
     "response": {},
-    "responseIsBinary": false,
-    "reqheaders": {
-      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
-      "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-amz-json-1.0",
-      "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "70cc2d36ebdea2a34799ac30d10afa6464517ddf28361e02667e9294e15e77be",
-      "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.UpdateItem"
-    }
+    "reqheaders": {},
+    "responseIsBinary": false
   },
   {
     "scope": "http://dynamodb-local:8000",
@@ -213,18 +243,14 @@
       "UpdateExpression": "SET #age = :age",
       "ExpressionAttributeNames": {
         "#age": "age",
-        "#attr1": "id",
-        "#attr2": "age"
+        "#attr1": "id"
       },
       "ExpressionAttributeValues": {
         ":age": {
-          "N": "55"
-        },
-        ":attr2": {
           "N": "50"
         }
       },
-      "ConditionExpression": "attribute_exists(#attr1) AND (#attr2 = :attr2)",
+      "ConditionExpression": "attribute_exists(#attr1)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 200,
@@ -241,17 +267,8 @@
         }
       }
     },
-    "responseIsBinary": false,
-    "reqheaders": {
-      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
-      "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-amz-json-1.0",
-      "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "b499cd9a299ff007ca05048a0d4e914ea074f17af90084de5d9b82d24f9743bd",
-      "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.UpdateItem"
-    }
+    "reqheaders": {},
+    "responseIsBinary": false
   },
   {
     "scope": "http://dynamodb-local:8000",
@@ -271,6 +288,10 @@
           {
             "AttributeName": "name",
             "AttributeType": "S"
+          },
+          {
+            "AttributeName": "age",
+            "AttributeType": "N"
           }
         ],
         "TableName": "table-name",
@@ -285,7 +306,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1611260621.114,
+        "CreationDateTime": 1666026433.999,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -298,7 +319,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1611260621.114
+          "LastUpdateToPayPerRequestDateTime": 1666026433.999
         },
         "GlobalSecondaryIndexes": [
           {
@@ -324,20 +345,55 @@
             "IndexSizeBytes": 18,
             "ItemCount": 1,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
+          },
+          {
+            "IndexName": "ageIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "age",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 18,
+            "ItemCount": 1,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/ageIndex"
+          },
+          {
+            "IndexName": "idIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "IndexStatus": "ACTIVE",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 0,
+              "WriteCapacityUnits": 0
+            },
+            "IndexSizeBytes": 18,
+            "ItemCount": 1,
+            "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/idIndex"
           }
         ]
       }
     },
-    "responseIsBinary": false,
-    "reqheaders": {
-      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
-      "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-amz-json-1.0",
-      "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "ebd0d2abd69c79d2d40a70a6ff9d307590893eb6c9984a03e9d6546d1e5a9aca",
-      "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.DeleteTable"
-    }
+    "reqheaders": {},
+    "responseIsBinary": false
   }
 ]

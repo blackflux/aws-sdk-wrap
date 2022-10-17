@@ -50,6 +50,7 @@ describe('Testing create', {
     expect(result).to.deep.equal(
       {
         created: true,
+        modified: true,
         item
       }
     );
@@ -68,6 +69,7 @@ describe('Testing create', {
     expect(result).to.deep.equal(
       {
         created: true,
+        modified: true,
         item: itemWithNullNumber
       }
     );
@@ -82,6 +84,7 @@ describe('Testing create', {
     expect(result).to.deep.equal(
       {
         created: true,
+        modified: true,
         item
       }
     );
@@ -112,6 +115,7 @@ describe('Testing create', {
     expect(await model.create(item)).to.deep.equal(
       {
         created: true,
+        modified: true,
         item
       }
     );
@@ -128,6 +132,7 @@ describe('Testing create', {
     expect(await model.create(item)).to.deep.equal(
       {
         created: true,
+        modified: true,
         item
       }
     );
@@ -155,6 +160,7 @@ describe('Testing create', {
     expect(result).to.deep.equal(
       {
         created: true,
+        modified: true,
         item: { age: 50 }
       }
     );
@@ -168,7 +174,11 @@ describe('Testing create', {
     await generateTable({ onCreate });
     const result = await model.create(item);
     expect(logs).to.deep.equal(['onCreate executed: {"age":50,"name":"name","id":"123"}']);
-    expect(result).to.deep.equal({ created: true, item });
+    expect(result).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
   });
 
   it('Testing create with a set', async () => {
@@ -181,6 +191,7 @@ describe('Testing create', {
     expect(result).to.deep.equal(
       {
         created: true,
+        modified: true,
         item: itemWithSet
       }
     );
@@ -197,6 +208,7 @@ describe('Testing create', {
     expect(result).to.deep.equal(
       {
         created: true,
+        modified: true,
         item: itemWithSet
       }
     );
@@ -218,6 +230,7 @@ describe('Testing create', {
     expect(result).to.deep.equal(
       {
         created: true,
+        modified: true,
         item: itemWithValid
       }
     );
