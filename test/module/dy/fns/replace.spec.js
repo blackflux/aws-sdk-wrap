@@ -43,24 +43,44 @@ describe('Testing replace', {
   });
 
   it('Testing replace item replaced', async () => {
-    expect(await generateItem()).to.deep.equal({ created: true, item });
+    expect(await generateItem()).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
     const newItem = { ...key, age: 100 };
-    expect(await model.replace(newItem)).to.deep.equal({ created: false, item: newItem });
+    expect(await model.replace(newItem)).to.deep.equal({
+      created: false,
+      modified: true,
+      item: newItem
+    });
     expect(await getItemOrNull(key)).to.deep.equal(newItem);
   });
 
   it('Testing replace with conditions', async () => {
-    expect(await generateItem()).to.deep.equal({ created: true, item });
+    expect(await generateItem()).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
     const newItem = { ...key, age: 100 };
     const result = await model.replace(newItem, {
       conditions: { attr: 'age', eq: 50 }
     });
-    expect(result).to.deep.equal({ created: false, item: newItem });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: newItem
+    });
     expect(await getItemOrNull(key)).to.deep.equal(newItem);
   });
 
   it('Testing replace with ConditionFailedException', async ({ capture }) => {
-    expect(await generateItem()).to.deep.equal({ created: true, item });
+    expect(await generateItem()).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
     const newItem = { ...key, age: 100 };
     const error = await capture(() => model.replace(newItem, {
       conditions: { attr: 'age', eq: 10 }
@@ -70,7 +90,11 @@ describe('Testing replace', {
   });
 
   it('Testing replace with expectedErrorCodes', async () => {
-    expect(await generateItem()).to.deep.equal({ created: true, item });
+    expect(await generateItem()).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
     const newItem = { ...key, age: 100 };
     const result = await model.replace(newItem, {
       conditions: { attr: 'age', eq: 10 },
@@ -102,10 +126,15 @@ describe('Testing replace', {
   });
 
   it('Testing replace with toReturn', async () => {
-    expect(await generateItem()).to.deep.equal({ created: true, item });
+    expect(await generateItem()).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
     const newItem = { ...key, age: 100 };
     expect(await model.replace(newItem, { toReturn: ['age'] })).to.deep.equal({
       created: false,
+      modified: true,
       item: { age: 100 }
     });
   });

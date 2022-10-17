@@ -1,6 +1,7 @@
 import assert from 'assert';
 import Joi from 'joi-strict';
 import objectFields from 'object-fields';
+import isEqual from 'lodash.isequal';
 import MergeAttributes from './util/merge-attributes.js';
 import ValidateItem from './util/validate-item.js';
 import generateItemRewriter from './util/generate-item-rewriter.js';
@@ -142,7 +143,12 @@ export default ({
         objectFields.Retainer(toReturn)(resultItem);
       }
       return {
-        ...(['update', 'put'].includes(fn) ? { created: didNotExist } : { deleted: true }),
+        ...(['update', 'put'].includes(fn) ? {
+          created: didNotExist,
+          modified: !isEqual(mergedItem, result.Attributes)
+        } : {
+          deleted: true
+        }),
         item: resultItem
       };
     }

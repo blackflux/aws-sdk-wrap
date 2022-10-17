@@ -39,7 +39,22 @@ describe('Testing modify', {
     const { item } = await generateItem();
     item.age = 55;
     const result = await model.modify(item);
-    expect(result).to.deep.equal({ created: false, item });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item
+    });
+  });
+
+  it('Testing modify no changes', async () => {
+    await generateTable();
+    const { item } = await generateItem();
+    const result = await model.modify(item);
+    expect(result).to.deep.equal({
+      created: false,
+      modified: false,
+      item
+    });
   });
 
   it('Testing modify with conditions', async () => {
@@ -47,7 +62,11 @@ describe('Testing modify', {
     const { item } = await generateItem();
     item.age = 55;
     const result = await model.modify(item, { conditions: { attr: 'age', eq: 50 } });
-    expect(result).to.deep.equal({ created: false, item });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item
+    });
   });
 
   it('Testing modify with conditions as array', async () => {
@@ -55,7 +74,11 @@ describe('Testing modify', {
     const { item } = await generateItem();
     item.age = 55;
     const result = await model.modify(item, { conditions: [{ attr: 'age', eq: 50 }] });
-    expect(result).to.deep.equal({ created: false, item });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item
+    });
   });
 
   it('Testing modify with item not found with conditions', async ({ capture }) => {
@@ -107,7 +130,11 @@ describe('Testing modify', {
     const age = 55;
     item.age = age;
     const result = await model.modify(item, { toReturn: ['age'] });
-    expect(result).to.deep.equal({ created: false, item: { age } });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: { age }
+    });
   });
 
   it('Testing modify with onUpdate', async () => {
@@ -120,7 +147,11 @@ describe('Testing modify', {
     item.age = 55;
     const result = await model.modify(item);
     expect(logs).to.deep.equal(['onUpdate executed: {"age":55,"id":"123","name":"name"}']);
-    expect(result).to.deep.equal({ created: false, item });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item
+    });
   });
 
   it('Testing modify with an empty set', async () => {
@@ -131,7 +162,11 @@ describe('Testing modify', {
       someSet: []
     };
     const result = await model.modify(updatedItem);
-    expect(result).to.deep.equal({ created: false, item: updatedItem });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: updatedItem
+    });
     expect(await model.getItem(key)).to.deep.equal({
       id: item.id,
       name: item.name,
@@ -147,7 +182,11 @@ describe('Testing modify', {
       someSet: ['three', 'four']
     };
     const result = await model.modify(updatedItem);
-    expect(result).to.deep.equal({ created: false, item: updatedItem });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: updatedItem
+    });
     expect(await model.getItem(key)).to.deep.equal({
       id: item.id,
       name: item.name,
@@ -165,6 +204,7 @@ describe('Testing modify', {
     });
     expect(result).to.deep.equal({
       created: false,
+      modified: true,
       item: {
         ...item,
         someSet: ['one', 'two', 'three']
@@ -191,6 +231,7 @@ describe('Testing modify', {
     };
     expect(result).to.deep.equal({
       created: false,
+      modified: true,
       item: resultItem
     });
     expect(await model.getItem(key)).to.deep.equal(resultItem);
@@ -210,6 +251,7 @@ describe('Testing modify', {
     };
     expect(result).to.deep.equal({
       created: false,
+      modified: true,
       item: resultItem
     });
     expect(await model.getItem(key)).to.deep.equal(resultItem);
@@ -230,6 +272,7 @@ describe('Testing modify', {
     };
     expect(result).to.deep.equal({
       created: false,
+      modified: true,
       item: resultItem
     });
     expect(await model.getItem(key)).to.deep.equal(resultItem);
@@ -246,7 +289,11 @@ describe('Testing modify', {
       ...updatedItem,
       $remove: ['slug']
     });
-    expect(result).to.deep.equal({ created: false, item: updatedItem });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: updatedItem
+    });
     expect(await model.getItem(key)).to.deep.equal({
       id: item.id,
       name: item.name,
@@ -272,7 +319,11 @@ describe('Testing modify', {
       }
     };
     const result = await model.modify(updatedItem);
-    expect(result).to.deep.equal({ created: false, item: updatedItem });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: updatedItem
+    });
     expect(await model.getItem(key)).to.deep.equal(updatedItem);
   });
 
@@ -289,6 +340,7 @@ describe('Testing modify', {
     };
     expect(result).to.deep.equal({
       created: false,
+      modified: false,
       item: resultItem
     });
     expect(await model.getItem(key)).to.deep.equal(resultItem);
@@ -307,6 +359,7 @@ describe('Testing modify', {
     };
     expect(result).to.deep.equal({
       created: false,
+      modified: false,
       item: resultItem
     });
     expect(await model.getItem(key)).to.deep.equal(resultItem);
@@ -321,6 +374,7 @@ describe('Testing modify', {
     });
     expect(result).to.deep.equal({
       created: false,
+      modified: false,
       item
     });
     expect(await model.getItem(key)).to.deep.equal(item);
@@ -339,6 +393,7 @@ describe('Testing modify', {
     });
     expect(result).to.deep.equal({
       created: false,
+      modified: true,
       item: expectedItem
     });
     expect(await model.getItem(key)).to.deep.equal(expectedItem);
@@ -357,6 +412,7 @@ describe('Testing modify', {
     });
     expect(result).to.deep.equal({
       created: false,
+      modified: true,
       item: expectedItem
     });
     expect(await model.getItem(key)).to.deep.equal(expectedItem);

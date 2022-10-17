@@ -33,6 +33,7 @@ describe('Testing lock-manager.js', {
     expect(typeof lock.release).to.deep.equal('function');
     expect(lock.lock).to.deep.equal({
       created: true,
+      modified: true,
       item: {
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: 'lock-name',
@@ -93,6 +94,7 @@ describe('Testing lock-manager.js', {
     const lock2 = await lockManager.lock('lock-name');
     expect(lock2.lock).to.deep.equal({
       created: false,
+      modified: true,
       item: {
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: 'lock-name',

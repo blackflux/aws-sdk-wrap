@@ -60,6 +60,7 @@ describe('Testing query', {
     };
     expect(await model.createOrModify(item2)).to.deep.equal({
       created: true,
+      modified: true,
       item: item2
     });
     const result = await model.query(primaryKey, { limit: 1 });
