@@ -45,7 +45,11 @@ describe('Testing create-or-modify', {
 
   it('Testing createOrModify item created', async () => {
     await generateTable();
-    expect(await model.createOrModify(item)).to.deep.equal({ created: true, item });
+    expect(await model.createOrModify(item)).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
   });
 
   it('Testing createOrModify with default null', async ({ capture }) => {
@@ -80,6 +84,7 @@ describe('Testing create-or-modify', {
     expect(result).to.deep.equal(
       {
         created: true,
+        modified: true,
         item: itemWithDefault
       }
     );
@@ -95,6 +100,7 @@ describe('Testing create-or-modify', {
     };
     expect(await model.createOrModify(item)).to.deep.equal({
       created: true,
+      modified: true,
       item: itemWithDefault
     });
     const result = await model.getItem(item);
@@ -103,15 +109,27 @@ describe('Testing create-or-modify', {
 
   it('Testing createOrModify item updated', async () => {
     await generateTable();
-    expect(await model.createOrModify(item)).to.deep.equal({ created: true, item });
+    expect(await model.createOrModify(item)).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
     item.age = 51;
-    expect(await model.createOrModify(item)).to.deep.equal({ created: false, item });
+    expect(await model.createOrModify(item)).to.deep.equal({
+      created: false,
+      modified: true,
+      item
+    });
   });
 
   it('Testing createOrModify with conditions', async () => {
     await generateTable();
     const result = await model.createOrModify(item, { conditions: { attr: 'name', exists: false } });
-    expect(result).to.deep.equal({ created: true, item });
+    expect(result).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
   });
 
   it('Testing createOrModify with ConditionalCheckFailedException', async ({ capture }) => {
@@ -153,6 +171,7 @@ describe('Testing create-or-modify', {
     await generateTable();
     expect(await model.createOrModify(item, { toReturn: ['age'] })).to.deep.equal({
       created: true,
+      modified: true,
       item: { age: 50 }
     });
   });

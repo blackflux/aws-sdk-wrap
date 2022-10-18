@@ -48,7 +48,8 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) =
           }, {})),
         ...(filters === null ? {} : { filters }),
         ...(toReturn === null ? {} : { attributes: toReturn }),
-        ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey })
+        ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey }),
+        entity: model.table.name
       });
       items.push(...result.Items);
       lastEvaluatedKey = result.LastEvaluatedKey;
@@ -58,7 +59,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) =
 
   return async (...args) => {
     Joi.assert(args, Joi.array().ordered(
-      Joi.string(),
+      Joi.alternatives().try(Joi.string(), Joi.number()),
       Joi.object().keys({
         index: Joi.string().optional(),
         // eslint-disable-next-line newline-per-chained-call

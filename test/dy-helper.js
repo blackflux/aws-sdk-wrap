@@ -117,7 +117,11 @@ export const createItems = async ({
       ...(extraAttrs === null ? {} : extraAttrs)
     };
     // eslint-disable-next-line no-await-in-loop
-    expect(await model.createOrModify(item)).to.deep.equal({ created: true, item });
+    expect(await model.createOrModify(item)).to.deep.equal({
+      created: true,
+      modified: true,
+      item
+    });
     items.push(item);
   }
   return items;

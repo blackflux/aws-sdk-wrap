@@ -60,6 +60,7 @@ describe('Testing query', {
     };
     expect(await model.createOrModify(item2)).to.deep.equal({
       created: true,
+      modified: true,
       item: item2
     });
     const result = await model.query(primaryKey, { limit: 1 });
@@ -94,6 +95,22 @@ describe('Testing query', {
     const [item] = await generateItem();
     const result = await model.query(primaryKey, {
       index: 'targetIndex',
+      consistent: false
+    });
+    expect(result).to.deep.equal({
+      items: [item],
+      page: {
+        next: null,
+        index: { current: 1 },
+        size: 20
+      }
+    });
+  });
+
+  it('Testing query with index number as primaryKey', async () => {
+    const [item] = await generateItem();
+    const result = await model.query(50, {
+      index: 'ageIndex',
       consistent: false
     });
     expect(result).to.deep.equal({
