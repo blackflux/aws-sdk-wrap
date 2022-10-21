@@ -64,10 +64,19 @@ export default ({ Model }) => (ucTable, {
         expectedErrorCodes: ['ConditionalCheckFailedException']
       })
     )),
-    delete: async (id) => wrap('Delete', (m) => m.delete({ id }, {
-      conditions: { attr: 'id', exists: true },
-      expectedErrorCodes: ['ConditionalCheckFailedException']
-    })),
+    delete: async (id, ignoreError = false) => {
+      try {
+        return await wrap('Delete', (m) => m.delete({ id }, {
+          conditions: { attr: 'id', exists: true },
+          expectedErrorCodes: ['ConditionalCheckFailedException']
+        }));
+      } catch (e) {
+        if (ignoreError === true) {
+          return e;
+        }
+        throw e;
+      }
+    },
     reserve: async (id) => {
       const nowInMs = new Date() / 1;
       const guid = crypto.randomUUID();

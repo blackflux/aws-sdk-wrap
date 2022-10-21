@@ -239,4 +239,11 @@ describe('Testing uc-manager.js', {
       }
     }]);
   });
+
+  it('Testing ignore delete error', async ({ capture }) => {
+    const e = await capture(() => ucManager.delete('A'));
+    const r = await ucManager.delete('A', true);
+    expect(e.code).to.deep.equal('FailedToDeleteUniqueConstraint');
+    expect(r.code).to.deep.equal('FailedToDeleteUniqueConstraint');
+  });
 });
