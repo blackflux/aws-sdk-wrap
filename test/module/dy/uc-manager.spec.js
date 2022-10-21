@@ -211,8 +211,9 @@ describe('Testing uc-manager.js', {
     await a.release();
     await c.persist();
     const result = await ucManager.releaseAll();
-    expect(result).to.deep.equal([
-      {
+    expect(result).to.deep.equal([{
+      status: 'fulfilled',
+      value: {
         deleted: true,
         item: {
           reserveDurationMs: 100,
@@ -222,8 +223,10 @@ describe('Testing uc-manager.js', {
           owner: 'aws-sdk-wrap-uc-manager',
           ucReserveTimeUnixMs: 1650651221000
         }
-      },
-      {
+      }
+    }, {
+      status: 'fulfilled',
+      value: {
         deleted: true,
         item: {
           reserveDurationMs: 100,
@@ -234,6 +237,6 @@ describe('Testing uc-manager.js', {
           ucReserveTimeUnixMs: 1650651221000
         }
       }
-    ]);
+    }]);
   });
 });

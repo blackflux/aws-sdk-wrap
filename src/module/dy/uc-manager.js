@@ -36,7 +36,7 @@ export default ({ Model }) => (ucTable, {
     get _model() {
       return getModelCached();
     },
-    releaseAll: async () => Promise.all(
+    releaseAll: async () => Promise.allSettled(
       temporary.splice(0).map(
         ([id, guid]) => wrap('ReleaseAll', (m) => m.delete({ id }, {
           conditions: [
