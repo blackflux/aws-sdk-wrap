@@ -46,7 +46,7 @@ export default ({ Model }) => (lockTable, {
         throw err;
       }
       return {
-        lock: lockResult,
+        result: lockResult,
         release: async () => {
           const releaseResult = await model.delete({
             id: lockName

@@ -90,7 +90,7 @@ export default ({ Model }) => (ucTable, {
         throw err;
       }
       return {
-        reserve: reserveResult,
+        result: reserveResult,
         release: async () => {
           const releaseResult = await model.delete({
             id

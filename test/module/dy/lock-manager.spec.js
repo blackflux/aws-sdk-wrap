@@ -31,7 +31,7 @@ describe('Testing lock-manager.js', {
   it('Testing basic locking', async () => {
     const lock = await lockManager.lock('lock-name');
     expect(typeof lock.release).to.deep.equal('function');
-    expect(lock.lock).to.deep.equal({
+    expect(lock.result).to.deep.equal({
       created: true,
       modified: true,
       item: {
@@ -92,7 +92,7 @@ describe('Testing lock-manager.js', {
       lockAcquiredTimeUnixMs: (new Date() / 1) - 1000
     });
     const lock2 = await lockManager.lock('lock-name');
-    expect(lock2.lock).to.deep.equal({
+    expect(lock2.result).to.deep.equal({
       created: false,
       modified: true,
       item: {

@@ -31,7 +31,7 @@ describe('Testing uc-manager.js', {
   it('Testing reserve and persist', async () => {
     const reservation = await ucManager.reserve('1234');
     expect(typeof reservation.release).to.deep.equal('function');
-    expect(reservation.reserve).to.deep.equal({
+    expect(reservation.result).to.deep.equal({
       created: true,
       modified: true,
       item: {
@@ -61,7 +61,7 @@ describe('Testing uc-manager.js', {
   it('Testing reserve and release', async () => {
     const reservation = await ucManager.reserve('1234');
     expect(typeof reservation.release).to.deep.equal('function');
-    expect(reservation.reserve).to.deep.equal({
+    expect(reservation.result).to.deep.equal({
       created: true,
       modified: true,
       item: {
@@ -154,7 +154,7 @@ describe('Testing uc-manager.js', {
   it('Testing double reserve', async ({ capture }) => {
     const reservation = await ucManager.reserve('1234');
     expect(typeof reservation.release).to.deep.equal('function');
-    expect(reservation.reserve).to.deep.equal({
+    expect(reservation.result).to.deep.equal({
       created: true,
       modified: true,
       item: {
@@ -172,7 +172,7 @@ describe('Testing uc-manager.js', {
 
   it('Testing reserved persist and release failure', async ({ capture }) => {
     const reservation = await ucManager.reserve('1234');
-    expect(reservation.reserve).to.deep.equal({
+    expect(reservation.result).to.deep.equal({
       created: true,
       modified: true,
       item: {
