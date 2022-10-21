@@ -202,4 +202,38 @@ describe('Testing uc-manager.js', {
     const err2 = await capture(() => reservation.release());
     expect(err2.code).to.deep.equal('FailedToReleaseUniqueConstraint');
   });
+
+  it('Testing releaseAll', async ({ capture }) => {
+    const a = await ucManager.reserve('A');
+    const b = await ucManager.reserve('B');
+    const c = await ucManager.reserve('C');
+    const d = await ucManager.reserve('D');
+    await a.release();
+    await c.persist();
+    const result = await ucManager.releaseAll();
+    expect(result).to.deep.equal([
+      {
+        deleted: true,
+        item: {
+          reserveDurationMs: 100,
+          permanent: false,
+          id: 'B',
+          guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+          owner: 'aws-sdk-wrap-uc-manager',
+          ucReserveTimeUnixMs: 1650651221000
+        }
+      },
+      {
+        deleted: true,
+        item: {
+          reserveDurationMs: 100,
+          permanent: false,
+          id: 'D',
+          guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+          owner: 'aws-sdk-wrap-uc-manager',
+          ucReserveTimeUnixMs: 1650651221000
+        }
+      }
+    ])
+  });
 });

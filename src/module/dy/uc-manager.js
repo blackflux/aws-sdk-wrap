@@ -31,10 +31,22 @@ export default ({ Model }) => (ucTable, {
     }
     return result;
   };
+  const temporary = [];
   return {
     get _model() {
       return getModelCached();
     },
+    releaseAll: async () => Promise.all(
+      temporary.splice(0).map(
+        ([id, guid]) => wrap('ReleaseAll', (m) => m.delete({ id }, {
+          conditions: [
+            { attr: 'guid', eq: guid },
+            { or: false, attr: 'permanent', eq: false }
+          ],
+          expectedErrorCodes: ['ConditionalCheckFailedException']
+        }))
+      )
+    ),
     persist: async (id, force = false) => wrap('Persist', (m) => m.createOrReplace(
       {
         id,
@@ -58,9 +70,10 @@ export default ({ Model }) => (ucTable, {
     })),
     reserve: async (id) => {
       const nowInMs = new Date() / 1;
+      const guid = crypto.randomUUID();
       const reserveResult = await wrap('Reserve', (m) => m.createOrReplace({
         id,
-        guid: crypto.randomUUID(),
+        guid,
         reserveDurationMs,
         permanent: false,
         ucReserveTimeUnixMs: nowInMs,
@@ -75,27 +88,34 @@ export default ({ Model }) => (ucTable, {
         ],
         expectedErrorCodes: ['ConditionalCheckFailedException']
       }));
+      temporary.push([id, guid]);
       return {
         result: reserveResult,
-        release: async () => wrap('Release', (m) => m.delete({ id }, {
-          conditions: [
-            { attr: 'guid', eq: reserveResult?.item?.guid },
-            { or: false, attr: 'permanent', eq: false }
-          ],
-          expectedErrorCodes: ['ConditionalCheckFailedException']
-        })),
-        persist: async () => wrap('Persist', (m) => m.modify({
-          id,
-          permanent: true,
-          reserveDurationMs: 0,
-          ucReserveTimeUnixMs: Number.MAX_SAFE_INTEGER
-        }, {
-          conditions: [
-            { attr: 'guid', eq: reserveResult?.item?.guid },
-            { or: false, attr: 'permanent', eq: false }
-          ],
-          expectedErrorCodes: ['ConditionalCheckFailedException']
-        }))
+        release: async () => {
+          temporary.splice(temporary.findIndex((e) => e[0] === id && e[1] === guid), 1);
+          return wrap('Release', (m) => m.delete({ id }, {
+            conditions: [
+              { attr: 'guid', eq: reserveResult?.item?.guid },
+              { or: false, attr: 'permanent', eq: false }
+            ],
+            expectedErrorCodes: ['ConditionalCheckFailedException']
+          }));
+        },
+        persist: async () => {
+          temporary.splice(temporary.findIndex((e) => e[0] === id && e[1] === guid), 1);
+          return wrap('Persist', (m) => m.modify({
+            id,
+            permanent: true,
+            reserveDurationMs: 0,
+            ucReserveTimeUnixMs: Number.MAX_SAFE_INTEGER
+          }, {
+            conditions: [
+              { attr: 'guid', eq: reserveResult?.item?.guid },
+              { or: false, attr: 'permanent', eq: false }
+            ],
+            expectedErrorCodes: ['ConditionalCheckFailedException']
+          }));
+        }
       };
     }
   };
