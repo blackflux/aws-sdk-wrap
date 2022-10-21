@@ -244,6 +244,9 @@ describe('Testing uc-manager.js', {
     const e = await capture(() => ucManager.delete('A'));
     const r = await ucManager.delete('A', true);
     expect(e.code).to.deep.equal('FailedToDeleteUniqueConstraint');
-    expect(r.code).to.deep.equal('FailedToDeleteUniqueConstraint');
+    expect(r).to.deep.equal({
+      error: 'not_found',
+      key: { id: 'A' }
+    });
   });
 });
