@@ -205,9 +205,9 @@ describe('Testing uc-manager.js', {
 
   it('Testing releaseAll', async ({ capture }) => {
     const a = await ucManager.reserve('A');
-    const b = await ucManager.reserve('B');
+    await ucManager.reserve('B');
     const c = await ucManager.reserve('C');
-    const d = await ucManager.reserve('D');
+    await ucManager.reserve('D');
     await a.release();
     await c.persist();
     const result = await ucManager.releaseAll();
@@ -234,6 +234,6 @@ describe('Testing uc-manager.js', {
           ucReserveTimeUnixMs: 1650651221000
         }
       }
-    ])
+    ]);
   });
 });
