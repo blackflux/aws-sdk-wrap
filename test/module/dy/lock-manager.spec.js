@@ -42,7 +42,7 @@ describe('Testing lock-manager.js', {
         owner: 'aws-sdk-wrap-lock-manager'
       }
     });
-    const r = await lock.release('lock-name');
+    const r = await lock.release();
     expect(r).to.deep.equal({
       deleted: true,
       item: {
@@ -59,7 +59,7 @@ describe('Testing lock-manager.js', {
     const lock1 = await lockManager.lock('lock-name');
     const err = await capture(() => lockManager.lock('lock-name'));
     expect(String(err)).to.deep.equal('Error: Failed to acquire lock.');
-    const r1 = await lock1.release('lock-name');
+    const r1 = await lock1.release();
     expect(r1).to.deep.equal({
       deleted: true,
       item: {
@@ -71,7 +71,7 @@ describe('Testing lock-manager.js', {
       }
     });
     const lock2 = await lockManager.lock('lock-name');
-    const r2 = await lock2.release('lock-name');
+    const r2 = await lock2.release();
     expect(r2).to.deep.equal({
       deleted: true,
       item: {
@@ -103,7 +103,7 @@ describe('Testing lock-manager.js', {
         owner: 'aws-sdk-wrap-lock-manager'
       }
     });
-    const r2 = await lock2.release('lock-name');
+    const r2 = await lock2.release();
     expect(r2).to.deep.equal({
       deleted: true,
       item: {
@@ -114,7 +114,7 @@ describe('Testing lock-manager.js', {
         owner: 'aws-sdk-wrap-lock-manager'
       }
     });
-    const err = await capture(() => lock1.release('lock-name'));
+    const err = await capture(() => lock1.release());
     expect(String(err)).to.deep.equal('Error: Failed to release lock.');
   });
 

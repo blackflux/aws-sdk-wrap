@@ -11,6 +11,7 @@ import Scan from './dy/fns/scan.js';
 import createModel from './dy/create-model.js';
 import DyUtil from './dy/util.js';
 import LockManager from './dy/lock-manager.js';
+import UcManager from './dy/uc-manager.js';
 import { ModelNotFound, ModelAlreadyExists } from '../resources/errors.js';
 
 export default ({ call, getService, logger }) => {
@@ -64,6 +65,7 @@ export default ({ call, getService, logger }) => {
 
   return {
     Model,
-    LockManager: LockManager({ Model })
+    LockManager: LockManager({ Model }),
+    UcManager: UcManager({ Model })
   };
 };

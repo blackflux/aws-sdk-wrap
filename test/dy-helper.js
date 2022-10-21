@@ -46,6 +46,27 @@ export const buildLockManager = () => {
   return LockManager;
 };
 
+export const buildUcManager = () => {
+  const index = Index({
+    config: {
+      region: 'us-west-2',
+      accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
+      secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+      maxRetries: 0,
+      endpoint: process.env.DYNAMODB_ENDPOINT
+    },
+    services: {
+      'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient
+    }
+  });
+  const { UcManager } = DyUtil({
+    call: index.call,
+    logger: console,
+    getService: index.get
+  });
+  return UcManager;
+};
+
 export const buildModel = ({
   extraAttrs = null,
   extraIndices = null,
