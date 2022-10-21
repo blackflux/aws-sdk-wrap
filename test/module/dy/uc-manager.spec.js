@@ -249,4 +249,104 @@ describe('Testing uc-manager.js', {
       key: { id: 'A' }
     });
   });
+
+  it('Testing reserveAll and releaseAll', async ({ capture }) => {
+    const r1 = await ucManager.reserveAll(['a', 'b']);
+    const r2 = await r1.releaseAll();
+    expect(r1.results).to.deep.equal([{
+      created: true,
+      modified: true,
+      item: {
+        owner: 'aws-sdk-wrap-uc-manager',
+        ucReserveTimeUnixMs: 1650651221000,
+        permanent: false,
+        reserveDurationMs: 100,
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'a'
+      }
+    }, {
+      created: true,
+      modified: true,
+      item: {
+        owner: 'aws-sdk-wrap-uc-manager',
+        ucReserveTimeUnixMs: 1650651221000,
+        permanent: false,
+        reserveDurationMs: 100,
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'b'
+      }
+    }]);
+    expect(r2).to.deep.equal([{
+      deleted: true,
+      item: {
+        reserveDurationMs: 100,
+        permanent: false,
+        id: 'a',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        owner: 'aws-sdk-wrap-uc-manager',
+        ucReserveTimeUnixMs: 1650651221000
+      }
+    }, {
+      deleted: true,
+      item: {
+        reserveDurationMs: 100,
+        permanent: false,
+        id: 'b',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        owner: 'aws-sdk-wrap-uc-manager',
+        ucReserveTimeUnixMs: 1650651221000
+      }
+    }]);
+  });
+
+  it('Testing reserveAll and persistAll', async ({ capture }) => {
+    const r1 = await ucManager.reserveAll(['a', 'b']);
+    const r2 = await r1.persistAll();
+    expect(r1.results).to.deep.equal([{
+      created: true,
+      modified: true,
+      item: {
+        owner: 'aws-sdk-wrap-uc-manager',
+        ucReserveTimeUnixMs: 1650651221000,
+        permanent: false,
+        reserveDurationMs: 100,
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'a'
+      }
+    }, {
+      created: true,
+      modified: true,
+      item: {
+        owner: 'aws-sdk-wrap-uc-manager',
+        ucReserveTimeUnixMs: 1650651221000,
+        permanent: false,
+        reserveDurationMs: 100,
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: 'b'
+      }
+    }]);
+    expect(r2).to.deep.equal([{
+      created: false,
+      modified: true,
+      item: {
+        reserveDurationMs: 0,
+        permanent: true,
+        id: 'a',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        ucReserveTimeUnixMs: 9007199254740991,
+        owner: 'aws-sdk-wrap-uc-manager'
+      }
+    }, {
+      created: false,
+      modified: true,
+      item: {
+        reserveDurationMs: 0,
+        permanent: true,
+        id: 'b',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        ucReserveTimeUnixMs: 9007199254740991,
+        owner: 'aws-sdk-wrap-uc-manager'
+      }
+    }]);
+  });
 });

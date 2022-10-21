@@ -119,6 +119,29 @@ export default ({ Model }) => (ucTable, {
     reserve,
     persist,
     delete: del,
+    reserveAll: async (ids) => {
+      const reservations = await Promise.allSettled(ids.map((id) => reserve(id)));
+      if (reservations.every(({ status }) => status === 'fulfilled')) {
+        return {
+          results: reservations.map(({ value }) => value.result),
+          releaseAll: async () => Promise.all(reservations.map(({ value }) => value.release())),
+          persistAll: async () => Promise.all(reservations.map(({ value }) => value.persist()))
+        };
+      }
+      await Promise.allSettled(
+        reservations
+          .every(({ status }) => status === 'fulfilled')
+          .map(({ value }) => value.release())
+      );
+      throw reservations.find(({ status }) => status !== 'fulfilled').value;
+    },
+    // persistAll: (ids, force = false) => {
+    //   // todo: if failure, throw error
+    //   // ...
+    // },
+    // deleteAll: (ids, ignoreErrors = false) => {
+    //   // todo: if failure, throw error
+    // },
     cleanup: async () => Promise.allSettled(
       temporary.splice(0).map(
         ([id, guid]) => wrap('Cleanup', (m) => m.delete({ id }, {
