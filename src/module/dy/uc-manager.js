@@ -119,9 +119,9 @@ export default ({ Model }) => (ucTable, {
     reserve,
     persist,
     delete: del,
-    releaseAll: async () => Promise.allSettled(
+    cleanup: async () => Promise.allSettled(
       temporary.splice(0).map(
-        ([id, guid]) => wrap('ReleaseAll', (m) => m.delete({ id }, {
+        ([id, guid]) => wrap('Cleanup', (m) => m.delete({ id }, {
           conditions: [
             { attr: 'guid', eq: guid },
             { or: false, attr: 'permanent', eq: false }

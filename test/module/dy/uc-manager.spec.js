@@ -203,14 +203,14 @@ describe('Testing uc-manager.js', {
     expect(err2.code).to.deep.equal('FailedToReleaseUniqueConstraint');
   });
 
-  it('Testing releaseAll', async ({ capture }) => {
+  it('Testing cleanup', async ({ capture }) => {
     const a = await ucManager.reserve('A');
     await ucManager.reserve('B');
     const c = await ucManager.reserve('C');
     await ucManager.reserve('D');
     await a.release();
     await c.persist();
-    const result = await ucManager.releaseAll();
+    const result = await ucManager.cleanup();
     expect(result).to.deep.equal([{
       status: 'fulfilled',
       value: {
