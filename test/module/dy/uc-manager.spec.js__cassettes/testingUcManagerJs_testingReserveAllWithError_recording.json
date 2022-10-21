@@ -36,7 +36,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666392225.237,
+        "CreationDateTime": 1666392508.094,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -49,7 +49,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666392225.237
+          "LastUpdateToPayPerRequestDateTime": 1666392508.094
         }
       }
     },
@@ -111,6 +111,56 @@
       "TableName": "uc-table-name",
       "Item": {
         "id": {
+          "S": "a"
+        },
+        "guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        "reserveDurationMs": {
+          "N": "100"
+        },
+        "permanent": {
+          "BOOL": false
+        },
+        "ucReserveTimeUnixMs": {
+          "N": "1650651221000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-uc-manager"
+        }
+      },
+      "ExpressionAttributeNames": {
+        "#attr1": "id",
+        "#attr2": "ucReserveTimeUnixMs",
+        "#attr3": "permanent"
+      },
+      "ExpressionAttributeValues": {
+        ":attr2": {
+          "N": "1650651220900"
+        },
+        ":attr3": {
+          "BOOL": false
+        }
+      },
+      "ConditionExpression": "attribute_not_exists(#attr1) OR (#attr2 < :attr2 AND #attr3 = :attr3)",
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 400,
+    "response": {
+      "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
+      "Message": "The conditional request failed"
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "uc-table-name",
+      "Item": {
+        "id": {
           "S": "b"
         },
         "guid": {
@@ -158,94 +208,15 @@
       "TableName": "uc-table-name",
       "Key": {
         "id": {
-          "S": "a"
-        }
-      },
-      "UpdateExpression": "SET #permanent = :permanent, #reserveDurationMs = :reserveDurationMs, #ucReserveTimeUnixMs = :ucReserveTimeUnixMs",
-      "ExpressionAttributeNames": {
-        "#permanent": "permanent",
-        "#reserveDurationMs": "reserveDurationMs",
-        "#ucReserveTimeUnixMs": "ucReserveTimeUnixMs",
-        "#attr1": "id",
-        "#attr2": "guid",
-        "#attr3": "permanent"
-      },
-      "ExpressionAttributeValues": {
-        ":permanent": {
-          "BOOL": true
-        },
-        ":reserveDurationMs": {
-          "N": "0"
-        },
-        ":ucReserveTimeUnixMs": {
-          "N": "9007199254740991"
-        },
-        ":attr2": {
-          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
-        },
-        ":attr3": {
-          "BOOL": false
-        }
-      },
-      "ConditionExpression": "attribute_exists(#attr1) AND (#attr2 = :attr2 AND #attr3 = :attr3)",
-      "ReturnValues": "ALL_OLD"
-    },
-    "status": 200,
-    "response": {
-      "Attributes": {
-        "owner": {
-          "S": "aws-sdk-wrap-uc-manager"
-        },
-        "ucReserveTimeUnixMs": {
-          "N": "1650651221000"
-        },
-        "guid": {
-          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
-        },
-        "id": {
-          "S": "a"
-        },
-        "permanent": {
-          "BOOL": false
-        },
-        "reserveDurationMs": {
-          "N": "100"
-        }
-      }
-    },
-    "reqheaders": {},
-    "responseIsBinary": false
-  },
-  {
-    "scope": "http://dynamodb-local:8000",
-    "method": "POST",
-    "path": "/",
-    "body": {
-      "TableName": "uc-table-name",
-      "Key": {
-        "id": {
           "S": "b"
         }
       },
-      "UpdateExpression": "SET #permanent = :permanent, #reserveDurationMs = :reserveDurationMs, #ucReserveTimeUnixMs = :ucReserveTimeUnixMs",
       "ExpressionAttributeNames": {
-        "#permanent": "permanent",
-        "#reserveDurationMs": "reserveDurationMs",
-        "#ucReserveTimeUnixMs": "ucReserveTimeUnixMs",
         "#attr1": "id",
         "#attr2": "guid",
         "#attr3": "permanent"
       },
       "ExpressionAttributeValues": {
-        ":permanent": {
-          "BOOL": true
-        },
-        ":reserveDurationMs": {
-          "N": "0"
-        },
-        ":ucReserveTimeUnixMs": {
-          "N": "9007199254740991"
-        },
         ":attr2": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
         },
@@ -259,11 +230,11 @@
     "status": 200,
     "response": {
       "Attributes": {
-        "owner": {
-          "S": "aws-sdk-wrap-uc-manager"
-        },
         "ucReserveTimeUnixMs": {
           "N": "1650651221000"
+        },
+        "owner": {
+          "S": "aws-sdk-wrap-uc-manager"
         },
         "guid": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
@@ -306,7 +277,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666392225.237,
+        "CreationDateTime": 1666392508.094,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -314,12 +285,12 @@
           "ReadCapacityUnits": 0,
           "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 254,
-        "ItemCount": 2,
+        "TableSizeBytes": 126,
+        "ItemCount": 1,
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666392225.237
+          "LastUpdateToPayPerRequestDateTime": 1666392508.094
         }
       }
     },

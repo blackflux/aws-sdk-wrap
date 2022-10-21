@@ -121,7 +121,7 @@ export default ({ Model }) => (ucTable, {
     delete: del,
     reserveAll: async (ids) => {
       const reservations = await Promise.allSettled(ids.map((id) => reserve(id)));
-      if (reservations.every(({ status }) => status === 'fulfilled')) {
+      if (reservations.every((r) => r?.status === 'fulfilled')) {
         return {
           results: reservations.map(({ value }) => value.result),
           releaseAll: async () => Promise.all(reservations.map(({ value }) => value.release())),
@@ -130,10 +130,10 @@ export default ({ Model }) => (ucTable, {
       }
       await Promise.allSettled(
         reservations
-          .every(({ status }) => status === 'fulfilled')
+          .filter((r) => r?.status === 'fulfilled')
           .map(({ value }) => value.release())
       );
-      throw reservations.find(({ status }) => status !== 'fulfilled').value;
+      throw reservations.find((r) => r?.status !== 'fulfilled')?.reason;
     },
     // persistAll: (ids, force = false) => {
     //   // todo: if failure, throw error

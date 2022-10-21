@@ -349,4 +349,10 @@ describe('Testing uc-manager.js', {
       }
     }]);
   });
+
+  it('Testing reserveAll with error', async ({ capture }) => {
+    await ucManager.reserve('a');
+    const e = await capture(() => ucManager.reserveAll(['a', 'b']));
+    expect(e.code).to.deep.equal('FailedToReserveUniqueConstraint');
+  });
 });
