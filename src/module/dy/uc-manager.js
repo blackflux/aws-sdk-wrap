@@ -68,8 +68,10 @@ export default ({ Model }) => (ucTable, {
       }, {
         conditions: [
           { attr: 'id', exists: false },
-          { or: true, attr: 'ucReserveTimeUnixMs', lt: nowInMs - reserveDurationMs },
-          { or: false, attr: 'permanent', eq: false }
+          [
+            { or: true, attr: 'ucReserveTimeUnixMs', lt: nowInMs - reserveDurationMs },
+            { or: false, attr: 'permanent', eq: false }
+          ]
         ],
         expectedErrorCodes: ['ConditionalCheckFailedException']
       }));
