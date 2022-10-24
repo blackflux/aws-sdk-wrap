@@ -358,14 +358,14 @@ describe('Testing uc-manager.js', {
 
   it('Testing persistAll', async ({ capture }) => {
     const r = await ucManager.persistAll(['a', 'b'], true);
-    expect(r.map(({ result }) => result)).to.deep.equal([{
+    expect(r).to.deep.equal([{
       created: true,
       modified: true,
       item: {
         owner: 'aws-sdk-wrap-uc-manager',
-        ucReserveTimeUnixMs: 1650651221000,
-        permanent: false,
-        reserveDurationMs: 100,
+        ucReserveTimeUnixMs: 9007199254740991,
+        reserveDurationMs: 0,
+        permanent: true,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: 'a'
       }
@@ -374,9 +374,9 @@ describe('Testing uc-manager.js', {
       modified: true,
       item: {
         owner: 'aws-sdk-wrap-uc-manager',
-        ucReserveTimeUnixMs: 1650651221000,
-        permanent: false,
-        reserveDurationMs: 100,
+        ucReserveTimeUnixMs: 9007199254740991,
+        reserveDurationMs: 0,
+        permanent: true,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: 'b'
       }

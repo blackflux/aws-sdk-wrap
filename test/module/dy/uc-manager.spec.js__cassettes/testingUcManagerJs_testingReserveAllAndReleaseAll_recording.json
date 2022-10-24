@@ -36,7 +36,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666391531.526,
+        "CreationDateTime": 1666635972.364,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -49,7 +49,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666391531.526
+          "LastUpdateToPayPerRequestDateTime": 1666635972.364
         }
       }
     },
@@ -280,7 +280,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666391531.526,
+        "CreationDateTime": 1666635972.364,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -293,7 +293,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666391531.526
+          "LastUpdateToPayPerRequestDateTime": 1666635972.364
         }
       }
     },
