@@ -47,7 +47,7 @@ export default ({ Model }) => (ucTable, {
         { attr: 'id', exists: false },
         [
           { or: true, attr: 'ucReserveTimeUnixMs', lt: nowInMs - reserveDurationMs },
-          { or: false, attr: 'permanent', eq: false }
+          { attr: 'permanent', eq: false }
         ]
       ],
       expectedErrorCodes: ['ConditionalCheckFailedException']
@@ -60,7 +60,7 @@ export default ({ Model }) => (ucTable, {
         return wrap('Release', (m) => m.delete({ id }, {
           conditions: [
             { attr: 'guid', eq: reserveResult?.item?.guid },
-            { or: false, attr: 'permanent', eq: false }
+            { attr: 'permanent', eq: false }
           ],
           expectedErrorCodes: ['ConditionalCheckFailedException']
         }));
@@ -75,7 +75,7 @@ export default ({ Model }) => (ucTable, {
         }, {
           conditions: [
             { attr: 'guid', eq: reserveResult?.item?.guid },
-            { or: false, attr: 'permanent', eq: false }
+            { attr: 'permanent', eq: false }
           ],
           expectedErrorCodes: ['ConditionalCheckFailedException']
         }));
@@ -142,7 +142,7 @@ export default ({ Model }) => (ucTable, {
         ([id, guid]) => wrap('Cleanup', (m) => m.delete({ id }, {
           conditions: [
             { attr: 'guid', eq: guid },
-            { or: false, attr: 'permanent', eq: false }
+            { attr: 'permanent', eq: false }
           ],
           expectedErrorCodes: ['ConditionalCheckFailedException']
         }))
