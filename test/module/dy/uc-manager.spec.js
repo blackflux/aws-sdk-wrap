@@ -476,9 +476,9 @@ describe('Testing uc-manager.js', {
     const r = await ucManager.cleanup({
       unixInMs: new Date() / 1
     });
-    expect(r).to.deep.equal([
-      { status: 'rejected', reason: 'Error: Failed to cleanup unique constraint.' },
-      { status: 'rejected', reason: 'Error: Failed to cleanup unique constraint.' }
+    expect(JSON.parse(JSON.stringify(r))).to.deep.equal([
+      { status: 'rejected', reason: { code: 'FailedToCleanupUniqueConstraint' } },
+      { status: 'rejected', reason: { code: 'FailedToCleanupUniqueConstraint' } }
     ]);
   });
 });
