@@ -91,7 +91,7 @@
           "BOOL": false
         }
       },
-      "ConditionExpression": "attribute_not_exists(#attr1) OR #attr2 = :attr2",
+      "ConditionExpression": "(attribute_not_exists(#attr1) OR #attr2 = :attr2)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 200,
@@ -134,7 +134,7 @@
           "BOOL": false
         }
       },
-      "ConditionExpression": "attribute_not_exists(#attr1) OR #attr2 = :attr2",
+      "ConditionExpression": "(attribute_not_exists(#attr1) OR #attr2 = :attr2)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 400,

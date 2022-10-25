@@ -32,7 +32,10 @@ export default ({ Model }) => (ucTable, {
     return result;
   };
   const temporary = [];
-  const reserve = async ({ id }) => {
+  const reserve = async ({
+    id,
+    timestamp = null
+  }) => {
     const nowInMs = new Date() / 1;
     const guid = crypto.randomUUID();
     const reserveResult = await wrap('Reserve', (m) => m.createOrReplace({
@@ -48,7 +51,11 @@ export default ({ Model }) => (ucTable, {
         [
           { or: true, attr: 'ucReserveTimeUnixMs', lt: nowInMs - reserveDurationMs },
           { attr: 'permanent', eq: false }
-        ]
+        ],
+        ...(timestamp === null ? [] : [
+          { attr: 'ucReserveTimeUnixMs', exists: false },
+          { or: true, attr: 'ucReserveTimeUnixMs', lt: timestamp }
+        ])
       ],
       expectedErrorCodes: ['ConditionalCheckFailedException']
     }));
@@ -84,27 +91,41 @@ export default ({ Model }) => (ucTable, {
   };
   const persist = async ({
     id,
-    force = false
-  }) => wrap('Persist', (m) => m.createOrReplace(
-    {
-      id,
-      guid: crypto.randomUUID(),
-      permanent: true,
-      reserveDurationMs: 0,
-      ucReserveTimeUnixMs: Number.MAX_SAFE_INTEGER,
-      owner
-    },
-    (force === true ? {} : {
-      conditions: [
+    force = false,
+    timestamp = null
+  }) => {
+    const conditions = [];
+    if (force !== true) {
+      conditions.push([
         { attr: 'id', exists: false },
         { or: true, attr: 'permanent', eq: false }
-      ],
-      expectedErrorCodes: ['ConditionalCheckFailedException']
-    })
-  ));
+      ]);
+    }
+    if (timestamp !== null) {
+      conditions.push([
+        { attr: 'ucReserveTimeUnixMs', exists: false },
+        { or: true, attr: 'ucReserveTimeUnixMs', lt: timestamp }
+      ]);
+    }
+
+    return wrap('Persist', (m) => m.createOrReplace(
+      {
+        id,
+        guid: crypto.randomUUID(),
+        permanent: true,
+        reserveDurationMs: 0,
+        ucReserveTimeUnixMs: Number.MAX_SAFE_INTEGER,
+        owner
+      },
+      (conditions.length === 0
+        ? {}
+        : { conditions, expectedErrorCodes: ['ConditionalCheckFailedException'] })
+    ));
+  };
   const del = async ({
     id,
-    ignoreError = false
+    ignoreError = false,
+    timestamp = null
   }) => wrap('Delete', (m) => m.delete(
     { id },
     ignoreError === true ? {
@@ -113,7 +134,13 @@ export default ({ Model }) => (ucTable, {
         key
       })
     } : {
-      conditions: { attr: 'id', exists: true },
+      conditions: [
+        { attr: 'id', exists: true },
+        ...(timestamp === null ? [] : [
+          { attr: 'ucReserveTimeUnixMs', exists: false },
+          { or: true, attr: 'ucReserveTimeUnixMs', lt: timestamp }
+        ])
+      ],
       expectedErrorCodes: ['ConditionalCheckFailedException']
     }
   ));
@@ -125,8 +152,11 @@ export default ({ Model }) => (ucTable, {
     reserve,
     persist,
     delete: del,
-    reserveAll: async ({ ids }) => {
-      const reservations = await Promise.allSettled(ids.map((id) => reserve({ id })));
+    reserveAll: async ({
+      ids,
+      timestamp = null
+    }) => {
+      const reservations = await Promise.allSettled(ids.map((id) => reserve({ id, timestamp })));
       if (reservations.every((r) => r?.status === 'fulfilled')) {
         return {
           results: reservations.map(({ value }) => value.result),
@@ -143,12 +173,14 @@ export default ({ Model }) => (ucTable, {
     },
     persistAll: ({
       ids,
-      force = false
-    }) => Promise.all(ids.map((id) => persist({ id, force }))),
+      force = false,
+      timestamp = null
+    }) => Promise.all(ids.map((id) => persist({ id, force, timestamp }))),
     deleteAll: ({
       ids,
-      ignoreErrors = false
-    }) => Promise.all(ids.map((id) => del({ id, ignoreError: ignoreErrors }))),
+      ignoreErrors = false,
+      timestamp = null
+    }) => Promise.all(ids.map((id) => del({ id, ignoreError: ignoreErrors, timestamp }))),
     cleanup: async () => Promise.allSettled(
       temporary.splice(0).map(
         ([id, guid]) => wrap('Cleanup', (m) => m.delete({ id }, {
