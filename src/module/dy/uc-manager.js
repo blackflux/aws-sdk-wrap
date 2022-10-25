@@ -119,7 +119,7 @@ export default ({ Model }) => (ucTable, {
     reserve,
     persist,
     delete: del,
-    reserveAll: async (ids) => {
+    reserveAll: async ({ ids }) => {
       const reservations = await Promise.allSettled(ids.map((id) => reserve(id)));
       if (reservations.every((r) => r?.status === 'fulfilled')) {
         return {
@@ -135,8 +135,14 @@ export default ({ Model }) => (ucTable, {
       );
       throw reservations.find((r) => r?.status !== 'fulfilled')?.reason;
     },
-    persistAll: (ids, force = false) => Promise.all(ids.map((id) => persist(id, force))),
-    deleteAll: (ids, ignoreErrors = false) => Promise.all(ids.map((id) => del(id, ignoreErrors))),
+    persistAll: ({
+      ids,
+      force = false
+    }) => Promise.all(ids.map((id) => persist(id, force))),
+    deleteAll: ({
+      ids,
+      ignoreErrors = false
+    }) => Promise.all(ids.map((id) => del(id, ignoreErrors))),
     cleanup: async () => Promise.allSettled(
       temporary.splice(0).map(
         ([id, guid]) => wrap('Cleanup', (m) => m.delete({ id }, {

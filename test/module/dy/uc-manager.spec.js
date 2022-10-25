@@ -251,7 +251,7 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing reserveAll and releaseAll', async ({ capture }) => {
-    const r1 = await ucManager.reserveAll(['a', 'b']);
+    const r1 = await ucManager.reserveAll({ ids: ['a', 'b'] });
     const r2 = await r1.releaseAll();
     expect(r1.results).to.deep.equal([{
       created: true,
@@ -300,7 +300,7 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing reserveAll and persistAll', async ({ capture }) => {
-    const r1 = await ucManager.reserveAll(['a', 'b']);
+    const r1 = await ucManager.reserveAll({ ids: ['a', 'b'] });
     const r2 = await r1.persistAll();
     expect(r1.results).to.deep.equal([{
       created: true,
@@ -352,12 +352,12 @@ describe('Testing uc-manager.js', {
 
   it('Testing reserveAll with error', async ({ capture }) => {
     await ucManager.reserve('a');
-    const e = await capture(() => ucManager.reserveAll(['a', 'b']));
+    const e = await capture(() => ucManager.reserveAll({ ids: ['a', 'b'] }));
     expect(e.code).to.deep.equal('FailedToReserveUniqueConstraint');
   });
 
   it('Testing persistAll', async ({ capture }) => {
-    const r = await ucManager.persistAll(['a', 'b'], true);
+    const r = await ucManager.persistAll({ ids: ['a', 'b'], force: true });
     expect(r).to.deep.equal([{
       created: true,
       modified: true,
@@ -384,7 +384,7 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing deleteAll', async ({ capture }) => {
-    const r = await ucManager.deleteAll(['a', 'b'], true);
+    const r = await ucManager.deleteAll({ ids: ['a', 'b'], ignoreErrors: true });
     expect(r).to.deep.equal([{
       error: 'not_found',
       key: { id: 'a' }
