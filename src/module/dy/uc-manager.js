@@ -181,12 +181,16 @@ export default ({ Model }) => (ucTable, {
       ignoreErrors = false,
       unixInMs = null
     }) => Promise.all(ids.map((id) => del({ id, ignoreError: ignoreErrors, unixInMs }))),
-    cleanup: async () => Promise.allSettled(
+    cleanup: async ({ unixInMs = null } = {}) => Promise.allSettled(
       temporary.splice(0).map(
         ([id, guid]) => wrap('Cleanup', (m) => m.delete({ id }, {
           conditions: [
             { attr: 'guid', eq: guid },
-            { attr: 'permanent', eq: false }
+            { attr: 'permanent', eq: false },
+            ...(unixInMs === null ? [] : [
+              { attr: 'ucReserveTimeUnixMs', exists: false },
+              { or: true, attr: 'ucReserveTimeUnixMs', lt: unixInMs }
+            ])
           ],
           expectedErrorCodes: ['ConditionalCheckFailedException']
         }))
