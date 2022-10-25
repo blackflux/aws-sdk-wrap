@@ -36,7 +36,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666635972.271,
+        "CreationDateTime": 1666736107.538,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -49,7 +49,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666635972.271
+          "LastUpdateToPayPerRequestDateTime": 1666736107.538
         }
       }
     },
@@ -80,6 +80,9 @@
         },
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
+        },
+        "timestamp": {
+          "N": "1650651221000"
         }
       },
       "ExpressionAttributeNames": {
@@ -127,6 +130,9 @@
         },
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
+        },
+        "timestamp": {
+          "N": "1650651221000"
         }
       },
       "ExpressionAttributeNames": {
@@ -174,6 +180,9 @@
         },
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
+        },
+        "timestamp": {
+          "N": "1650651221000"
         }
       },
       "ExpressionAttributeNames": {
@@ -221,6 +230,9 @@
         },
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
+        },
+        "timestamp": {
+          "N": "1650651221000"
         }
       },
       "ExpressionAttributeNames": {
@@ -274,11 +286,17 @@
     "status": 200,
     "response": {
       "Attributes": {
-        "ucReserveTimeUnixMs": {
-          "N": "1650651221000"
-        },
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
+        },
+        "permanent": {
+          "BOOL": false
+        },
+        "reserveDurationMs": {
+          "N": "100"
+        },
+        "ucReserveTimeUnixMs": {
+          "N": "1650651221000"
         },
         "guid": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
@@ -286,11 +304,8 @@
         "id": {
           "S": "A"
         },
-        "permanent": {
-          "BOOL": false
-        },
-        "reserveDurationMs": {
-          "N": "100"
+        "timestamp": {
+          "N": "1650651221000"
         }
       }
     },
@@ -343,6 +358,12 @@
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
         },
+        "permanent": {
+          "BOOL": false
+        },
+        "reserveDurationMs": {
+          "N": "100"
+        },
         "ucReserveTimeUnixMs": {
           "N": "1650651221000"
         },
@@ -352,11 +373,8 @@
         "id": {
           "S": "C"
         },
-        "permanent": {
-          "BOOL": false
-        },
-        "reserveDurationMs": {
-          "N": "100"
+        "timestamp": {
+          "N": "1650651221000"
         }
       }
     },
@@ -393,11 +411,17 @@
     "status": 200,
     "response": {
       "Attributes": {
-        "ucReserveTimeUnixMs": {
-          "N": "1650651221000"
-        },
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
+        },
+        "permanent": {
+          "BOOL": false
+        },
+        "reserveDurationMs": {
+          "N": "100"
+        },
+        "ucReserveTimeUnixMs": {
+          "N": "1650651221000"
         },
         "guid": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
@@ -405,11 +429,8 @@
         "id": {
           "S": "B"
         },
-        "permanent": {
-          "BOOL": false
-        },
-        "reserveDurationMs": {
-          "N": "100"
+        "timestamp": {
+          "N": "1650651221000"
         }
       }
     },
@@ -446,11 +467,17 @@
     "status": 200,
     "response": {
       "Attributes": {
-        "ucReserveTimeUnixMs": {
-          "N": "1650651221000"
-        },
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
+        },
+        "permanent": {
+          "BOOL": false
+        },
+        "reserveDurationMs": {
+          "N": "100"
+        },
+        "ucReserveTimeUnixMs": {
+          "N": "1650651221000"
         },
         "guid": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
@@ -458,11 +485,8 @@
         "id": {
           "S": "D"
         },
-        "permanent": {
-          "BOOL": false
-        },
-        "reserveDurationMs": {
-          "N": "100"
+        "timestamp": {
+          "N": "1650651221000"
         }
       }
     },
@@ -493,7 +517,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666635972.271,
+        "CreationDateTime": 1666736107.538,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -501,12 +525,12 @@
           "ReadCapacityUnits": 0,
           "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 127,
+        "TableSizeBytes": 143,
         "ItemCount": 1,
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666635972.271
+          "LastUpdateToPayPerRequestDateTime": 1666736107.538
         }
       }
     },

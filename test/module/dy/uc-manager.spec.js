@@ -40,6 +40,7 @@ describe('Testing uc-manager.js', {
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: false,
         reserveDurationMs: 100,
+        timestamp: 1650651221000,
         ucReserveTimeUnixMs: 1650651221000
       }
     });
@@ -52,6 +53,7 @@ describe('Testing uc-manager.js', {
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: true,
         reserveDurationMs: 0,
+        timestamp: 1650651221000,
         ucReserveTimeUnixMs: 9007199254740991
       },
       modified: true
@@ -70,6 +72,7 @@ describe('Testing uc-manager.js', {
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: false,
         reserveDurationMs: 100,
+        timestamp: 1650651221000,
         ucReserveTimeUnixMs: 1650651221000
       }
     });
@@ -82,6 +85,7 @@ describe('Testing uc-manager.js', {
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: false,
         reserveDurationMs: 100,
+        timestamp: 1650651221000,
         ucReserveTimeUnixMs: 1650651221000
       }
     });
@@ -98,6 +102,7 @@ describe('Testing uc-manager.js', {
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: true,
         reserveDurationMs: 0,
+        timestamp: 1650651221000,
         ucReserveTimeUnixMs: 9007199254740991
       }
     });
@@ -110,6 +115,7 @@ describe('Testing uc-manager.js', {
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: true,
         reserveDurationMs: 0,
+        timestamp: 1650651221000,
         ucReserveTimeUnixMs: 9007199254740991
       }
     });
@@ -126,6 +132,7 @@ describe('Testing uc-manager.js', {
         reserveDurationMs: 0,
         permanent: true,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
         id: '1234'
       }
     });
@@ -141,6 +148,7 @@ describe('Testing uc-manager.js', {
         reserveDurationMs: 0,
         permanent: true,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
         id: '1234'
       }
     });
@@ -163,6 +171,7 @@ describe('Testing uc-manager.js', {
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: false,
         reserveDurationMs: 100,
+        timestamp: 1650651221000,
         ucReserveTimeUnixMs: 1650651221000
       }
     });
@@ -178,6 +187,7 @@ describe('Testing uc-manager.js', {
       item: {
         owner: 'aws-sdk-wrap-uc-manager',
         ucReserveTimeUnixMs: 1650651221000,
+        timestamp: 1650651221000,
         permanent: false,
         reserveDurationMs: 100,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
@@ -191,6 +201,7 @@ describe('Testing uc-manager.js', {
       item: {
         owner: 'aws-sdk-wrap-uc-manager',
         ucReserveTimeUnixMs: 9007199254740991,
+        timestamp: 1650651221000,
         reserveDurationMs: 0,
         permanent: true,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
@@ -221,6 +232,7 @@ describe('Testing uc-manager.js', {
           id: 'B',
           guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
           owner: 'aws-sdk-wrap-uc-manager',
+          timestamp: 1650651221000,
           ucReserveTimeUnixMs: 1650651221000
         }
       }
@@ -234,6 +246,7 @@ describe('Testing uc-manager.js', {
           id: 'D',
           guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
           owner: 'aws-sdk-wrap-uc-manager',
+          timestamp: 1650651221000,
           ucReserveTimeUnixMs: 1650651221000
         }
       }
@@ -262,6 +275,7 @@ describe('Testing uc-manager.js', {
         permanent: false,
         reserveDurationMs: 100,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
         id: 'a'
       }
     }, {
@@ -273,6 +287,7 @@ describe('Testing uc-manager.js', {
         permanent: false,
         reserveDurationMs: 100,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
         id: 'b'
       }
     }]);
@@ -284,6 +299,7 @@ describe('Testing uc-manager.js', {
         id: 'a',
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         owner: 'aws-sdk-wrap-uc-manager',
+        timestamp: 1650651221000,
         ucReserveTimeUnixMs: 1650651221000
       }
     }, {
@@ -294,6 +310,7 @@ describe('Testing uc-manager.js', {
         id: 'b',
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         owner: 'aws-sdk-wrap-uc-manager',
+        timestamp: 1650651221000,
         ucReserveTimeUnixMs: 1650651221000
       }
     }]);
@@ -311,6 +328,7 @@ describe('Testing uc-manager.js', {
         permanent: false,
         reserveDurationMs: 100,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
         id: 'a'
       }
     }, {
@@ -322,6 +340,7 @@ describe('Testing uc-manager.js', {
         permanent: false,
         reserveDurationMs: 100,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
         id: 'b'
       }
     }]);
@@ -334,6 +353,7 @@ describe('Testing uc-manager.js', {
         id: 'a',
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         ucReserveTimeUnixMs: 9007199254740991,
+        timestamp: 1650651221000,
         owner: 'aws-sdk-wrap-uc-manager'
       }
     }, {
@@ -345,6 +365,7 @@ describe('Testing uc-manager.js', {
         id: 'b',
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         ucReserveTimeUnixMs: 9007199254740991,
+        timestamp: 1650651221000,
         owner: 'aws-sdk-wrap-uc-manager'
       }
     }]);
@@ -367,6 +388,7 @@ describe('Testing uc-manager.js', {
         reserveDurationMs: 0,
         permanent: true,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
         id: 'a'
       }
     }, {
@@ -378,6 +400,7 @@ describe('Testing uc-manager.js', {
         reserveDurationMs: 0,
         permanent: true,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
         id: 'b'
       }
     }]);
@@ -394,7 +417,7 @@ describe('Testing uc-manager.js', {
     }]);
   });
 
-  it('Testing reserve with unixInMs', async ({ capture }) => {
+  it('Testing reserve with unixInMs', async () => {
     const r = await ucManager.reserve({
       id: '1234',
       unixInMs: new Date() / 1
@@ -408,6 +431,27 @@ describe('Testing uc-manager.js', {
         permanent: false,
         reserveDurationMs: 100,
         guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
+        id: '1234'
+      }
+    });
+  });
+
+  it('Testing persist with unixInMs', async () => {
+    const r = await ucManager.persist({
+      id: '1234',
+      unixInMs: new Date() / 1
+    });
+    expect(r).to.deep.equal({
+      created: true,
+      modified: true,
+      item: {
+        owner: 'aws-sdk-wrap-uc-manager',
+        ucReserveTimeUnixMs: 9007199254740991,
+        reserveDurationMs: 0,
+        permanent: true,
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
         id: '1234'
       }
     });

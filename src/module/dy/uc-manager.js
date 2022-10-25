@@ -13,6 +13,7 @@ export default ({ Model }) => (ucTable, {
           id: { type: 'string', partitionKey: true },
           guid: { type: 'string' },
           permanent: { type: 'boolean' },
+          timestamp: { type: 'number' },
           reserveDurationMs: { type: 'number' },
           ucReserveTimeUnixMs: { type: 'number' },
           owner: { type: 'string' }
@@ -38,24 +39,26 @@ export default ({ Model }) => (ucTable, {
   }) => {
     const nowInMs = new Date() / 1;
     const guid = crypto.randomUUID();
-    const lt = unixInMs === null
-      ? nowInMs - reserveDurationMs
-      : Math.min(nowInMs - reserveDurationMs, unixInMs);
+    const conditions = [
+      { attr: 'id', exists: false },
+      [
+        { or: true, attr: 'ucReserveTimeUnixMs', lt: nowInMs - reserveDurationMs },
+        { attr: 'permanent', eq: false }
+      ]
+    ];
+    if (unixInMs !== null) {
+      conditions[1].push({ attr: 'timestamp', lt: unixInMs });
+    }
     const reserveResult = await wrap('Reserve', (m) => m.createOrReplace({
       id,
       guid,
       reserveDurationMs,
       permanent: false,
       ucReserveTimeUnixMs: nowInMs,
-      owner
+      owner,
+      timestamp: unixInMs === null ? nowInMs : unixInMs
     }, {
-      conditions: [
-        { attr: 'id', exists: false },
-        [
-          { or: true, attr: 'ucReserveTimeUnixMs', lt },
-          { attr: 'permanent', eq: false }
-        ]
-      ],
+      conditions,
       expectedErrorCodes: ['ConditionalCheckFailedException']
     }));
     temporary.push([id, guid]);
@@ -95,18 +98,14 @@ export default ({ Model }) => (ucTable, {
   }) => {
     const conditions = [];
     if (force !== true) {
-      conditions.push([
+      conditions.push(
         { attr: 'id', exists: false },
-        { or: true, attr: 'permanent', eq: false }
-      ]);
+        [{ or: true, attr: 'permanent', eq: false }]
+      );
     }
     if (unixInMs !== null) {
-      conditions.push([
-        { attr: 'ucReserveTimeUnixMs', exists: false },
-        { or: true, attr: 'ucReserveTimeUnixMs', lt: unixInMs }
-      ]);
+      conditions[1].push({ attr: 'timestamp', lt: unixInMs });
     }
-
     return wrap('Persist', (m) => m.createOrReplace(
       {
         id,
@@ -114,7 +113,8 @@ export default ({ Model }) => (ucTable, {
         permanent: true,
         reserveDurationMs: 0,
         ucReserveTimeUnixMs: Number.MAX_SAFE_INTEGER,
-        owner
+        owner,
+        timestamp: unixInMs === null ? new Date() / 1 : unixInMs
       },
       (conditions.length === 0
         ? {}
@@ -135,10 +135,7 @@ export default ({ Model }) => (ucTable, {
     } : {
       conditions: [
         { attr: 'id', exists: true },
-        ...(unixInMs === null ? [] : [
-          { attr: 'ucReserveTimeUnixMs', exists: false },
-          { or: true, attr: 'ucReserveTimeUnixMs', lt: unixInMs }
-        ])
+        ...(unixInMs === null ? [] : [{ attr: 'timestamp', lt: unixInMs }])
       ],
       expectedErrorCodes: ['ConditionalCheckFailedException']
     }
@@ -186,10 +183,7 @@ export default ({ Model }) => (ucTable, {
           conditions: [
             { attr: 'guid', eq: guid },
             { attr: 'permanent', eq: false },
-            ...(unixInMs === null ? [] : [
-              { attr: 'ucReserveTimeUnixMs', exists: false },
-              { or: true, attr: 'ucReserveTimeUnixMs', lt: unixInMs }
-            ])
+            ...(unixInMs === null ? [] : [{ attr: 'timestamp', lt: unixInMs }])
           ],
           expectedErrorCodes: ['ConditionalCheckFailedException']
         }))
