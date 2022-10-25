@@ -393,4 +393,23 @@ describe('Testing uc-manager.js', {
       key: { id: 'b' }
     }]);
   });
+
+  it('Testing reserve with unixInMs', async ({ capture }) => {
+    const r = await ucManager.reserve({
+      id: '1234',
+      unixInMs: new Date() / 1
+    });
+    expect(r.result).to.deep.equal({
+      created: true,
+      modified: true,
+      item: {
+        owner: 'aws-sdk-wrap-uc-manager',
+        ucReserveTimeUnixMs: 1650651221000,
+        permanent: false,
+        reserveDurationMs: 100,
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        id: '1234'
+      }
+    });
+  });
 });

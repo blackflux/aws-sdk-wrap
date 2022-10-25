@@ -38,6 +38,9 @@ export default ({ Model }) => (ucTable, {
   }) => {
     const nowInMs = new Date() / 1;
     const guid = crypto.randomUUID();
+    const lt = unixInMs === null
+      ? nowInMs - reserveDurationMs
+      : Math.min(nowInMs - reserveDurationMs, unixInMs);
     const reserveResult = await wrap('Reserve', (m) => m.createOrReplace({
       id,
       guid,
@@ -49,13 +52,9 @@ export default ({ Model }) => (ucTable, {
       conditions: [
         { attr: 'id', exists: false },
         [
-          { or: true, attr: 'ucReserveTimeUnixMs', lt: nowInMs - reserveDurationMs },
+          { or: true, attr: 'ucReserveTimeUnixMs', lt },
           { attr: 'permanent', eq: false }
-        ],
-        ...(unixInMs === null ? [] : [
-          { attr: 'ucReserveTimeUnixMs', exists: false },
-          { or: true, attr: 'ucReserveTimeUnixMs', lt: unixInMs }
-        ])
+        ]
       ],
       expectedErrorCodes: ['ConditionalCheckFailedException']
     }));
