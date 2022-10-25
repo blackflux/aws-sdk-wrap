@@ -108,15 +108,16 @@ describe('Testing uc-manager.js', {
     });
     const deleted = await ucManager.delete({ id: '1234' });
     expect(deleted).to.deep.equal({
-      deleted: true,
+      created: false,
+      modified: true,
       item: {
-        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
-        id: '1234',
-        owner: 'aws-sdk-wrap-uc-manager',
-        permanent: true,
-        reserveDurationMs: 0,
         timestamp: 1650651221000,
-        ucReserveTimeUnixMs: 9007199254740991
+        id: '1234',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        ucReserveTimeUnixMs: 0,
+        reserveDurationMs: 100,
+        permanent: false,
+        owner: 'aws-sdk-wrap-uc-manager'
       }
     });
   });
@@ -257,10 +258,7 @@ describe('Testing uc-manager.js', {
     const e = await capture(() => ucManager.delete({ id: 'A' }));
     const r = await ucManager.delete({ id: 'A', ignoreError: true });
     expect(e.code).to.deep.equal('FailedToDeleteUniqueConstraint');
-    expect(r).to.deep.equal({
-      error: 'not_found',
-      key: { id: 'A' }
-    });
+    expect(r.code).to.deep.equal('FailedToDeleteUniqueConstraint');
   });
 
   it('Testing reserveAll and releaseAll', async ({ capture }) => {
@@ -408,13 +406,9 @@ describe('Testing uc-manager.js', {
 
   it('Testing deleteAll', async ({ capture }) => {
     const r = await ucManager.deleteAll({ ids: ['a', 'b'], ignoreErrors: true });
-    expect(r).to.deep.equal([{
-      error: 'not_found',
-      key: { id: 'a' }
-    }, {
-      error: 'not_found',
-      key: { id: 'b' }
-    }]);
+    expect(r.length).to.deep.equal(2);
+    expect(r[0].code).to.deep.equal('FailedToDeleteUniqueConstraint');
+    expect(r[1].code).to.deep.equal('FailedToDeleteUniqueConstraint');
   });
 
   it('Testing reserve with unixInMs', async () => {

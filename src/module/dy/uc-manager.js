@@ -132,21 +132,31 @@ export default ({ Model }) => (ucTable, {
     id,
     ignoreError = false,
     unixInMs = null
-  }) => wrap('Delete', (m) => m.delete(
-    { id },
-    ignoreError === true ? {
-      onNotFound: (key) => ({
-        error: 'not_found',
-        key
-      })
-    } : {
-      conditions: [
-        { attr: 'id', exists: true },
-        ...(unixInMs === null ? [] : [{ attr: 'timestamp', lt: unixInMs }])
-      ],
-      expectedErrorCodes: ['ConditionalCheckFailedException']
+  }) => {
+    const nowInMs = new Date() / 1;
+    try {
+      return await wrap('Delete', (m) => m.modify(
+        {
+          id,
+          guid: crypto.randomUUID(),
+          reserveDurationMs,
+          permanent: false,
+          ucReserveTimeUnixMs: 0,
+          owner,
+          timestamp: unixInMs === null ? nowInMs : unixInMs
+        },
+        {
+          ...(unixInMs === null ? [] : [{ conditions: { attr: 'timestamp', lt: unixInMs } }]),
+          expectedErrorCodes: ['ConditionalCheckFailedException']
+        }
+      ));
+    } catch (e) {
+      if (ignoreError === true) {
+        return e;
+      }
+      throw e;
     }
-  ));
+  };
 
   return {
     get _model() {
