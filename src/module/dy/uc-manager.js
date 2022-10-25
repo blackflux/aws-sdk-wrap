@@ -34,7 +34,7 @@ export default ({ Model }) => (ucTable, {
   const temporary = [];
   const reserve = async ({
     id,
-    timestamp = null
+    unixInMs = null
   }) => {
     const nowInMs = new Date() / 1;
     const guid = crypto.randomUUID();
@@ -52,9 +52,9 @@ export default ({ Model }) => (ucTable, {
           { or: true, attr: 'ucReserveTimeUnixMs', lt: nowInMs - reserveDurationMs },
           { attr: 'permanent', eq: false }
         ],
-        ...(timestamp === null ? [] : [
+        ...(unixInMs === null ? [] : [
           { attr: 'ucReserveTimeUnixMs', exists: false },
-          { or: true, attr: 'ucReserveTimeUnixMs', lt: timestamp }
+          { or: true, attr: 'ucReserveTimeUnixMs', lt: unixInMs }
         ])
       ],
       expectedErrorCodes: ['ConditionalCheckFailedException']
@@ -92,7 +92,7 @@ export default ({ Model }) => (ucTable, {
   const persist = async ({
     id,
     force = false,
-    timestamp = null
+    unixInMs = null
   }) => {
     const conditions = [];
     if (force !== true) {
@@ -101,10 +101,10 @@ export default ({ Model }) => (ucTable, {
         { or: true, attr: 'permanent', eq: false }
       ]);
     }
-    if (timestamp !== null) {
+    if (unixInMs !== null) {
       conditions.push([
         { attr: 'ucReserveTimeUnixMs', exists: false },
-        { or: true, attr: 'ucReserveTimeUnixMs', lt: timestamp }
+        { or: true, attr: 'ucReserveTimeUnixMs', lt: unixInMs }
       ]);
     }
 
@@ -125,7 +125,7 @@ export default ({ Model }) => (ucTable, {
   const del = async ({
     id,
     ignoreError = false,
-    timestamp = null
+    unixInMs = null
   }) => wrap('Delete', (m) => m.delete(
     { id },
     ignoreError === true ? {
@@ -136,9 +136,9 @@ export default ({ Model }) => (ucTable, {
     } : {
       conditions: [
         { attr: 'id', exists: true },
-        ...(timestamp === null ? [] : [
+        ...(unixInMs === null ? [] : [
           { attr: 'ucReserveTimeUnixMs', exists: false },
-          { or: true, attr: 'ucReserveTimeUnixMs', lt: timestamp }
+          { or: true, attr: 'ucReserveTimeUnixMs', lt: unixInMs }
         ])
       ],
       expectedErrorCodes: ['ConditionalCheckFailedException']
@@ -154,9 +154,9 @@ export default ({ Model }) => (ucTable, {
     delete: del,
     reserveAll: async ({
       ids,
-      timestamp = null
+      unixInMs = null
     }) => {
-      const reservations = await Promise.allSettled(ids.map((id) => reserve({ id, timestamp })));
+      const reservations = await Promise.allSettled(ids.map((id) => reserve({ id, unixInMs })));
       if (reservations.every((r) => r?.status === 'fulfilled')) {
         return {
           results: reservations.map(({ value }) => value.result),
@@ -174,13 +174,13 @@ export default ({ Model }) => (ucTable, {
     persistAll: ({
       ids,
       force = false,
-      timestamp = null
-    }) => Promise.all(ids.map((id) => persist({ id, force, timestamp }))),
+      unixInMs = null
+    }) => Promise.all(ids.map((id) => persist({ id, force, unixInMs }))),
     deleteAll: ({
       ids,
       ignoreErrors = false,
-      timestamp = null
-    }) => Promise.all(ids.map((id) => del({ id, ignoreError: ignoreErrors, timestamp }))),
+      unixInMs = null
+    }) => Promise.all(ids.map((id) => del({ id, ignoreError: ignoreErrors, unixInMs }))),
     cleanup: async () => Promise.allSettled(
       temporary.splice(0).map(
         ([id, guid]) => wrap('Cleanup', (m) => m.delete({ id }, {
