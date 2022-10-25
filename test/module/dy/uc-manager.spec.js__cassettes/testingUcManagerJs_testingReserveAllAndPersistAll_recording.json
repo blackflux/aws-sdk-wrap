@@ -64,7 +64,7 @@
       "TableName": "uc-table-name",
       "Item": {
         "id": {
-          "S": "b"
+          "S": "a"
         },
         "guid": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
@@ -114,7 +114,7 @@
       "TableName": "uc-table-name",
       "Item": {
         "id": {
-          "S": "a"
+          "S": "b"
         },
         "guid": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
