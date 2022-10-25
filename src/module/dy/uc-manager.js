@@ -66,7 +66,15 @@ export default ({ Model }) => (ucTable, {
       result: reserveResult,
       release: async () => {
         temporary.splice(temporary.findIndex((e) => e[0] === id && e[1] === guid), 1);
-        return wrap('Release', (m) => m.delete({ id }, {
+        return wrap('Release', (m) => m.modify({
+          id,
+          guid: crypto.randomUUID(),
+          reserveDurationMs,
+          permanent: false,
+          ucReserveTimeUnixMs: 0,
+          owner,
+          timestamp: new Date() / 1
+        }, {
           conditions: [
             { attr: 'guid', eq: reserveResult?.item?.guid },
             { attr: 'permanent', eq: false }
@@ -196,7 +204,15 @@ export default ({ Model }) => (ucTable, {
     }) => Promise.all(ids.map((id) => del({ id, ignoreError: ignoreErrors, unixInMs }))),
     cleanup: async ({ unixInMs = null } = {}) => Promise.allSettled(
       temporary.splice(0).map(
-        ([id, guid]) => wrap('Cleanup', (m) => m.delete({ id }, {
+        ([id, guid]) => wrap('Cleanup', (m) => m.modify({
+          id,
+          guid: crypto.randomUUID(),
+          reserveDurationMs,
+          permanent: false,
+          ucReserveTimeUnixMs: 0,
+          owner,
+          timestamp: unixInMs === null ? new Date() / 1 : unixInMs
+        }, {
           conditions: [
             { attr: 'guid', eq: guid },
             { attr: 'permanent', eq: false },

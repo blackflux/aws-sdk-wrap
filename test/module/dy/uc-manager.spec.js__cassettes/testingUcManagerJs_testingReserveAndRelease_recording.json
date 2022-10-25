@@ -36,7 +36,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666740338.912,
+        "CreationDateTime": 1666740512.376,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -49,7 +49,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666740338.912
+          "LastUpdateToPayPerRequestDateTime": 1666740512.376
         }
       }
     },
@@ -117,12 +117,37 @@
           "S": "1234"
         }
       },
+      "UpdateExpression": "SET #guid = :guid, #reserveDurationMs = :reserveDurationMs, #permanent = :permanent, #ucReserveTimeUnixMs = :ucReserveTimeUnixMs, #owner = :owner, #timestamp = :timestamp",
       "ExpressionAttributeNames": {
+        "#guid": "guid",
+        "#reserveDurationMs": "reserveDurationMs",
+        "#permanent": "permanent",
+        "#ucReserveTimeUnixMs": "ucReserveTimeUnixMs",
+        "#owner": "owner",
+        "#timestamp": "timestamp",
         "#attr1": "id",
         "#attr2": "guid",
         "#attr3": "permanent"
       },
       "ExpressionAttributeValues": {
+        ":guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        ":reserveDurationMs": {
+          "N": "100"
+        },
+        ":permanent": {
+          "BOOL": false
+        },
+        ":ucReserveTimeUnixMs": {
+          "N": "0"
+        },
+        ":owner": {
+          "S": "aws-sdk-wrap-uc-manager"
+        },
+        ":timestamp": {
+          "N": "1650651221000"
+        },
         ":attr2": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
         },
@@ -186,7 +211,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666740338.912,
+        "CreationDateTime": 1666740512.376,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -194,12 +219,12 @@
           "ReadCapacityUnits": 0,
           "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 0,
-        "ItemCount": 0,
+        "TableSizeBytes": 139,
+        "ItemCount": 1,
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666740338.912
+          "LastUpdateToPayPerRequestDateTime": 1666740512.376
         }
       }
     },

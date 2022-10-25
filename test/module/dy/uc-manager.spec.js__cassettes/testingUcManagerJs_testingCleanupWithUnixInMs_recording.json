@@ -36,7 +36,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666740339.775,
+        "CreationDateTime": 1666740512.913,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -49,7 +49,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666740339.775
+          "LastUpdateToPayPerRequestDateTime": 1666740512.913
         }
       }
     },
@@ -267,12 +267,37 @@
           "S": "A"
         }
       },
+      "UpdateExpression": "SET #guid = :guid, #reserveDurationMs = :reserveDurationMs, #permanent = :permanent, #ucReserveTimeUnixMs = :ucReserveTimeUnixMs, #owner = :owner, #timestamp = :timestamp",
       "ExpressionAttributeNames": {
+        "#guid": "guid",
+        "#reserveDurationMs": "reserveDurationMs",
+        "#permanent": "permanent",
+        "#ucReserveTimeUnixMs": "ucReserveTimeUnixMs",
+        "#owner": "owner",
+        "#timestamp": "timestamp",
         "#attr1": "id",
         "#attr2": "guid",
         "#attr3": "permanent"
       },
       "ExpressionAttributeValues": {
+        ":guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        ":reserveDurationMs": {
+          "N": "100"
+        },
+        ":permanent": {
+          "BOOL": false
+        },
+        ":ucReserveTimeUnixMs": {
+          "N": "0"
+        },
+        ":owner": {
+          "S": "aws-sdk-wrap-uc-manager"
+        },
+        ":timestamp": {
+          "N": "1650651221000"
+        },
         ":attr2": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
         },
@@ -389,16 +414,41 @@
       "TableName": "uc-table-name",
       "Key": {
         "id": {
-          "S": "D"
+          "S": "B"
         }
       },
+      "UpdateExpression": "SET #guid = :guid, #reserveDurationMs = :reserveDurationMs, #permanent = :permanent, #ucReserveTimeUnixMs = :ucReserveTimeUnixMs, #owner = :owner, #timestamp = :timestamp",
       "ExpressionAttributeNames": {
+        "#guid": "guid",
+        "#reserveDurationMs": "reserveDurationMs",
+        "#permanent": "permanent",
+        "#ucReserveTimeUnixMs": "ucReserveTimeUnixMs",
+        "#owner": "owner",
+        "#timestamp": "timestamp",
         "#attr1": "id",
         "#attr2": "guid",
         "#attr3": "permanent",
         "#attr4": "timestamp"
       },
       "ExpressionAttributeValues": {
+        ":guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        ":reserveDurationMs": {
+          "N": "100"
+        },
+        ":permanent": {
+          "BOOL": false
+        },
+        ":ucReserveTimeUnixMs": {
+          "N": "0"
+        },
+        ":owner": {
+          "S": "aws-sdk-wrap-uc-manager"
+        },
+        ":timestamp": {
+          "N": "1650651221000"
+        },
         ":attr2": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
         },
@@ -428,16 +478,41 @@
       "TableName": "uc-table-name",
       "Key": {
         "id": {
-          "S": "B"
+          "S": "D"
         }
       },
+      "UpdateExpression": "SET #guid = :guid, #reserveDurationMs = :reserveDurationMs, #permanent = :permanent, #ucReserveTimeUnixMs = :ucReserveTimeUnixMs, #owner = :owner, #timestamp = :timestamp",
       "ExpressionAttributeNames": {
+        "#guid": "guid",
+        "#reserveDurationMs": "reserveDurationMs",
+        "#permanent": "permanent",
+        "#ucReserveTimeUnixMs": "ucReserveTimeUnixMs",
+        "#owner": "owner",
+        "#timestamp": "timestamp",
         "#attr1": "id",
         "#attr2": "guid",
         "#attr3": "permanent",
         "#attr4": "timestamp"
       },
       "ExpressionAttributeValues": {
+        ":guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        ":reserveDurationMs": {
+          "N": "100"
+        },
+        ":permanent": {
+          "BOOL": false
+        },
+        ":ucReserveTimeUnixMs": {
+          "N": "0"
+        },
+        ":owner": {
+          "S": "aws-sdk-wrap-uc-manager"
+        },
+        ":timestamp": {
+          "N": "1650651221000"
+        },
         ":attr2": {
           "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
         },
@@ -483,7 +558,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666740339.775,
+        "CreationDateTime": 1666740512.913,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -491,12 +566,12 @@
           "ReadCapacityUnits": 0,
           "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 427,
-        "ItemCount": 3,
+        "TableSizeBytes": 563,
+        "ItemCount": 4,
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666740339.775
+          "LastUpdateToPayPerRequestDateTime": 1666740512.913
         }
       }
     },
