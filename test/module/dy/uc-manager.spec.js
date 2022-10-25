@@ -464,4 +464,21 @@ describe('Testing uc-manager.js', {
     }));
     expect(r.code).to.deep.equal('FailedToDeleteUniqueConstraint');
   });
+
+  it('Testing cleanup with unixInMs', async () => {
+    const a = await ucManager.reserve({ id: 'A' });
+    await ucManager.reserve({ id: 'B' });
+    const c = await ucManager.reserve({ id: 'C' });
+    await ucManager.reserve({ id: 'D' });
+    await a.release();
+    await c.persist();
+
+    const r = await ucManager.cleanup({
+      unixInMs: new Date() / 1
+    });
+    expect(r).to.deep.equal([
+      { status: 'rejected', reason: 'Error: Failed to cleanup unique constraint.' },
+      { status: 'rejected', reason: 'Error: Failed to cleanup unique constraint.' }
+    ]);
+  });
 });
