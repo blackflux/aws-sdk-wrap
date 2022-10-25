@@ -456,4 +456,12 @@ describe('Testing uc-manager.js', {
       }
     });
   });
+
+  it('Testing delete with unixInMs', async ({ capture }) => {
+    const r = await capture(() => ucManager.delete({
+      id: '1234',
+      unixInMs: new Date() / 1
+    }));
+    expect(r.code).to.deep.equal('FailedToDeleteUniqueConstraint');
+  });
 });
