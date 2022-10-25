@@ -32,7 +32,7 @@ export default ({ Model }) => (ucTable, {
     return result;
   };
   const temporary = [];
-  const reserve = async (id) => {
+  const reserve = async ({ id }) => {
     const nowInMs = new Date() / 1;
     const guid = crypto.randomUUID();
     const reserveResult = await wrap('Reserve', (m) => m.createOrReplace({
@@ -82,7 +82,10 @@ export default ({ Model }) => (ucTable, {
       }
     };
   };
-  const persist = async (id, force = false) => wrap('Persist', (m) => m.createOrReplace(
+  const persist = async ({
+    id,
+    force = false
+  }) => wrap('Persist', (m) => m.createOrReplace(
     {
       id,
       guid: crypto.randomUUID(),
@@ -99,7 +102,10 @@ export default ({ Model }) => (ucTable, {
       expectedErrorCodes: ['ConditionalCheckFailedException']
     })
   ));
-  const del = async (id, ignoreError = false) => wrap('Delete', (m) => m.delete(
+  const del = async ({
+    id,
+    ignoreError = false
+  }) => wrap('Delete', (m) => m.delete(
     { id },
     ignoreError === true ? {
       onNotFound: (key) => ({
@@ -120,7 +126,7 @@ export default ({ Model }) => (ucTable, {
     persist,
     delete: del,
     reserveAll: async ({ ids }) => {
-      const reservations = await Promise.allSettled(ids.map((id) => reserve(id)));
+      const reservations = await Promise.allSettled(ids.map((id) => reserve({ id })));
       if (reservations.every((r) => r?.status === 'fulfilled')) {
         return {
           results: reservations.map(({ value }) => value.result),
@@ -138,11 +144,11 @@ export default ({ Model }) => (ucTable, {
     persistAll: ({
       ids,
       force = false
-    }) => Promise.all(ids.map((id) => persist(id, force))),
+    }) => Promise.all(ids.map((id) => persist({ id, force }))),
     deleteAll: ({
       ids,
       ignoreErrors = false
-    }) => Promise.all(ids.map((id) => del(id, ignoreErrors))),
+    }) => Promise.all(ids.map((id) => del({ id, ignoreError: ignoreErrors }))),
     cleanup: async () => Promise.allSettled(
       temporary.splice(0).map(
         ([id, guid]) => wrap('Cleanup', (m) => m.delete({ id }, {

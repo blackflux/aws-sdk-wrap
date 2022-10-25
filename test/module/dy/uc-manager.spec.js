@@ -29,7 +29,7 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing reserve and persist', async () => {
-    const reservation = await ucManager.reserve('1234');
+    const reservation = await ucManager.reserve({ id: '1234' });
     expect(typeof reservation.release).to.deep.equal('function');
     expect(reservation.result).to.deep.equal({
       created: true,
@@ -59,7 +59,7 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing reserve and release', async () => {
-    const reservation = await ucManager.reserve('1234');
+    const reservation = await ucManager.reserve({ id: '1234' });
     expect(typeof reservation.release).to.deep.equal('function');
     expect(reservation.result).to.deep.equal({
       created: true,
@@ -88,7 +88,7 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing persist and delete', async () => {
-    const persisted = await ucManager.persist('1234');
+    const persisted = await ucManager.persist({ id: '1234' });
     expect(persisted).to.deep.equal({
       created: true,
       modified: true,
@@ -101,7 +101,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 9007199254740991
       }
     });
-    const deleted = await ucManager.delete('1234');
+    const deleted = await ucManager.delete({ id: '1234' });
     expect(deleted).to.deep.equal({
       deleted: true,
       item: {
@@ -116,7 +116,7 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing persist, error and force', async ({ capture }) => {
-    const r1 = await ucManager.persist('1234');
+    const r1 = await ucManager.persist({ id: '1234' });
     expect(r1).to.deep.equal({
       created: true,
       modified: true,
@@ -129,9 +129,9 @@ describe('Testing uc-manager.js', {
         id: '1234'
       }
     });
-    const r2 = await capture(() => ucManager.persist('1234'));
+    const r2 = await capture(() => ucManager.persist({ id: '1234' }));
     expect(r2.code).to.equal('FailedToPersistUniqueConstraint');
-    const r3 = await ucManager.persist('1234', true);
+    const r3 = await ucManager.persist({ id: '1234', force: true });
     expect(r3).to.deep.equal({
       created: false,
       modified: false,
@@ -147,12 +147,12 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing delete, not found', async ({ capture }) => {
-    const r1 = await capture(() => ucManager.delete('1234'));
+    const r1 = await capture(() => ucManager.delete({ id: '1234' }));
     expect(r1.code).to.equal('FailedToDeleteUniqueConstraint');
   });
 
   it('Testing double reserve', async ({ capture }) => {
-    const reservation = await ucManager.reserve('1234');
+    const reservation = await ucManager.reserve({ id: '1234' });
     expect(typeof reservation.release).to.deep.equal('function');
     expect(reservation.result).to.deep.equal({
       created: true,
@@ -166,12 +166,12 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 1650651221000
       }
     });
-    const r1 = await capture(() => ucManager.reserve('1234'));
+    const r1 = await capture(() => ucManager.reserve({ id: '1234' }));
     expect(r1.code).to.equal('FailedToReserveUniqueConstraint');
   });
 
   it('Testing reserved persist and release failure', async ({ capture }) => {
-    const reservation = await ucManager.reserve('1234');
+    const reservation = await ucManager.reserve({ id: '1234' });
     expect(reservation.result).to.deep.equal({
       created: true,
       modified: true,
@@ -184,7 +184,7 @@ describe('Testing uc-manager.js', {
         id: '1234'
       }
     });
-    const persisted = await ucManager.persist('1234');
+    const persisted = await ucManager.persist({ id: '1234' });
     expect(persisted).to.deep.equal({
       created: false,
       modified: true,
@@ -204,10 +204,10 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing cleanup', async ({ capture }) => {
-    const a = await ucManager.reserve('A');
-    await ucManager.reserve('B');
-    const c = await ucManager.reserve('C');
-    await ucManager.reserve('D');
+    const a = await ucManager.reserve({ id: 'A' });
+    await ucManager.reserve({ id: 'B' });
+    const c = await ucManager.reserve({ id: 'C' });
+    await ucManager.reserve({ id: 'D' });
     await a.release();
     await c.persist();
     const result = await ucManager.cleanup();
@@ -241,8 +241,8 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing ignore delete error', async ({ capture }) => {
-    const e = await capture(() => ucManager.delete('A'));
-    const r = await ucManager.delete('A', true);
+    const e = await capture(() => ucManager.delete({ id: 'A' }));
+    const r = await ucManager.delete({ id: 'A', ignoreError: true });
     expect(e.code).to.deep.equal('FailedToDeleteUniqueConstraint');
     expect(r).to.deep.equal({
       error: 'not_found',
@@ -351,7 +351,7 @@ describe('Testing uc-manager.js', {
   });
 
   it('Testing reserveAll with error', async ({ capture }) => {
-    await ucManager.reserve('a');
+    await ucManager.reserve({ id: 'a' });
     const e = await capture(() => ucManager.reserveAll({ ids: ['a', 'b'] }));
     expect(e.code).to.deep.equal('FailedToReserveUniqueConstraint');
   });
