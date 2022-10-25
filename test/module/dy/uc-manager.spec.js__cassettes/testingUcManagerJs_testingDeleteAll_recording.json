@@ -1,1 +1,207 @@
-[]
+[
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "uc-table-name",
+      "AttributeDefinitions": [
+        {
+          "AttributeName": "id",
+          "AttributeType": "S"
+        }
+      ],
+      "KeySchema": [
+        {
+          "AttributeName": "id",
+          "KeyType": "HASH"
+        }
+      ],
+      "BillingMode": "PAY_PER_REQUEST"
+    },
+    "status": 200,
+    "response": {
+      "TableDescription": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "TableName": "uc-table-name",
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": 1666740339.652,
+        "ProvisionedThroughput": {
+          "LastIncreaseDateTime": 0,
+          "LastDecreaseDateTime": 0,
+          "NumberOfDecreasesToday": 0,
+          "ReadCapacityUnits": 0,
+          "WriteCapacityUnits": 0
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
+        "BillingModeSummary": {
+          "BillingMode": "PAY_PER_REQUEST",
+          "LastUpdateToPayPerRequestDateTime": 1666740339.652
+        }
+      }
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "uc-table-name",
+      "Key": {
+        "id": {
+          "S": "a"
+        }
+      },
+      "UpdateExpression": "SET #guid = :guid, #reserveDurationMs = :reserveDurationMs, #permanent = :permanent, #ucReserveTimeUnixMs = :ucReserveTimeUnixMs, #owner = :owner, #timestamp = :timestamp",
+      "ExpressionAttributeNames": {
+        "#guid": "guid",
+        "#reserveDurationMs": "reserveDurationMs",
+        "#permanent": "permanent",
+        "#ucReserveTimeUnixMs": "ucReserveTimeUnixMs",
+        "#owner": "owner",
+        "#timestamp": "timestamp",
+        "#attr1": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        ":reserveDurationMs": {
+          "N": "100"
+        },
+        ":permanent": {
+          "BOOL": false
+        },
+        ":ucReserveTimeUnixMs": {
+          "N": "0"
+        },
+        ":owner": {
+          "S": "aws-sdk-wrap-uc-manager"
+        },
+        ":timestamp": {
+          "N": "1650651221000"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#attr1)",
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 400,
+    "response": {
+      "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
+      "Message": "The conditional request failed"
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "uc-table-name",
+      "Key": {
+        "id": {
+          "S": "b"
+        }
+      },
+      "UpdateExpression": "SET #guid = :guid, #reserveDurationMs = :reserveDurationMs, #permanent = :permanent, #ucReserveTimeUnixMs = :ucReserveTimeUnixMs, #owner = :owner, #timestamp = :timestamp",
+      "ExpressionAttributeNames": {
+        "#guid": "guid",
+        "#reserveDurationMs": "reserveDurationMs",
+        "#permanent": "permanent",
+        "#ucReserveTimeUnixMs": "ucReserveTimeUnixMs",
+        "#owner": "owner",
+        "#timestamp": "timestamp",
+        "#attr1": "id"
+      },
+      "ExpressionAttributeValues": {
+        ":guid": {
+          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+        },
+        ":reserveDurationMs": {
+          "N": "100"
+        },
+        ":permanent": {
+          "BOOL": false
+        },
+        ":ucReserveTimeUnixMs": {
+          "N": "0"
+        },
+        ":owner": {
+          "S": "aws-sdk-wrap-uc-manager"
+        },
+        ":timestamp": {
+          "N": "1650651221000"
+        }
+      },
+      "ConditionExpression": "attribute_exists(#attr1)",
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 400,
+    "response": {
+      "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
+      "Message": "The conditional request failed"
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "uc-table-name"
+    },
+    "status": 200,
+    "response": {
+      "TableDescription": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "TableName": "uc-table-name",
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": 1666740339.652,
+        "ProvisionedThroughput": {
+          "LastIncreaseDateTime": 0,
+          "LastDecreaseDateTime": 0,
+          "NumberOfDecreasesToday": 0,
+          "ReadCapacityUnits": 0,
+          "WriteCapacityUnits": 0
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
+        "BillingModeSummary": {
+          "BillingMode": "PAY_PER_REQUEST",
+          "LastUpdateToPayPerRequestDateTime": 1666740339.652
+        }
+      }
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  }
+]
