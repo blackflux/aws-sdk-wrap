@@ -457,6 +457,27 @@ describe('Testing uc-manager.js', {
     });
   });
 
+  it('Testing persist with unixInMs and forced', async () => {
+    const r = await ucManager.persist({
+      id: '1234',
+      force: true,
+      unixInMs: new Date() / 1
+    });
+    expect(r).to.deep.equal({
+      created: true,
+      modified: true,
+      item: {
+        owner: 'aws-sdk-wrap-uc-manager',
+        ucReserveTimeUnixMs: 9007199254740991,
+        reserveDurationMs: 0,
+        permanent: true,
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        timestamp: 1650651221000,
+        id: '1234'
+      }
+    });
+  });
+
   it('Testing delete with unixInMs', async ({ capture }) => {
     const r = await capture(() => ucManager.delete({
       id: '1234',

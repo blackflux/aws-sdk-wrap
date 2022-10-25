@@ -104,7 +104,14 @@ export default ({ Model }) => (ucTable, {
       );
     }
     if (unixInMs !== null) {
-      conditions[1].push({ attr: 'timestamp', lt: unixInMs });
+      if (conditions.length === 0) {
+        conditions.push([
+          { attr: 'id', exists: false },
+          { or: true, attr: 'timestamp', lt: unixInMs }
+        ]);
+      } else {
+        conditions[1].push({ attr: 'timestamp', lt: unixInMs });
+      }
     }
     return wrap('Persist', (m) => m.createOrReplace(
       {
