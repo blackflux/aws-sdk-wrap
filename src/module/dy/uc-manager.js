@@ -140,6 +140,7 @@ export default ({ Model }) => (ucTable, {
         },
         {
           ...(unixInMs === null ? {} : { conditions: { attr: 'timestamp', lt: unixInMs } }),
+          // modify automatically injects id check, hence we always expect this error code
           expectedErrorCodes: ['ConditionalCheckFailedException']
         }
       ));
