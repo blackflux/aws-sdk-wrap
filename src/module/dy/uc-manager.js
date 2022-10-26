@@ -154,7 +154,7 @@ export default ({ Model }) => (ucTable, {
           timestamp: unixInMs === null ? nowInMs : unixInMs
         },
         {
-          ...(unixInMs === null ? [] : [{ conditions: { attr: 'timestamp', lt: unixInMs } }]),
+          ...(unixInMs === null ? {} : { conditions: { attr: 'timestamp', lt: unixInMs } }),
           expectedErrorCodes: ['ConditionalCheckFailedException']
         }
       ));
