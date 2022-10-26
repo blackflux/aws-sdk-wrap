@@ -86,15 +86,15 @@
         }
       },
       "ExpressionAttributeNames": {
-        "#attr1": "id",
-        "#attr2": "permanent"
+        "#attr1": "permanent",
+        "#attr2": "id"
       },
       "ExpressionAttributeValues": {
-        ":attr2": {
+        ":attr1": {
           "BOOL": false
         }
       },
-      "ConditionExpression": "attribute_not_exists(#attr1) OR (#attr2 = :attr2)",
+      "ConditionExpression": "(#attr1 = :attr1) OR attribute_not_exists(#attr2)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 200,

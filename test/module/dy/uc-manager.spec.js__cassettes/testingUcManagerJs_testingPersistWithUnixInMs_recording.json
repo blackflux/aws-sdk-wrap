@@ -86,19 +86,19 @@
         }
       },
       "ExpressionAttributeNames": {
-        "#attr1": "id",
-        "#attr2": "permanent",
-        "#attr3": "timestamp"
+        "#attr1": "permanent",
+        "#attr2": "timestamp",
+        "#attr3": "id"
       },
       "ExpressionAttributeValues": {
         ":attr2": {
-          "BOOL": false
-        },
-        ":attr3": {
           "N": "1650651221000"
+        },
+        ":attr1": {
+          "BOOL": false
         }
       },
-      "ConditionExpression": "attribute_not_exists(#attr1) OR (#attr2 = :attr2 AND #attr3 < :attr3)",
+      "ConditionExpression": "(#attr1 = :attr1 AND #attr2 < :attr2) OR attribute_not_exists(#attr3)",
       "ReturnValues": "ALL_OLD"
     },
     "status": 200,
