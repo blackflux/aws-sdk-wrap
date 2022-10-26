@@ -43,12 +43,10 @@ export default ({ Model }) => (ucTable, {
       { attr: 'id', exists: false },
       [
         { or: true, attr: 'ucReserveTimeUnixMs', lt: nowInMs - reserveDurationMs },
-        { attr: 'permanent', eq: false }
+        { attr: 'permanent', eq: false },
+        ...(unixInMs !== null ? [{ attr: 'timestamp', lt: unixInMs }] : [])
       ]
     ];
-    if (unixInMs !== null) {
-      conditions[1].push({ attr: 'timestamp', lt: unixInMs });
-    }
     const reserveResult = await wrap('Reserve', (m) => m.createOrReplace({
       id,
       guid,
@@ -141,7 +139,6 @@ export default ({ Model }) => (ucTable, {
     ignoreError = false,
     unixInMs = null
   }) => {
-    const nowInMs = new Date() / 1;
     try {
       return await wrap('Delete', (m) => m.modify(
         {
@@ -151,7 +148,7 @@ export default ({ Model }) => (ucTable, {
           permanent: false,
           ucReserveTimeUnixMs: 0,
           owner,
-          timestamp: unixInMs === null ? nowInMs : unixInMs
+          timestamp: unixInMs === null ? new Date() / 1 : unixInMs
         },
         {
           ...(unixInMs === null ? {} : { conditions: { attr: 'timestamp', lt: unixInMs } }),
