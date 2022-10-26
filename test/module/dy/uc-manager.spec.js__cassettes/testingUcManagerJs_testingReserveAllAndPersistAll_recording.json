@@ -36,7 +36,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666635972.406,
+        "CreationDateTime": 1666740512.701,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -49,7 +49,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666635972.406
+          "LastUpdateToPayPerRequestDateTime": 1666740512.701
         }
       }
     },
@@ -80,6 +80,9 @@
         },
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
+        },
+        "timestamp": {
+          "N": "1650651221000"
         }
       },
       "ExpressionAttributeNames": {
@@ -127,6 +130,9 @@
         },
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
+        },
+        "timestamp": {
+          "N": "1650651221000"
         }
       },
       "ExpressionAttributeNames": {
@@ -196,6 +202,12 @@
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
         },
+        "permanent": {
+          "BOOL": false
+        },
+        "reserveDurationMs": {
+          "N": "100"
+        },
         "ucReserveTimeUnixMs": {
           "N": "1650651221000"
         },
@@ -205,11 +217,8 @@
         "id": {
           "S": "a"
         },
-        "permanent": {
-          "BOOL": false
-        },
-        "reserveDurationMs": {
-          "N": "100"
+        "timestamp": {
+          "N": "1650651221000"
         }
       }
     },
@@ -262,6 +271,12 @@
         "owner": {
           "S": "aws-sdk-wrap-uc-manager"
         },
+        "permanent": {
+          "BOOL": false
+        },
+        "reserveDurationMs": {
+          "N": "100"
+        },
         "ucReserveTimeUnixMs": {
           "N": "1650651221000"
         },
@@ -271,11 +286,8 @@
         "id": {
           "S": "b"
         },
-        "permanent": {
-          "BOOL": false
-        },
-        "reserveDurationMs": {
-          "N": "100"
+        "timestamp": {
+          "N": "1650651221000"
         }
       }
     },
@@ -306,7 +318,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1666635972.406,
+        "CreationDateTime": 1666740512.701,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -314,12 +326,12 @@
           "ReadCapacityUnits": 0,
           "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 254,
+        "TableSizeBytes": 286,
         "ItemCount": 2,
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/uc-table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1666635972.406
+          "LastUpdateToPayPerRequestDateTime": 1666740512.701
         }
       }
     },
