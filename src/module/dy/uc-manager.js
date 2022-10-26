@@ -43,12 +43,10 @@ export default ({ Model }) => (ucTable, {
       { attr: 'id', exists: false },
       [
         { or: true, attr: 'ucReserveTimeUnixMs', lt: nowInMs - reserveDurationMs },
-        { attr: 'permanent', eq: false }
+        { attr: 'permanent', eq: false },
+        ...(unixInMs !== null ? [{ attr: 'timestamp', lt: unixInMs }] : [])
       ]
     ];
-    if (unixInMs !== null) {
-      conditions[1].push({ attr: 'timestamp', lt: unixInMs });
-    }
     const reserveResult = await wrap('Reserve', (m) => m.createOrReplace({
       id,
       guid,
@@ -103,45 +101,32 @@ export default ({ Model }) => (ucTable, {
     id,
     force = false,
     unixInMs = null
-  }) => {
-    const conditions = [];
-    if (force !== true) {
-      conditions.push(
-        { attr: 'id', exists: false },
-        [{ or: true, attr: 'permanent', eq: false }]
-      );
-    }
-    if (unixInMs !== null) {
-      if (conditions.length === 0) {
-        conditions.push([
-          { attr: 'id', exists: false },
-          { or: true, attr: 'timestamp', lt: unixInMs }
-        ]);
-      } else {
-        conditions[1].push({ attr: 'timestamp', lt: unixInMs });
-      }
-    }
-    return wrap('Persist', (m) => m.createOrReplace(
-      {
-        id,
-        guid: crypto.randomUUID(),
-        permanent: true,
-        reserveDurationMs: 0,
-        ucReserveTimeUnixMs: Number.MAX_SAFE_INTEGER,
-        owner,
-        timestamp: unixInMs === null ? new Date() / 1 : unixInMs
-      },
-      (conditions.length === 0
-        ? {}
-        : { conditions, expectedErrorCodes: ['ConditionalCheckFailedException'] })
-    ));
-  };
+  }) => wrap('Persist', (m) => m.createOrReplace(
+    {
+      id,
+      guid: crypto.randomUUID(),
+      permanent: true,
+      reserveDurationMs: 0,
+      ucReserveTimeUnixMs: Number.MAX_SAFE_INTEGER,
+      owner,
+      timestamp: unixInMs === null ? new Date() / 1 : unixInMs
+    },
+    force !== true || unixInMs !== null ? {
+      conditions: [
+        [
+          ...(force !== true ? [{ attr: 'permanent', eq: false }] : []),
+          ...(unixInMs !== null ? [{ attr: 'timestamp', lt: unixInMs }] : [])
+        ],
+        { or: true, attr: 'id', exists: false }
+      ],
+      expectedErrorCodes: ['ConditionalCheckFailedException']
+    } : {}
+  ));
   const del = async ({
     id,
     ignoreError = false,
     unixInMs = null
   }) => {
-    const nowInMs = new Date() / 1;
     try {
       return await wrap('Delete', (m) => m.modify(
         {
@@ -151,10 +136,11 @@ export default ({ Model }) => (ucTable, {
           permanent: false,
           ucReserveTimeUnixMs: 0,
           owner,
-          timestamp: unixInMs === null ? nowInMs : unixInMs
+          timestamp: unixInMs === null ? new Date() / 1 : unixInMs
         },
         {
           ...(unixInMs === null ? {} : { conditions: { attr: 'timestamp', lt: unixInMs } }),
+          // modify automatically injects id check, hence we always expect this error code
           expectedErrorCodes: ['ConditionalCheckFailedException']
         }
       ));
