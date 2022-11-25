@@ -1,6 +1,6 @@
 import assert from 'assert';
 import Joi from 'joi-strict';
-import Paging from '../paging.js';
+import Paging from '../../../util/paging.js';
 
 export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, cursorSecret) => {
   const conditionsSchema = Joi.object({

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import Paging from '../../../src/module/dy/paging.js';
+import Paging from '../../src/util/paging.js';
 
 describe('Testing paging', () => {
   it('Testing fromCursor', () => {
