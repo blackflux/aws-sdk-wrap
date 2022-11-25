@@ -14,7 +14,12 @@ import LockManager from './dy/lock-manager.js';
 import UcManager from './dy/uc-manager.js';
 import { ModelNotFound, ModelAlreadyExists } from '../resources/errors.js';
 
-export default ({ call, getService, logger }) => {
+export default ({
+  call,
+  getService,
+  logger,
+  cursorSecret
+}) => {
   const Model = ({
     name,
     attributes,
@@ -56,7 +61,7 @@ export default ({ call, getService, logger }) => {
       delete: DeleteItem(compileFn),
       getItem: GetItem(model, onNotFound_, setDefaults),
       modify: Modify(compileFn),
-      query: Query(model, validateSecondaryIndex, setDefaults, getSortKeyByIndex),
+      query: Query(model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, cursorSecret),
       replace: Replace(compileFn),
       scan: Scan(model, validateSecondaryIndex, setDefaults),
       schema: model.schema
