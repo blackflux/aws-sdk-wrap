@@ -13,7 +13,8 @@ export default (opts = {}) => {
     config: Joi.object().optional(),
     configService: Joi.object().optional(),
     logger: Joi.any().optional(),
-    onCall: Joi.function().optional()
+    onCall: Joi.function().optional(),
+    cursorSecret: Joi.string().optional()
   }));
   const servicesCache = {};
   const services = Object.fromEntries(
@@ -24,6 +25,7 @@ export default (opts = {}) => {
   const config = get(opts, 'config', {});
   const configService = get(opts, 'configService', {});
   const logger = get(opts, 'logger', null);
+  const cursorSecret = get(opts, 'cursorSecret', null);
 
   const onCallIfSet = (kwargs) => {
     if (opts.onCall !== undefined) {
@@ -111,7 +113,9 @@ export default (opts = {}) => {
     updateGlobalConfig: (AWS, cfg) => AWS.config.update(cfg),
     call,
     get: getService,
-    dy: Dy({ call, getService, logger }),
+    dy: Dy({
+      call, getService, logger, cursorSecret
+    }),
     s3: S3({ call, logger }),
     sqs: Sqs({ call, getService, logger }),
     lambda: Lambda({ call, logger }),
