@@ -1,8 +1,8 @@
 import assert from 'assert';
 import Joi from 'joi-strict';
-import { fromCursor, buildPageObject } from '../../../util/paging.js';
+import Paging from '../../../util/paging.js';
 
-export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) => {
+export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, cursorSecret) => {
   const conditionsSchema = Joi.object({
     attr: Joi.string()
   }).pattern(
@@ -18,6 +18,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex) =
       ).length(2)
     )
   ).length(2);
+  const { fromCursor, buildPageObject } = Paging(cursorSecret);
   const queryItems = async ({
     partitionKey,
     index,
