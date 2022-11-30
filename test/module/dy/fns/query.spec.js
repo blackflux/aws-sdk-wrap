@@ -45,6 +45,7 @@ describe('Testing query', {
       items: [item],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -68,10 +69,10 @@ describe('Testing query', {
       items: [item],
       page: {
         next: {
-          limit: 1,
           // eslint-disable-next-line max-len
-          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwiZXhjbHVzaXZlU3RhcnRLZXkiOnsibmFtZSI6Im5hbWUiLCJpZCI6IjEyMyJ9LCJjdXJyZW50UGFnZSI6Mn0='
         },
+        previous: null,
         index: { current: 1 },
         size: 1
       }
@@ -85,6 +86,7 @@ describe('Testing query', {
       items: [{ name: 'name' }],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -101,6 +103,7 @@ describe('Testing query', {
       items: [item],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -117,6 +120,7 @@ describe('Testing query', {
       items: [item],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -132,6 +136,7 @@ describe('Testing query', {
       items: [item],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -147,6 +152,7 @@ describe('Testing query', {
       items: [],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -164,6 +170,7 @@ describe('Testing query', {
       items: [item],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -204,10 +211,10 @@ describe('Testing query', {
       items: [firstItem, secondItem],
       page: {
         next: {
-          limit: 2,
           // eslint-disable-next-line max-len
-          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZS0yIiwiaWQiOiIxMjMifSwiY3VycmVudFBhZ2UiOjJ9'
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwiZXhjbHVzaXZlU3RhcnRLZXkiOnsibmFtZSI6Im5hbWUtMiIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
         },
+        previous: null,
         index: { current: 1 },
         size: 2
       }
@@ -217,6 +224,10 @@ describe('Testing query', {
       items: [thirdItem],
       page: {
         next: null,
+        previous: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6ZmFsc2UsImV4Y2x1c2l2ZVN0YXJ0S2V5Ijp7ImlkIjoiMTIzIiwibmFtZSI6Im5hbWUtMyJ9LCJjdXJyZW50UGFnZSI6MX0='
+        },
         index: { current: 2 },
         size: 2
       }
@@ -230,6 +241,7 @@ describe('Testing query', {
       items: [firstItem, secondItem, thirdItem],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: null
       }
@@ -243,6 +255,7 @@ describe('Testing query', {
       items: [firstItem, secondItem, thirdItem],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 3
       }
@@ -257,9 +270,9 @@ describe('Testing query', {
       page: {
         next: {
           // eslint-disable-next-line max-len
-          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZSIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ==',
-          limit: 1
+          cursor: 'eyJsaW1pdCI6MSwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwiZXhjbHVzaXZlU3RhcnRLZXkiOnsibmFtZSI6Im5hbWUiLCJpZCI6IjEyMyJ9LCJjdXJyZW50UGFnZSI6Mn0='
         },
+        previous: null,
         index: { current: 1 },
         size: 1
       }
@@ -273,6 +286,7 @@ describe('Testing query', {
       items: [firstItem, secondItem, thirdItem],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 4
       }
@@ -288,6 +302,7 @@ describe('Testing query', {
       items: [firstItem, secondItem],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -303,9 +318,9 @@ describe('Testing query', {
       page: {
         next: {
           // eslint-disable-next-line max-len
-          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZS0yIiwiaWQiOiIxMjMifSwiY3VycmVudFBhZ2UiOjJ9',
-          limit: 2
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwiZXhjbHVzaXZlU3RhcnRLZXkiOnsibmFtZSI6Im5hbWUtMiIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
         },
+        previous: null,
         index: { current: 1 },
         size: 2
       }
@@ -318,6 +333,10 @@ describe('Testing query', {
       items: [thirdItem],
       page: {
         next: null,
+        previous: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6ZmFsc2UsImV4Y2x1c2l2ZVN0YXJ0S2V5Ijp7ImlkIjoiMTIzIiwibmFtZSI6Im5hbWUtMyJ9LCJjdXJyZW50UGFnZSI6MX0='
+        },
         index: { current: 2 },
         size: 2
       }
@@ -334,6 +353,7 @@ describe('Testing query', {
       items: [firstItem],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -351,6 +371,7 @@ describe('Testing query', {
       items: [firstItem, secondItem],
       page: {
         next: null,
+        previous: null,
         index: { current: 1 },
         size: 20
       }
@@ -367,19 +388,25 @@ describe('Testing query', {
       items: [thirdItem, secondItem],
       page: {
         next: {
-          limit: 2,
           // eslint-disable-next-line max-len
-          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6ZmFsc2UsImxhc3RFdmFsdWF0ZWRLZXkiOnsibmFtZSI6Im5hbWUtMiIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6ZmFsc2UsImV4Y2x1c2l2ZVN0YXJ0S2V5Ijp7Im5hbWUiOiJuYW1lLTIiLCJpZCI6IjEyMyJ9LCJjdXJyZW50UGFnZSI6Mn0='
         },
+        previous: null,
         index: { current: 1 },
         size: 2
       }
     });
-    const secondResult = await model.query(primaryKey, { cursor: firstResult.page.next.cursor });
+    const secondResult = await model.query(primaryKey, {
+      cursor: firstResult.page.next.cursor
+    });
     expect(secondResult).to.deep.equal({
       items: [firstItem],
       page: {
         next: null,
+        previous: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwiZXhjbHVzaXZlU3RhcnRLZXkiOnsiaWQiOiIxMjMiLCJuYW1lIjoibmFtZSJ9LCJjdXJyZW50UGFnZSI6MX0='
+        },
         index: { current: 2 },
         size: 2
       }
@@ -392,6 +419,10 @@ describe('Testing query', {
       items: [thirdItem],
       page: {
         next: null,
+        previous: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6ZmFsc2UsImV4Y2x1c2l2ZVN0YXJ0S2V5Ijp7ImlkIjoiMTIzIiwibmFtZSI6Im5hbWUtMyJ9LCJjdXJyZW50UGFnZSI6MX0='
+        },
         index: { current: 2 },
         size: 2
       }

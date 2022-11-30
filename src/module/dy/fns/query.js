@@ -28,11 +28,12 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
     conditions,
     filters,
     toReturn,
-    lastEvaluatedKey: previousLastEvaluatedKey
+    exclusiveStartKey
   }) => {
     assert(toReturn === null || (Array.isArray(toReturn) && toReturn.length === new Set(toReturn).size));
     const items = [];
-    let lastEvaluatedKey = previousLastEvaluatedKey;
+    let lastEvaluatedKey = exclusiveStartKey;
+    let count = 0;
     do {
       // eslint-disable-next-line no-await-in-loop
       const result = await model.entity.query(partitionKey, {
@@ -53,9 +54,10 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
         entity: model.table.name
       });
       items.push(...result.Items);
+      count += result.Count;
       lastEvaluatedKey = result.LastEvaluatedKey;
     } while (lastEvaluatedKey !== undefined && (queryLimit === null || items.length < queryLimit));
-    return { items, lastEvaluatedKey };
+    return { items, count, lastEvaluatedKey };
   };
 
   return async (...args) => {
@@ -95,8 +97,8 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
     const {
       limit: queryLimit = 20,
       scanIndexForward: queryScanIndexForward = true,
-      lastEvaluatedKey = null,
-      currentPage = null
+      exclusiveStartKey = null,
+      currentPage = undefined
     } = {
       ...fromCursor(cursor),
       ...(limit === undefined ? {} : { limit }),
@@ -111,13 +113,16 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       conditions,
       filters,
       toReturn,
-      lastEvaluatedKey
+      exclusiveStartKey
     });
     const page = buildPageObject({
-      currentPage: currentPage === null ? 1 : currentPage,
       limit: queryLimit,
       scanIndexForward: queryScanIndexForward,
-      lastEvaluatedKey: result.lastEvaluatedKey === undefined ? null : result.lastEvaluatedKey
+      count: result.count,
+      items: result.items,
+      currentPage,
+      exclusiveStartKey,
+      lastEvaluatedKey: result.lastEvaluatedKey
     });
     return {
       items: result.items.map((item) => setDefaults(item, toReturn)),
