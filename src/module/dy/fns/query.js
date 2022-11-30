@@ -98,7 +98,8 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       limit: queryLimit = 20,
       scanIndexForward: queryScanIndexForward = true,
       exclusiveStartKey = null,
-      currentPage = undefined
+      currentPage = undefined,
+      type: cursorType = 'next'
     } = {
       ...fromCursor(cursor),
       ...(limit === undefined ? {} : { limit }),
@@ -109,24 +110,27 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       index,
       queryLimit,
       consistent,
-      queryScanIndexForward,
+      queryScanIndexForward: cursorType === 'previous'
+        ? !queryScanIndexForward
+        : queryScanIndexForward,
       conditions,
       filters,
       toReturn,
       exclusiveStartKey
     });
+    const items = result.items.map((item) => setDefaults(item, toReturn));
+    if (cursorType === 'previous') {
+      items.reverse();
+    }
     const page = buildPageObject({
       limit: queryLimit,
       scanIndexForward: queryScanIndexForward,
       count: result.count,
-      items: result.items,
+      items,
       currentPage,
       exclusiveStartKey,
       lastEvaluatedKey: result.lastEvaluatedKey
     });
-    return {
-      items: result.items.map((item) => setDefaults(item, toReturn)),
-      page
-    };
+    return { items, page };
   };
 };

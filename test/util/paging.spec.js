@@ -12,7 +12,8 @@ describe('Testing paging', () => {
       exclusiveStartKey: { id: '123', name: 'name' },
       scanIndexForward: false,
       currentPage: 0,
-      limit: 2
+      limit: 2,
+      type: undefined
     });
   });
 
@@ -29,13 +30,13 @@ describe('Testing paging', () => {
       limit: 20,
       scanIndexForward: true,
       count: 20,
-      items: [{}],
+      items: [{ id: '123', name: 'name' }],
       lastEvaluatedKey: { id: '123', name: 'name' }
     });
     expect(result).to.deep.equal({
       next: {
         // eslint-disable-next-line max-len
-        cursor: 'eyJsaW1pdCI6MjAsInNjYW5JbmRleEZvcndhcmQiOnRydWUsImV4Y2x1c2l2ZVN0YXJ0S2V5Ijp7ImlkIjoiMTIzIiwibmFtZSI6Im5hbWUifSwiY3VycmVudFBhZ2UiOjJ9'
+        cursor: 'eyJsaW1pdCI6MjAsInNjYW5JbmRleEZvcndhcmQiOnRydWUsImV4Y2x1c2l2ZVN0YXJ0S2V5Ijp7ImlkIjoiMTIzIiwibmFtZSI6Im5hbWUifSwiY3VycmVudFBhZ2UiOjIsInR5cGUiOiJuZXh0In0='
       },
       previous: null,
       index: { current: 1 },
@@ -65,7 +66,7 @@ describe('Testing paging', () => {
       limit: 20,
       scanIndexForward: true,
       count: 20,
-      items: [{}],
+      items: [{ id: '123', name: 'name' }],
       lastEvaluatedKey: { id: '123', name: 'name' }
     };
     const page = buildPageObject(cursorPayload);
@@ -73,7 +74,7 @@ describe('Testing paging', () => {
       previous: null,
       next: {
         // eslint-disable-next-line max-len
-        cursor: 'eyJsaW1pdCI6MjAsInNjYW5JbmRleEZvcndhcmQiOnRydWUsImV4Y2x1c2l2ZVN0YXJ0S2V5Ijp7ImlkIjoiMTIzIiwibmFtZSI6Im5hbWUifSwiY3VycmVudFBhZ2UiOjJ9_3uK+YlcgMQY8IYQPcIdM/g'
+        cursor: 'eyJsaW1pdCI6MjAsInNjYW5JbmRleEZvcndhcmQiOnRydWUsImV4Y2x1c2l2ZVN0YXJ0S2V5Ijp7ImlkIjoiMTIzIiwibmFtZSI6Im5hbWUifSwiY3VycmVudFBhZ2UiOjIsInR5cGUiOiJuZXh0In0=_lF+0Q60wO5uYRRoeuBLcjw'
       },
       index: {
         current: 1
@@ -87,7 +88,8 @@ describe('Testing paging', () => {
         name: 'name'
       },
       limit: 20,
-      scanIndexForward: true
+      scanIndexForward: true,
+      type: 'next'
     });
   });
 
@@ -98,7 +100,7 @@ describe('Testing paging', () => {
       limit: 20,
       scanIndexForward: true,
       count: 20,
-      items: [{}],
+      items: [{ id: '123', name: 'name' }],
       lastEvaluatedKey: { id: '123', name: 'name' }
     });
     const { cursor } = page.next;
@@ -107,7 +109,8 @@ describe('Testing paging', () => {
       currentPage: undefined,
       exclusiveStartKey: undefined,
       limit: undefined,
-      scanIndexForward: undefined
+      scanIndexForward: undefined,
+      type: undefined
     });
   });
 
@@ -117,7 +120,7 @@ describe('Testing paging', () => {
       limit: 20,
       scanIndexForward: true,
       count: 20,
-      items: [{}],
+      items: [{ id: '123', name: 'name' }],
       lastEvaluatedKey: { id: '123', name: 'name' }
     };
     const { buildPageObject } = Paging('secret');
@@ -131,7 +134,8 @@ describe('Testing paging', () => {
         name: 'name'
       },
       limit: 20,
-      scanIndexForward: true
+      scanIndexForward: true,
+      type: 'next'
     });
   });
 
@@ -151,7 +155,8 @@ describe('Testing paging', () => {
       currentPage: undefined,
       exclusiveStartKey: undefined,
       limit: undefined,
-      scanIndexForward: undefined
+      scanIndexForward: undefined,
+      type: undefined
     });
   });
 });

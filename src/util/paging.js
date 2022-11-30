@@ -28,12 +28,14 @@ const toCursor = ({
   limit,
   scanIndexForward,
   exclusiveStartKey,
-  currentPage
+  currentPage,
+  type
 }, cursorSecret) => objectEncode({
   limit,
   scanIndexForward,
   exclusiveStartKey,
-  currentPage
+  currentPage,
+  type
 }, cursorSecret);
 
 const getPageKeyFromItem = (item, pagingKeys) => Object.fromEntries(pagingKeys
@@ -52,10 +54,10 @@ export default (cursorSecret) => {
       }
     }
     const {
-      limit, scanIndexForward, exclusiveStartKey, currentPage
+      limit, scanIndexForward, exclusiveStartKey, currentPage, type
     } = cursorPayload;
     return {
-      limit, scanIndexForward, exclusiveStartKey, currentPage
+      limit, scanIndexForward, exclusiveStartKey, currentPage, type
     };
   };
 
@@ -76,8 +78,8 @@ export default (cursorSecret) => {
     if (Array.isArray(items) && (exclusiveStartKey !== null || lastEvaluatedKey !== null)) {
       const keys = exclusiveStartKey !== null ? exclusiveStartKey : lastEvaluatedKey;
       const pagingKeys = Object.keys(keys);
-      startPageKey = items.length === 0 ? null : getPageKeyFromItem(items[0], pagingKeys);
-      endPageKey = lastEvaluatedKey;
+      startPageKey = items.length === 0 ? undefined : getPageKeyFromItem(items[0], pagingKeys);
+      endPageKey = items.length === 0 ? undefined : getPageKeyFromItem(items[items.length - 1], pagingKeys);
     }
 
     if (currentPage !== 1 && startPageKey !== null) {
@@ -86,7 +88,8 @@ export default (cursorSecret) => {
           limit,
           currentPage: currentPage - 1,
           exclusiveStartKey: startPageKey,
-          scanIndexForward: !scanIndexForward
+          scanIndexForward,
+          type: 'previous'
         }, cursorSecret)
       };
     }
@@ -96,7 +99,8 @@ export default (cursorSecret) => {
           limit,
           currentPage: currentPage + 1,
           exclusiveStartKey: endPageKey,
-          scanIndexForward
+          scanIndexForward,
+          type: 'next'
         }, cursorSecret)
       };
     }
