@@ -242,7 +242,11 @@ describe('Testing query', {
     expect(result).to.deep.equal({
       items: [firstItem, secondItem, thirdItem],
       page: {
-        next: null,
+        next: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Mywic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwibGFzdEV2YWx1YXRlZEtleSI6eyJuYW1lIjoibmFtZS0zIiwiaWQiOiIxMjMifSwiY3VycmVudFBhZ2UiOjJ9',
+          limit: 3
+        },
         index: { current: 1 },
         size: 3
       }
