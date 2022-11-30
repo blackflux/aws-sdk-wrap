@@ -14,22 +14,34 @@ const objectEncode = (obj, cursorSecret) => {
     : cursor;
 };
 const objectDecode = (base64, cursorSecret) => {
-  let cursor = base64;
-  if (typeof cursorSecret === 'string') {
-    let signature;
-    [cursor, signature] = base64.split('_');
-    if (signature !== makeSignature(cursor, cursorSecret)) {
-      return {};
-    }
+  const [cursor, signature] = base64.split('_');
+  if (
+    typeof cursorSecret === 'string'
+    && signature !== makeSignature(cursor, cursorSecret)
+  ) {
+    return {};
   }
   return JSON.parse(Buffer.from(cursor, 'base64').toString('utf8'));
 };
 
 const toCursor = ({
-  limit, scanIndexForward, lastEvaluatedKey, currentPage
+  limit,
+  scanIndexForward,
+  exclusiveStartKey,
+  currentPage,
+  type
 }, cursorSecret) => objectEncode({
-  limit, scanIndexForward, lastEvaluatedKey, currentPage
+  limit,
+  scanIndexForward,
+  exclusiveStartKey,
+  currentPage,
+  type
 }, cursorSecret);
+
+const getPageKeyFromItem = (item, pagingKeys) => Object.fromEntries(pagingKeys
+  .filter((k) => k in item)
+  .sort()
+  .map((k) => [k, item[k]]));
 
 export default (cursorSecret) => {
   const fromCursor = (cursor = null) => {
@@ -38,30 +50,65 @@ export default (cursorSecret) => {
       try {
         cursorPayload = objectDecode(cursor, cursorSecret);
       } catch (err) {
-        throw new Error('Page cursor is invalid');
+        return {};
       }
     }
     const {
-      limit, scanIndexForward, lastEvaluatedKey, currentPage
+      limit, scanIndexForward, exclusiveStartKey, currentPage, type
     } = cursorPayload;
     return {
-      limit, scanIndexForward, lastEvaluatedKey, currentPage
+      limit, scanIndexForward, exclusiveStartKey, currentPage, type
     };
   };
 
   const buildPageObject = ({
-    currentPage, limit, scanIndexForward, lastEvaluatedKey
+    limit,
+    scanIndexForward,
+    count,
+    items,
+    currentPage: currentPage_ = 1,
+    exclusiveStartKey = null,
+    lastEvaluatedKey = null,
+    direction = 'next'
   }) => {
-    const next = lastEvaluatedKey === null ? null : { limit };
-    if (next !== null) {
-      next.cursor = toCursor({
-        lastEvaluatedKey,
-        scanIndexForward,
-        currentPage: currentPage + 1,
-        ...next
-      }, cursorSecret);
+    let previous = null;
+    let next = null;
+    let startPageKey = null;
+    let endPageKey = null;
+
+    if (Array.isArray(items) && (exclusiveStartKey !== null || lastEvaluatedKey !== null)) {
+      const keys = exclusiveStartKey !== null ? exclusiveStartKey : lastEvaluatedKey;
+      const pagingKeys = Object.keys(keys);
+      startPageKey = items.length === 0 ? undefined : getPageKeyFromItem(items[0], pagingKeys);
+      endPageKey = items.length === 0 ? undefined : getPageKeyFromItem(items[items.length - 1], pagingKeys);
+    }
+
+    const currentPage = direction === 'previous' && items?.length === 0 ? 0 : currentPage_;
+
+    if (currentPage > 1 && startPageKey !== null) {
+      previous = {
+        cursor: toCursor({
+          limit,
+          currentPage: currentPage - 1,
+          exclusiveStartKey: startPageKey,
+          scanIndexForward,
+          type: 'previous'
+        }, cursorSecret)
+      };
+    }
+    if (direction === 'previous' || (count === limit && endPageKey !== null)) {
+      next = {
+        cursor: toCursor({
+          limit,
+          currentPage: currentPage + 1,
+          exclusiveStartKey: endPageKey,
+          scanIndexForward,
+          type: 'next'
+        }, cursorSecret)
+      };
     }
     return {
+      previous,
       next,
       index: { current: currentPage },
       size: limit

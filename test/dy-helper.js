@@ -147,3 +147,10 @@ export const createItems = async ({
   }
   return items;
 };
+
+export const deleteItem = async (model, item) => {
+  expect(await model.delete(item)).to.deep.equal({
+    deleted: true,
+    item
+  });
+};
