@@ -1,6 +1,11 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import { LocalTable, buildModel, createItems } from '../../../dy-helper.js';
+import {
+  LocalTable,
+  buildModel,
+  createItems,
+  deleteItem
+} from '../../../dy-helper.js';
 import nockReqHeaderOverwrite from '../../../req-header-overwrite.js';
 
 describe('Testing query', {
@@ -449,7 +454,7 @@ describe('Testing query', {
     let validate;
     let query;
     beforeEach(() => {
-      validate = (result, item, hasPrev, hasNext) => {
+      validate = (result, item, hasPrev, hasNext, page) => {
         if (Array.isArray(item)) {
           expect(result.items).to.deep.equal(item);
         } else {
@@ -457,6 +462,7 @@ describe('Testing query', {
         }
         const cursorNext = result?.page?.next?.cursor;
         const cursorPrevious = result?.page?.previous?.cursor;
+        expect(result?.page?.index.current).to.equal(page);
         expect(typeof cursorNext).to.equal(hasNext ? 'string' : 'undefined');
         expect(typeof cursorPrevious).to.equal(hasPrev ? 'string' : 'undefined');
       };
@@ -471,25 +477,25 @@ describe('Testing query', {
       const [item1, item2, item3] = await setupThreeItems();
 
       const r1 = await model.query(primaryKey, { limit: 1 });
-      await validate(r1, item1, false, true);
+      await validate(r1, item1, false, true, 1);
       const r2 = await query(r1, true);
-      await validate(r2, item2, true, true);
+      await validate(r2, item2, true, true, 2);
       const r3 = await query(r2, true);
-      await validate(r3, item3, true, true);
+      await validate(r3, item3, true, true, 3);
       const r4 = await query(r3, true);
-      await validate(r4, null, true, false);
+      await validate(r4, null, true, false, 4);
       const r5 = await query(r4, false);
-      await validate(r5, item3, true, true);
+      await validate(r5, item3, true, true, 3);
       const r6 = await query(r5, false);
-      await validate(r6, item2, true, true);
+      await validate(r6, item2, true, true, 2);
       const r7 = await query(r6, false);
-      await validate(r7, item1, false, true);
+      await validate(r7, item1, false, true, 1);
       const r8 = await query(r7, true);
-      await validate(r8, item2, true, true);
+      await validate(r8, item2, true, true, 2);
       const r9 = await query(r8, true);
-      await validate(r9, item3, true, true);
+      await validate(r9, item3, true, true, 3);
       const r10 = await query(r9, true);
-      await validate(r10, null, true, false);
+      await validate(r10, null, true, false, 4);
 
       expect(r1).to.deep.equal(r7);
       expect(r2).to.deep.equal(r8);
@@ -503,25 +509,25 @@ describe('Testing query', {
       const [item1, item2, item3] = await setupThreeItems();
 
       const r1 = await model.query(primaryKey, { limit: 1, scanIndexForward: false });
-      await validate(r1, item3, false, true);
+      await validate(r1, item3, false, true, 1);
       const r2 = await query(r1, true);
-      await validate(r2, item2, true, true);
+      await validate(r2, item2, true, true, 2);
       const r3 = await query(r2, true);
-      await validate(r3, item1, true, true);
+      await validate(r3, item1, true, true, 3);
       const r4 = await query(r3, true);
-      await validate(r4, null, true, false);
+      await validate(r4, null, true, false, 4);
       const r5 = await query(r4, false);
-      await validate(r5, item1, true, true);
+      await validate(r5, item1, true, true, 3);
       const r6 = await query(r5, false);
-      await validate(r6, item2, true, true);
+      await validate(r6, item2, true, true, 2);
       const r7 = await query(r6, false);
-      await validate(r7, item3, false, true);
+      await validate(r7, item3, false, true, 1);
       const r8 = await query(r7, true);
-      await validate(r8, item2, true, true);
+      await validate(r8, item2, true, true, 2);
       const r9 = await query(r8, true);
-      await validate(r9, item1, true, true);
+      await validate(r9, item1, true, true, 3);
       const r10 = await query(r9, true);
-      await validate(r10, null, true, false);
+      await validate(r10, null, true, false, 4);
 
       expect(r1).to.deep.equal(r7);
       expect(r2).to.deep.equal(r8);
@@ -537,19 +543,19 @@ describe('Testing query', {
       });
 
       const r1 = await model.query(primaryKey, { limit: 2 });
-      await validate(r1, [item1, item2], false, true);
+      await validate(r1, [item1, item2], false, true, 1);
       const r2 = await query(r1, true);
-      await validate(r2, [item3, item4], true, true);
+      await validate(r2, [item3, item4], true, true, 2);
       const r3 = await query(r2, true);
-      await validate(r3, [item5], true, false);
+      await validate(r3, [item5], true, false, 3);
       const r4 = await query(r3, false);
-      await validate(r4, [item3, item4], true, true);
+      await validate(r4, [item3, item4], true, true, 2);
       const r5 = await query(r4, false);
-      await validate(r5, [item1, item2], false, true);
+      await validate(r5, [item1, item2], false, true, 1);
       const r6 = await query(r5, true);
-      await validate(r6, [item3, item4], true, true);
+      await validate(r6, [item3, item4], true, true, 2);
       const r7 = await query(r6, true);
-      await validate(r7, item5, true, false);
+      await validate(r7, item5, true, false, 3);
 
       expect(r1).to.deep.equal(r5);
       expect(r2).to.deep.equal(r6);
@@ -563,19 +569,19 @@ describe('Testing query', {
       });
 
       const r1 = await model.query(primaryKey, { limit: 2, scanIndexForward: false });
-      await validate(r1, [item5, item4], false, true);
+      await validate(r1, [item5, item4], false, true, 1);
       const r2 = await query(r1, true);
-      await validate(r2, [item3, item2], true, true);
+      await validate(r2, [item3, item2], true, true, 2);
       const r3 = await query(r2, true);
-      await validate(r3, [item1], true, false);
+      await validate(r3, [item1], true, false, 3);
       const r4 = await query(r3, false);
-      await validate(r4, [item3, item2], true, true);
+      await validate(r4, [item3, item2], true, true, 2);
       const r5 = await query(r4, false);
-      await validate(r5, [item5, item4], false, true);
+      await validate(r5, [item5, item4], false, true, 1);
       const r6 = await query(r5, true);
-      await validate(r6, [item3, item2], true, true);
+      await validate(r6, [item3, item2], true, true, 2);
       const r7 = await query(r6, true);
-      await validate(r7, item1, true, false);
+      await validate(r7, item1, true, false, 3);
 
       expect(r1).to.deep.equal(r5);
       expect(r2).to.deep.equal(r6);
@@ -589,25 +595,25 @@ describe('Testing query', {
       });
 
       const r1 = await model.query(primaryKey, { limit: 2 });
-      await validate(r1, [item1, item2], false, true);
+      await validate(r1, [item1, item2], false, true, 1);
       const r2 = await query(r1, true);
-      await validate(r2, [item3, item4], true, true);
+      await validate(r2, [item3, item4], true, true, 2);
       const r3 = await query(r2, true);
-      await validate(r3, [item5, item6], true, true);
+      await validate(r3, [item5, item6], true, true, 3);
       const r4 = await query(r3, true);
-      await validate(r4, null, true, false);
+      await validate(r4, null, true, false, 4);
       const r5 = await query(r4, false);
-      await validate(r5, [item5, item6], true, true);
+      await validate(r5, [item5, item6], true, true, 3);
       const r6 = await query(r5, false);
-      await validate(r6, [item3, item4], true, true);
+      await validate(r6, [item3, item4], true, true, 2);
       const r7 = await query(r6, false);
-      await validate(r7, [item1, item2], false, true);
+      await validate(r7, [item1, item2], false, true, 1);
       const r8 = await query(r7, true);
-      await validate(r8, [item3, item4], true, true);
+      await validate(r8, [item3, item4], true, true, 2);
       const r9 = await query(r8, true);
-      await validate(r9, [item5, item6], true, true);
+      await validate(r9, [item5, item6], true, true, 3);
       const r10 = await query(r9, true);
-      await validate(r10, null, true, false);
+      await validate(r10, null, true, false, 4);
 
       expect(r1).to.deep.equal(r7);
       expect(r2).to.deep.equal(r8);
@@ -623,25 +629,25 @@ describe('Testing query', {
       });
 
       const r1 = await model.query(primaryKey, { limit: 2, scanIndexForward: false });
-      await validate(r1, [item6, item5], false, true);
+      await validate(r1, [item6, item5], false, true, 1);
       const r2 = await query(r1, true);
-      await validate(r2, [item4, item3], true, true);
+      await validate(r2, [item4, item3], true, true, 2);
       const r3 = await query(r2, true);
-      await validate(r3, [item2, item1], true, true);
+      await validate(r3, [item2, item1], true, true, 3);
       const r4 = await query(r3, true);
-      await validate(r4, null, true, false);
+      await validate(r4, null, true, false, 4);
       const r5 = await query(r4, false);
-      await validate(r5, [item2, item1], true, true);
+      await validate(r5, [item2, item1], true, true, 3);
       const r6 = await query(r5, false);
-      await validate(r6, [item4, item3], true, true);
+      await validate(r6, [item4, item3], true, true, 2);
       const r7 = await query(r6, false);
-      await validate(r7, [item6, item5], false, true);
+      await validate(r7, [item6, item5], false, true, 1);
       const r8 = await query(r7, true);
-      await validate(r8, [item4, item3], true, true);
+      await validate(r8, [item4, item3], true, true, 2);
       const r9 = await query(r8, true);
-      await validate(r9, [item2, item1], true, true);
+      await validate(r9, [item2, item1], true, true, 3);
       const r10 = await query(r9, true);
-      await validate(r10, null, true, false);
+      await validate(r10, null, true, false, 4);
 
       expect(r1).to.deep.equal(r7);
       expect(r2).to.deep.equal(r8);
@@ -649,6 +655,158 @@ describe('Testing query', {
       expect(r4).to.deep.equal(r10);
       expect(r5).to.deep.equal(r3);
       expect(r6).to.deep.equal(r2);
+    });
+
+    it('Testing single item per page, forward, with delete', async () => {
+      const [item1, item2, item3] = await setupThreeItems();
+
+      const r1 = await model.query(primaryKey, { limit: 1 });
+      await validate(r1, item1, false, true, 1);
+      const r2 = await query(r1, true);
+      await validate(r2, item2, true, true, 2);
+      const r3 = await query(r2, true);
+      await validate(r3, item3, true, true, 3);
+      const r4 = await query(r3, true);
+      await validate(r4, null, true, false, 4);
+      await deleteItem(model, item1);
+      const r5 = await query(r4, false);
+      await validate(r5, item3, true, true, 3);
+      const r6 = await query(r5, false);
+      await validate(r6, item2, true, true, 2);
+      const r7 = await query(r6, false);
+      await validate(r7, null, false, true, 0);
+      const r8 = await query(r7, true);
+      await validate(r8, item2, false, true, 1);
+      const r9 = await query(r8, true);
+      await validate(r9, item3, true, true, 2);
+      const r10 = await query(r9, true);
+      await validate(r10, null, true, false, 3);
+    });
+
+    it('Testing single item per page, backwards, with delete', async () => {
+      const [item1, item2, item3] = await setupThreeItems();
+
+      const r1 = await model.query(primaryKey, { limit: 1, scanIndexForward: false });
+      await validate(r1, item3, false, true, 1);
+      const r2 = await query(r1, true);
+      await validate(r2, item2, true, true, 2);
+      const r3 = await query(r2, true);
+      await validate(r3, item1, true, true, 3);
+      const r4 = await query(r3, true);
+      await validate(r4, null, true, false, 4);
+      await deleteItem(model, item3);
+      const r5 = await query(r4, false);
+      await validate(r5, item1, true, true, 3);
+      const r6 = await query(r5, false);
+      await validate(r6, item2, true, true, 2);
+      const r7 = await query(r6, false);
+      await validate(r7, null, false, true, 0);
+      const r8 = await query(r7, true);
+      await validate(r8, item2, false, true, 1);
+      const r9 = await query(r8, true);
+      await validate(r9, item1, true, true, 2);
+      const r10 = await query(r9, true);
+      await validate(r10, null, true, false, 3);
+    });
+
+    it('Testing two items per page, five total, forward, with delete', async () => {
+      const [item1, item2, item3, item4, item5] = await createItems({
+        count: 5, model, primaryKey, sortKey: 'name', age: 50
+      });
+
+      const r1 = await model.query(primaryKey, { limit: 2 });
+      await validate(r1, [item1, item2], false, true, 1);
+      const r2 = await query(r1, true);
+      await validate(r2, [item3, item4], true, true, 2);
+      const r3 = await query(r2, true);
+      await validate(r3, [item5], true, false, 3);
+      await deleteItem(model, item1);
+      const r4 = await query(r3, false);
+      await validate(r4, [item3, item4], true, true, 2);
+      const r5 = await query(r4, false);
+      await validate(r5, [item2], false, true, 1);
+      const r6 = await query(r5, true);
+      await validate(r6, [item3, item4], true, true, 2);
+      const r7 = await query(r6, true);
+      await validate(r7, item5, true, false, 3);
+    });
+
+    it('Testing two items per page, five total, backwards, with delete', async () => {
+      const [item1, item2, item3, item4, item5] = await createItems({
+        count: 5, model, primaryKey, sortKey: 'name', age: 50
+      });
+
+      const r1 = await model.query(primaryKey, { limit: 2, scanIndexForward: false });
+      await validate(r1, [item5, item4], false, true, 1);
+      const r2 = await query(r1, true);
+      await validate(r2, [item3, item2], true, true, 2);
+      const r3 = await query(r2, true);
+      await validate(r3, [item1], true, false, 3);
+      const r4 = await query(r3, false);
+      await deleteItem(model, item5);
+      await validate(r4, [item3, item2], true, true, 2);
+      const r5 = await query(r4, false);
+      await validate(r5, [item4], false, true, 1);
+      const r6 = await query(r5, true);
+      await validate(r6, [item3, item2], true, true, 2);
+      const r7 = await query(r6, true);
+      await validate(r7, item1, true, false, 3);
+    });
+
+    it('Testing two items per page, six total, forward, with delete', async () => {
+      const [item1, item2, item3, item4, item5, item6] = await createItems({
+        count: 6, model, primaryKey, sortKey: 'name', age: 50
+      });
+
+      const r1 = await model.query(primaryKey, { limit: 2 });
+      await validate(r1, [item1, item2], false, true, 1);
+      const r2 = await query(r1, true);
+      await validate(r2, [item3, item4], true, true, 2);
+      const r3 = await query(r2, true);
+      await validate(r3, [item5, item6], true, true, 3);
+      const r4 = await query(r3, true);
+      await validate(r4, null, true, false, 4);
+      await deleteItem(model, item1);
+      const r5 = await query(r4, false);
+      await validate(r5, [item5, item6], true, true, 3);
+      const r6 = await query(r5, false);
+      await validate(r6, [item3, item4], true, true, 2);
+      const r7 = await query(r6, false);
+      await validate(r7, [item2], false, true, 1);
+      const r8 = await query(r7, true);
+      await validate(r8, [item3, item4], true, true, 2);
+      const r9 = await query(r8, true);
+      await validate(r9, [item5, item6], true, true, 3);
+      const r10 = await query(r9, true);
+      await validate(r10, null, true, false, 4);
+    });
+
+    it('Testing two items per page, six total, backwards, with delete', async () => {
+      const [item1, item2, item3, item4, item5, item6] = await createItems({
+        count: 6, model, primaryKey, sortKey: 'name', age: 50
+      });
+
+      const r1 = await model.query(primaryKey, { limit: 2, scanIndexForward: false });
+      await validate(r1, [item6, item5], false, true, 1);
+      const r2 = await query(r1, true);
+      await validate(r2, [item4, item3], true, true, 2);
+      const r3 = await query(r2, true);
+      await validate(r3, [item2, item1], true, true, 3);
+      const r4 = await query(r3, true);
+      await validate(r4, null, true, false, 4);
+      await deleteItem(model, item6);
+      const r5 = await query(r4, false);
+      await validate(r5, [item2, item1], true, true, 3);
+      const r6 = await query(r5, false);
+      await validate(r6, [item4, item3], true, true, 2);
+      const r7 = await query(r6, false);
+      await validate(r7, [item5], false, true, 1);
+      const r8 = await query(r7, true);
+      await validate(r8, [item4, item3], true, true, 2);
+      const r9 = await query(r8, true);
+      await validate(r9, [item2, item1], true, true, 3);
+      const r10 = await query(r9, true);
+      await validate(r10, null, true, false, 4);
     });
   });
 });

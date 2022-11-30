@@ -66,9 +66,10 @@ export default (cursorSecret) => {
     scanIndexForward,
     count,
     items,
-    currentPage = 1,
+    currentPage: currentPage_ = 1,
     exclusiveStartKey = null,
-    lastEvaluatedKey = null
+    lastEvaluatedKey = null,
+    direction = 'next'
   }) => {
     let previous = null;
     let next = null;
@@ -82,7 +83,9 @@ export default (cursorSecret) => {
       endPageKey = items.length === 0 ? undefined : getPageKeyFromItem(items[items.length - 1], pagingKeys);
     }
 
-    if (currentPage !== 1 && startPageKey !== null) {
+    const currentPage = direction === 'previous' && items?.length === 0 ? 0 : currentPage_;
+
+    if (currentPage > 1 && startPageKey !== null) {
       previous = {
         cursor: toCursor({
           limit,
@@ -93,7 +96,7 @@ export default (cursorSecret) => {
         }, cursorSecret)
       };
     }
-    if (count === limit && endPageKey !== null) {
+    if (direction === 'previous' || (count === limit && endPageKey !== null)) {
       next = {
         cursor: toCursor({
           limit,

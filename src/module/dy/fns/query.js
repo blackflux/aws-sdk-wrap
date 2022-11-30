@@ -129,7 +129,8 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       items,
       currentPage,
       exclusiveStartKey,
-      lastEvaluatedKey: result.lastEvaluatedKey
+      lastEvaluatedKey: result.lastEvaluatedKey,
+      direction: cursorType
     });
     return { items, page };
   };
