@@ -250,13 +250,27 @@ describe('Testing query', {
 
   it('Testing query exhaustive pagination with limit not reached', async () => {
     const [firstItem, secondItem, thirdItem] = await setupThreeItems();
-    const result = await model.query(primaryKey, { limit: 3 });
-    expect(result).to.deep.equal({
+    const result1 = await model.query(primaryKey, { limit: 3 });
+    expect(result1).to.deep.equal({
       items: [firstItem, secondItem, thirdItem],
+      page: {
+        next: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Mywic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwiZXhjbHVzaXZlU3RhcnRLZXkiOnsibmFtZSI6Im5hbWUtMyIsImlkIjoiMTIzIn0sImN1cnJlbnRQYWdlIjoyfQ=='
+        },
+        previous: null,
+        index: { current: 1 },
+        size: 3
+      }
+    });
+    const { cursor } = result1.page.next;
+    const result2 = await model.query(primaryKey, { cursor });
+    expect(result2).to.deep.equal({
+      items: [],
       page: {
         next: null,
         previous: null,
-        index: { current: 1 },
+        index: { current: 2 },
         size: 3
       }
     });

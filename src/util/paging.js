@@ -76,7 +76,7 @@ export default (cursorSecret) => {
     if (Array.isArray(items) && (exclusiveStartKey !== null || lastEvaluatedKey !== null)) {
       const keys = exclusiveStartKey !== null ? exclusiveStartKey : lastEvaluatedKey;
       const pagingKeys = Object.keys(keys);
-      startPageKey = getPageKeyFromItem(items[0], pagingKeys);
+      startPageKey = items.length === 0 ? null : getPageKeyFromItem(items[0], pagingKeys);
       endPageKey = lastEvaluatedKey;
     }
 
