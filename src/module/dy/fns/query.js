@@ -32,12 +32,11 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
     )
   ).length(2);
   // https://stackoverflow.com/questions/21730183/dynamodb-global-secondary-index-with-exclusive-start-key
-  const genToReturn = (providedToReturn, index) => {
+  const getPaginationKeys = (index) => {
     const secondaryKeySchemaAttributesNames = index === null
       ? []
       : secondaryKeySchemasAttributesNamesByIndex[index];
-    const paginationKeys = [...primaryKeySchemaAttributesNames, ...secondaryKeySchemaAttributesNames];
-    return [...new Set([...providedToReturn, ...paginationKeys])];
+    return [...new Set([...primaryKeySchemaAttributesNames, ...secondaryKeySchemaAttributesNames])];
   };
   const { fromCursor, buildPageObject } = Paging(cursorSecret);
   const queryItems = async ({
@@ -126,6 +125,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       ...(limit === undefined ? {} : { limit }),
       ...(scanIndexForward === undefined ? {} : { scanIndexForward })
     };
+    const paginationKeys = getPaginationKeys(index);
     const result = await queryItems({
       partitionKey,
       index,
@@ -136,7 +136,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
         : queryScanIndexForward,
       conditions,
       filters,
-      toReturn: toReturn === null ? null : genToReturn(toReturn, index),
+      toReturn: toReturn === null ? null : [...new Set([...toReturn, ...paginationKeys])],
       exclusiveStartKey
     });
     const items = result.items.map((item) => setDefaults(item, toReturn));
@@ -149,8 +149,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       count: result.count,
       items,
       currentPage,
-      exclusiveStartKey,
-      lastEvaluatedKey: result.lastEvaluatedKey,
+      paginationKeys,
       direction: cursorType
     });
     if (toReturn !== null) {
