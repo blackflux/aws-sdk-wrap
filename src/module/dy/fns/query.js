@@ -1,8 +1,27 @@
 import assert from 'assert';
 import Joi from 'joi-strict';
+import objectFields from 'object-fields';
 import Paging from '../../../util/paging.js';
 
+const getKeySchemaAttributesNames = (keySchema) => keySchema.map(({ AttributeName }) => AttributeName);
+
 export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, cursorSecret) => {
+  const {
+    KeySchema,
+    GlobalSecondaryIndexes = []
+  } = model.schema;
+  const primaryKeySchemaAttributesNames = getKeySchemaAttributesNames(KeySchema);
+  const secondaryKeySchemasAttributesNamesByIndex = Object.fromEntries(
+    GlobalSecondaryIndexes.map((e) => [e.IndexName, getKeySchemaAttributesNames(e.KeySchema)])
+  );
+  // https://stackoverflow.com/questions/21730183/dynamodb-global-secondary-index-with-exclusive-start-key
+  const getPaginationKeys = (index) => {
+    const secondaryKeySchemaAttributesNames = index === null
+      ? []
+      : secondaryKeySchemasAttributesNamesByIndex[index];
+    return [...new Set([...primaryKeySchemaAttributesNames, ...secondaryKeySchemaAttributesNames])];
+  };
+
   const conditionsSchema = Joi.object({
     attr: Joi.string()
   }).pattern(
@@ -105,6 +124,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       ...(limit === undefined ? {} : { limit }),
       ...(scanIndexForward === undefined ? {} : { scanIndexForward })
     };
+    const paginationKeys = getPaginationKeys(index);
     const result = await queryItems({
       partitionKey,
       index,
@@ -115,7 +135,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
         : queryScanIndexForward,
       conditions,
       filters,
-      toReturn,
+      toReturn: toReturn === null ? null : [...new Set([...toReturn, ...paginationKeys])],
       exclusiveStartKey
     });
     const items = result.items.map((item) => setDefaults(item, toReturn));
@@ -128,10 +148,12 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       count: result.count,
       items,
       currentPage,
-      exclusiveStartKey,
-      lastEvaluatedKey: result.lastEvaluatedKey,
+      paginationKeys,
       direction: cursorType
     });
+    if (toReturn !== null) {
+      objectFields.Retainer(toReturn)(items);
+    }
     return { items, page };
   };
 };

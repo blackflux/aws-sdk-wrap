@@ -23,7 +23,7 @@ describe('Testing paging', () => {
     expect(r).to.deep.equal({});
   });
 
-  it('Testing buildPageObject with lastEvaluatedKey', () => {
+  it('Testing buildPageObject with paginationKeys', () => {
     const { buildPageObject } = Paging();
     const result = buildPageObject({
       currentPage: 1,
@@ -31,7 +31,7 @@ describe('Testing paging', () => {
       scanIndexForward: true,
       count: 20,
       items: [{ id: '123', name: 'name' }],
-      lastEvaluatedKey: { id: '123', name: 'name' }
+      paginationKeys: ['id', 'name']
     });
     expect(result).to.deep.equal({
       next: {
@@ -67,7 +67,7 @@ describe('Testing paging', () => {
       scanIndexForward: true,
       count: 20,
       items: [{ id: '123', name: 'name' }],
-      lastEvaluatedKey: { id: '123', name: 'name' }
+      paginationKeys: ['id', 'name']
     };
     const page = buildPageObject(cursorPayload);
     expect(page).to.deep.equal({
@@ -101,7 +101,7 @@ describe('Testing paging', () => {
       scanIndexForward: true,
       count: 20,
       items: [{ id: '123', name: 'name' }],
-      lastEvaluatedKey: { id: '123', name: 'name' }
+      paginationKeys: ['id', 'name']
     });
     const { cursor } = page.next;
     const cursorInvalid = [cursor.split('_')[0], 'bad-signature'].join('_');
@@ -121,7 +121,7 @@ describe('Testing paging', () => {
       scanIndexForward: true,
       count: 20,
       items: [{ id: '123', name: 'name' }],
-      lastEvaluatedKey: { id: '123', name: 'name' }
+      paginationKeys: ['id', 'name']
     };
     const { buildPageObject } = Paging('secret');
     const page = buildPageObject(cursorPayload);
@@ -147,7 +147,7 @@ describe('Testing paging', () => {
       scanIndexForward: true,
       count: 20,
       items: [{}],
-      lastEvaluatedKey: { id: '123', name: 'name' }
+      paginationKeys: ['id', 'name']
     });
     const { cursor } = page.next;
     const { fromCursor } = Paging('secret');
