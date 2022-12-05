@@ -106,7 +106,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1669824413.157,
+        "CreationDateTime": 1670270382.697,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -119,7 +119,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1669824413.157
+          "LastUpdateToPayPerRequestDateTime": 1670270382.697
         },
         "GlobalSecondaryIndexes": [
           {
@@ -216,7 +216,67 @@
       },
       "ExpressionAttributeValues": {
         ":age": {
-          "N": "50"
+          "N": "10"
+        }
+      },
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 200,
+    "response": {},
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name-2"
+        }
+      },
+      "UpdateExpression": "SET #age = :age",
+      "ExpressionAttributeNames": {
+        "#age": "age"
+      },
+      "ExpressionAttributeValues": {
+        ":age": {
+          "N": "20"
+        }
+      },
+      "ReturnValues": "ALL_OLD"
+    },
+    "status": 200,
+    "response": {},
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name",
+      "Key": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name-3"
+        }
+      },
+      "UpdateExpression": "SET #age = :age",
+      "ExpressionAttributeNames": {
+        "#age": "age"
+      },
+      "ExpressionAttributeValues": {
+        ":age": {
+          "N": "30"
         }
       },
       "ReturnValues": "ALL_OLD"
@@ -235,27 +295,101 @@
       "KeyConditionExpression": "#pk = :pk",
       "ExpressionAttributeNames": {
         "#pk": "id",
-        "#proj1": "name",
-        "#proj2": "id"
+        "#proj1": "age",
+        "#proj2": "id",
+        "#proj3": "name"
       },
       "ExpressionAttributeValues": {
         ":pk": {
           "S": "123"
         }
       },
-      "ProjectionExpression": "#proj1,#proj2",
-      "Limit": 20,
-      "ConsistentRead": true
+      "ProjectionExpression": "#proj1,#proj2,#proj3",
+      "IndexName": "targetIndex",
+      "Limit": 2
     },
     "status": 200,
     "response": {
       "Items": [
         {
-          "id": {
-            "S": "123"
-          },
           "name": {
             "S": "name"
+          },
+          "age": {
+            "N": "10"
+          },
+          "id": {
+            "S": "123"
+          }
+        },
+        {
+          "name": {
+            "S": "name-2"
+          },
+          "age": {
+            "N": "20"
+          },
+          "id": {
+            "S": "123"
+          }
+        }
+      ],
+      "Count": 2,
+      "ScannedCount": 2,
+      "LastEvaluatedKey": {
+        "name": {
+          "S": "name-2"
+        },
+        "id": {
+          "S": "123"
+        }
+      }
+    },
+    "reqheaders": {},
+    "responseIsBinary": false
+  },
+  {
+    "scope": "http://dynamodb-local:8000",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "TableName": "table-name",
+      "KeyConditionExpression": "#pk = :pk",
+      "ExpressionAttributeNames": {
+        "#pk": "id",
+        "#proj1": "age",
+        "#proj2": "id",
+        "#proj3": "name"
+      },
+      "ExpressionAttributeValues": {
+        ":pk": {
+          "S": "123"
+        }
+      },
+      "ProjectionExpression": "#proj1,#proj2,#proj3",
+      "IndexName": "targetIndex",
+      "Limit": 2,
+      "ExclusiveStartKey": {
+        "id": {
+          "S": "123"
+        },
+        "name": {
+          "S": "name-2"
+        }
+      }
+    },
+    "status": 200,
+    "response": {
+      "Items": [
+        {
+          "name": {
+            "S": "name-3"
+          },
+          "age": {
+            "N": "30"
+          },
+          "id": {
+            "S": "123"
           }
         }
       ],
@@ -301,7 +435,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1669824413.157,
+        "CreationDateTime": 1670270382.697,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -309,12 +443,12 @@
           "ReadCapacityUnits": 0,
           "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 18,
-        "ItemCount": 1,
+        "TableSizeBytes": 58,
+        "ItemCount": 3,
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1669824413.157
+          "LastUpdateToPayPerRequestDateTime": 1670270382.697
         },
         "GlobalSecondaryIndexes": [
           {
@@ -337,8 +471,8 @@
               "ReadCapacityUnits": 0,
               "WriteCapacityUnits": 0
             },
-            "IndexSizeBytes": 18,
-            "ItemCount": 1,
+            "IndexSizeBytes": 58,
+            "ItemCount": 3,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
           },
           {
@@ -361,8 +495,8 @@
               "ReadCapacityUnits": 0,
               "WriteCapacityUnits": 0
             },
-            "IndexSizeBytes": 18,
-            "ItemCount": 1,
+            "IndexSizeBytes": 58,
+            "ItemCount": 3,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/ageIndex"
           },
           {
@@ -381,8 +515,8 @@
               "ReadCapacityUnits": 0,
               "WriteCapacityUnits": 0
             },
-            "IndexSizeBytes": 18,
-            "ItemCount": 1,
+            "IndexSizeBytes": 58,
+            "ItemCount": 3,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/idIndex"
           }
         ]

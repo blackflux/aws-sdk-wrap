@@ -67,8 +67,7 @@ export default (cursorSecret) => {
     count,
     items,
     currentPage: currentPage_ = 1,
-    exclusiveStartKey = null,
-    lastEvaluatedKey = null,
+    paginationKeys,
     direction = 'next'
   }) => {
     let previous = null;
@@ -76,11 +75,9 @@ export default (cursorSecret) => {
     let startPageKey = null;
     let endPageKey = null;
 
-    if (Array.isArray(items) && (exclusiveStartKey !== null || lastEvaluatedKey !== null)) {
-      const keys = exclusiveStartKey !== null ? exclusiveStartKey : lastEvaluatedKey;
-      const pagingKeys = Object.keys(keys);
-      startPageKey = items.length === 0 ? undefined : getPageKeyFromItem(items[0], pagingKeys);
-      endPageKey = items.length === 0 ? undefined : getPageKeyFromItem(items[items.length - 1], pagingKeys);
+    if (Array.isArray(items) && Array.isArray(paginationKeys)) {
+      startPageKey = items.length === 0 ? undefined : getPageKeyFromItem(items[0], paginationKeys);
+      endPageKey = items.length === 0 ? undefined : getPageKeyFromItem(items[items.length - 1], paginationKeys);
     }
 
     const currentPage = direction === 'previous' && items?.length === 0 ? 0 : currentPage_;
