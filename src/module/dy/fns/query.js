@@ -11,11 +11,17 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
     GlobalSecondaryIndexes = []
   } = model.schema;
   const primaryKeySchemaAttributesNames = getKeySchemaAttributesNames(KeySchema);
-  const secondaryKeySchemasAttributesNamesByIndex = GlobalSecondaryIndexes.reduce((prev, cur) => {
-    // eslint-disable-next-line no-param-reassign
-    prev[cur.IndexName] = getKeySchemaAttributesNames(cur.KeySchema);
-    return prev;
-  }, {});
+  const secondaryKeySchemasAttributesNamesByIndex = Object.fromEntries(
+    GlobalSecondaryIndexes.map((e) => [e.IndexName, getKeySchemaAttributesNames(e.KeySchema)])
+  );
+  // https://stackoverflow.com/questions/21730183/dynamodb-global-secondary-index-with-exclusive-start-key
+  const getPaginationKeys = (index) => {
+    const secondaryKeySchemaAttributesNames = index === null
+      ? []
+      : secondaryKeySchemasAttributesNamesByIndex[index];
+    return [...new Set([...primaryKeySchemaAttributesNames, ...secondaryKeySchemaAttributesNames])];
+  };
+
   const conditionsSchema = Joi.object({
     attr: Joi.string()
   }).pattern(
@@ -31,13 +37,6 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       ).length(2)
     )
   ).length(2);
-  // https://stackoverflow.com/questions/21730183/dynamodb-global-secondary-index-with-exclusive-start-key
-  const getPaginationKeys = (index) => {
-    const secondaryKeySchemaAttributesNames = index === null
-      ? []
-      : secondaryKeySchemasAttributesNamesByIndex[index];
-    return [...new Set([...primaryKeySchemaAttributesNames, ...secondaryKeySchemaAttributesNames])];
-  };
   const { fromCursor, buildPageObject } = Paging(cursorSecret);
   const queryItems = async ({
     partitionKey,
