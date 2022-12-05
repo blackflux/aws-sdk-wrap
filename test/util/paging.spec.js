@@ -127,7 +127,7 @@ describe('Testing paging', () => {
     const page = buildPageObject(cursorPayload);
     const cursor = page.next.cursor;
     const { fromCursor } = Paging();
-    expect(fromCursor(cursor)).to.deep.equal({ // 99¢ Water Frç Frç 3 28 -> 31
+    expect(fromCursor(cursor)).to.deep.equal({
       currentPage: 2,
       exclusiveStartKey: {
         id: '123',
