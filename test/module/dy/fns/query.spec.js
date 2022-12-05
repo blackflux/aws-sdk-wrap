@@ -84,6 +84,47 @@ describe('Testing query', {
     });
   });
 
+  it('Testing query with cursor fields missing', async () => {
+    const [firstItem, secondItem, thirdItem] = await setupThreeItemsWithMultipleAges();
+    const result1 = await model.query(primaryKey, {
+      index: 'targetIndex',
+      consistent: false,
+      limit: 2,
+      toReturn: ['age']
+    });
+    expect(result1).to.deep.equal({
+      items: [{ age: firstItem.age }, { age: secondItem.age }],
+      page: {
+        previous: null,
+        next: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwiZXhjbHVzaXZlU3RhcnRLZXkiOnsiaWQiOiIxMjMiLCJuYW1lIjoibmFtZS0yIn0sImN1cnJlbnRQYWdlIjoyLCJ0eXBlIjoibmV4dCJ9'
+        },
+        index: { current: 1 },
+        size: 2
+      }
+    });
+    const result2 = await model.query(primaryKey, {
+      index: 'targetIndex',
+      consistent: false,
+      limit: 2,
+      toReturn: ['age'],
+      cursor: result1.page.next.cursor
+    });
+    expect(result2).to.deep.equal({
+      items: [{ age: thirdItem.age }],
+      page: {
+        previous: {
+          // eslint-disable-next-line max-len
+          cursor: 'eyJsaW1pdCI6Miwic2NhbkluZGV4Rm9yd2FyZCI6dHJ1ZSwiZXhjbHVzaXZlU3RhcnRLZXkiOnsiaWQiOiIxMjMiLCJuYW1lIjoibmFtZS0zIn0sImN1cnJlbnRQYWdlIjoxLCJ0eXBlIjoicHJldmlvdXMifQ=='
+        },
+        next: null,
+        index: { current: 2 },
+        size: 2
+      }
+    });
+  });
+
   it('Testing query with toReturn', async () => {
     await generateItem();
     const result = await model.query(primaryKey, { toReturn: ['name'] });

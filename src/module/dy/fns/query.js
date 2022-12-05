@@ -1,8 +1,21 @@
 import assert from 'assert';
 import Joi from 'joi-strict';
+import objectFields from 'object-fields';
 import Paging from '../../../util/paging.js';
 
+const getKeySchemaAttributesNames = (keySchema) => keySchema.map(({ AttributeName }) => AttributeName);
+
 export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, cursorSecret) => {
+  const {
+    KeySchema,
+    GlobalSecondaryIndexes = []
+  } = model.schema;
+  const primaryKeySchemaAttributesNames = getKeySchemaAttributesNames(KeySchema);
+  const secondaryKeySchemasAttributesNamesByIndex = GlobalSecondaryIndexes.reduce((prev, cur) => {
+    // eslint-disable-next-line no-param-reassign
+    prev[cur.IndexName] = getKeySchemaAttributesNames(cur.KeySchema);
+    return prev;
+  }, {});
   const conditionsSchema = Joi.object({
     attr: Joi.string()
   }).pattern(
@@ -18,6 +31,14 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       ).length(2)
     )
   ).length(2);
+  // https://stackoverflow.com/questions/21730183/dynamodb-global-secondary-index-with-exclusive-start-key
+  const genToReturn = (providedToReturn, index) => {
+    const secondaryKeySchemaAttributesNames = index === null
+      ? []
+      : secondaryKeySchemasAttributesNamesByIndex[index];
+    const paginationKeys = [...primaryKeySchemaAttributesNames, ...secondaryKeySchemaAttributesNames];
+    return [...new Set([...providedToReturn, ...paginationKeys])];
+  };
   const { fromCursor, buildPageObject } = Paging(cursorSecret);
   const queryItems = async ({
     partitionKey,
@@ -115,7 +136,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
         : queryScanIndexForward,
       conditions,
       filters,
-      toReturn,
+      toReturn: toReturn === null ? null : genToReturn(toReturn, index),
       exclusiveStartKey
     });
     const items = result.items.map((item) => setDefaults(item, toReturn));
@@ -132,6 +153,9 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       lastEvaluatedKey: result.lastEvaluatedKey,
       direction: cursorType
     });
+    if (toReturn !== null) {
+      objectFields.Retainer(toReturn)(items);
+    }
     return { items, page };
   };
 };
