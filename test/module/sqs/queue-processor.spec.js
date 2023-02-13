@@ -29,6 +29,7 @@ describe('Testing QueueProcessor', {
   let aws;
   let processor;
   let executor;
+  let findSymbol;
   beforeEach(() => {
     aws = Index({
       logger: console,
@@ -85,6 +86,8 @@ describe('Testing QueueProcessor', {
         }
       });
     });
+    findSymbol = (obj, name) => Object.getOwnPropertySymbols(obj)
+      .find((s) => String(s) === `Symbol(${name})`);
   });
 
   it('Visualize', async () => {
@@ -155,8 +158,18 @@ describe('Testing QueueProcessor', {
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [
-        { __meta: { trace: ['step-urgent-message.before()'] }, name: 'step1', meta: 'before' },
-        { __meta: { trace: ['other', 'step-urgent-message'] }, name: 'step1', meta: 'handler' }
+        {
+          __meta: { trace: ['step-urgent-message.before()'] },
+          name: 'step1',
+          meta: 'before',
+          // eslint-disable-next-line no-underscore-dangle
+          [findSymbol(result.__next[0], 'urgent')]: true
+        },
+        {
+          __meta: { trace: ['other', 'step-urgent-message'] },
+          name: 'step1',
+          meta: 'handler'
+        }
       ]
     });
   });
@@ -165,7 +178,12 @@ describe('Testing QueueProcessor', {
     const result = await executor([{ name: 'step1', meta: 'meta1' }]);
     expect(result).to.deep.equal({
       batchItemFailures: [],
-      __next: [{ __meta: { trace: ['step1'] }, name: 'step2' }]
+      __next: [{
+        __meta: { trace: ['step1'] },
+        name: 'step2',
+        // eslint-disable-next-line no-underscore-dangle
+        [findSymbol(result.__next[0], 'delay-seconds')]: 10
+      }]
     });
   });
 
@@ -307,7 +325,9 @@ describe('Testing QueueProcessor', {
           failureCount: 1,
           timestamp: '2020-05-15T19:56:35.713Z',
           trace: ['auto-retry']
-        }
+        },
+        // eslint-disable-next-line no-underscore-dangle
+        [findSymbol(result.__next[0], 'delay-seconds')]: 60
       }]
     });
     expect(recorder.get()).to.deep.equal([]);
@@ -323,7 +343,9 @@ describe('Testing QueueProcessor', {
           failureCount: 1,
           timestamp: '2020-05-15T19:56:35.713Z',
           trace: ['auto-retry-backoff-fn']
-        }
+        },
+        // eslint-disable-next-line no-underscore-dangle
+        [findSymbol(result.__next[0], 'delay-seconds')]: 10
       }]
     });
     expect(recorder.get()).to.deep.equal([]);
