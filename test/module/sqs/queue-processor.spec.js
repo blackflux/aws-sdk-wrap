@@ -156,7 +156,7 @@ describe('Testing QueueProcessor', {
       batchItemFailures: r.batchItemFailures,
       __next: r.__next.map(({ __meta, name, meta }) => ({__meta, name, meta}))
     }
-    expect(result).to.deep.include({
+    expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [
         { __meta: { trace: ['step-urgent-message.before()'] }, name: 'step1', meta: 'before' },
