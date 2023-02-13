@@ -151,11 +151,13 @@ describe('Testing QueueProcessor', {
   });
 
   it('Testing urgent message before others', async () => {
-    const { batchItemFailures, __next } = await executor([{ __meta: { trace: ['other'] }, name: 'step-urgent-message' }]);
+    const { batchItemFailures, __next } = await executor([
+      { __meta: { trace: ['other'] }, name: 'step-urgent-message' }
+    ]);
     const result = {
       batchItemFailures,
       __next: __next.map(({ __meta, name, meta }) => ({ __meta, name, meta }))
-    }
+    };
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [
@@ -168,9 +170,9 @@ describe('Testing QueueProcessor', {
   it('Testing step1 -> [step2]', async () => {
     const { batchItemFailures, __next } = await executor([{ name: 'step1', meta: 'meta1' }]);
     const result = {
-      batchItemFailures: batchItemFailures,
+      batchItemFailures,
       __next: __next.map(({ __meta, name }) => ({ __meta, name }))
-    }
+    };
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [{ __meta: { trace: ['step1'] }, name: 'step2' }]
@@ -308,8 +310,13 @@ describe('Testing QueueProcessor', {
     const { batchItemFailures, __next } = await executor([{ name: 'auto-retry', retrySettings }]);
     const result = {
       batchItemFailures,
-      __next: __next.map(({ name, retrySettings, __meta }) => ({ name, retrySettings, __meta }))
-    }
+      __next: __next.map((e) => ({
+        name: e.name,
+        retrySettings: e.retrySettings,
+        // eslint-disable-next-line no-underscore-dangle
+        __meta: e.__meta
+      }))
+    };
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [{
@@ -330,7 +337,7 @@ describe('Testing QueueProcessor', {
     const result = {
       batchItemFailures,
       __next: __next.map(({ name, __meta }) => ({ name, __meta }))
-    }
+    };
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [{
