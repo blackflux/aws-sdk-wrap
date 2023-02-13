@@ -35,7 +35,7 @@ describe('Testing lock-manager.js', {
       created: true,
       modified: true,
       item: {
-        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
         id: 'lock-name',
         leaseDurationMs: 100,
         lockAcquiredTimeUnixMs: 1650651221000,
@@ -96,7 +96,7 @@ describe('Testing lock-manager.js', {
       created: false,
       modified: true,
       item: {
-        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
+        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
         id: 'lock-name',
         leaseDurationMs: 100,
         lockAcquiredTimeUnixMs: 1650651221000,

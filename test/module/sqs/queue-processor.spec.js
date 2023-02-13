@@ -154,7 +154,13 @@ describe('Testing QueueProcessor', {
   });
 
   it('Testing urgent message before others', async () => {
-    const result = await executor([{ __meta: { trace: ['other'] }, name: 'step-urgent-message' }]);
+    const { batchItemFailures, __next } = await executor([
+      { __meta: { trace: ['other'] }, name: 'step-urgent-message' }
+    ]);
+    const result = {
+      batchItemFailures,
+      __next: __next.map(({ __meta, name, meta }) => ({ __meta, name, meta }))
+    };
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [
@@ -175,7 +181,11 @@ describe('Testing QueueProcessor', {
   });
 
   it('Testing step1 -> [step2]', async () => {
-    const result = await executor([{ name: 'step1', meta: 'meta1' }]);
+    const { batchItemFailures, __next } = await executor([{ name: 'step1', meta: 'meta1' }]);
+    const result = {
+      batchItemFailures,
+      __next: __next.map(({ __meta, name }) => ({ __meta, name }))
+    };
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [{
@@ -315,7 +325,16 @@ describe('Testing QueueProcessor', {
 
   it('Test auto retry (backoff)', async ({ recorder }) => {
     const retrySettings = { backoffInSec: 60 };
-    const result = await executor([{ name: 'auto-retry', retrySettings }]);
+    const { batchItemFailures, __next } = await executor([{ name: 'auto-retry', retrySettings }]);
+    const result = {
+      batchItemFailures,
+      __next: __next.map((e) => ({
+        name: e.name,
+        retrySettings: e.retrySettings,
+        // eslint-disable-next-line no-underscore-dangle
+        __meta: e.__meta
+      }))
+    };
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [{
@@ -334,7 +353,11 @@ describe('Testing QueueProcessor', {
   });
 
   it('Test auto retry (backoff function)', async ({ recorder }) => {
-    const result = await executor([{ name: 'auto-retry-backoff-fn' }]);
+    const { batchItemFailures, __next } = await executor([{ name: 'auto-retry-backoff-fn' }]);
+    const result = {
+      batchItemFailures,
+      __next: __next.map(({ name, __meta }) => ({ name, __meta }))
+    };
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [{
