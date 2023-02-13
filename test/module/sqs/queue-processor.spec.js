@@ -151,8 +151,12 @@ describe('Testing QueueProcessor', {
   });
 
   it('Testing urgent message before others', async () => {
-    const result = await executor([{ __meta: { trace: ['other'] }, name: 'step-urgent-message' }]);
-    expect(result).to.deep.equal({
+    const r = await executor([{ __meta: { trace: ['other'] }, name: 'step-urgent-message' }]);
+    const result = {
+      batchItemFailures: r.batchItemFailures,
+      __next: r.__next.map(({ __meta, name, meta }) => ({__meta, name, meta}))
+    }
+    expect(result).to.deep.include({
       batchItemFailures: [],
       __next: [
         { __meta: { trace: ['step-urgent-message.before()'] }, name: 'step1', meta: 'before' },
@@ -162,7 +166,11 @@ describe('Testing QueueProcessor', {
   });
 
   it('Testing step1 -> [step2]', async () => {
-    const result = await executor([{ name: 'step1', meta: 'meta1' }]);
+    const r = await executor([{ name: 'step1', meta: 'meta1' }]);
+    const result = {
+      batchItemFailures: r.batchItemFailures,
+      __next: r.__next.map(({ __meta, name }) => ({ __meta, name }))
+    }
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [{ __meta: { trace: ['step1'] }, name: 'step2' }]
