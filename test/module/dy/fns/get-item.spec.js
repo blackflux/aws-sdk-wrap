@@ -90,12 +90,13 @@ describe('Testing get-item', {
   });
 
   it('Testing getItem with default empty set', async () => {
-    await generateTable({ extraAttrs: { ids: { type: 'set', default: [] } } });
+    const def = [];
+    await generateTable({ extraAttrs: { ids: { type: 'set', default: def } } });
     const { item } = await model.create({ id: '123', name: 'name', age: 50 });
     const key = { id: item.id, name: item.name };
     const result = await model.getItem(key, { toReturn: ['ids'] });
-    expect(result).to.deep.equal({
-      ids: []
-    });
+    expect(result).to.deep.equal({ ids: [] });
+    result.ids.push(1, 2, 3);
+    expect(def).to.deep.equal([]);
   });
 });
