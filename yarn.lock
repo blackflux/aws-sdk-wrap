@@ -228,12 +228,10 @@
     axios "0.27.2"
     object-fields "3.0.1"
 
-"@blackflux/eslint-plugin-rules@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@blackflux/eslint-plugin-rules/-/eslint-plugin-rules-2.1.0.tgz#ee6bcf76eaf2b7f9f99590796602bde2e9958462"
-  integrity sha512-/0xNlcj3c4KeLY/vcNnOV0m0df6Bi4GNqyeEGyIBmNV8cutqUo88GlS4kH2bQsutopUoQwncTcBZU9SCRTj8Og==
-  dependencies:
-    smart-fs "2.0.2"
+"@blackflux/eslint-plugin-rules@2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@blackflux/eslint-plugin-rules/-/eslint-plugin-rules-2.2.0.tgz#abcd12f19bb30b829acbdf380e71c74b599746aa"
+  integrity sha512-HuM5szdoZw9nc68LyUdFEl+rLdRB6u+5wD7GQ6xRR40eABD+zIOs8mpHbAxfJs+tlxF5pnfi2POn4K9tTbcbEg==
 
 "@blackflux/robo-config-plugin@7.9.19":
   version "7.9.19"
@@ -3239,10 +3237,10 @@ object-scan@18.0.1:
   resolved "https://registry.yarnpkg.com/object-scan/-/object-scan-18.0.1.tgz#d070049513e591fc288a505aeef1ea5b7a017c9e"
   integrity sha512-n87IMmFJbnjKkMCG7NH2fDjcvYM8Ilp3MbCbh7faR6G21r4zVVonnvzaXsbE4yYU9vSe/CHsAoU3u+LJJ8/VWg==
 
-object-scan@18.3.11:
-  version "18.3.11"
-  resolved "https://registry.yarnpkg.com/object-scan/-/object-scan-18.3.11.tgz#f6da7e74a9a0bab1e0da4deb8ae5c617de04fee8"
-  integrity sha512-QvjE0yiQ8j6rkt3BU1JIB6y36eyqeJlRcsGc4/FEwsY52TwFhNj+/TkHRJCGY8cATRL2NWdSjaNnFLk87O76AQ==
+object-scan@18.5.1:
+  version "18.5.1"
+  resolved "https://registry.yarnpkg.com/object-scan/-/object-scan-18.5.1.tgz#34bcbe5300070a17ccad09688a8a6ad09dfda2bb"
+  integrity sha512-PgXlHFVeSVERCqDL1yNXZgNhJ/lzfxltnIHGA22cfuXB2i7HBOqgGr9wBD452LJajsnFHPGFfujtpvd6FUVmPw==
 
 object-treeify@2.0.0:
   version "2.0.0"
