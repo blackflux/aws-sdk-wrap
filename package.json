@@ -67,7 +67,7 @@
     "lib"
   ],
   "dependencies": {
-    "dynamodb-toolbox": "0.4.3",
+    "dynamodb-toolbox": "0.6.5",
     "joi-strict": "2.0.1",
     "lambda-async": "2.0.1",
     "lambda-monitor-logger": "4.0.0",
