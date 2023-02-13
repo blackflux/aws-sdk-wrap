@@ -62,8 +62,14 @@ describe('Testing create-or-modify', {
       }
     });
     expect(await getItemOrNull(key)).to.deep.equal(null);
-    const err = await capture(() => model.createOrModify(item));
-    expect(err.message).to.equal('Cannot convert undefined or null to object');
+    const r = await model.createOrModify(item);
+    expect(r).to.deep.equal({
+      created: true,
+      modified: true,
+      item: {
+        age: 50, scope: null, name: 'name', id: '123'
+      }
+    });
   });
 
   it('Testing createOrModify with default function', async () => {
