@@ -67,7 +67,7 @@
           "S": "a"
         },
         "guid": {
-          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+          "S": "ed420363-bfd7-4e3b-9f3a-5b25c8793a34"
         },
         "reserveDurationMs": {
           "N": "100"
@@ -117,7 +117,7 @@
           "S": "a"
         },
         "guid": {
-          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+          "S": "ed420363-bfd7-4e3b-9f3a-5b25c8793a34"
         },
         "reserveDurationMs": {
           "N": "100"
@@ -170,7 +170,7 @@
           "S": "b"
         },
         "guid": {
-          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+          "S": "ed420363-bfd7-4e3b-9f3a-5b25c8793a34"
         },
         "reserveDurationMs": {
           "N": "100"
@@ -234,7 +234,7 @@
       },
       "ExpressionAttributeValues": {
         ":guid": {
-          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+          "S": "ed420363-bfd7-4e3b-9f3a-5b25c8793a34"
         },
         ":reserveDurationMs": {
           "N": "100"
@@ -252,7 +252,7 @@
           "N": "1650651221000"
         },
         ":attr2": {
-          "S": "d85df83d-c38e-45d5-a369-2460889ce6c6"
+          "S": "ed420363-bfd7-4e3b-9f3a-5b25c8793a34"
         },
         ":attr3": {
           "BOOL": false

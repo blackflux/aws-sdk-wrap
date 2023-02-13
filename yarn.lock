@@ -2807,6 +2807,18 @@ lowercase-keys@^2.0.0:
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-2.0.0.tgz#2603e78b7b4b0006cbca2fbcc8a3202558ac9479"
   integrity sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==
 
+lru-cache-ext@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/lru-cache-ext/-/lru-cache-ext-3.0.2.tgz#5dc1fb94bc22431c8a8fe602226155838d940b52"
+  integrity sha512-PQ0kInomO2I3HZuiagNTkaNyiDQkcIyeEahHRWSBVsEaxPqXb4FTPU4ajl9znX+C5antzQ0UWcfWrxy8kAhUrw==
+  dependencies:
+    lru-cache "7.8.1"
+
+lru-cache@7.8.1:
+  version "7.8.1"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.8.1.tgz#68ee3f4807a57d2ba185b7fd90827d5c21ce82bb"
+  integrity sha512-E1v547OCgJvbvevfjgK9sNKIVXO96NnsTsFPBlg4ZxjhsJSODoH9lk8Bm0OxvHNm6Vm5Yqkl/1fErDxhYL8Skg==
+
 lru-cache@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-5.1.1.tgz#1da27e6710271947695daf6848e847f01d84b920"
@@ -3076,16 +3088,17 @@ node-releases@^2.0.8:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.10.tgz#c311ebae3b6a148c89b1813fd7c4d3c024ef537f"
   integrity sha512-5GFldHPXVG/YZmFzJvKK2zDSzPKhEp0+ZR5SVaoSag9fsL5YgHbUHDfnG5494ISANDcK4KwPXAx2xqVEydmd7w==
 
-node-tdd@3.4.2:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/node-tdd/-/node-tdd-3.4.2.tgz#475f1e4fcf11298edef5b66abc336a6b6a84338f"
-  integrity sha512-RZoB9PpriKmAJIuxc9UR6uokCo8CB71CVkDlwHGZgTFftl0gjX94J5Vig+S6S6S37QgTJTVPWk7MAG7InQt/bA==
+node-tdd@3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/node-tdd/-/node-tdd-3.5.0.tgz#fa5166e5117e6dd5998f6ca1085ceaf063010dfa"
+  integrity sha512-1m3FZF4RZOERgbuQZ5Agivi3tb1Jp6OSI78q3Ys+KZlqPIDO5O0whwV2mtR6NG4w2z2SkB6e/dcCGxsoLIsn5A==
   dependencies:
     callsites "4.0.0"
     compare-urls "2.0.0"
     joi-strict "2.0.1"
     lodash.clonedeep "4.5.0"
     lodash.get "4.4.2"
+    lru-cache-ext "3.0.2"
     minimist "1.2.6"
     nock "13.2.4"
     object-scan "18.0.1"
