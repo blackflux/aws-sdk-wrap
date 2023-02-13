@@ -2,6 +2,7 @@ import assert from 'assert';
 import Joi from 'joi-strict';
 import objectFields from 'object-fields';
 import isEqual from 'lodash.isequal';
+import clonedeep from 'lodash.clonedeep';
 import MergeAttributes from './util/merge-attributes.js';
 import ValidateItem from './util/validate-item.js';
 import generateItemRewriter from './util/generate-item-rewriter.js';
@@ -23,7 +24,7 @@ export default ({
     return {
       ...entries.reduce(
         (prev, [k, v]) => Object
-          .assign(prev, { [k]: typeof v === 'function' ? v(item) : v }),
+          .assign(prev, { [k]: clonedeep(typeof v === 'function' ? v(item) : v) }),
         {}
       ),
       ...item
