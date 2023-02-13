@@ -35,7 +35,7 @@ describe('Testing uc-manager.js', {
       created: true,
       modified: true,
       item: {
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: '1234',
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: false,
@@ -67,7 +67,7 @@ describe('Testing uc-manager.js', {
       created: true,
       modified: true,
       item: {
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: '1234',
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: false,
@@ -81,7 +81,7 @@ describe('Testing uc-manager.js', {
       created: false,
       modified: true,
       item: {
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: '1234',
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: false,
@@ -98,7 +98,7 @@ describe('Testing uc-manager.js', {
       created: true,
       modified: true,
       item: {
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: '1234',
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: true,
@@ -114,7 +114,7 @@ describe('Testing uc-manager.js', {
       item: {
         timestamp: 1650651221000,
         id: '1234',
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         ucReserveTimeUnixMs: 0,
         reserveDurationMs: 100,
         permanent: false,
@@ -133,7 +133,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 9007199254740991,
         reserveDurationMs: 0,
         permanent: true,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: '1234'
       }
@@ -149,7 +149,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 9007199254740991,
         reserveDurationMs: 0,
         permanent: true,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: '1234'
       }
@@ -168,7 +168,7 @@ describe('Testing uc-manager.js', {
       created: true,
       modified: true,
       item: {
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: '1234',
         owner: 'aws-sdk-wrap-uc-manager',
         permanent: false,
@@ -192,7 +192,7 @@ describe('Testing uc-manager.js', {
         timestamp: 1650651221000,
         permanent: false,
         reserveDurationMs: 100,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: '1234'
       }
     });
@@ -206,7 +206,7 @@ describe('Testing uc-manager.js', {
         timestamp: 1650651221000,
         reserveDurationMs: 0,
         permanent: true,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         id: '1234'
       }
     });
@@ -233,7 +233,7 @@ describe('Testing uc-manager.js', {
           reserveDurationMs: 100,
           permanent: false,
           id: 'B',
-          guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+          guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
           owner: 'aws-sdk-wrap-uc-manager',
           timestamp: 1650651221000,
           ucReserveTimeUnixMs: 0
@@ -248,7 +248,7 @@ describe('Testing uc-manager.js', {
           reserveDurationMs: 100,
           permanent: false,
           id: 'D',
-          guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+          guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
           owner: 'aws-sdk-wrap-uc-manager',
           timestamp: 1650651221000,
           ucReserveTimeUnixMs: 0
@@ -275,7 +275,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 1650651221000,
         permanent: false,
         reserveDurationMs: 100,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: 'a'
       }
@@ -287,7 +287,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 1650651221000,
         permanent: false,
         reserveDurationMs: 100,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: 'b'
       }
@@ -299,7 +299,7 @@ describe('Testing uc-manager.js', {
         reserveDurationMs: 100,
         permanent: false,
         id: 'a',
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         owner: 'aws-sdk-wrap-uc-manager',
         timestamp: 1650651221000,
         ucReserveTimeUnixMs: 0
@@ -311,7 +311,7 @@ describe('Testing uc-manager.js', {
         reserveDurationMs: 100,
         permanent: false,
         id: 'b',
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         owner: 'aws-sdk-wrap-uc-manager',
         timestamp: 1650651221000,
         ucReserveTimeUnixMs: 0
@@ -330,7 +330,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 1650651221000,
         permanent: false,
         reserveDurationMs: 100,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: 'a'
       }
@@ -342,7 +342,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 1650651221000,
         permanent: false,
         reserveDurationMs: 100,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: 'b'
       }
@@ -390,7 +390,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 9007199254740991,
         reserveDurationMs: 0,
         permanent: true,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: 'a'
       }
@@ -402,7 +402,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 9007199254740991,
         reserveDurationMs: 0,
         permanent: true,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: 'b'
       }
@@ -429,7 +429,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 1650651221000,
         permanent: false,
         reserveDurationMs: 100,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: '1234'
       }
@@ -449,7 +449,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 9007199254740991,
         reserveDurationMs: 0,
         permanent: true,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: '1234'
       }
@@ -470,7 +470,7 @@ describe('Testing uc-manager.js', {
         ucReserveTimeUnixMs: 9007199254740991,
         reserveDurationMs: 0,
         permanent: true,
-        guid: 'ed420363-bfd7-4e3b-9f3a-5b25c8793a34',
+        guid: 'd85df83d-c38e-45d5-a369-2460889ce6c6',
         timestamp: 1650651221000,
         id: '1234'
       }

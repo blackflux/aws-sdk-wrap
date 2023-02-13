@@ -154,9 +154,7 @@ describe('Testing QueueProcessor', {
   });
 
   it('Testing urgent message before others', async () => {
-    const result = await executor([
-      { __meta: { trace: ['other'] }, name: 'step-urgent-message' }
-    ]);
+    const result = await executor([{ __meta: { trace: ['other'] }, name: 'step-urgent-message' }]);
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [
