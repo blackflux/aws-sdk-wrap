@@ -30,6 +30,7 @@ export default (model, validateSecondaryIndex, setDefaults) => async (...args) =
     ...(filters === null ? {} : { filters }),
     ...(toReturn === null ? {} : { attributes: toReturn }),
     ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey }),
+    parseAsEntity: model.table.name,
     entity: model.table.name
   });
   return {

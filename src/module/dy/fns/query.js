@@ -70,6 +70,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
         ...(filters === null ? {} : { filters }),
         ...(toReturn === null ? {} : { attributes: toReturn }),
         ...(lastEvaluatedKey === null ? {} : { startKey: lastEvaluatedKey }),
+        parseAsEntity: model.table.name,
         entity: model.table.name
       });
       items.push(...result.Items);
