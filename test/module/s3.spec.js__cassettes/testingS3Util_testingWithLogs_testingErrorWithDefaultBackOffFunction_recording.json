@@ -2,7 +2,7 @@
   {
     "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
     "method": "PUT",
-    "path": "/key",
+    "path": "/key?x-id=PutObject",
     "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
     "status": 503,
     "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>Reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
@@ -11,18 +11,17 @@
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-encoding": "gzip",
       "content-length": "^[1-9][0-9]*$",
-      "content-md5": "+WKtvLzJsD54HQEFr1LSQQ==",
       "content-type": "application/json",
       "host": "test-bucket-name.s3.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+      "user-agent": "aws-sdk-js/3.367.0 ua/2.0 os/linux#5.4.0-153-generic lang/js md/nodejs#16.20.1 api/s3#3.367.0 exec-env/AWS_Lambda_nodejs16.x",
+      "x-amz-content-sha256": "426775b0ad4043571499e9e4e041ce91505de99b2a75e9eda2d9a101d6a64449",
       "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
     }
   },
   {
     "scope": "https://test-bucket-name.s3.us-west-2.amazonaws.com:443",
     "method": "PUT",
-    "path": "/key",
+    "path": "/key?x-id=PutObject",
     "body": "1f8b0800000000000203ab564a492c4954b28250b500b91e43dd0f000000",
     "status": 503,
     "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>SlowDown</Code><Message>Reduce your request rate.</Message><Endpoint>s3.amazonaws.com</Endpoint><Bucket>test-bucket-name</Bucket><RequestId>C30E1BAD9206F9FD</RequestId><HostId>7Dk91X8guy/UBOfV5/6xu4aZSlBogExu9zsJ9mz9JPL6rSoz+JdVVl4e2iQm/eFNXOud+4RB0WI=</HostId></Error>",
@@ -31,11 +30,10 @@
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-encoding": "gzip",
       "content-length": "^[1-9][0-9]*$",
-      "content-md5": "+WKtvLzJsD54HQEFr1LSQQ==",
       "content-type": "application/json",
       "host": "test-bucket-name.s3.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+      "user-agent": "aws-sdk-js/3.367.0 ua/2.0 os/linux#5.4.0-153-generic lang/js md/nodejs#16.20.1 api/s3#3.367.0 exec-env/AWS_Lambda_nodejs16.x",
+      "x-amz-content-sha256": "426775b0ad4043571499e9e4e041ce91505de99b2a75e9eda2d9a101d6a64449",
       "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
     }
   }

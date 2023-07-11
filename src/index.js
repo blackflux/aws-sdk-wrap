@@ -67,7 +67,10 @@ export default (opts = {}) => {
     const service = action.slice(0, splitIndex);
     const funcName = action.slice(splitIndex + 1);
     try {
-      const response = await getService(service)[funcName](params).promise();
+      const svc = await getService(service);
+      const cmds = await getService(`${service}:CMD`);
+      const cmd = new cmds[funcName](params);
+      const response = await svc.send(cmd);
       onCallIfSet({
         action,
         params,
@@ -78,16 +81,16 @@ export default (opts = {}) => {
       });
       return response;
     } catch (e) {
-      if (expectedErrorCodes.indexOf(e.code) !== -1) {
+      if (expectedErrorCodes.includes(e.name)) {
         onCallIfSet({
           action,
           params,
           options,
           status: '4xx',
           error: e,
-          response: e.code
+          response: e.name
         });
-        return e.code;
+        return e.name;
       }
       if (logger_ !== null) {
         logger_.warn(`Request failed for ${service}.${funcName}()\n${JSON.stringify({
