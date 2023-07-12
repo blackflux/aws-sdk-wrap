@@ -6,12 +6,12 @@ import {
   PutObjectCommand,
   S3Client
 } from '@aws-sdk/client-s3';
-import { ConfiguredRetryStrategy } from '@aws-sdk/util-retry';
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import Index from '../../src/index.js';
 import S3Module from '../../src/module/s3.js';
 import nockReqHeaderOverwrite from '../req-header-overwrite.js';
+import retryStrategy from '../helper/retry-strategy.js';
 
 describe('Testing s3 Util', {
   useNock: true,
@@ -26,12 +26,7 @@ describe('Testing s3 Util', {
     S3 = (opts = {}) => S3Module({
       call: Index({
         logger: console,
-        config: {
-          retryStrategy: new ConfiguredRetryStrategy(
-            1, // max attempts.
-            (attempt) => 0
-          )
-        },
+        config: { retryStrategy },
         services: {
           S3: S3Client,
           'S3:CMD': {

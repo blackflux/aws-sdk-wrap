@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import AWS from 'aws-sdk';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import Index from '../src/index.js';
 import nockReqHeaderOverwrite from './req-header-overwrite.js';
 
@@ -10,7 +11,8 @@ const { DocumentClient } = DynamoDB;
 describe('Testing index', {
   timestamp: '2022-05-17T18:21:22.341Z',
   useNock: true,
-  nockReqHeaderOverwrite
+  nockReqHeaderOverwrite,
+  envVarsFile: './default.env.yml'
 }, () => {
   let aws;
   let logs;
@@ -20,7 +22,8 @@ describe('Testing index', {
       services: {
         'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient,
         'DynamoDB.Converter': AWS.DynamoDB.Converter,
-        S3: AWS.S3
+        S3: S3Client,
+        'S3:CMD': { PutObjectCommand }
       },
       onCall: (kwargs) => logs.push(kwargs)
     });
@@ -49,25 +52,20 @@ describe('Testing index', {
   });
 
   it('Testing Exception', async ({ capture }) => {
-    const error = await capture(() => aws.call('s3:putObject', {}));
-    expect(error.message).to.equal(
-      'There were 2 validation errors:\n* MissingRequiredParameter: '
-      + 'Missing required key \'Bucket\' in params\n* MissingRequiredParameter: '
-      + 'Missing required key \'Key\' in params'
-    );
+    const error = await capture(() => aws.call('S3:PutObjectCommand', {}));
+    expect(error.message).to.equal('No value provided for input HTTP label: Bucket.');
   });
 
-  it('Testing Expected Exception', async () => {
-    const code = await aws.call('s3:putObject', {}, { expectedErrorCodes: ['MultipleValidationErrors'] });
-    expect(code).to.equal('MultipleValidationErrors');
+  it('Testing Expected Exception', async ({ capture }) => {
+    const code = await capture(
+      () => aws.call('S3:PutObjectCommand', {}, { expectedErrorCodes: ['MultipleValidationErrors'] })
+    );
+    expect(code.message).to.equal('No value provided for input HTTP label: Bucket.');
     expect(logs[0]).to.deep.includes({
-      status: '4xx',
-      action: 's3:putObject',
+      action: 'S3:PutObjectCommand',
       params: {},
-      options: {
-        expectedErrorCodes: ['MultipleValidationErrors']
-      },
-      response: 'MultipleValidationErrors'
+      status: '5xx',
+      response: undefined
     });
   });
 
@@ -75,18 +73,15 @@ describe('Testing index', {
     const awsCustomLogger = Index({
       logger: {
         warn: (msg) => {
-          expect(msg).to.contain('Request failed for s3.putObject()');
+          expect(msg).to.contain('Request failed for S3.PutObjectCommand()');
         }
       },
       services: {
-        s3: AWS.S3
+        S3: S3Client,
+        'S3:CMD': { PutObjectCommand }
       }
     });
-    const err = await capture(() => awsCustomLogger.call('s3:putObject', {}));
-    expect(err.message).to.equal(
-      'There were 2 validation errors:\n* MissingRequiredParameter: '
-      + 'Missing required key \'Bucket\' in params\n* MissingRequiredParameter: '
-      + 'Missing required key \'Key\' in params'
-    );
+    const err = await capture(() => awsCustomLogger.call('S3:PutObjectCommand', {}));
+    expect(err.message).to.equal('No value provided for input HTTP label: Bucket.');
   });
 });

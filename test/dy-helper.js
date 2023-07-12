@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 import { expect } from 'chai';
 import Index from '../src/index.js';
 import DyUtil from '../src/module/dy.js';
+import retryStrategy from './helper/retry-strategy.js';
 
 const { DynamoDB } = AWS;
 const { DocumentClient } = DynamoDB;
@@ -31,7 +32,7 @@ export const buildLockManager = () => {
       region: 'us-west-2',
       accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
       secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-      maxRetries: 0,
+      retryStrategy,
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
@@ -52,7 +53,7 @@ export const buildUcManager = () => {
       region: 'us-west-2',
       accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
       secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-      maxRetries: 0,
+      retryStrategy,
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
@@ -76,7 +77,7 @@ export const buildModel = ({
 } = {}) => {
   const index = Index({
     config: {
-      maxRetries: 0,
+      retryStrategy,
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {

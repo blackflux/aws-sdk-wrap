@@ -1,13 +1,30 @@
 import { expect } from 'chai';
-import AWS from 'aws-sdk';
 import { describe } from 'node-tdd';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import createModel from '../../../src/module/dy/create-model.js';
 import { validateOneParam } from '../../helper/uncalled-validate-fns.js';
 
-const { DynamoDB } = AWS;
-const { DocumentClient } = DynamoDB;
-
 describe('Testing create-model.js', () => {
+  let DocumentClient;
+  beforeEach(() => {
+    DocumentClient = DynamoDBDocumentClient.from(new DynamoDBClient({}), {
+      marshallOptions: {
+        // Whether to automatically convert empty strings, blobs, and sets to `null`.
+        convertEmptyValues: false, // if not false explicitly, we set it to true.
+        // Whether to remove undefined values while marshalling.
+        removeUndefinedValues: false, // false, by default.
+        // Whether to convert typeof object to map attribute.
+        convertClassInstanceToMap: false // false, by default.
+      },
+      unmarshallOptions: {
+        // Whether to return numbers as a string instead of converting them to native JavaScript numbers.
+        // NOTE: this is required to be true in order to use the bigint data type.
+        wrapNumbers: false // false, by default.
+      }
+    });
+  });
+
   it('Testing basic logic', () => {
     const r = createModel({
       name: 'table-name',
@@ -23,7 +40,7 @@ describe('Testing create-model.js', () => {
           projectionType: 'KEYS_ONLY'
         }
       },
-      DocumentClient: new DocumentClient()
+      DocumentClient
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
@@ -36,7 +53,7 @@ describe('Testing create-model.js', () => {
         name: { type: 'string' },
         other: { type: 'string' }
       },
-      DocumentClient: new DocumentClient()
+      DocumentClient
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
@@ -50,7 +67,7 @@ describe('Testing create-model.js', () => {
         other: { type: 'string' },
         number: { type: 'number' }
       },
-      DocumentClient: new DocumentClient()
+      DocumentClient
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
@@ -65,7 +82,7 @@ describe('Testing create-model.js', () => {
           other: { type: 'string' },
           number: { type: 'number' }
         },
-        DocumentClient: new DocumentClient()
+        DocumentClient
       });
     } catch (error) {
       expect(error.message).to.equal('map not supported for indexing');
@@ -80,7 +97,7 @@ describe('Testing create-model.js', () => {
         name: { type: 'string' },
         other: { type: 'string', validate: validateOneParam }
       },
-      DocumentClient: new DocumentClient()
+      DocumentClient
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });

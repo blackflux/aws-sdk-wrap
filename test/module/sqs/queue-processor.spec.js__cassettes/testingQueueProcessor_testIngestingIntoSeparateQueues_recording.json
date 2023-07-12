@@ -3,34 +3,40 @@
     "scope": "https://sqs.us-west-2.amazonaws.com:443",
     "method": "POST",
     "path": "/",
-    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.Id=69995c70f59be9d8ef12900c43bbdd2a98a854f6&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22step1%22%2C%22meta%22%3A%22meta1%22%2C%22__meta%22%3A%7B%22trace%22%3A%5B%22step3%20%2A%203%22%5D%7D%7D&Version=2012-11-05",
+    "body": "QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.Id=69995c70f59be9d8ef12900c43bbdd2a98a854f6&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22step1%22%2C%22meta%22%3A%22meta1%22%2C%22__meta%22%3A%7B%22trace%22%3A%5B%22step3%20%2A%203%22%5D%7D%7D&Action=SendMessageBatch&Version=2012-11-05",
     "status": 200,
     "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>69995c70f59be9d8ef12900c43bbdd2a98a854f6</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>d342f0d471d7ba885fe304002d2dd841</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>",
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+      "content-type": "application/x-www-form-urlencoded",
       "host": "sqs.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
-      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     }
   },
   {
     "scope": "https://sqs.us-west-2.amazonaws.com:443",
     "method": "POST",
     "path": "/",
-    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlTwo.fifo&SendMessageBatchRequestEntry.1.DelaySeconds=15&SendMessageBatchRequestEntry.1.Id=70059c0b8dd2f884550ee9ffed7b711bd3b77351&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22step3%22%2C%22meta%22%3A%22meta3%22%2C%22__meta%22%3A%7B%22trace%22%3A%5B%22step3%20%2A%203%22%5D%7D%7D&Version=2012-11-05",
+    "body": "QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlTwo.fifo&SendMessageBatchRequestEntry.1.Id=70059c0b8dd2f884550ee9ffed7b711bd3b77351&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22step3%22%2C%22meta%22%3A%22meta3%22%2C%22__meta%22%3A%7B%22trace%22%3A%5B%22step3%20%2A%203%22%5D%7D%7D&SendMessageBatchRequestEntry.1.DelaySeconds=15&Action=SendMessageBatch&Version=2012-11-05",
     "status": 200,
     "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>70059c0b8dd2f884550ee9ffed7b711bd3b77351</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>0a5346d1666c8ec1f4dd5b9ef690083b</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>",
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+      "content-type": "application/x-www-form-urlencoded",
       "host": "sqs.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
-      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     }
   }
 ]

@@ -6,7 +6,7 @@ export default ({
 }) => {
   const updateProvisionedConcurrency = async (functionName, concurrency, aliasName) => {
     const aliasResult = await call(
-      'lambda:getAlias',
+      'lambda:GetAliasCommand',
       {
         FunctionName: functionName,
         Name: aliasName
@@ -17,12 +17,12 @@ export default ({
       return;
     }
     if (concurrency === 0) {
-      await call('lambda:deleteProvisionedConcurrencyConfig', {
+      await call('lambda:DeleteProvisionedConcurrencyConfigCommand', {
         FunctionName: functionName,
         Qualifier: aliasName
       });
     } else {
-      await call('lambda:putProvisionedConcurrencyConfig', {
+      await call('lambda:PutProvisionedConcurrencyConfigCommand', {
         FunctionName: functionName,
         Qualifier: aliasName,
         ProvisionedConcurrentExecutions: concurrency
@@ -32,8 +32,8 @@ export default ({
 
   const queryHistory = async (functionName, StartTime, EndTime, Period) => {
     const params = {
-      StartTime,
-      EndTime,
+      StartTime: new Date(StartTime * 1000),
+      EndTime: new Date(EndTime * 1000),
       MetricDataQueries: [ /* required */
         {
           Id: 'metric_aliasmetricsviewgraph0',
@@ -52,7 +52,7 @@ export default ({
       ],
       ScanBy: 'TimestampAscending'
     };
-    return call('cloudwatch:getMetricData', params);
+    return call('Cloudwatch:GetMetricDataCommand', params);
   };
 
   return {
@@ -110,7 +110,7 @@ export default ({
 
       return (restore) => async (event, context) => {
         const r = await call(
-          'lambda:getProvisionedConcurrencyConfig',
+          'lambda:GetProvisionedConcurrencyConfigCommand',
           {
             FunctionName: functionName,
             Qualifier: aliasName
@@ -141,7 +141,7 @@ export default ({
           return;
         }
 
-        const { Parameter: { Value } } = await call('ssm:getParameter', {
+        const { Parameter: { Value } } = await call('SSM:GetParameterCommand', {
           Name: enabledSsmSettingKey
         });
         if (Value !== 'true') {

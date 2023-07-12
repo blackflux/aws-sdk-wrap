@@ -69,6 +69,7 @@ export default (opts = {}) => {
     try {
       const svc = await getService(service);
       const cmds = await getService(`${service}:CMD`);
+      assert(funcName in cmds, `Missing Command ${service}:${funcName}`);
       const cmd = new cmds[funcName](params);
       const response = await svc.send(cmd);
       onCallIfSet({

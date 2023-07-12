@@ -25,11 +25,13 @@
     ],
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
-      "content-length": 0,
       "host": "lambda.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
-      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     },
     "responseIsBinary": false
   },
@@ -61,11 +63,13 @@
     ],
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
-      "content-length": 0,
       "host": "lambda.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
-      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     },
     "responseIsBinary": false
   },
@@ -102,9 +106,12 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/json",
       "host": "lambda.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
-      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     },
     "responseIsBinary": false
   }

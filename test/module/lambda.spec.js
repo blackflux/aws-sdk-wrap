@@ -1,9 +1,24 @@
-import AWS from 'aws-sdk';
+import {
+  LambdaClient,
+  GetAliasCommand,
+  DeleteProvisionedConcurrencyConfigCommand,
+  PutProvisionedConcurrencyConfigCommand,
+  GetProvisionedConcurrencyConfigCommand
+} from '@aws-sdk/client-lambda';
+import {
+  SSMClient,
+  GetParameterCommand
+} from '@aws-sdk/client-ssm';
+import {
+  CloudWatchClient,
+  GetMetricDataCommand
+} from '@aws-sdk/client-cloudwatch';
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import Index from '../../src/index.js';
 import Lambda from '../../src/module/lambda.js';
 import nockReqHeaderOverwrite from '../req-header-overwrite.js';
+import retryStrategy from '../helper/retry-strategy.js';
 
 describe('Testing lambda Util', {
   useNock: true,
@@ -18,11 +33,23 @@ describe('Testing lambda Util', {
     lambda = Lambda({
       call: Index({
         logger: console,
-        config: { maxRetries: 0 },
+        config: { retryStrategy },
         services: {
-          Lambda: AWS.Lambda,
-          SSM: AWS.SSM,
-          CloudWatch: AWS.CloudWatch
+          Lambda: LambdaClient,
+          'Lambda:CMD': {
+            GetAliasCommand,
+            DeleteProvisionedConcurrencyConfigCommand,
+            PutProvisionedConcurrencyConfigCommand,
+            GetProvisionedConcurrencyConfigCommand
+          },
+          SSM: SSMClient,
+          'SSM:CMD': {
+            GetParameterCommand
+          },
+          CloudWatch: CloudWatchClient,
+          'CloudWatch:CMD': {
+            GetMetricDataCommand
+          }
         }
       }).call
     });

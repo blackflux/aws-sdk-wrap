@@ -1,5 +1,5 @@
 export default ({ call }) => async (queueUrl) => {
-  const result = await call('sqs:getQueueAttributes', {
+  const result = await call('SQS:GetQueueAttributesCommand', {
     QueueUrl: queueUrl,
     AttributeNames: ['RedrivePolicy']
   });
