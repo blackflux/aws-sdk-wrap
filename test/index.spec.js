@@ -1,12 +1,10 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import AWS from 'aws-sdk';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import Index from '../src/index.js';
 import nockReqHeaderOverwrite from './req-header-overwrite.js';
-
-const { DynamoDB } = AWS;
-const { DocumentClient } = DynamoDB;
 
 describe('Testing index', {
   timestamp: '2022-05-17T18:21:22.341Z',
@@ -16,12 +14,29 @@ describe('Testing index', {
 }, () => {
   let aws;
   let logs;
+  let DocumentClient;
   beforeEach(() => {
     logs = [];
+    DocumentClient = DynamoDBDocumentClient.from(new DynamoDBClient({
+      endpoint: process.env.DYNAMODB_ENDPOINT
+    }), {
+      marshallOptions: {
+        // Whether to automatically convert empty strings, blobs, and sets to `null`.
+        convertEmptyValues: false, // if not false explicitly, we set it to true.
+        // Whether to remove undefined values while marshalling.
+        removeUndefinedValues: false, // false, by default.
+        // Whether to convert typeof object to map attribute.
+        convertClassInstanceToMap: false // false, by default.
+      },
+      unmarshallOptions: {
+        // Whether to return numbers as a string instead of converting them to native JavaScript numbers.
+        // NOTE: this is required to be true in order to use the bigint data type.
+        wrapNumbers: false // false, by default.
+      }
+    });
     aws = Index({
       services: {
-        'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient,
-        'DynamoDB.Converter': AWS.DynamoDB.Converter,
+        'DynamoDB.DocumentClient': DocumentClient,
         S3: S3Client,
         'S3:CMD': { PutObjectCommand }
       },
@@ -31,7 +46,6 @@ describe('Testing index', {
 
   it('Testing exports', () => {
     expect(Object.keys(aws)).to.deep.equal([
-      'updateGlobalConfig',
       'call',
       'get',
       'dy',
@@ -42,13 +56,8 @@ describe('Testing index', {
     ]);
   });
 
-  it('Testing global configuration', () => {
-    expect(aws.updateGlobalConfig(AWS, {})).to.equal(undefined);
-  });
-
   it('Testing nested get', () => {
-    expect(aws.get('DynamoDB.DocumentClient')).to.be.instanceof(DocumentClient);
-    expect(aws.get('DynamoDB.Converter')).to.be.a('object');
+    expect(aws.get('DynamoDB.DocumentClient')).to.be.instanceof(DynamoDBDocumentClient);
   });
 
   it('Testing Exception', async ({ capture }) => {

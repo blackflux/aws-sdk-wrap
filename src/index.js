@@ -114,7 +114,6 @@ export default (opts = {}) => {
   };
 
   return {
-    updateGlobalConfig: (AWS, cfg) => AWS.config.update(cfg),
     call,
     get: getService,
     dy: Dy({
