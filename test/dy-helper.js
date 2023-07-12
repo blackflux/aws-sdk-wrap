@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import {
   CreateTableCommand,
   DeleteTableCommand,
@@ -8,22 +7,7 @@ import {
 import Index from '../src/index.js';
 import DyUtil from '../src/module/dy.js';
 import retryStrategy from './helper/retry-strategy.js';
-
-const DocumentClient = (cfg = {}) => DynamoDBDocumentClient.from(new DynamoDBClient(cfg), {
-  marshallOptions: {
-    // Whether to automatically convert empty strings, blobs, and sets to `null`.
-    convertEmptyValues: false, // if not false explicitly, we set it to true.
-    // Whether to remove undefined values while marshalling.
-    removeUndefinedValues: false, // false, by default.
-    // Whether to convert typeof object to map attribute.
-    convertClassInstanceToMap: false // false, by default.
-  },
-  unmarshallOptions: {
-    // Whether to return numbers as a string instead of converting them to native JavaScript numbers.
-    // NOTE: this is required to be true in order to use the bigint data type.
-    wrapNumbers: false // false, by default.
-  }
-});
+import DocumentClientConstructor from './helper/dy-document-client.js';
 
 const dynamoDB = async (Cmd, params) => {
   const ddb = new DynamoDBClient({
@@ -54,9 +38,7 @@ export const buildLockManager = () => {
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': DocumentClient({
-        endpoint: process.env.DYNAMODB_ENDPOINT
-      })
+      'DynamoDB.DocumentClient': DocumentClientConstructor()
     }
   });
   const { LockManager } = DyUtil({
@@ -77,9 +59,7 @@ export const buildUcManager = () => {
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': DocumentClient({
-        endpoint: process.env.DYNAMODB_ENDPOINT
-      })
+      'DynamoDB.DocumentClient': DocumentClientConstructor()
     }
   });
   const { UcManager } = DyUtil({
@@ -103,9 +83,7 @@ export const buildModel = ({
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': DocumentClient({
-        endpoint: process.env.DYNAMODB_ENDPOINT
-      })
+      'DynamoDB.DocumentClient': DocumentClientConstructor()
     }
   });
   const Model = (opts) => DyUtil({
@@ -139,9 +117,7 @@ export const buildModel = ({
     ...(onUpdate === null ? {} : { onUpdate }),
     ...(onCreate === null ? {} : { onCreate }),
     ...(onDelete === null ? {} : { onDelete }),
-    DocumentClient: DocumentClient({
-      endpoint: process.env.DYNAMODB_ENDPOINT
-    })
+    DocumentClient: DocumentClientConstructor()
   });
 };
 

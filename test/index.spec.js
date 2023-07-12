@@ -2,9 +2,9 @@ import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import Index from '../src/index.js';
 import nockReqHeaderOverwrite from './req-header-overwrite.js';
+import DocumentClientConstructor from './helper/dy-document-client.js';
 
 describe('Testing index', {
   timestamp: '2022-05-17T18:21:22.341Z',
@@ -17,23 +17,7 @@ describe('Testing index', {
   let DocumentClient;
   beforeEach(() => {
     logs = [];
-    DocumentClient = DynamoDBDocumentClient.from(new DynamoDBClient({
-      endpoint: process.env.DYNAMODB_ENDPOINT
-    }), {
-      marshallOptions: {
-        // Whether to automatically convert empty strings, blobs, and sets to `null`.
-        convertEmptyValues: false, // if not false explicitly, we set it to true.
-        // Whether to remove undefined values while marshalling.
-        removeUndefinedValues: false, // false, by default.
-        // Whether to convert typeof object to map attribute.
-        convertClassInstanceToMap: false // false, by default.
-      },
-      unmarshallOptions: {
-        // Whether to return numbers as a string instead of converting them to native JavaScript numbers.
-        // NOTE: this is required to be true in order to use the bigint data type.
-        wrapNumbers: false // false, by default.
-      }
-    });
+    DocumentClient = DocumentClientConstructor();
     aws = Index({
       services: {
         'DynamoDB.DocumentClient': DocumentClient,
