@@ -1,28 +1,46 @@
-import AWS from 'aws-sdk';
 import { expect } from 'chai';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import {
+  CreateTableCommand,
+  DeleteTableCommand,
+  DynamoDBClient
+} from '@aws-sdk/client-dynamodb';
 import Index from '../src/index.js';
 import DyUtil from '../src/module/dy.js';
 import retryStrategy from './helper/retry-strategy.js';
 
-const { DynamoDB } = AWS;
-const { DocumentClient } = DynamoDB;
+const DocumentClient = (cfg = {}) => DynamoDBDocumentClient.from(new DynamoDBClient(cfg), {
+  marshallOptions: {
+    // Whether to automatically convert empty strings, blobs, and sets to `null`.
+    convertEmptyValues: false, // if not false explicitly, we set it to true.
+    // Whether to remove undefined values while marshalling.
+    removeUndefinedValues: false, // false, by default.
+    // Whether to convert typeof object to map attribute.
+    convertClassInstanceToMap: false // false, by default.
+  },
+  unmarshallOptions: {
+    // Whether to return numbers as a string instead of converting them to native JavaScript numbers.
+    // NOTE: this is required to be true in order to use the bigint data type.
+    wrapNumbers: false // false, by default.
+  }
+});
 
-const dynamoDB = async (cmd, params) => {
-  const ddb = new DynamoDB({
+const dynamoDB = async (Cmd, params) => {
+  const ddb = new DynamoDBClient({
     endpoint: 'http://dynamodb-local:8000',
     apiVersion: '2012-08-10',
     region: 'us-west-2',
     accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
     secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
   });
-  return ddb[cmd](params).promise();
+  return ddb.send(new Cmd(params));
 };
 
 export const LocalTable = (model) => {
   const schema = model.schema;
   return {
-    create: async () => dynamoDB('createTable', schema),
-    delete: async () => dynamoDB('deleteTable', { TableName: schema.TableName })
+    create: async () => dynamoDB(CreateTableCommand, schema),
+    delete: async () => dynamoDB(DeleteTableCommand, { TableName: schema.TableName })
   };
 };
 
@@ -36,7 +54,9 @@ export const buildLockManager = () => {
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient
+      'DynamoDB.DocumentClient': DocumentClient({
+        endpoint: process.env.DYNAMODB_ENDPOINT
+      })
     }
   });
   const { LockManager } = DyUtil({
@@ -57,7 +77,9 @@ export const buildUcManager = () => {
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient
+      'DynamoDB.DocumentClient': DocumentClient({
+        endpoint: process.env.DYNAMODB_ENDPOINT
+      })
     }
   });
   const { UcManager } = DyUtil({
@@ -81,7 +103,9 @@ export const buildModel = ({
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient
+      'DynamoDB.DocumentClient': DocumentClient({
+        endpoint: process.env.DYNAMODB_ENDPOINT
+      })
     }
   });
   const Model = (opts) => DyUtil({
@@ -115,7 +139,7 @@ export const buildModel = ({
     ...(onUpdate === null ? {} : { onUpdate }),
     ...(onCreate === null ? {} : { onCreate }),
     ...(onDelete === null ? {} : { onDelete }),
-    DocumentClient: new DocumentClient({
+    DocumentClient: DocumentClient({
       endpoint: process.env.DYNAMODB_ENDPOINT
     })
   });

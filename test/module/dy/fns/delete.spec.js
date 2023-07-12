@@ -76,7 +76,7 @@ describe('Testing delete', {
   it('Testing delete with unknown error', async ({ capture }) => {
     await generateTable();
     const error = await capture(() => model.delete({ id: '123', name: 'name' }));
-    expect(error.code).to.equal('UnknownError');
+    expect(error.name).to.equal('SyntaxError');
   });
 
   it('Testing delete with toReturn', async () => {

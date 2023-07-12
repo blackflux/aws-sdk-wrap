@@ -95,7 +95,7 @@ describe('Testing create-or-replace', {
     const error = await capture(() => model.createOrReplace(newItem, {
       conditions: { attr: 'age', eq: 10 }
     }));
-    expect(error.code).to.equal('ConditionalCheckFailedException');
+    expect(error.name).to.equal('ConditionalCheckFailedException');
     expect(await getItemOrNull(key)).to.deep.equal(item);
   });
 

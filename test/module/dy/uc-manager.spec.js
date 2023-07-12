@@ -139,7 +139,7 @@ describe('Testing uc-manager.js', {
       }
     });
     const r2 = await capture(() => ucManager.persist({ id: '1234' }));
-    expect(r2.code).to.equal('FailedToPersistUniqueConstraint');
+    expect(r2.name).to.equal('FailedToPersistUniqueConstraint');
     const r3 = await ucManager.persist({ id: '1234', force: true });
     expect(r3).to.deep.equal({
       created: false,
@@ -158,7 +158,7 @@ describe('Testing uc-manager.js', {
 
   it('Testing delete, not found', async ({ capture }) => {
     const r1 = await capture(() => ucManager.delete({ id: '1234' }));
-    expect(r1.code).to.equal('FailedToDeleteUniqueConstraint');
+    expect(r1.name).to.equal('FailedToDeleteUniqueConstraint');
   });
 
   it('Testing double reserve', async ({ capture }) => {
@@ -178,7 +178,7 @@ describe('Testing uc-manager.js', {
       }
     });
     const r1 = await capture(() => ucManager.reserve({ id: '1234' }));
-    expect(r1.code).to.equal('FailedToReserveUniqueConstraint');
+    expect(r1.name).to.equal('FailedToReserveUniqueConstraint');
   });
 
   it('Testing reserved persist and release failure', async ({ capture }) => {
@@ -211,9 +211,9 @@ describe('Testing uc-manager.js', {
       }
     });
     const err1 = await capture(() => reservation.persist());
-    expect(err1.code).to.deep.equal('FailedToPersistUniqueConstraint');
+    expect(err1.name).to.deep.equal('FailedToPersistUniqueConstraint');
     const err2 = await capture(() => reservation.release());
-    expect(err2.code).to.deep.equal('FailedToReleaseUniqueConstraint');
+    expect(err2.name).to.deep.equal('FailedToReleaseUniqueConstraint');
   });
 
   it('Testing cleanup', async ({ capture }) => {
@@ -260,8 +260,8 @@ describe('Testing uc-manager.js', {
   it('Testing ignore delete error', async ({ capture }) => {
     const e = await capture(() => ucManager.delete({ id: 'A' }));
     const r = await ucManager.delete({ id: 'A', ignoreError: true });
-    expect(e.code).to.deep.equal('FailedToDeleteUniqueConstraint');
-    expect(r.code).to.deep.equal('FailedToDeleteUniqueConstraint');
+    expect(e.name).to.deep.equal('FailedToDeleteUniqueConstraint');
+    expect(r.name).to.deep.equal('FailedToDeleteUniqueConstraint');
   });
 
   it('Testing reserveAll and releaseAll', async ({ capture }) => {
@@ -377,7 +377,7 @@ describe('Testing uc-manager.js', {
   it('Testing reserveAll with error', async ({ capture }) => {
     await ucManager.reserve({ id: 'a' });
     const e = await capture(() => ucManager.reserveAll({ ids: ['a', 'b'] }));
-    expect(e.code).to.deep.equal('FailedToReserveUniqueConstraint');
+    expect(e.name).to.deep.equal('FailedToReserveUniqueConstraint');
   });
 
   it('Testing persistAll', async ({ capture }) => {
@@ -412,8 +412,8 @@ describe('Testing uc-manager.js', {
   it('Testing deleteAll', async ({ capture }) => {
     const r = await ucManager.deleteAll({ ids: ['a', 'b'], ignoreErrors: true });
     expect(r.length).to.deep.equal(2);
-    expect(r[0].code).to.deep.equal('FailedToDeleteUniqueConstraint');
-    expect(r[1].code).to.deep.equal('FailedToDeleteUniqueConstraint');
+    expect(r[0].name).to.deep.equal('FailedToDeleteUniqueConstraint');
+    expect(r[1].name).to.deep.equal('FailedToDeleteUniqueConstraint');
   });
 
   it('Testing reserve with unixInMs', async () => {
@@ -482,7 +482,7 @@ describe('Testing uc-manager.js', {
       id: '1234',
       unixInMs: new Date() / 1
     }));
-    expect(r.code).to.deep.equal('FailedToDeleteUniqueConstraint');
+    expect(r.name).to.deep.equal('FailedToDeleteUniqueConstraint');
   });
 
   it('Testing cleanup with unixInMs', async () => {
@@ -497,8 +497,8 @@ describe('Testing uc-manager.js', {
       unixInMs: new Date() / 1
     });
     expect(JSON.parse(JSON.stringify(r))).to.deep.equal([
-      { status: 'rejected', reason: { code: 'FailedToCleanupUniqueConstraint' } },
-      { status: 'rejected', reason: { code: 'FailedToCleanupUniqueConstraint' } }
+      { status: 'rejected', reason: { name: 'FailedToCleanupUniqueConstraint' } },
+      { status: 'rejected', reason: { name: 'FailedToCleanupUniqueConstraint' } }
     ]);
   });
 });

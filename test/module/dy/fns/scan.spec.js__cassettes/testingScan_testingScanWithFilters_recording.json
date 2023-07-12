@@ -199,10 +199,13 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "9cb199cd346e70dbfd8556cfdff4a37e6ac8bbf1a859d99ce09d776c0e9d1c6d",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.CreateTable"
+      "x-amz-target": "DynamoDB_20120810.CreateTable",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     }
   },
   {
@@ -238,10 +241,13 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "e1d262829808a601687cd589d70a81782617d93f2f63caf8f186ec71d088bb54",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "f87f88235e280f7178aaacc684afa15f8c3a373d2ff344d964172d23175e577c",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.UpdateItem"
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     }
   },
   {
@@ -277,10 +283,13 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "94cfd8c6a457b57d9c45de3070efdb10c5d924c1f1e13f1c55878cf685135474",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "51b3726050f1536385c00f26e9da7a57242235f235c1a2aff621915bff2c3614",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.UpdateItem"
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     }
   },
   {
@@ -316,10 +325,13 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "7204735741ef19ef8f07782538e4f4d15917ee03f2101c26b8c10a157b60b937",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "9bcb0c25d9c6fd4c2b16933b2385298e11d32a2b976f0eb20422d75ef4a63cdb",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.UpdateItem"
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     }
   },
   {
@@ -375,10 +387,13 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "d70c2ff83028222260e5ceae3cb2d6dcc4e269dfd0e8c56660f119e26046bee2",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "67dc37119a8a668cceb4e074e4a5f64f982ede3cede2355a0f9e70a51fd458d9",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.Scan"
+      "x-amz-target": "DynamoDB_20120810.Scan",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     }
   },
   {
@@ -510,10 +525,13 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "ebd0d2abd69c79d2d40a70a6ff9d307590893eb6c9984a03e9d6546d1e5a9aca",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.DeleteTable"
+      "x-amz-target": "DynamoDB_20120810.DeleteTable",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "aws-sdk-js/3.369.0"
     }
   }
 ]

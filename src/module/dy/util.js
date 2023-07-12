@@ -116,12 +116,12 @@ export default ({
           }
         );
       } catch (err) {
-        if (expectedErrorCodes.includes(err.code)) {
-          return err.code;
+        if (expectedErrorCodes.includes(err.name)) {
+          return err.name;
         }
         if (
           mustExist !== null
-          && err.code === 'ConditionalCheckFailedException'
+          && err.name === 'ConditionalCheckFailedException'
           && customConditions === null
         ) {
           return (mustExist ? onNotFound : onAlreadyExists)(extractKey(item));

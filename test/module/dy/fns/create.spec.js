@@ -96,7 +96,7 @@ describe('Testing create', {
     const error = await capture(() => model.create(item, {
       conditions: { attr: 'age', eq: 1 }
     }));
-    expect(error.code).to.equal('ConditionalCheckFailedException');
+    expect(error.name).to.equal('ConditionalCheckFailedException');
     expect(await getItemOrNull(key)).to.deep.equal(null);
   });
 

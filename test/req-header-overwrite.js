@@ -26,7 +26,8 @@ export default transform({
     'dynamodb-local:8000': '^aws-sdk-js/.+$'
   },
   'amz-sdk-invocation-id': {
-    '.us-west-2.amazonaws.com': '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+    '.us-west-2.amazonaws.com': '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+    'dynamodb-local:8000': '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
   },
   authorization: {
     '.us-west-2.amazonaws.com': '^AWS4-HMAC-SHA256 Credential=.+$',

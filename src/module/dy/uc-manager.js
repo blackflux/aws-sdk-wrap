@@ -27,7 +27,7 @@ export default ({ Model }) => (ucTable, {
     const result = await fn(model);
     if (result === 'ConditionalCheckFailedException') {
       const err = new Error(`Failed to ${name.toLowerCase()} unique constraint.`);
-      err.code = `FailedTo${name}UniqueConstraint`;
+      err.name = `FailedTo${name}UniqueConstraint`;
       throw err;
     }
     return result;

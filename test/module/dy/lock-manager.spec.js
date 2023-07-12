@@ -58,7 +58,7 @@ describe('Testing lock-manager.js', {
   it('Testing already locked', async ({ capture }) => {
     const lock1 = await lockManager.lock('lock-name');
     const err = await capture(() => lockManager.lock('lock-name'));
-    expect(String(err)).to.deep.equal('Error: Failed to acquire lock.');
+    expect(String(err)).to.deep.equal('FailedToAcquireLock: Failed to acquire lock.');
     const r1 = await lock1.release();
     expect(r1).to.deep.equal({
       deleted: true,
@@ -115,7 +115,7 @@ describe('Testing lock-manager.js', {
       }
     });
     const err = await capture(() => lock1.release());
-    expect(String(err)).to.deep.equal('Error: Failed to release lock.');
+    expect(String(err)).to.deep.equal('FailedToReleaseLock: Failed to release lock.');
   });
 
   it('Testing only one lock can succeed', async () => {
