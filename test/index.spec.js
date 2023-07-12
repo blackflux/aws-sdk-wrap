@@ -4,7 +4,7 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import Index from '../src/index.js';
 import nockReqHeaderOverwrite from './req-header-overwrite.js';
-import DocumentClientConstructor from './helper/dy-document-client.js';
+import DocumentClientConstructor from './helper/dy-document-client-constructor.js';
 
 describe('Testing index', {
   timestamp: '2022-05-17T18:21:22.341Z',

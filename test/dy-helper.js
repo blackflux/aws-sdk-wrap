@@ -7,7 +7,7 @@ import {
 import Index from '../src/index.js';
 import DyUtil from '../src/module/dy.js';
 import retryStrategy from './helper/retry-strategy.js';
-import DocumentClientConstructor from './helper/dy-document-client.js';
+import DocumentClientConstructor from './helper/dy-document-client-constructor.js';
 
 const dynamoDB = async (Cmd, params) => {
   const ddb = new DynamoDBClient({

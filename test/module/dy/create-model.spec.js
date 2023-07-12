@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import createModel from '../../../src/module/dy/create-model.js';
 import { validateOneParam } from '../../helper/uncalled-validate-fns.js';
-import DocumentClientConstructor from '../../helper/dy-document-client.js';
+import DocumentClientConstructor from '../../helper/dy-document-client-constructor.js';
 
 describe('Testing create-model.js', () => {
   let DocumentClient;
