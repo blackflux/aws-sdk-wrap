@@ -25,6 +25,15 @@ export default transform({
     's3.us-west-2.amazonaws.com': '^aws-sdk-js/.+$',
     'dynamodb-local:8000': '^aws-sdk-js/.+$'
   },
+  'x-amz-user-agent': {
+    'monitoring.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'lambda.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'sqs.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'ssm.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'dynamodb.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    's3.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'dynamodb-local:8000': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$'
+  },
   'amz-sdk-invocation-id': {
     '.us-west-2.amazonaws.com': '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
     'dynamodb-local:8000': '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'

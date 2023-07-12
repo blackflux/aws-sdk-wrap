@@ -157,7 +157,7 @@
       "x-amz-target": "DynamoDB_20120810.CreateTable",
       "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
       "amz-sdk-request": "attempt=1; max=3",
-      "x-amz-user-agent": "aws-sdk-js/3.369.0"
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   },
   {
@@ -199,7 +199,7 @@
       "x-amz-target": "DynamoDB_20120810.UpdateItem",
       "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
       "amz-sdk-request": "attempt=1; max=3",
-      "x-amz-user-agent": "aws-sdk-js/3.369.0"
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   },
   {
@@ -259,7 +259,7 @@
       "x-amz-target": "DynamoDB_20120810.UpdateItem",
       "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
       "amz-sdk-request": "attempt=1; max=3",
-      "x-amz-user-agent": "aws-sdk-js/3.369.0"
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   },
   {
@@ -349,7 +349,7 @@
       "x-amz-target": "DynamoDB_20120810.DeleteTable",
       "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
       "amz-sdk-request": "attempt=1; max=3",
-      "x-amz-user-agent": "aws-sdk-js/3.369.0"
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   }
 ]
