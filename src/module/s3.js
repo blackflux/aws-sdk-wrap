@@ -1,6 +1,5 @@
 import util from 'util';
 import zlib from 'zlib';
-import get from 'lodash.get';
 import Joi from 'joi-strict';
 
 const sleep = util.promisify(setTimeout);
