@@ -1,22 +1,16 @@
 import { expect } from 'chai';
 import {
   CreateTableCommand,
-  DeleteTableCommand,
-  DynamoDBClient
+  DeleteTableCommand
 } from '@aws-sdk/client-dynamodb';
 import Index from '../src/index.js';
 import DyUtil from '../src/module/dy.js';
 import retryStrategy from './helper/retry-strategy.js';
 import DocumentClientConstructor from './helper/dy-document-client-constructor.js';
+import DyClientConstructor from './helper/dy-client-constructor.js';
 
 const dynamoDB = async (Cmd, params) => {
-  const ddb = new DynamoDBClient({
-    endpoint: 'http://dynamodb-local:8000',
-    apiVersion: '2012-08-10',
-    region: 'us-west-2',
-    accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
-    secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-  });
+  const ddb = DyClientConstructor();
   return ddb.send(new Cmd(params));
 };
 

@@ -1,8 +1,8 @@
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import DynamoDBClient from './dy-client-constructor.js';
 
 export default () => DynamoDBDocumentClient.from(
-  new DynamoDBClient({ endpoint: process.env.DYNAMODB_ENDPOINT }),
+  DynamoDBClient(),
   {
     marshallOptions: {
       // Whether to automatically convert empty strings, blobs, and sets to `null`.
