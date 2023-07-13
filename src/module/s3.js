@@ -28,7 +28,7 @@ export default ({
           meta: { retryCount: count }
         });
       } catch (e) {
-        if (get(e, 'Code') !== 'SlowDown') {
+        if (e.name !== 'SlowDown') {
           throw e;
         }
         lastError = e;
