@@ -1,5 +1,5 @@
 import get from 'lodash.get';
-import toolbox from 'dynamodb-toolbox';
+import { Table, Entity } from 'dynamodb-toolbox';
 import getFirst from './get-first.js';
 import validateKwargs from './validate-kwargs.js';
 
@@ -34,7 +34,7 @@ export default (kwargs) => {
   const partitionKey = getFirst(attributes, ([k, v]) => v.partitionKey === true);
   const sortKey = getFirst(attributes, ([k, v]) => v.sortKey === true);
 
-  const table = new toolbox.Table({
+  const table = new Table({
     name,
     partitionKey,
     ...(sortKey === undefined ? {} : { sortKey }),
@@ -56,7 +56,7 @@ export default (kwargs) => {
     removeNullAttributes: false,
     DocumentClient
   });
-  const entity = new toolbox.Entity({
+  const entity = new Entity({
     name,
     timestamps: false,
     attributes: Object.fromEntries(Object.entries(attributes).map(([k, v]) => {
