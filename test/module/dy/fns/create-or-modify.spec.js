@@ -141,7 +141,7 @@ describe('Testing create-or-modify', {
   it('Testing createOrModify with ConditionalCheckFailedException', async ({ capture }) => {
     await generateTable();
     const error = await capture(() => model.createOrModify(item, { conditions: { attr: 'name', exists: true } }));
-    expect(error.code).to.equal('ConditionalCheckFailedException');
+    expect(error.name).to.equal('ConditionalCheckFailedException');
   });
 
   it('Testing createOrModify with expectedErrorCodes', async () => {

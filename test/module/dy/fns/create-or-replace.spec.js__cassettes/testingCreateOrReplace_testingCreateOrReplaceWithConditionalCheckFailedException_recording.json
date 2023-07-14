@@ -167,14 +167,17 @@
     },
     "responseIsBinary": false,
     "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "9cb199cd346e70dbfd8556cfdff4a37e6ac8bbf1a859d99ce09d776c0e9d1c6d",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.CreateTable"
+      "x-amz-target": "DynamoDB_20120810.CreateTable",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   },
   {
@@ -182,7 +185,10 @@
     "method": "POST",
     "path": "/",
     "body": {
-      "TableName": "table-name",
+      "ConditionExpression": "attribute_not_exists(#attr1)",
+      "ExpressionAttributeNames": {
+        "#attr1": "id"
+      },
       "Item": {
         "age": {
           "N": "50"
@@ -197,24 +203,24 @@
           "S": "slug"
         }
       },
-      "ExpressionAttributeNames": {
-        "#attr1": "id"
-      },
-      "ConditionExpression": "attribute_not_exists(#attr1)",
-      "ReturnValues": "ALL_OLD"
+      "ReturnValues": "ALL_OLD",
+      "TableName": "table-name"
     },
     "status": 200,
     "response": {},
     "responseIsBinary": false,
     "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "e030e9db2f35108a658cd6d0bf0b76e56bb9055e0e5b6aec6fcf8fd37e96bdbc",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "c1d7978fef92550e920a23f447a764d567605cf74737c0a8ca538ebf28da3673",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.PutItem"
+      "x-amz-target": "DynamoDB_20120810.PutItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   },
   {
@@ -222,7 +228,15 @@
     "method": "POST",
     "path": "/",
     "body": {
-      "TableName": "table-name",
+      "ConditionExpression": "#attr1 = :attr1",
+      "ExpressionAttributeNames": {
+        "#attr1": "age"
+      },
+      "ExpressionAttributeValues": {
+        ":attr1": {
+          "N": "10"
+        }
+      },
       "Item": {
         "age": {
           "N": "100"
@@ -234,16 +248,8 @@
           "S": "name"
         }
       },
-      "ExpressionAttributeNames": {
-        "#attr1": "age"
-      },
-      "ExpressionAttributeValues": {
-        ":attr1": {
-          "N": "10"
-        }
-      },
-      "ConditionExpression": "#attr1 = :attr1",
-      "ReturnValues": "ALL_OLD"
+      "ReturnValues": "ALL_OLD",
+      "TableName": "table-name"
     },
     "status": 400,
     "response": {
@@ -252,14 +258,17 @@
     },
     "responseIsBinary": false,
     "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "79d9285a9998f260d63f9486f126412e19004783335b6502ea3e13fc4da4b741",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "3e14148656e0b0b21b031784cd5a92f4b767fd5bfe3a02d2b0b59abd145a06df",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.PutItem"
+      "x-amz-target": "DynamoDB_20120810.PutItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   },
   {
@@ -268,6 +277,7 @@
     "path": "/",
     "body": {
       "TableName": "table-name",
+      "ConsistentRead": true,
       "Key": {
         "id": {
           "S": "123"
@@ -275,8 +285,7 @@
         "name": {
           "S": "name"
         }
-      },
-      "ConsistentRead": true
+      }
     },
     "status": 200,
     "response": {
@@ -297,14 +306,17 @@
     },
     "responseIsBinary": false,
     "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "159b2b7853c2e311c491e1bb8de64097bf157fd8bfdfc1bc55a0bd640bb771b1",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "447101976676f6e63c55b37918df57503b3d3fb543e62166ae8ddfbec94448b1",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.GetItem"
+      "x-amz-target": "DynamoDB_20120810.GetItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   },
   {
@@ -408,10 +420,13 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "ebd0d2abd69c79d2d40a70a6ff9d307590893eb6c9984a03e9d6546d1e5a9aca",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.DeleteTable"
+      "x-amz-target": "DynamoDB_20120810.DeleteTable",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   }
 ]

@@ -25,12 +25,12 @@ const sendBatch = async (sqsBatch, queueUrl, {
     // eslint-disable-next-line no-await-in-loop
     await sleep(backoffFunction(count));
     // eslint-disable-next-line no-await-in-loop
-    const result = await call('sqs:sendMessageBatch', {
+    const result = await call('SQS:SendMessageBatchCommand', {
       Entries: pending,
       QueueUrl: queueUrl
     });
     response.push(result);
-    result.Successful.forEach((e) => {
+    (result.Successful || []).forEach((e) => {
       pending.splice(pending.findIndex(({ Id }) => Id === e.Id), 1);
     });
     if (pending.length !== 0 && logger !== null) {
@@ -110,7 +110,8 @@ export default ({ call, getService, logger }) => async (opts) => {
       backoffFunction,
       logger
     })));
-  if (messages.length !== result.reduce((p, c) => p + c.reduce((prev, cur) => prev + cur.Successful.length, 0), 0)) {
+  if (messages.length !== result.reduce((p, c) => p + c
+    .reduce((prev, cur) => prev + (cur.Successful || []).length, 0), 0)) {
     const failedIds = objectScan(['[*][*].Failed[*].Id'], ({ rtn: 'value' }))(result);
     const failedMessages = objectScan(['[*][*].Id'], ({
       filterFn: ({ value }) => failedIds.includes(value),

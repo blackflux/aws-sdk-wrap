@@ -33,14 +33,15 @@ Ensure required peer dependencies are available.
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
 import AWS from 'aws-sdk-wrap';
-import aws from 'aws-sdk';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 AWS({
   services: {
-    S3: aws.S3
+    S3: S3Client,
+    'S3:CMD': { PutObjectCommand }
   }
 })
-  .call('s3:putObject', { /* ... */ })
+  .call('S3:PutObjectCommand', { /* ... */ })
   .then(/* ... */)
   .catch(/* ... */);
 ```
@@ -49,7 +50,7 @@ where the first parameter is the service, the second parameter is the method and
 
 Services are lazily initialized on first access.
 
-One can access an `aws-sdk` service directly by calling e.g. `aws.get('s3')`.
+One can access an `aws-sdk` service directly by calling e.g. `aws.get('S3')`.
 
 ### Methods
 

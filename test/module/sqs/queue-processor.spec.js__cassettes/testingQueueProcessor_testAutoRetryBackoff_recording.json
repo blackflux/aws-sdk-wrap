@@ -3,17 +3,20 @@
     "scope": "https://sqs.us-west-2.amazonaws.com:443",
     "method": "POST",
     "path": "/",
-    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.DelaySeconds=60&SendMessageBatchRequestEntry.1.Id=de9bed02506df010bbd2b112bdbda372f7dd74fa&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22auto-retry%22%2C%22retrySettings%22%3A%7B%22backoffInSec%22%3A60%7D%2C%22__meta%22%3A%7B%22failureCount%22%3A1%2C%22timestamp%22%3A%222020-05-15T19%3A56%3A35.713Z%22%2C%22trace%22%3A%5B%22auto-retry%22%5D%7D%7D&Version=2012-11-05",
+    "body": "QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.Id=de9bed02506df010bbd2b112bdbda372f7dd74fa&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22auto-retry%22%2C%22retrySettings%22%3A%7B%22backoffInSec%22%3A60%7D%2C%22__meta%22%3A%7B%22failureCount%22%3A1%2C%22timestamp%22%3A%222020-05-15T19%3A56%3A35.713Z%22%2C%22trace%22%3A%5B%22auto-retry%22%5D%7D%7D&SendMessageBatchRequestEntry.1.DelaySeconds=60&Action=SendMessageBatch&Version=2012-11-05",
     "status": 200,
     "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>de9bed02506df010bbd2b112bdbda372f7dd74fa</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>2736e3c31202011128ed21936438e2e0</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>",
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+      "content-type": "application/x-www-form-urlencoded",
       "host": "sqs.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
-      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   }
 ]

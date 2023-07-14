@@ -1,13 +1,15 @@
 import { expect } from 'chai';
-import AWS from 'aws-sdk';
 import { describe } from 'node-tdd';
 import createModel from '../../../src/module/dy/create-model.js';
 import { validateOneParam } from '../../helper/uncalled-validate-fns.js';
-
-const { DynamoDB } = AWS;
-const { DocumentClient } = DynamoDB;
+import DocumentClientConstructor from '../../helper/dy-document-client-constructor.js';
 
 describe('Testing create-model.js', () => {
+  let DocumentClient;
+  beforeEach(() => {
+    DocumentClient = DocumentClientConstructor();
+  });
+
   it('Testing basic logic', () => {
     const r = createModel({
       name: 'table-name',
@@ -23,7 +25,7 @@ describe('Testing create-model.js', () => {
           projectionType: 'KEYS_ONLY'
         }
       },
-      DocumentClient: new DocumentClient()
+      DocumentClient
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
@@ -36,7 +38,7 @@ describe('Testing create-model.js', () => {
         name: { type: 'string' },
         other: { type: 'string' }
       },
-      DocumentClient: new DocumentClient()
+      DocumentClient
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
@@ -50,7 +52,7 @@ describe('Testing create-model.js', () => {
         other: { type: 'string' },
         number: { type: 'number' }
       },
-      DocumentClient: new DocumentClient()
+      DocumentClient
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
@@ -65,7 +67,7 @@ describe('Testing create-model.js', () => {
           other: { type: 'string' },
           number: { type: 'number' }
         },
-        DocumentClient: new DocumentClient()
+        DocumentClient
       });
     } catch (error) {
       expect(error.message).to.equal('map not supported for indexing');
@@ -80,7 +82,7 @@ describe('Testing create-model.js', () => {
         name: { type: 'string' },
         other: { type: 'string', validate: validateOneParam }
       },
-      DocumentClient: new DocumentClient()
+      DocumentClient
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });

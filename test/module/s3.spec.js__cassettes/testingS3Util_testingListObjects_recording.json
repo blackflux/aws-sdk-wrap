@@ -8,11 +8,13 @@
     "response": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListBucketResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Name>test-bucket-name</Name><Prefix></Prefix><NextContinuationToken>continuationToken</NextContinuationToken><KeyCount>1</KeyCount><MaxKeys>1</MaxKeys><IsTruncated>true</IsTruncated><Contents><Key>key</Key><ETag>&quot;a32d8ca2be8b6454d40b230fcc4a2fc4&quot;</ETag><Size>135</Size><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>",
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
-      "content-length": 0,
       "host": "test-bucket-name.s3.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
-      "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
-      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "^[a-f0-9]{64}$",
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   }
 ]

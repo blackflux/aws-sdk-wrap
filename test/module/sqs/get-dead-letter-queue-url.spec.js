@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import AWS from 'aws-sdk';
+import { SQSClient, GetQueueAttributesCommand } from '@aws-sdk/client-sqs';
 import Index from '../../../src/index.js';
 import GetDeadLetterQueueUrl from '../../../src/module/sqs/get-dead-letter-queue-url.js';
 import nockReqHeaderOverwrite from '../../req-header-overwrite.js';
@@ -18,7 +18,10 @@ describe('Testing getDeadLetterQueueUrl', {
     aws = Index({
       logger: console,
       services: {
-        sqs: AWS.SQS
+        SQS: SQSClient,
+        'SQS:CMD': {
+          GetQueueAttributesCommand
+        }
       }
     });
     getDeadLetterQueueUrl = GetDeadLetterQueueUrl({ call: aws.call });

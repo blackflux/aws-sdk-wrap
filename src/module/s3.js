@@ -1,6 +1,5 @@
 import util from 'util';
 import zlib from 'zlib';
-import get from 'lodash.get';
 import Joi from 'joi-strict';
 
 const sleep = util.promisify(setTimeout);
@@ -28,7 +27,7 @@ export default ({
           meta: { retryCount: count }
         });
       } catch (e) {
-        if (get(e, 'code') !== 'SlowDown') {
+        if (e.name !== 'SlowDown') {
           throw e;
         }
         lastError = e;
@@ -37,7 +36,7 @@ export default ({
     throw lastError;
   };
 
-  const putGzipObject = ({ bucket, key, data }) => exec('s3:putObject', {
+  const putGzipObject = ({ bucket, key, data }) => exec('S3:PutObjectCommand', {
     ContentType: 'application/json',
     ContentEncoding: 'gzip',
     Bucket: bucket,
@@ -45,20 +44,29 @@ export default ({
     Body: zlib.gzipSync(data, { level: 9 })
   });
 
-  const getGzipJsonObject = ({ bucket, key, expectedErrorCodes = [] }) => exec(
-    's3:getObject',
-    { Bucket: bucket, Key: key },
-    { expectedErrorCodes }
-  ).then((r) => (expectedErrorCodes.includes(r) ? r : JSON.parse(zlib.gunzipSync(r.Body).toString('utf8'))));
+  const getGzipJsonObject = async ({ bucket, key, expectedErrorCodes = [] }) => {
+    const r = await exec(
+      'S3:GetObjectCommand',
+      { Bucket: bucket, Key: key },
+      { expectedErrorCodes }
+    );
+    if (expectedErrorCodes.includes(r)) {
+      return r;
+    }
+    const byteArray = await r.Body.transformToByteArray();
+    const buffer = Buffer.from(byteArray);
+    const str = zlib.gunzipSync(buffer).toString('utf8');
+    return JSON.parse(str);
+  };
 
   const headObject = ({ bucket, key, expectedErrorCodes = [] }) => exec(
-    's3:headObject',
+    'S3:HeadObjectCommand',
     { Bucket: bucket, Key: key },
     { expectedErrorCodes }
   );
 
   const deleteObject = ({ bucket, key, expectedErrorCodes = [] }) => exec(
-    's3:deleteObject',
+    'S3:DeleteObjectCommand',
     { Bucket: bucket, Key: key },
     { expectedErrorCodes }
   );
@@ -84,7 +92,7 @@ export default ({
     let isTruncated;
     do {
       // eslint-disable-next-line no-await-in-loop
-      const response = await exec('s3:listObjectsV2', {
+      const response = await exec('S3:ListObjectsV2Command', {
         Bucket: bucket,
         ...(limit === undefined ? {} : { MaxKeys: Math.min(1000, limit - result.length) }),
         ...(prefix === undefined ? {} : { Prefix: prefix }),
@@ -93,7 +101,7 @@ export default ({
       });
       if (
         stopAfter !== null
-        && response.Contents.length > 0
+        && response.KeyCount > 0
         && response.Contents[response.Contents.length - 1].Key >= stopAfter
       ) {
         const sliceIdx = response.Contents.findIndex((e) => e.Key > stopAfter);
@@ -101,7 +109,7 @@ export default ({
         continuationToken = undefined;
         isTruncated = false;
       } else {
-        result.push(...response.Contents);
+        result.push(...(response.Contents || []));
         continuationToken = response.NextContinuationToken;
         isTruncated = response.IsTruncated;
       }

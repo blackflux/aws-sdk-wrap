@@ -17,7 +17,7 @@ describe('Testing req-header-overwrite.js', () => {
       headers: {
         host: 'sqs.us-west-2.amazonaws.com'
       }
-    })).to.equal('^aws-sdk-nodejs/.+$');
+    })).to.equal('^aws-sdk-js/.+$');
   });
 
   it('Testing user-agent by unknown host', async () => {
