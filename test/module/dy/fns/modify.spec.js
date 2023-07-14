@@ -86,7 +86,7 @@ describe('Testing modify', {
     const { item } = await generateItem();
     item.age = 55;
     const error = await capture(() => model.modify(item, { conditions: { attr: 'age', eq: 10 } }));
-    expect(error.code).to.equal('ConditionalCheckFailedException');
+    expect(error.name).to.equal('ConditionalCheckFailedException');
   });
 
   it('Testing modify with unknown error', async ({ capture }) => {
@@ -94,7 +94,7 @@ describe('Testing modify', {
     const { item } = await generateItem();
     item.age = 55;
     const error = await capture(() => model.modify(item, { conditions: { attr: 'age', eq: 10 } }));
-    expect(error.code).to.equal('UnknownError');
+    expect(error.name).to.equal('SyntaxError');
   });
 
   it('Testing modify with item does not exist', async ({ capture }) => {

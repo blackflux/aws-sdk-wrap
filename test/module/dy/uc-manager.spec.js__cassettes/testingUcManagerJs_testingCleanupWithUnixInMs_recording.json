@@ -53,7 +53,19 @@
         }
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "9f605e50cc812a44949d5e686b6f8d0d9c12c553425ea0d698606a844c86acd6",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.CreateTable",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -103,7 +115,19 @@
     },
     "status": 200,
     "response": {},
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "c1c45bb132cf59d108efbd86f799822fd86767b302aba04b5dbcdf624ccf00af",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.PutItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -153,7 +177,19 @@
     },
     "status": 200,
     "response": {},
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "159c5bac4f8edfe4cc72e7946cca25122b972aab9228943fc2429ac48d4e828c",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.PutItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -203,7 +239,19 @@
     },
     "status": 200,
     "response": {},
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "e4130154a36fcf6960cb943a9b1fe2c83147662ee6657209ed451b6546ce412f",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.PutItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -253,7 +301,19 @@
     },
     "status": 200,
     "response": {},
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "389ae108644ea08253dec30e89fe1a1a07e9d0966e9ede4581e4c4c63238cb92",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.PutItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -334,7 +394,19 @@
         }
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "0768b68ec2b720b30752a1d3f6ba7c07d2e00236e6c322a6a0cfeb61e8120522",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -403,7 +475,19 @@
         }
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "6086f2ae52673d7ed58a81fca9ffe22ea8235f3f21bff053646d014caec8c1cd",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -467,7 +551,19 @@
       "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
       "Message": "The conditional request failed"
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "555f5b574ef771d5cf9a8c23df30260f0dc4c351753da528d9f8f996e62fc677",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -531,7 +627,19 @@
       "__type": "com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException",
       "Message": "The conditional request failed"
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "4bad5a50b051d9351d7b553279261b4ff496a0832f45e8a6ddc3d9fb0a2dc4ed",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -575,7 +683,19 @@
         }
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "49871a5ae33391c1e0bf88deb7a63ac37d1c28a67c184b9a486773ebf0702cf3",
+      "x-amz-date": "20220422T181341Z",
+      "x-amz-target": "DynamoDB_20120810.DeleteTable",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   }
 ]

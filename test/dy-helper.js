@@ -1,27 +1,24 @@
-import AWS from 'aws-sdk';
 import { expect } from 'chai';
+import {
+  CreateTableCommand,
+  DeleteTableCommand
+} from '@aws-sdk/client-dynamodb';
 import Index from '../src/index.js';
 import DyUtil from '../src/module/dy.js';
+import retryStrategy from './helper/retry-strategy.js';
+import DocumentClientConstructor from './helper/dy-document-client-constructor.js';
+import DyClientConstructor from './helper/dy-client-constructor.js';
 
-const { DynamoDB } = AWS;
-const { DocumentClient } = DynamoDB;
-
-const dynamoDB = async (cmd, params) => {
-  const ddb = new DynamoDB({
-    endpoint: 'http://dynamodb-local:8000',
-    apiVersion: '2012-08-10',
-    region: 'us-west-2',
-    accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
-    secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-  });
-  return ddb[cmd](params).promise();
+const dynamoDB = async (Cmd, params) => {
+  const ddb = DyClientConstructor();
+  return ddb.send(new Cmd(params));
 };
 
 export const LocalTable = (model) => {
   const schema = model.schema;
   return {
-    create: async () => dynamoDB('createTable', schema),
-    delete: async () => dynamoDB('deleteTable', { TableName: schema.TableName })
+    create: async () => dynamoDB(CreateTableCommand, schema),
+    delete: async () => dynamoDB(DeleteTableCommand, { TableName: schema.TableName })
   };
 };
 
@@ -31,11 +28,11 @@ export const buildLockManager = () => {
       region: 'us-west-2',
       accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
       secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-      maxRetries: 0,
+      retryStrategy,
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient
+      'DynamoDB.DocumentClient': DocumentClientConstructor()
     }
   });
   const { LockManager } = DyUtil({
@@ -52,11 +49,11 @@ export const buildUcManager = () => {
       region: 'us-west-2',
       accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
       secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-      maxRetries: 0,
+      retryStrategy,
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient
+      'DynamoDB.DocumentClient': DocumentClientConstructor()
     }
   });
   const { UcManager } = DyUtil({
@@ -76,11 +73,11 @@ export const buildModel = ({
 } = {}) => {
   const index = Index({
     config: {
-      maxRetries: 0,
+      retryStrategy,
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': AWS.DynamoDB.DocumentClient
+      'DynamoDB.DocumentClient': DocumentClientConstructor()
     }
   });
   const Model = (opts) => DyUtil({
@@ -114,9 +111,7 @@ export const buildModel = ({
     ...(onUpdate === null ? {} : { onUpdate }),
     ...(onCreate === null ? {} : { onCreate }),
     ...(onDelete === null ? {} : { onDelete }),
-    DocumentClient: new DocumentClient({
-      endpoint: process.env.DYNAMODB_ENDPOINT
-    })
+    DocumentClient: DocumentClientConstructor()
   });
 };
 

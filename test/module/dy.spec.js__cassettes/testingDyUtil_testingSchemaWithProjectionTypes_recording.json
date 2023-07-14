@@ -285,10 +285,13 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "be3fb613f7d9a3a9095d95749d7c952017d3cafffc0246e2b7a4d65485f9a2f2",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.CreateTable"
+      "x-amz-target": "DynamoDB_20120810.CreateTable",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   },
   {
@@ -471,10 +474,13 @@
       "content-length": "^[1-9][0-9]*$",
       "content-type": "application/x-amz-json-1.0",
       "host": "dynamodb-local:8000",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "ebd0d2abd69c79d2d40a70a6ff9d307590893eb6c9984a03e9d6546d1e5a9aca",
       "x-amz-date": "20220517T182122Z",
-      "x-amz-target": "DynamoDB_20120810.DeleteTable"
+      "x-amz-target": "DynamoDB_20120810.DeleteTable",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   }
 ]

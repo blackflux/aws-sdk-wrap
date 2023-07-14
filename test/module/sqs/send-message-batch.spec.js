@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import AWS from 'aws-sdk';
+import { GetQueueAttributesCommand, SendMessageBatchCommand, SQSClient } from '@aws-sdk/client-sqs';
 import Index from '../../../src/index.js';
-import { SendMessageBatchError, MessageCollisionError } from '../../../src/resources/errors.js';
+import { MessageCollisionError, SendMessageBatchError } from '../../../src/resources/errors.js';
 import nockReqHeaderOverwrite from '../../req-header-overwrite.js';
 
 describe('Testing sendMessageBatch', {
@@ -17,7 +17,11 @@ describe('Testing sendMessageBatch', {
     aws = Index({
       logger: console,
       services: {
-        sqs: AWS.SQS
+        SQS: SQSClient,
+        'SQS:CMD': {
+          GetQueueAttributesCommand,
+          SendMessageBatchCommand
+        }
       }
     });
   });
@@ -35,15 +39,19 @@ describe('Testing sendMessageBatch', {
       queueUrl: process.env.QUEUE_URL_ONE
     });
     expect(result).to.deep.equal([[{
-      ResponseMetadata: {
-        RequestId: 'a8b4a121-1f5c-562e-b28d-f54f44cd7572'
+      $metadata: {
+        httpStatusCode: 200,
+        attempts: 1,
+        totalRetryDelay: 0,
+        cfId: undefined,
+        extendedRequestId: undefined,
+        requestId: undefined
       },
       Successful: [{
         Id: '519997180f76e285948227ee48ab2e823098231f',
         MessageId: '44310b3a-4ccb-4221-8687-815993d27551',
         MD5OfMessageBody: 'e9a9e8b948b2b798f9c680b5ff0cec0a'
-      }],
-      Failed: []
+      }]
     }]]);
   });
 
@@ -59,28 +67,37 @@ describe('Testing sendMessageBatch', {
       }],
       queueUrl: process.env.QUEUE_URL_ONE
     });
-    expect(result).to.deep.equal([[{
-      ResponseMetadata: {
-        RequestId: 'b4f56dbc-037a-5147-8dcd-38068125b74b'
+    expect(result).to.deep.equal([[
+      {
+        $metadata: {
+          httpStatusCode: 200,
+          attempts: 1,
+          totalRetryDelay: 0,
+          cfId: undefined,
+          extendedRequestId: undefined,
+          requestId: undefined
+        },
+        Failed: [{
+          Id: 'd7967cdc826c420f2482b9bac6b10b73fb156efc',
+          SenderFault: false,
+          Code: 'InternalError'
+        }]
       },
-      Successful: [],
-      Failed: [{
-        Id: 'd7967cdc826c420f2482b9bac6b10b73fb156efc',
-        SenderFault: false,
-        Code: 'InternalError'
-      }]
-    },
-    {
-      ResponseMetadata: {
-        RequestId: '2f332d0a-9d78-594e-8e94-78b01f67a165'
-      },
-      Successful: [{
-        Id: 'd7967cdc826c420f2482b9bac6b10b73fb156efc',
-        MessageId: 'e555abcb-d677-41ce-a3cd-022e2d94cad4',
-        MD5OfMessageBody: '90cfad0c5a2d7b4f32be02659214aaba'
-      }],
-      Failed: []
-    }]]);
+      {
+        $metadata: {
+          httpStatusCode: 200,
+          attempts: 1,
+          totalRetryDelay: 0,
+          cfId: undefined,
+          extendedRequestId: undefined,
+          requestId: undefined
+        },
+        Successful: [{
+          Id: 'd7967cdc826c420f2482b9bac6b10b73fb156efc',
+          MessageId: '5b6c64ce-37de-47bf-aad4-fc483c86c1e9',
+          MD5OfMessageBody: '90cfad0c5a2d7b4f32be02659214aaba'
+        }]
+      }]]);
     expect(recorder.get()).to.deep.equal([
       'Failed to submit (some) message(s)\nRetrying: '
       + '[( Id = d7967cdc826c420f2482b9bac6b10b73fb156efc , MD5 = 90cfad0c5a2d7b4f32be02659214aaba )]'
@@ -131,15 +148,19 @@ describe('Testing sendMessageBatch', {
       delaySeconds: 5
     });
     expect(result).to.deep.equal([[{
-      ResponseMetadata: {
-        RequestId: '8d1d8e98-dc7e-5fc2-9c83-db8791125e19'
+      $metadata: {
+        attempts: 1,
+        cfId: undefined,
+        extendedRequestId: undefined,
+        httpStatusCode: 200,
+        requestId: undefined,
+        totalRetryDelay: 0
       },
       Successful: [{
         Id: 'dc616406d8b80239f3fb6b0f7a9a3c1a360f0d46',
         MessageId: '8085f0e3-a423-447e-9c89-3463acc149ef',
         MD5OfMessageBody: '5e44aadb9678e3604d5dbee0be04c4e4'
-      }],
-      Failed: []
+      }]
     }]]);
   });
 

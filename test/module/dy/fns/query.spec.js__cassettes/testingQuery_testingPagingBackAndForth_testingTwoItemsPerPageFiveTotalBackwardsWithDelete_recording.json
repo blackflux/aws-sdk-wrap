@@ -193,7 +193,19 @@
         ]
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "9cb199cd346e70dbfd8556cfdff4a37e6ac8bbf1a859d99ce09d776c0e9d1c6d",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.CreateTable",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -223,7 +235,19 @@
     },
     "status": 200,
     "response": {},
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "7329c3558fad05dd5f8f07b5767be354eb2a7b0b9e22d8b59e4219f1ceaf110a",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -253,7 +277,19 @@
     },
     "status": 200,
     "response": {},
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "a01c83fd96f7f8ad0c798a89d6ee681aa74de869cc6ef2c9338c14e8f2f9a676",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -283,7 +319,19 @@
     },
     "status": 200,
     "response": {},
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "aedf06d2e19d5094c1f7d8ecf86807852f15fa303303a24a4fbe837d3e5bf898",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -313,7 +361,19 @@
     },
     "status": 200,
     "response": {},
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "d99ce918a1a29896b76216533c2c8342c54a9f45fc1931bd6ece1017a42f51e2",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -343,7 +403,19 @@
     },
     "status": 200,
     "response": {},
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "d93235e0b299ba5a89918aa744717f78f2f4821f135e29d4d9eed5c7e23e523c",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.UpdateItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -402,7 +474,19 @@
         }
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "68a70b7d515fb2df34e1c3ed9564d22d1866602b274426997ce28c5e9d2d75e1",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.Query",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -469,7 +553,19 @@
         }
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "dda38ae7c83fe332aa89a127ba5264ff04860ec8f22df2dea196540e617dc4d6",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.Query",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -517,7 +613,19 @@
       "Count": 1,
       "ScannedCount": 1
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "130a7d9b7df2a06426d0150f3f9b363e8155cd5570084909ffcc191fb5b30ea4",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.Query",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -583,7 +691,19 @@
         }
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "09694eb6b8ee09c358b64b269dfc04e385856a4729f15a4e0cf71e6c0d3a1848",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.Query",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -620,7 +740,19 @@
         }
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "25cc0690c532e0b6e2031845f543fb5fb29cc10f76b87c6e81eda9b7271128ab",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.DeleteItem",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -667,7 +799,19 @@
       "Count": 1,
       "ScannedCount": 1
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "4ebc243fcb19e17c2fe36d37e08fcb87565a7f98b3bf2c69d4bd633bc155ed40",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.Query",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -734,7 +878,19 @@
         }
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "dda38ae7c83fe332aa89a127ba5264ff04860ec8f22df2dea196540e617dc4d6",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.Query",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -782,7 +938,19 @@
       "Count": 1,
       "ScannedCount": 1
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "130a7d9b7df2a06426d0150f3f9b363e8155cd5570084909ffcc191fb5b30ea4",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.Query",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   },
   {
@@ -908,7 +1076,19 @@
         ]
       }
     },
-    "reqheaders": {},
+    "reqheaders": {
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
+      "content-length": "^[1-9][0-9]*$",
+      "content-type": "application/x-amz-json-1.0",
+      "host": "dynamodb-local:8000",
+      "user-agent": "^aws-sdk-js/.+$",
+      "x-amz-content-sha256": "ebd0d2abd69c79d2d40a70a6ff9d307590893eb6c9984a03e9d6546d1e5a9aca",
+      "x-amz-date": "20220517T182122Z",
+      "x-amz-target": "DynamoDB_20120810.DeleteTable",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+    },
     "responseIsBinary": false
   }
 ]

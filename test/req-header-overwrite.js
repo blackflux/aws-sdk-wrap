@@ -17,13 +17,26 @@ const transform = (logic) => Object.fromEntries(Object.entries(logic)
 export default transform({
   'content-length': ({ value }) => (String(value) === '0' ? 0 : '^[1-9][0-9]*$'),
   'user-agent': {
-    'monitoring.us-west-2.amazonaws.com': '^aws-sdk-nodejs/.+$',
-    'lambda.us-west-2.amazonaws.com': '^aws-sdk-nodejs/.+$',
-    'sqs.us-west-2.amazonaws.com': '^aws-sdk-nodejs/.+$',
-    'ssm.us-west-2.amazonaws.com': '^aws-sdk-nodejs/.+$',
-    'dynamodb.us-west-2.amazonaws.com': '^aws-sdk-nodejs/.+$',
-    's3.us-west-2.amazonaws.com': '^aws-sdk-nodejs/.+$',
-    'dynamodb-local:8000': '^aws-sdk-nodejs/.+$'
+    'monitoring.us-west-2.amazonaws.com': '^aws-sdk-js/.+$',
+    'lambda.us-west-2.amazonaws.com': '^aws-sdk-js/.+$',
+    'sqs.us-west-2.amazonaws.com': '^aws-sdk-js/.+$',
+    'ssm.us-west-2.amazonaws.com': '^aws-sdk-js/.+$',
+    'dynamodb.us-west-2.amazonaws.com': '^aws-sdk-js/.+$',
+    's3.us-west-2.amazonaws.com': '^aws-sdk-js/.+$',
+    'dynamodb-local:8000': '^aws-sdk-js/.+$'
+  },
+  'x-amz-user-agent': {
+    'monitoring.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'lambda.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'sqs.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'ssm.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'dynamodb.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    's3.us-west-2.amazonaws.com': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$',
+    'dynamodb-local:8000': '^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$'
+  },
+  'amz-sdk-invocation-id': {
+    '.us-west-2.amazonaws.com': '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+    'dynamodb-local:8000': '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
   },
   authorization: {
     '.us-west-2.amazonaws.com': '^AWS4-HMAC-SHA256 Credential=.+$',

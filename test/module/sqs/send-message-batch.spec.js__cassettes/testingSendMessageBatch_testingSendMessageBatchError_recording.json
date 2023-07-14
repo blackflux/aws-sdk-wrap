@@ -3,17 +3,20 @@
     "scope": "https://sqs.us-west-2.amazonaws.com:443",
     "method": "POST",
     "path": "/",
-    "body": "Action=SendMessageBatch&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.Id=d7967cdc826c420f2482b9bac6b10b73fb156efc&SendMessageBatchRequestEntry.1.MessageBody=%7B%22type%22%3A%22webhook%22%2C%22url%22%3A%22https%3A%2F%2Fsome-url.com%2Fpath%22%2C%22meta%22%3A%22c53be1ec6a664cb0820aa5fa8b9915ea%22%2C%22event%22%3A%7B%22name%22%3A%22event_name%22%7D%7D&Version=2012-11-05",
+    "body": "QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&SendMessageBatchRequestEntry.1.Id=d7967cdc826c420f2482b9bac6b10b73fb156efc&SendMessageBatchRequestEntry.1.MessageBody=%7B%22type%22%3A%22webhook%22%2C%22url%22%3A%22https%3A%2F%2Fsome-url.com%2Fpath%22%2C%22meta%22%3A%22c53be1ec6a664cb0820aa5fa8b9915ea%22%2C%22event%22%3A%7B%22name%22%3A%22event_name%22%7D%7D&Action=SendMessageBatch&Version=2012-11-05",
     "status": 200,
     "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><BatchResultErrorEntry><Id>d7967cdc826c420f2482b9bac6b10b73fb156efc</Id><SenderFault>false</SenderFault><Code>InternalError</Code></BatchResultErrorEntry></SendMessageBatchResult><ResponseMetadata><RequestId>b4f56dbc-037a-5147-8dcd-38068125b74b</RequestId></ResponseMetadata></SendMessageBatchResponse>",
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+      "content-type": "application/x-www-form-urlencoded",
       "host": "sqs.us-west-2.amazonaws.com",
-      "user-agent": "^aws-sdk-nodejs/.+$",
+      "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
-      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$"
+      "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
+      "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "amz-sdk-request": "attempt=1; max=3",
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
     }
   }
 ]
