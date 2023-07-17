@@ -18,7 +18,9 @@ export default ({
   call,
   getService,
   logger,
-  cursorSecret
+  cursorSecret,
+  Table,
+  Entity
 }) => {
   const Model = ({
     name,
@@ -38,7 +40,9 @@ export default ({
       name,
       attributes,
       indices,
-      DocumentClient: getService('DynamoDB.DocumentClient')
+      DocumentClient: getService('DynamoDB.DocumentClient'),
+      Table,
+      Entity
     });
     const {
       validateSecondaryIndex,

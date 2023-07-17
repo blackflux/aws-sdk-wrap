@@ -26,7 +26,9 @@ describe('Testing validate-kwargs.js', () => {
       name: 'table-name',
       ...(attributes === null ? {} : { attributes }),
       ...(indices === null ? {} : { indices }),
-      DocumentClient: {}
+      DocumentClient: {},
+      Table: null,
+      Entity: null
     });
   });
 

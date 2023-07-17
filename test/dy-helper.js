@@ -3,6 +3,7 @@ import {
   CreateTableCommand,
   DeleteTableCommand
 } from '@aws-sdk/client-dynamodb';
+import { Table, Entity } from 'dynamodb-toolbox';
 import Index from '../src/index.js';
 import DyUtil from '../src/module/dy.js';
 import retryStrategy from './helper/retry-strategy.js';
@@ -38,7 +39,9 @@ export const buildLockManager = () => {
   const { LockManager } = DyUtil({
     call: index.call,
     logger: console,
-    getService: index.get
+    getService: index.get,
+    Table,
+    Entity
   });
   return LockManager;
 };
@@ -59,7 +62,9 @@ export const buildUcManager = () => {
   const { UcManager } = DyUtil({
     call: index.call,
     logger: console,
-    getService: index.get
+    getService: index.get,
+    Table,
+    Entity
   });
   return UcManager;
 };
@@ -83,7 +88,9 @@ export const buildModel = ({
   const Model = (opts) => DyUtil({
     call: index.call,
     logger: null,
-    getService: index.get
+    getService: index.get,
+    Table,
+    Entity
   }).Model(opts);
   return Model({
     name: 'table-name',
@@ -111,7 +118,9 @@ export const buildModel = ({
     ...(onUpdate === null ? {} : { onUpdate }),
     ...(onCreate === null ? {} : { onCreate }),
     ...(onDelete === null ? {} : { onDelete }),
-    DocumentClient: DocumentClientConstructor()
+    DocumentClient: DocumentClientConstructor(),
+    Table,
+    Entity
   });
 };
 

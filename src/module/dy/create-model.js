@@ -1,5 +1,4 @@
 import get from 'lodash.get';
-import { Table, Entity } from 'dynamodb-toolbox';
 import getFirst from './get-first.js';
 import validateKwargs from './validate-kwargs.js';
 
@@ -28,7 +27,9 @@ export default (kwargs) => {
     name,
     attributes,
     indices = {},
-    DocumentClient
+    DocumentClient,
+    Table,
+    Entity
   } = validateKwargs(kwargs);
 
   const partitionKey = getFirst(attributes, ([k, v]) => v.partitionKey === true);

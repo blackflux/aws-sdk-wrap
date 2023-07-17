@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
+import { Table, Entity } from 'dynamodb-toolbox';
 import createModel from '../../../src/module/dy/create-model.js';
 import { validateOneParam } from '../../helper/uncalled-validate-fns.js';
 import DocumentClientConstructor from '../../helper/dy-document-client-constructor.js';
@@ -25,7 +26,9 @@ describe('Testing create-model.js', () => {
           projectionType: 'KEYS_ONLY'
         }
       },
-      DocumentClient
+      DocumentClient,
+      Table,
+      Entity
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
@@ -38,7 +41,9 @@ describe('Testing create-model.js', () => {
         name: { type: 'string' },
         other: { type: 'string' }
       },
-      DocumentClient
+      DocumentClient,
+      Table,
+      Entity
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
@@ -52,7 +57,9 @@ describe('Testing create-model.js', () => {
         other: { type: 'string' },
         number: { type: 'number' }
       },
-      DocumentClient
+      DocumentClient,
+      Table,
+      Entity
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
@@ -67,7 +74,9 @@ describe('Testing create-model.js', () => {
           other: { type: 'string' },
           number: { type: 'number' }
         },
-        DocumentClient
+        DocumentClient,
+        Table,
+        Entity
       });
     } catch (error) {
       expect(error.message).to.equal('map not supported for indexing');
@@ -82,7 +91,9 @@ describe('Testing create-model.js', () => {
         name: { type: 'string' },
         other: { type: 'string', validate: validateOneParam }
       },
-      DocumentClient
+      DocumentClient,
+      Table,
+      Entity
     });
     expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
   });
