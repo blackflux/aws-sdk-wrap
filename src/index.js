@@ -10,6 +10,12 @@ import * as errors from './resources/errors.js';
 export default (opts = {}) => {
   Joi.assert(opts, Joi.object().keys({
     services: Joi.object().pattern(Joi.string(), Joi.any()),
+    utils: Joi.object().keys({
+      Toolbox: Joi.object().keys({
+        Table: Joi.function().class(),
+        Entity: Joi.function().class()
+      }).optional()
+    }).optional(),
     config: Joi.object().optional(),
     configService: Joi.object().optional(),
     logger: Joi.any().optional(),
@@ -117,7 +123,12 @@ export default (opts = {}) => {
     call,
     get: getService,
     dy: Dy({
-      call, getService, logger, cursorSecret
+      call,
+      getService,
+      logger,
+      cursorSecret,
+      Table: get(opts, 'opts.util.Toolbox.Table', null),
+      Entity: get(opts, 'opts.util.Toolbox.Entity', null)
     }),
     s3: S3({ call, logger }),
     sqs: Sqs({ call, getService, logger }),

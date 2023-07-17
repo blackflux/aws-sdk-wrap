@@ -61,7 +61,9 @@ const schema = Joi.object().keys({
       }
       return v;
     }),
-  DocumentClient: Joi.object()
+  DocumentClient: Joi.object(),
+  Table: Joi.function().class().allow(null),
+  Entity: Joi.function().class().allow(null)
 }).custom((v, h) => {
   const { attributes, indices } = v;
   if (indices !== undefined) {
