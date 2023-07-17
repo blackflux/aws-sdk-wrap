@@ -58,7 +58,8 @@
     "eslint-plugin-mocha": "10.1.0",
     "js-gardener": "5.0.0",
     "node-tdd": "3.5.0",
-    "smart-fs": "3.0.1"
+    "smart-fs": "3.0.1",
+    "dynamodb-toolbox": "0.8.5"
   },
   "peerDependencies": {},
   "licenses": [
@@ -74,7 +75,6 @@
     "lib"
   ],
   "dependencies": {
-    "dynamodb-toolbox": "0.8.5",
     "joi-strict": "2.0.1",
     "lambda-async": "2.0.1",
     "lambda-monitor-logger": "4.0.0",
