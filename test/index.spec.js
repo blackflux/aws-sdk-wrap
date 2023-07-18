@@ -1,10 +1,8 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import Index from '../src/index.js';
 import nockReqHeaderOverwrite from './req-header-overwrite.js';
-import DocumentClientConstructor from './helper/dy-document-client-constructor.js';
 
 describe('Testing index', {
   timestamp: '2022-05-17T18:21:22.341Z',
@@ -18,7 +16,6 @@ describe('Testing index', {
     logs = [];
     aws = Index({
       services: {
-        'DynamoDB.DocumentClient': DocumentClientConstructor(),
         S3: S3Client,
         'S3:CMD': { PutObjectCommand }
       },
@@ -36,10 +33,6 @@ describe('Testing index', {
       'lambda',
       'errors'
     ]);
-  });
-
-  it('Testing nested get', () => {
-    expect(aws.get('DynamoDB.DocumentClient')).to.be.instanceof(DynamoDBDocumentClient);
   });
 
   it('Testing Exception', async ({ capture }) => {
