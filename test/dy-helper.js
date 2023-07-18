@@ -1,13 +1,14 @@
 import { expect } from 'chai';
 import {
-  CreateTableCommand,
-  DeleteTableCommand
+  DynamoDBClient,
+  DeleteTableCommand,
+  CreateTableCommand
 } from '@aws-sdk/client-dynamodb';
 import { Table, Entity } from 'dynamodb-toolbox';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import Index from '../src/index.js';
 import DyUtil from '../src/module/dy.js';
 import retryStrategy from './helper/retry-strategy.js';
-import DocumentClientConstructor from './helper/dy-document-client-constructor.js';
 import DyClientConstructor from './helper/dy-client-constructor.js';
 
 const dynamoDB = async (Cmd, params) => {
@@ -33,7 +34,8 @@ export const buildLockManager = () => {
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': DocumentClientConstructor()
+      DynamoDB: DynamoDBClient,
+      DynamoDBDocument: DynamoDBDocumentClient
     }
   });
   const { LockManager } = DyUtil({
@@ -56,7 +58,8 @@ export const buildUcManager = () => {
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': DocumentClientConstructor()
+      DynamoDB: DynamoDBClient,
+      DynamoDBDocument: DynamoDBDocumentClient
     }
   });
   const { UcManager } = DyUtil({
@@ -82,7 +85,8 @@ export const buildModel = ({
       endpoint: process.env.DYNAMODB_ENDPOINT
     },
     services: {
-      'DynamoDB.DocumentClient': DocumentClientConstructor()
+      DynamoDB: DynamoDBClient,
+      DynamoDBDocument: DynamoDBDocumentClient
     }
   });
   const Model = (opts) => DyUtil({
@@ -118,7 +122,6 @@ export const buildModel = ({
     ...(onUpdate === null ? {} : { onUpdate }),
     ...(onCreate === null ? {} : { onCreate }),
     ...(onDelete === null ? {} : { onDelete }),
-    DocumentClient: DocumentClientConstructor(),
     Table,
     Entity
   });
