@@ -127,8 +127,8 @@ export default (opts = {}) => {
       getService,
       logger,
       cursorSecret,
-      Table: get(opts, 'opts.util.Toolbox.Table', null),
-      Entity: get(opts, 'opts.util.Toolbox.Entity', null)
+      Table: get(opts, 'utils.Toolbox.Table', null),
+      Entity: get(opts, 'utils.Toolbox.Entity', null)
     }),
     s3: S3({ call, logger }),
     sqs: Sqs({ call, getService, logger }),
