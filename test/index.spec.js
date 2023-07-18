@@ -14,13 +14,11 @@ describe('Testing index', {
 }, () => {
   let aws;
   let logs;
-  let DocumentClient;
   beforeEach(() => {
     logs = [];
-    DocumentClient = DocumentClientConstructor();
     aws = Index({
       services: {
-        'DynamoDB.DocumentClient': DocumentClient,
+        'DynamoDB.DocumentClient': DocumentClientConstructor(),
         S3: S3Client,
         'S3:CMD': { PutObjectCommand }
       },
