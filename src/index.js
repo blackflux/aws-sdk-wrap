@@ -39,19 +39,22 @@ export default (opts = {}) => {
     }
   };
 
-  const getService = (service) => {
+  const getService = (service, init = true) => {
     const serviceLower = service.toLowerCase();
-    if (servicesCache[serviceLower] === undefined) {
+    const cacheKey = `${serviceLower}.${init}`;
+    if (servicesCache[cacheKey] === undefined) {
       assert(services[serviceLower] !== undefined, `Service "${serviceLower}" not injected.`);
       const Service = services[serviceLower];
       try {
-        servicesCache[serviceLower] = new Service(get(configService, serviceLower, config));
+        servicesCache[cacheKey] = init === true
+          ? new Service(get(configService, serviceLower, config))
+          : Service;
       } catch (e) {
         assert(e instanceof TypeError);
-        servicesCache[serviceLower] = Service;
+        servicesCache[cacheKey] = Service;
       }
     }
-    return servicesCache[serviceLower];
+    return servicesCache[cacheKey];
   };
 
   const call = async (...kwargs) => {
