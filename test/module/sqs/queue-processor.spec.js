@@ -1,6 +1,6 @@
+import path from 'path';
 import { expect } from 'chai';
 import fs from 'smart-fs';
-import path from 'path';
 import { describe } from 'node-tdd';
 import {
   SQSClient,
