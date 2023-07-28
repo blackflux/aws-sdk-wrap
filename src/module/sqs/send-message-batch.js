@@ -1,10 +1,10 @@
 import util from 'util';
+import crypto from 'crypto';
 import chunk from 'lodash.chunk';
 import get from 'lodash.get';
 import objectScan from 'object-scan';
 import Joi from 'joi-strict';
 import objectHash from 'object-hash-strict';
-import crypto from 'crypto';
 import { getGroupId, getDeduplicationId, getDelaySeconds } from './prepare-message.js';
 import { SendMessageBatchError, MessageCollisionError } from '../../resources/errors.js';
 
