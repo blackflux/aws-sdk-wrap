@@ -1066,10 +1066,10 @@
   dependencies:
     smart-fs "2.0.2"
 
-"@blackflux/robo-config-plugin@9.0.7":
-  version "9.0.7"
-  resolved "https://registry.yarnpkg.com/@blackflux/robo-config-plugin/-/robo-config-plugin-9.0.7.tgz#a9ca003900a1f1d5b1e31284318d0dad2a836379"
-  integrity sha512-9eg1e1hWVnCQ4RtiQXVfRbSNHztk7sBRmRCGMdBk9npFLWaR7NTk2cO1BoJByOMdK8AE5niKskrTuA0gqpr1aQ==
+"@blackflux/robo-config-plugin@9.0.9":
+  version "9.0.9"
+  resolved "https://registry.yarnpkg.com/@blackflux/robo-config-plugin/-/robo-config-plugin-9.0.9.tgz#0bb3ca28a89d9179b29111378e2626962dcf8d71"
+  integrity sha512-WfSV4fFtMGRoHGmwY7bSWN0ElsiA9YzHEx4HBgCFlCAcoWzWZUgKel7o97dleOZgFO5HKdJENmTKEWy07cWT8A==
   dependencies:
     smart-fs "3.0.1"
 
@@ -2619,9 +2619,9 @@ eastasianwidth@^0.2.0:
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
 electron-to-chromium@^1.4.431:
-  version "1.4.475"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.475.tgz#2fee0e2a70cc1538b94f7f90aabcc436e4dcc827"
-  integrity sha512-mTye5u5P98kSJO2n7zYALhpJDmoSQejIGya0iR01GpoRady8eK3bw7YHHnjA1Rfi4ZSLdpuzlAC7Zw+1Zu7Z6A==
+  version "1.4.476"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.476.tgz#693df619ce1785ada6d5aec71fd3ce7ace71adc3"
+  integrity sha512-gzWl1m8pNy+5Kj17XcziNcbOhripjTqR2wAQmtdlFUngPYuFy7zUpJScVQAvCvQSFHNk3mS5fetNKW6BSpytFg==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -3851,30 +3851,12 @@ jackspeak@^2.0.3:
   optionalDependencies:
     "@pkgjs/parseargs" "^0.11.0"
 
-joi-strict@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/joi-strict/-/joi-strict-2.0.0.tgz#f5991d1f73d96107c0e6c1772a3f7898a73fdff8"
-  integrity sha512-gk/nPCOa6eeskRTf6bWPnWhQDC+XlbghlmfNOzoiyADif6H6TQuly7shhYJY6VBi6GPoqgY8HUSSs1YMhT/T0g==
-  dependencies:
-    joi "17.4.0"
-
 joi-strict@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/joi-strict/-/joi-strict-2.0.1.tgz#5a1d39dfecac680974dfe368e590a53c4697048b"
   integrity sha512-E3b4L4kGWzCoA1X2jK/1Rakq/b/B1FbqAMqU75ohJsPsL8hbI8vKsQVezI7FoAR/esWzp3MAo1dNfNtjjgzpTA==
   dependencies:
     joi "17.4.2"
-
-joi@17.4.0:
-  version "17.4.0"
-  resolved "https://registry.yarnpkg.com/joi/-/joi-17.4.0.tgz#b5c2277c8519e016316e49ababd41a1908d9ef20"
-  integrity sha512-F4WiW2xaV6wc1jxete70Rw4V/VuMd6IN+a5ilZsxG4uYtUXWu2kq9W5P2dz30e7Gmw8RCbY/u/uk+dMPma9tAg==
-  dependencies:
-    "@hapi/hoek" "^9.0.0"
-    "@hapi/topo" "^5.0.0"
-    "@sideway/address" "^4.1.0"
-    "@sideway/formula" "^3.0.0"
-    "@sideway/pinpoint" "^2.0.0"
 
 joi@17.4.2:
   version "17.4.2"
@@ -4940,12 +4922,12 @@ prepend-http@^2.0.0:
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
   integrity sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==
 
-promise-pool-ext@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/promise-pool-ext/-/promise-pool-ext-2.1.2.tgz#fc6de868d7385df88c31b97a2e8e129f932e51f6"
-  integrity sha512-vxmZr4PH8DSi/Micylygkbrirqa0z7w7SB/oJodr4LFLXhRpw5v9A+ezsmykXjIPqgY5gPtL/ZkIfRnn5D4bYg==
+promise-pool-ext@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/promise-pool-ext/-/promise-pool-ext-3.0.0.tgz#cbf87651edb39e0927f9896785f0c16b40c9a150"
+  integrity sha512-/vnE16Iq3Cj5OSzjSL9FXJ0TyqYlWO24EDOhI8s1DeCdQHyjXulnhVoUW4xV6HaO1pw1F5hbozeEReB0JhvoXg==
   dependencies:
-    joi-strict "2.0.0"
+    joi-strict "2.0.1"
 
 propagate@^2.0.0:
   version "2.0.1"
