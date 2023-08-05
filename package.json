@@ -34,20 +34,20 @@
   },
   "homepage": "https://github.com/blackflux/aws-sdk-wrap#readme",
   "devDependencies": {
-    "@aws-sdk/client-cloudwatch": "3.382.0",
-    "@aws-sdk/client-dynamodb": "3.382.0",
-    "@aws-sdk/client-lambda": "3.382.0",
-    "@aws-sdk/client-s3": "3.383.0",
-    "@aws-sdk/client-sqs": "3.382.0",
-    "@aws-sdk/client-ssm": "3.382.0",
-    "@aws-sdk/lib-dynamodb": "3.382.0",
+    "@aws-sdk/client-cloudwatch": "3.385.0",
+    "@aws-sdk/client-dynamodb": "3.385.0",
+    "@aws-sdk/client-lambda": "3.385.0",
+    "@aws-sdk/client-s3": "3.385.0",
+    "@aws-sdk/client-sqs": "3.385.0",
+    "@aws-sdk/client-ssm": "3.385.0",
+    "@aws-sdk/lib-dynamodb": "3.385.0",
     "@aws-sdk/util-retry": "3.374.0",
     "@babel/core": "7.22.9",
     "@babel/eslint-parser": "7.22.9",
     "@babel/register": "7.22.5",
-    "@blackflux/axios": "1.1.3",
-    "@blackflux/eslint-plugin-rules": "2.2.0",
-    "@blackflux/robo-config-plugin": "9.1.7",
+    "@blackflux/axios": "2.0.0",
+    "@blackflux/eslint-plugin-rules": "3.0.0",
+    "@blackflux/robo-config-plugin": "9.1.9",
     "c8": "8.0.1",
     "chai": "4.3.7",
     "dynamodb-toolbox": "0.8.5",
@@ -57,9 +57,9 @@
     "eslint-plugin-json": "3.1.0",
     "eslint-plugin-markdown": "3.0.1",
     "eslint-plugin-mocha": "10.1.0",
-    "js-gardener": "5.0.0",
-    "node-tdd": "3.5.4",
-    "smart-fs": "3.0.2"
+    "js-gardener": "5.0.1",
+    "node-tdd": "4.0.0",
+    "smart-fs": "4.0.0"
   },
   "peerDependencies": {},
   "licenses": [
@@ -75,16 +75,16 @@
     "lib"
   ],
   "dependencies": {
-    "joi-strict": "2.0.1",
-    "lambda-async": "2.0.1",
-    "lambda-monitor-logger": "4.0.0",
+    "joi-strict": "3.0.0",
+    "lambda-async": "3.0.0",
+    "lambda-monitor-logger": "5.0.0",
     "lodash.chunk": "4.2.0",
     "lodash.clonedeep": "4.5.0",
     "lodash.get": "4.4.2",
     "lodash.isequal": "4.5.0",
-    "object-fields": "3.0.1",
-    "object-hash-strict": "3.0.1",
-    "object-scan": "18.5.1",
-    "promise-pool-ext": "3.0.0"
+    "object-fields": "4.0.0",
+    "object-hash-strict": "4.0.0",
+    "object-scan": "19.0.0",
+    "promise-pool-ext": "3.0.1"
   }
 }

@@ -1,6 +1,6 @@
 import assert from 'assert';
 import Joi from 'joi-strict';
-import objectFields from 'object-fields';
+import { Retainer } from 'object-fields';
 import Paging from '../../../util/paging.js';
 
 const getKeySchemaAttributesNames = (keySchema) => keySchema.map(({ AttributeName }) => AttributeName);
@@ -153,7 +153,7 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
       direction: cursorType
     });
     if (toReturn !== null) {
-      objectFields.Retainer(toReturn)(items);
+      Retainer(toReturn)(items);
     }
     return { items, page };
   };

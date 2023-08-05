@@ -1,6 +1,6 @@
 import assert from 'assert';
 import Joi from 'joi-strict';
-import objectFields from 'object-fields';
+import { Retainer } from 'object-fields';
 import isEqual from 'lodash.isequal';
 import clonedeep from 'lodash.clonedeep';
 import MergeAttributes from './util/merge-attributes.js';
@@ -141,7 +141,7 @@ export default ({
       }
       if (toReturn !== null) {
         assert(toReturn.every((e) => e in attributes), 'Unknown field in "toReturn" provided');
-        objectFields.Retainer(toReturn)(resultItem);
+        Retainer(toReturn)(resultItem);
       }
       return {
         ...(['update', 'put'].includes(fn) ? {
