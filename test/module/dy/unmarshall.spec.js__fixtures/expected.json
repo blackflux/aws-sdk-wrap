@@ -1,0 +1,18 @@
+{
+  "deleted": 0,
+  "id": "dd287011-9abe-47b4-8c77-a1b1abdb5a76",
+  "name": "business-name",
+  "shortName": "name",
+  "slogan": "some slogan.",
+  "desc": "some desc",
+  "url": "http://business.com",
+  "phone": "1-800-267-3001",
+  "categoryIds": [
+    "84ad8c05-d1dc-44de-a7bb-92831e414b59",
+    "58f24d6c-aec8-4d09-b398-528f42a8474e"
+  ],
+  "images": [
+    "business-profile_businessProfileImage"
+  ],
+  "created": "2022-06-14T18:06:49.864Z"
+}
