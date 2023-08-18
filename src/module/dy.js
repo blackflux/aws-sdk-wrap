@@ -13,6 +13,7 @@ import DyUtil from './dy/util.js';
 import LockManager from './dy/lock-manager.js';
 import UcManager from './dy/uc-manager.js';
 import { ModelAlreadyExists, ModelNotFound } from '../resources/errors.js';
+import unmarshall from './dy/unmarshall.js';
 
 export default ({
   call,
@@ -91,6 +92,7 @@ export default ({
   return {
     Model,
     LockManager: LockManager({ Model }),
-    UcManager: UcManager({ Model })
+    UcManager: UcManager({ Model }),
+    unmarshall
   };
 };
