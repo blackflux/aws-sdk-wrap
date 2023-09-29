@@ -14,7 +14,7 @@ export const getDelaySeconds = (msg) => msg[DELAY_SECONDS];
 export const clone = (msg) => {
   const m = { ...msg };
   Object.getOwnPropertySymbols(msg).forEach((p) => {
-    m[p] = msg[p];
+    Object.defineProperty(m, p, Object.getOwnPropertyDescriptor(msg, p));
   });
   return m;
 };
@@ -30,7 +30,8 @@ export const prepareMessage = (msg, opts) => {
   if (opts.urgent !== undefined) {
     Object.defineProperty(msg, URGENT, {
       value: opts.urgent,
-      writable: false
+      writable: false,
+      enumerable: false
     });
   }
   if (opts.groupId !== undefined) {
@@ -40,7 +41,8 @@ export const prepareMessage = (msg, opts) => {
     );
     Object.defineProperty(msg, GROUP_ID, {
       value: opts.groupId,
-      writable: false
+      writable: false,
+      enumerable: false
     });
   }
   if (opts.deduplicationId !== undefined) {
@@ -52,13 +54,15 @@ export const prepareMessage = (msg, opts) => {
     );
     Object.defineProperty(msg, DEDUPLICATION_ID, {
       value: opts.deduplicationId,
-      writable: false
+      writable: false,
+      enumerable: false
     });
   }
   if (opts.delaySeconds !== undefined) {
     Object.defineProperty(msg, DELAY_SECONDS, {
       value: opts.delaySeconds,
-      writable: false
+      writable: false,
+      enumerable: false
     });
   }
 };
