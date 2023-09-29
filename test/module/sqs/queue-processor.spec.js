@@ -33,7 +33,7 @@ describe('Testing QueueProcessor', {
   let aws;
   let processor;
   let executor;
-  let findSymbol;
+  let findSymbols;
   beforeEach(() => {
     aws = Index({
       logger: console,
@@ -94,8 +94,9 @@ describe('Testing QueueProcessor', {
         }
       });
     });
-    findSymbol = (obj, name) => Object.getOwnPropertySymbols(obj)
-      .find((s) => String(s) === `Symbol(${name})`);
+    findSymbols = (obj, name) => Object.fromEntries(
+      Object.getOwnPropertySymbols(obj).map((p) => [String(p), obj[p]])
+    );
   });
 
   it('Visualize', async () => {
@@ -169,9 +170,7 @@ describe('Testing QueueProcessor', {
         {
           __meta: { trace: ['step-urgent-message.before()'] },
           name: 'step1',
-          meta: 'before',
-          // eslint-disable-next-line no-underscore-dangle
-          [findSymbol(result.__next[0], 'urgent')]: true
+          meta: 'before'
         },
         {
           __meta: { trace: ['other', 'step-urgent-message'] },
@@ -180,6 +179,8 @@ describe('Testing QueueProcessor', {
         }
       ]
     });
+    // eslint-disable-next-line no-underscore-dangle
+    expect(findSymbols(result.__next[0])).to.deep.equal({ 'Symbol(urgent)': true });
   });
 
   it('Testing step1 -> [step2]', async () => {
@@ -188,11 +189,11 @@ describe('Testing QueueProcessor', {
       batchItemFailures: [],
       __next: [{
         __meta: { trace: ['step1'] },
-        name: 'step2',
-        // eslint-disable-next-line no-underscore-dangle
-        [findSymbol(result.__next[0], 'delay-seconds')]: 10
+        name: 'step2'
       }]
     });
+    // eslint-disable-next-line no-underscore-dangle
+    expect(findSymbols(result.__next[0])).to.deep.equal({ 'Symbol(delay-seconds)': 10 });
   });
 
   it('Testing step2 -> []', async () => {
@@ -333,11 +334,11 @@ describe('Testing QueueProcessor', {
           failureCount: 1,
           timestamp: '2020-05-15T19:56:35.713Z',
           trace: ['auto-retry']
-        },
-        // eslint-disable-next-line no-underscore-dangle
-        [findSymbol(result.__next[0], 'delay-seconds')]: 60
+        }
       }]
     });
+    // eslint-disable-next-line no-underscore-dangle
+    expect(findSymbols(result.__next[0])).to.deep.equal({ 'Symbol(delay-seconds)': 60 });
     expect(recorder.get()).to.deep.equal([]);
   });
 
@@ -351,11 +352,11 @@ describe('Testing QueueProcessor', {
           failureCount: 1,
           timestamp: '2020-05-15T19:56:35.713Z',
           trace: ['auto-retry-backoff-fn']
-        },
-        // eslint-disable-next-line no-underscore-dangle
-        [findSymbol(result.__next[0], 'delay-seconds')]: 10
+        }
       }]
     });
+    // eslint-disable-next-line no-underscore-dangle
+    expect(findSymbols(result.__next[0])).to.deep.equal({ 'Symbol(delay-seconds)': 10 });
     expect(recorder.get()).to.deep.equal([]);
   });
 
