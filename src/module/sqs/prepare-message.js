@@ -12,7 +12,7 @@ export const getDeduplicationId = (msg) => msg[DEDUPLICATION_ID];
 export const getDelaySeconds = (msg) => msg[DELAY_SECONDS];
 
 export const clone = (msg) => {
-  const m = structuredClone(msg);
+  const m = { ...msg };
   Object.getOwnPropertySymbols(msg).forEach((p) => {
     Object.defineProperty(m, p, Object.getOwnPropertyDescriptor(msg, p));
   });
