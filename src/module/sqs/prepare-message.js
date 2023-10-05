@@ -58,7 +58,7 @@ export const prepareMessage = (msg, opts) => {
       enumerable: false
     });
   }
-  if (opts.delaySeconds !== undefined) {
+  if (opts.delaySeconds !== undefined && !(DELAY_SECONDS in msg)) {
     Object.defineProperty(msg, DELAY_SECONDS, {
       value: opts.delaySeconds,
       writable: false,
