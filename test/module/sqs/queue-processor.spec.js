@@ -427,9 +427,9 @@ describe('Testing QueueProcessor', {
 
   it('Testing multi prepare message error', async ({ capture }) => {
     const msg = { name: 'step1' };
-    aws.sqs.prepareMessage(msg, { delaySeconds: 10 });
-    expect(() => aws.sqs.prepareMessage(msg, { delaySeconds: 20 }))
-      .to.throw('Cannot redefine property: Symbol(delay-seconds)');
+    aws.sqs.prepareMessage(msg, { urgent: false });
+    expect(() => aws.sqs.prepareMessage(msg, { urgent: true }))
+      .to.throw('Cannot redefine property: Symbol(urgent)');
   });
 
   it('Testing empty setting on message', async () => {
