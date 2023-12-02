@@ -3,9 +3,18 @@
     "scope": "https://sqs.us-west-2.amazonaws.com:443",
     "method": "POST",
     "path": "/",
-    "body": "QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&AttributeName.1=RedrivePolicy&Action=GetQueueAttributes&Version=2012-11-05",
+    "body": {
+      "AttributeNames": [
+        "RedrivePolicy"
+      ],
+      "QueueUrl": "https://sqs.us-west-2.amazonaws.com/XXXXXXXXXXXX/queueUrlOne"
+    },
     "status": 200,
-    "response": "<?xml version=\"1.0\"?><GetQueueAttributesResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><GetQueueAttributesResult><Attribute><Name>RedrivePolicy</Name><Value>{&quot;deadLetterTargetArn&quot;:&quot;arn:aws:sqs:us-west-2:123456789012:queueName&quot;,&quot;maxReceiveCount&quot;:10}</Value></Attribute></GetQueueAttributesResult><ResponseMetadata><RequestId>809a243a-3460-5dd8-8390-730032387781</RequestId></ResponseMetadata></GetQueueAttributesResponse>",
+    "response": {
+      "Attributes": {
+        "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-west-2:123456789012:queueName\",\"maxReceiveCount\":10}"
+      }
+    },
     "rawHeaders": [
       "x-amzn-RequestId",
       "809a243a-3460-5dd8-8390-730032387781",
@@ -20,14 +29,15 @@
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-www-form-urlencoded",
+      "content-type": "application/x-amz-json-1.0",
       "host": "sqs.us-west-2.amazonaws.com",
       "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
       "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
       "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
       "amz-sdk-request": "attempt=1; max=3",
-      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$",
+      "x-amz-target": "AmazonSQS.GetQueueAttributes"
     }
   }
 ]
