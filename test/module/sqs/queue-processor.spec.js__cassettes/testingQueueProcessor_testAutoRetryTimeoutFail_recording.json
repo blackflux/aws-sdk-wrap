@@ -3,9 +3,18 @@
     "scope": "https://sqs.us-west-2.amazonaws.com:443",
     "method": "POST",
     "path": "/",
-    "body": "QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2FXXXXXXXXXXXX%2FqueueUrlOne&AttributeName.1=RedrivePolicy&Action=GetQueueAttributes&Version=2012-11-05",
+    "body": {
+      "AttributeNames": [
+        "RedrivePolicy"
+      ],
+      "QueueUrl": "https://sqs.us-west-2.amazonaws.com/XXXXXXXXXXXX/queueUrlOne"
+    },
     "status": 200,
-    "response": "<?xml version=\"1.0\"?><GetQueueAttributesResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><GetQueueAttributesResult><Attribute><Name>RedrivePolicy</Name><Value>{&quot;deadLetterTargetArn&quot;:&quot;arn:aws:sqs:us-west-2:123456789012:queueNameDlq&quot;,&quot;maxReceiveCount&quot;:10}</Value></Attribute></GetQueueAttributesResult><ResponseMetadata><RequestId>809a243a-3460-5dd8-8390-730032387781</RequestId></ResponseMetadata></GetQueueAttributesResponse>",
+    "response": {
+      "Attributes": {
+        "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-west-2:123456789012:queueNameDlq\",\"maxReceiveCount\":10}"
+      }
+    },
     "rawHeaders": [
       "x-amzn-RequestId",
       "809a243a-3460-5dd8-8390-730032387781",
@@ -20,34 +29,53 @@
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-www-form-urlencoded",
+      "content-type": "application/x-amz-json-1.0",
       "host": "sqs.us-west-2.amazonaws.com",
       "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
       "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
       "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
       "amz-sdk-request": "attempt=1; max=3",
-      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$",
+      "x-amz-target": "AmazonSQS.GetQueueAttributes"
     }
   },
   {
     "scope": "https://sqs.us-west-2.amazonaws.com:443",
     "method": "POST",
     "path": "/",
-    "body": "QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2F123456789012%2FqueueNameDlq&SendMessageBatchRequestEntry.1.Id=abd68593d6134fa514e26e5ff6b86dbf4626e639&SendMessageBatchRequestEntry.1.MessageBody=%7B%22name%22%3A%22auto-retry%22%2C%22retrySettings%22%3A%7B%22maxAgeInSec%22%3A60%7D%2C%22__meta%22%3A%7B%22failureCount%22%3A1%2C%22timestamp%22%3A%222020-05-15T19%3A55%3A35.712Z%22%2C%22trace%22%3A%5B%22auto-retry%22%5D%7D%7D&Action=SendMessageBatch&Version=2012-11-05",
+    "body": {
+      "Entries": [
+        {
+          "Id": "abd68593d6134fa514e26e5ff6b86dbf4626e639",
+          "MessageBody": "{\"name\":\"auto-retry\",\"retrySettings\":{\"maxAgeInSec\":60},\"__meta\":{\"failureCount\":1,\"timestamp\":\"2020-05-15T19:55:35.712Z\",\"trace\":[\"auto-retry\"]}}"
+        }
+      ],
+      "QueueUrl": "https://sqs.us-west-2.amazonaws.com/123456789012/queueNameDlq"
+    },
     "status": 200,
-    "response": "<?xml version=\"1.0\"?><SendMessageBatchResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>abd68593d6134fa514e26e5ff6b86dbf4626e639</Id><MessageId>8085f0e3-a423-447e-9c89-3463acc149ef</MessageId><MD5OfMessageBody>d74ea19de2acb698422c3a4b5bd98ef3</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>8d1d8e98-dc7e-5fc2-9c83-db8791125e19</RequestId></ResponseMetadata></SendMessageBatchResponse>",
+    "response": {
+      "Successful": [
+        {
+          "Id": "abd68593d6134fa514e26e5ff6b86dbf4626e639",
+          "MessageId": "8085f0e3-a423-447e-9c89-3463acc149ef",
+          "MD5OfMessageBody": "d74ea19de2acb698422c3a4b5bd98ef3"
+        }
+      ],
+      "Failed": []
+    },
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",
       "content-length": "^[1-9][0-9]*$",
-      "content-type": "application/x-www-form-urlencoded",
+      "content-type": "application/x-amz-json-1.0",
       "host": "sqs.us-west-2.amazonaws.com",
       "user-agent": "^aws-sdk-js/.+$",
       "x-amz-content-sha256": "^[a-f0-9]{64}$",
       "x-amz-date": "^[0-9]{8}T[0-9]{6}Z$",
       "amz-sdk-invocation-id": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
       "amz-sdk-request": "attempt=1; max=3",
-      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$"
+      "x-amz-user-agent": "^aws-sdk-js/[0-9]+.[0-9]+.[0-9]+$",
+      "x-amz-target": "AmazonSQS.SendMessageBatch"
     }
   }
 ]

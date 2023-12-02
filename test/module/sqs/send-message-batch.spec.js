@@ -51,7 +51,8 @@ describe('Testing sendMessageBatch', {
         Id: '519997180f76e285948227ee48ab2e823098231f',
         MessageId: '44310b3a-4ccb-4221-8687-815993d27551',
         MD5OfMessageBody: 'e9a9e8b948b2b798f9c680b5ff0cec0a'
-      }]
+      }],
+      Failed: []
     }]]);
   });
 
@@ -96,7 +97,8 @@ describe('Testing sendMessageBatch', {
           Id: 'd7967cdc826c420f2482b9bac6b10b73fb156efc',
           MessageId: '5b6c64ce-37de-47bf-aad4-fc483c86c1e9',
           MD5OfMessageBody: '90cfad0c5a2d7b4f32be02659214aaba'
-        }]
+        }],
+        Failed: []
       }]]);
     expect(recorder.get()).to.deep.equal([
       'Failed to submit (some) message(s)\nRetrying: '
@@ -160,7 +162,8 @@ describe('Testing sendMessageBatch', {
         Id: 'dc616406d8b80239f3fb6b0f7a9a3c1a360f0d46',
         MessageId: '8085f0e3-a423-447e-9c89-3463acc149ef',
         MD5OfMessageBody: '5e44aadb9678e3604d5dbee0be04c4e4'
-      }]
+      }],
+      Failed: []
     }]]);
   });
 
