@@ -34,7 +34,9 @@ export default (model, validateSecondaryIndex, setDefaults) => async (...args) =
     entity: model.table.name
   });
   return {
-    items: result.Items.map((item) => setDefaults(item, toReturn)),
+    items: model.unmarshall(
+      result.Items.map((item) => setDefaults(item, toReturn))
+    ),
     ...(result.LastEvaluatedKey === undefined ? {} : { lastEvaluatedKey: result.LastEvaluatedKey })
   };
 };

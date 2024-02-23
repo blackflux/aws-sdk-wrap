@@ -30,7 +30,7 @@ describe('Testing create-model.js', () => {
       Table,
       Entity
     });
-    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity', 'marshall', 'unmarshall']);
   });
 
   it('Testing creation without indices', () => {
@@ -45,7 +45,7 @@ describe('Testing create-model.js', () => {
       Table,
       Entity
     });
-    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity', 'marshall', 'unmarshall']);
   });
 
   it('Testing creation different attribute types', () => {
@@ -61,7 +61,7 @@ describe('Testing create-model.js', () => {
       Table,
       Entity
     });
-    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity', 'marshall', 'unmarshall']);
   });
 
   it('Testing attribute not supported for indexing error', () => {
@@ -95,6 +95,6 @@ describe('Testing create-model.js', () => {
       Table,
       Entity
     });
-    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity']);
+    expect(Object.keys(r)).to.deep.equal(['schema', 'table', 'entity', 'marshall', 'unmarshall']);
   });
 });

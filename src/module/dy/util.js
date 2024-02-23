@@ -109,7 +109,7 @@ export default ({
       let result;
       try {
         result = await model.entity[fn](
-          itemRewriterByFn[fn](item),
+          model.marshall(itemRewriterByFn[fn](item)),
           {
             returnValues: 'all_old',
             ...(conditions === null ? {} : { conditions })
@@ -130,7 +130,7 @@ export default ({
       }
       const didNotExist = result.Attributes === undefined;
       const mergedItem = mergeAttributes(
-        (didNotExist || fn === 'put') ? {} : result.Attributes,
+        (didNotExist || fn === 'put') ? {} : model.unmarshall(result.Attributes),
         item
       );
       const resultItem = setDefaults(mergedItem, null);

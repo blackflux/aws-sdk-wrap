@@ -155,6 +155,9 @@ export default (model, validateSecondaryIndex, setDefaults, getSortKeyByIndex, c
     if (toReturn !== null) {
       Retainer(toReturn)(items);
     }
-    return { items, page };
+    return {
+      items: model.unmarshall(items),
+      page
+    };
   };
 };

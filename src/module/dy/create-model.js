@@ -1,4 +1,5 @@
 import get from 'lodash.get';
+import objectScan from 'object-scan';
 import getFirst from './get-first.js';
 import validateKwargs from './validate-kwargs.js';
 
@@ -61,7 +62,9 @@ export default (kwargs) => {
     name,
     timestamps: false,
     attributes: Object.fromEntries(Object.entries(attributes).map(([k, v]) => {
-      const { validate, ...prunedV } = v;
+      const {
+        validate, marshall, unmarshall, ...prunedV
+      } = v;
       if (prunedV.type === 'set' && Array.isArray(prunedV.default) && prunedV.default.length === 0) {
         const { default: _, ...newV } = prunedV;
         return [k, newV];
@@ -110,9 +113,33 @@ export default (kwargs) => {
     BillingMode: 'PAY_PER_REQUEST'
   };
 
+  const generateRewriter = (fn) => {
+    const logic = Object.fromEntries(
+      Object
+        .entries(attributes)
+        .filter(([k, v]) => typeof v?.[fn] === 'function')
+        .map(([k, v]) => [`{[*].${k},${k}}`, v])
+    );
+    return (itemOrItems) => {
+      objectScan(Object.keys(logic), {
+        filterFn: ({
+          parent, property, value, matchedBy
+        }) => {
+          matchedBy.forEach((m) => {
+            // eslint-disable-next-line no-param-reassign
+            parent[property] = logic[m][fn](value);
+          });
+        }
+      })(itemOrItems);
+      return itemOrItems;
+    };
+  };
+
   return {
     schema,
     table,
-    entity
+    entity,
+    marshall: generateRewriter('marshall'),
+    unmarshall: generateRewriter('unmarshall')
   };
 };
