@@ -63,10 +63,7 @@ export default (kwargs) => {
     timestamps: false,
     attributes: Object.fromEntries(Object.entries(attributes).map(([k, v]) => {
       const {
-        validate,
-        marshall,
-        unmarshall,
-        ...prunedV
+        validate, marshall, unmarshall, ...prunedV
       } = v;
       if (prunedV.type === 'set' && Array.isArray(prunedV.default) && prunedV.default.length === 0) {
         const { default: _, ...newV } = prunedV;
@@ -128,10 +125,7 @@ export default (kwargs) => {
         Object.keys(logic),
         {
           filterFn: ({
-            parent,
-            property,
-            value,
-            matchedBy
+            parent, property, value, matchedBy
           }) => {
             matchedBy.forEach((m) => {
               // eslint-disable-next-line no-param-reassign
