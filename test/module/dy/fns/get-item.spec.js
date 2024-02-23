@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import zlib from 'zlib';
-import { buildModel, createItems, LocalTable } from '../../../dy-helper.js';
+import { LocalTable, buildModel, createItems } from '../../../dy-helper.js';
 import { ModelNotFound } from '../../../../src/resources/errors.js';
 import nockReqHeaderOverwrite from '../../../req-header-overwrite.js';
 
