@@ -113,7 +113,7 @@ export default (kwargs) => {
     BillingMode: 'PAY_PER_REQUEST'
   };
 
-  const generateMrsl = (fn) => {
+  const generateRewriter = (fn) => {
     const logic = Object.fromEntries(
       Object
         .entries(attributes)
@@ -142,7 +142,7 @@ export default (kwargs) => {
     schema,
     table,
     entity,
-    marshall: generateMrsl('marshall'),
-    unmarshall: generateMrsl('unmarshall')
+    marshall: generateRewriter('marshall'),
+    unmarshall: generateRewriter('unmarshall')
   };
 };
