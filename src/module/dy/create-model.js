@@ -121,19 +121,16 @@ export default (kwargs) => {
         .map(([k, v]) => [`{[*].${k},${k}}`, v])
     );
     return (itemOrItems) => {
-      objectScan(
-        Object.keys(logic),
-        {
-          filterFn: ({
-            parent, property, value, matchedBy
-          }) => {
-            matchedBy.forEach((m) => {
-              // eslint-disable-next-line no-param-reassign
-              parent[property] = logic[m][fn](value);
-            });
-          }
+      objectScan(Object.keys(logic), {
+        filterFn: ({
+          parent, property, value, matchedBy
+        }) => {
+          matchedBy.forEach((m) => {
+            // eslint-disable-next-line no-param-reassign
+            parent[property] = logic[m][fn](value);
+          });
         }
-      )(itemOrItems);
+      })(itemOrItems);
       return itemOrItems;
     };
   };
