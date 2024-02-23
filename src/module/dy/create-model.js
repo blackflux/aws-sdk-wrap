@@ -114,12 +114,14 @@ export default (kwargs) => {
   };
 
   const generateRewriter = (fn) => {
-    const logic = Object.fromEntries(
-      Object
-        .entries(attributes)
-        .filter(([k, v]) => typeof v?.[fn] === 'function')
-        .map(([k, v]) => [`{[*].${k},${k}}`, v])
-    );
+    const entries = Object
+      .entries(attributes)
+      .filter(([k, v]) => typeof v?.[fn] === 'function')
+      .map(([k, v]) => [`{[*].${k},${k}}`, v]);
+    if (entries.length === 0) {
+      return (e) => e;
+    }
+    const logic = Object.fromEntries(entries);
     return (itemOrItems) => {
       objectScan(Object.keys(logic), {
         filterFn: ({
