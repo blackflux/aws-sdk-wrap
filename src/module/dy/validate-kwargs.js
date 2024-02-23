@@ -8,6 +8,8 @@ const schema = Joi.object().keys({
       type: Joi.string().valid('string', 'boolean', 'number', 'list', 'map', 'binary', 'set'),
       partitionKey: Joi.boolean().valid(true).optional(),
       sortKey: Joi.boolean().valid(true).optional(),
+      marshall: Joi.function().arity(1).optional(),
+      unmarshall: Joi.function().arity(1).optional(),
       default: Joi.alternatives().try(
         Joi.string(),
         Joi.number(),

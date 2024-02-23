@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import { LocalTable, buildModel, createItems } from '../../../dy-helper.js';
+import zlib from 'zlib';
+import { buildModel, createItems, LocalTable } from '../../../dy-helper.js';
 import { ModelNotFound } from '../../../../src/resources/errors.js';
 import nockReqHeaderOverwrite from '../../../req-header-overwrite.js';
 
@@ -98,5 +99,28 @@ describe('Testing get-item', {
     expect(result).to.deep.equal({ ids: [] });
     result.ids.push(1, 2, 3);
     expect(def).to.deep.equal([]);
+  });
+
+  it('Testing getItem with custom marshalling', async () => {
+    await generateTable({
+      extraAttrs: {
+        bin: {
+          type: 'binary',
+          default: () => [],
+          marshall: (item) => zlib.gzipSync(JSON.stringify(item), { level: 9 }),
+          unmarshall: (item) => JSON.parse(zlib.gunzipSync(item))
+        }
+      }
+    });
+
+    const { item } = await model.create({
+      id: '123',
+      name: 'name',
+      age: 50,
+      bin: [{ a: 1 }]
+    });
+    const key = { id: item.id, name: item.name };
+    const result = await model.getItem(key, { toReturn: ['bin'] });
+    expect(result).to.deep.equal({ bin: [{ a: 1 }] });
   });
 });
