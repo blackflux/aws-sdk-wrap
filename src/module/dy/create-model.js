@@ -1,4 +1,5 @@
 import get from 'lodash.get';
+import cloneDeep from 'lodash.clonedeep';
 import objectScan from 'object-scan';
 import getFirst from './get-first.js';
 import validateKwargs from './validate-kwargs.js';
@@ -123,17 +124,20 @@ export default (kwargs) => {
     }
     const logic = Object.fromEntries(entries);
     return (itemOrItems) => {
+      const result = cloneDeep(itemOrItems);
       objectScan(Object.keys(logic), {
         filterFn: ({
           parent, property, value, matchedBy
         }) => {
           matchedBy.forEach((m) => {
-            // eslint-disable-next-line no-param-reassign
-            parent[property] = logic[m][fn](value);
+            if (value !== null) {
+              // eslint-disable-next-line no-param-reassign
+              parent[property] = logic[m][fn](value);
+            }
           });
         }
-      })(itemOrItems);
-      return itemOrItems;
+      })(result);
+      return result;
     };
   };
 
