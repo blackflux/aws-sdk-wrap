@@ -36,5 +36,5 @@ export default (model, onNotFound_, setDefaults) => async (...args) => {
     .forEach((k) => {
       delete item[k];
     });
-  return item;
+  return model.unmarshall(item);
 };
