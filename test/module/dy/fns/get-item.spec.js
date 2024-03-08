@@ -106,7 +106,7 @@ describe('Testing get-item', {
       extraAttrs: {
         bin: {
           type: 'binary',
-          default: () => [],
+          default: () => zlib.gzipSync(JSON.stringify([])),
           marshall: (item) => zlib.gzipSync(JSON.stringify(item), { level: 9 }),
           unmarshall: (item) => JSON.parse(zlib.gunzipSync(item))
         }
