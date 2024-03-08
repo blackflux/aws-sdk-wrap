@@ -19,14 +19,15 @@ export default ({
   const defaults = Object.entries(attributes)
     .filter(([_, v]) => 'default' in v)
     .map(([k, v]) => [k, v.default]);
-  const setDefaults = (item, toReturn) => {
+  const setDefaults = (item, toReturn, unmarshall = false) => {
     const entries = toReturn === null ? defaults : defaults.filter(([k]) => toReturn.includes(k));
+    const data = entries.reduce(
+      (prev, [k, v]) => Object
+        .assign(prev, { [k]: clonedeep(typeof v === 'function' ? v(item) : v) }),
+      {}
+    );
     return {
-      ...entries.reduce(
-        (prev, [k, v]) => Object
-          .assign(prev, { [k]: clonedeep(typeof v === 'function' ? v(item) : v) }),
-        {}
-      ),
+      ...(unmarshall === true ? model.unmarshall(data) : data),
       ...item
     };
   };
@@ -133,7 +134,7 @@ export default ({
         (didNotExist || fn === 'put') ? {} : model.unmarshall(result.Attributes),
         item
       );
-      const resultItem = setDefaults(mergedItem, null);
+      const resultItem = setDefaults(mergedItem, null, true);
       if (['update', 'put'].includes(fn)) {
         await (didNotExist ? onCreate : onUpdate)(resultItem);
       } else {
