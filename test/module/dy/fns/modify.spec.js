@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import { LocalTable, buildModel, createItems } from '../../../dy-helper.js';
+import { buildModel, createItems, LocalTable } from '../../../dy-helper.js';
 import { ModelNotFound } from '../../../../src/resources/errors.js';
 import nockReqHeaderOverwrite from '../../../req-header-overwrite.js';
 
@@ -416,5 +416,267 @@ describe('Testing modify', {
       item: expectedItem
     });
     expect(await model.getItem(key)).to.deep.equal(expectedItem);
+  });
+
+  it('Testing modify with an empty map', async () => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { key, item } = await generateItem({ extraAttrs: { someMap: { one: 'a', two: 'b' } } });
+    const updatedItem = {
+      ...item,
+      someMap: {}
+    };
+    const result = await model.modify(updatedItem);
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: updatedItem
+    });
+    expect(await model.getItem(key)).to.deep.equal({
+      id: item.id,
+      name: item.name,
+      age: item.age,
+      someMap: {}
+    });
+  });
+
+  it('Testing modify replace map entries', async () => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { key, item } = await generateItem({ extraAttrs: { someMap: { one: 'a', two: 'b' } } });
+    const updatedItem = {
+      ...item,
+      someMap: { three: 'c', four: 'd' }
+    };
+    const result = await model.modify(updatedItem);
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: updatedItem
+    });
+    expect(await model.getItem(key)).to.deep.equal({
+      id: item.id,
+      name: item.name,
+      age: item.age,
+      someMap: { three: 'c', four: 'd' }
+    });
+  });
+
+  it('Testing modify add entry to map', async () => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { key, item } = await generateItem({ extraAttrs: { someMap: { one: 'a', two: 'b' } } });
+    const result = await model.modify({
+      ...item,
+      someMap: { $set: { three: 'c', four: 'd' } }
+    });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: {
+        ...item,
+        someMap: {
+          one: 'a', two: 'b', three: 'c', four: 'd'
+        }
+      }
+    });
+    expect(await model.getItem(key)).to.deep.equal({
+      id: item.id,
+      name: item.name,
+      age: item.age,
+      someMap: {
+        one: 'a', two: 'b', three: 'c', four: 'd'
+      }
+    });
+  });
+
+  it('Testing modify and overwrite add entry to map', async () => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { key, item } = await generateItem({ extraAttrs: { someMap: { one: 'a', two: 'b' } } });
+    const result = await model.modify({
+      ...item,
+      someMap: { $set: { three: 'c' }, four: 'd' }
+    });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: {
+        ...item,
+        someMap: {
+          one: 'a', two: 'b', three: 'c'
+        }
+      }
+    });
+    expect(await model.getItem(key)).to.deep.equal({
+      id: item.id,
+      name: item.name,
+      age: item.age,
+      someMap: {
+        one: 'a', two: 'b', three: 'c'
+      }
+    });
+  });
+
+  it('Testing add nested entry to map', async () => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { key, item } = await generateItem({ extraAttrs: { someMap: { one: 'a', two: 'b' } } });
+    const result = await model.modify({
+      ...item,
+      someMap: { $set: { three: { four: 'c' }, five: 'd' } }
+    });
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: {
+        ...item,
+        someMap: {
+          one: 'a', two: 'b', three: { four: 'c' }, five: 'd'
+        }
+      }
+    });
+    expect(await model.getItem(key)).to.deep.equal({
+      id: item.id,
+      name: item.name,
+      age: item.age,
+      someMap: {
+        one: 'a', two: 'b', three: { four: 'c' }, five: 'd'
+      }
+    });
+  });
+
+  it('Testing delete nested entry from map', async ({ capture }) => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { item } = await generateItem({ extraAttrs: { someMap: { one: { two: 'a', three: 'b' } } } });
+    const result = await capture(() => model.modify({
+      ...item,
+      someMap: { $set: { one: { two: undefined } } }
+    }));
+    expect(result.message)
+      .to.deep.equal('Pass options.removeUndefinedValues=true to remove undefined values from map/array/set.');
+  });
+
+  it('Testing modify add entry to new map', async ({ capture }) => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { item } = await generateItem();
+    const result = await capture(() => model.modify({
+      ...item,
+      someMap: { $set: { one: 'a' } }
+    }));
+    expect(result.message)
+      .to.deep.equal('The document path provided in the update expression is invalid for update');
+  });
+
+  it('Testing remove entry from map', async () => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { key, item } = await generateItem({ extraAttrs: { someMap: { one: 'a', two: 'b' } } });
+    const result = await model.modify({
+      id: item.id,
+      name: item.name,
+      someMap: { $set: { two: undefined } }
+    });
+    const resultItem = {
+      ...item,
+      someMap: { one: 'a' }
+    };
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: resultItem
+    });
+    expect(await model.getItem(key)).to.deep.equal(resultItem);
+  });
+
+  it('Testing modify with an empty map and remove', async () => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { key, item } = await generateItem({ extraAttrs: { someMap: { one: 'a', two: 'b' } } });
+    const updatedItem = {
+      ...item,
+      someMap: {
+        $set: {
+          one: undefined,
+          three: 'c'
+        }
+      }
+    };
+    const result = await model.modify(updatedItem);
+    const dbItem = {
+      id: item.id,
+      name: item.name,
+      age: item.age,
+      someMap: {
+        two: 'b',
+        three: 'c'
+      }
+    };
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: dbItem
+    });
+    expect(await model.getItem(key)).to.deep.equal(dbItem);
+  });
+
+  it('Testing modify add existing entry to map', async () => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { key, item } = await generateItem({ extraAttrs: { someMap: { one: 'a' } } });
+    const result = await model.modify({
+      ...item,
+      someMap: { $set: { one: 'a' } }
+    });
+    const resultItem = {
+      ...item,
+      someMap: { one: 'a' }
+    };
+    expect(result).to.deep.equal({
+      created: false,
+      modified: false,
+      item: resultItem
+    });
+    expect(await model.getItem(key)).to.deep.equal(resultItem);
+  });
+
+  it('Testing modify delete nonexistent entry from map', async () => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { key, item } = await generateItem({ extraAttrs: { someMap: { one: 'a' } } });
+    const result = await model.modify({
+      ...item,
+      someMap: { $set: { two: undefined } }
+    });
+    const resultItem = {
+      ...item,
+      someMap: { one: 'a' }
+    };
+    expect(result).to.deep.equal({
+      created: false,
+      modified: false,
+      item: resultItem
+    });
+    expect(await model.getItem(key)).to.deep.equal(resultItem);
+  });
+
+  it('Testing modify delete from empty map', async ({ capture }) => {
+    await generateTable({ extraAttrs: { someMap: { type: 'map' } } });
+    const { item } = await generateItem();
+    const result = await capture(() => model.modify({
+      ...item,
+      someMap: { $set: { one: undefined } }
+    }));
+    expect(result.message).to.deep.equal('The document path provided in the update expression is invalid for update');
+  });
+
+  it('Testing map $set on string', async () => {
+    await generateTable({ extraAttrs: { someSet: { type: 'string' } } });
+    const { key, item } = await generateItem();
+    const result = await model.modify({
+      ...item,
+      someSet: { $set: [] }
+    });
+    const resultItem = {
+      ...item,
+      someSet: '[object Object]'
+    };
+    expect(result).to.deep.equal({
+      created: false,
+      modified: true,
+      item: resultItem
+    });
+    expect(await model.getItem(key)).to.deep.equal(resultItem);
   });
 });

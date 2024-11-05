@@ -31,14 +31,22 @@ export default ({
       ...item
     };
   };
-  const sets = Object.entries(attributes).filter(([_, v]) => v.type === 'set').map(([k]) => k);
-  const numbers = Object.entries(attributes).filter(([_, v]) => v.type === 'number').map(([k]) => k);
-  const mergeAttributes = MergeAttributes({ sets, numbers });
+  const types = Object.entries(attributes).reduce(
+    (prev, [k, v]) => {
+      prev[v.type].push(k);
+      return prev;
+    },
+    Object.fromEntries(
+      ['string', 'boolean', 'number', 'list', 'map', 'binary', 'set']
+        .map((e) => [e, []])
+    )
+  );
+  const mergeAttributes = MergeAttributes(types);
   const validateItem = ValidateItem(attributes);
   const itemRewriterByFn = {
-    update: generateItemRewriter('update', sets),
-    put: generateItemRewriter('put', sets),
-    delete: generateItemRewriter('delete', sets)
+    update: generateItemRewriter('update', types.set),
+    put: generateItemRewriter('put', types.set),
+    delete: generateItemRewriter('delete', types.set)
   };
   const extractKey = (item) => model.schema.KeySchema
     .map(({ AttributeName: attr }) => attr)
