@@ -42,7 +42,7 @@ export default ({
     )
   );
   const mergeAttributes = MergeAttributes(types);
-  const validateItem = ValidateItem(attributes);
+  const validateItem = ValidateItem(attributes, types);
   const itemRewriterByFn = {
     update: generateItemRewriter('update', types.set),
     put: generateItemRewriter('put', types.set),
