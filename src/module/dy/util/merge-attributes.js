@@ -1,7 +1,8 @@
+import assert from 'assert';
 import clonedeep from 'lodash.clonedeep';
 import objectScan from 'object-scan';
 
-export default ({ sets, numbers }) => (...versions) => {
+export default (types) => (...versions) => {
   const clonedVersions = clonedeep(versions);
   const result = {};
   const logic = {
@@ -10,10 +11,21 @@ export default ({ sets, numbers }) => (...versions) => {
         delete result[name];
         return;
       }
+      if (types.string.includes(name)) {
+        result[name] = String(value);
+        return;
+      }
       if (
-        (sets.includes(name) || numbers.includes(name))
+        (types.set.includes(name) || types.number.includes(name))
         && value?.constructor === Object
       ) {
+        return;
+      }
+      if (types.map.includes(name)) {
+        if (Object.keys(value).some((k) => k === '$set')) {
+          return;
+        }
+        result[name] = value;
         return;
       }
       result[name] = value;
@@ -21,14 +33,27 @@ export default ({ sets, numbers }) => (...versions) => {
     '$remove[*]': ({ value }) => {
       delete result[value];
     },
+    '*.$set': ({ key: [name], value }) => {
+      if (!types.map.includes(name)) {
+        return;
+      }
+      assert(name in result, 'Can not update non-existing map');
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) {
+          delete result[name][k];
+        } else {
+          result[name][k] = v;
+        }
+      });
+    },
     '*.$add': ({ key: [name], value }) => {
-      if (!numbers.includes(name)) {
+      if (!types.number.includes(name)) {
         return;
       }
       result[name] = (name in result ? result[name] : 0) + value;
     },
     '*.$add[*]': ({ key: [name], value }) => {
-      if (!sets.includes(name)) {
+      if (!types.set.includes(name)) {
         return;
       }
       if (!(name in result)) {
@@ -41,7 +66,7 @@ export default ({ sets, numbers }) => (...versions) => {
       }
     },
     '*.$delete[*]': ({ key: [name], value }) => {
-      if (!sets.includes(name)) {
+      if (!types.set.includes(name)) {
         return;
       }
       if (name in result) {
