@@ -663,15 +663,22 @@ describe('Testing modify', {
   });
 
   it('Testing map $set on string', async () => {
-    await generateTable({ extraAttrs: { someSet: { type: 'string' } } });
+    await generateTable({
+      extraAttrs: {
+        str1: { type: 'string' },
+        str2: { type: 'string' }
+      }
+    });
     const { key, item } = await generateItem();
     const result = await model.modify({
       ...item,
-      someSet: { $set: [] }
+      str1: { $set: [] },
+      str2: null
     });
     const resultItem = {
       ...item,
-      someSet: '[object Object]'
+      str1: '[object Object]',
+      str2: null
     };
     expect(result).to.deep.equal({
       created: false,
