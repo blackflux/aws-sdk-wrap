@@ -12,7 +12,7 @@ export default (types) => (...versions) => {
         return;
       }
       if (types.string.includes(name)) {
-        result[name] = String(value);
+        result[name] = value === null ? value : String(value);
         return;
       }
       if (
