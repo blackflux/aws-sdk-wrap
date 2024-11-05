@@ -106,7 +106,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1730767895.994,
+        "CreationDateTime": 1730834537.774,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -119,7 +119,7 @@
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1730767895.994
+          "LastUpdateToPayPerRequestDateTime": 1730834537.774
         },
         "GlobalSecondaryIndexes": [
           {
@@ -223,15 +223,19 @@
       "ConditionExpression": "attribute_exists(#attr1)",
       "ExpressionAttributeNames": {
         "#age": "age",
-        "#someSet": "someSet",
+        "#str1": "str1",
+        "#str2": "str2",
         "#attr1": "id"
       },
       "ExpressionAttributeValues": {
         ":age": {
           "N": "50"
         },
-        ":someSet": {
+        ":str1": {
           "S": "[object Object]"
+        },
+        ":str2": {
+          "NULL": true
         }
       },
       "Key": {
@@ -244,7 +248,7 @@
       },
       "ReturnValues": "ALL_OLD",
       "TableName": "table-name",
-      "UpdateExpression": "SET #age = :age, #someSet = :someSet"
+      "UpdateExpression": "SET #age = :age, #str1 = :str1, #str2 = :str2"
     },
     "status": 200,
     "response": {
@@ -288,11 +292,14 @@
         "id": {
           "S": "123"
         },
-        "someSet": {
+        "str1": {
           "S": "[object Object]"
         },
         "age": {
           "N": "50"
+        },
+        "str2": {
+          "NULL": true
         }
       }
     },
@@ -335,7 +342,7 @@
           }
         ],
         "TableStatus": "ACTIVE",
-        "CreationDateTime": 1730767895.994,
+        "CreationDateTime": 1730834537.774,
         "ProvisionedThroughput": {
           "LastIncreaseDateTime": 0,
           "LastDecreaseDateTime": 0,
@@ -343,12 +350,12 @@
           "ReadCapacityUnits": 0,
           "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 40,
+        "TableSizeBytes": 42,
         "ItemCount": 1,
         "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name",
         "BillingModeSummary": {
           "BillingMode": "PAY_PER_REQUEST",
-          "LastUpdateToPayPerRequestDateTime": 1730767895.994
+          "LastUpdateToPayPerRequestDateTime": 1730834537.774
         },
         "GlobalSecondaryIndexes": [
           {
@@ -367,7 +374,7 @@
               "ProjectionType": "ALL"
             },
             "IndexStatus": "ACTIVE",
-            "IndexSizeBytes": 40,
+            "IndexSizeBytes": 42,
             "ItemCount": 1,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/targetIndex"
           },
@@ -387,7 +394,7 @@
               "ProjectionType": "ALL"
             },
             "IndexStatus": "ACTIVE",
-            "IndexSizeBytes": 40,
+            "IndexSizeBytes": 42,
             "ItemCount": 1,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/ageIndex"
           },
@@ -403,7 +410,7 @@
               "ProjectionType": "ALL"
             },
             "IndexStatus": "ACTIVE",
-            "IndexSizeBytes": 40,
+            "IndexSizeBytes": 42,
             "ItemCount": 1,
             "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/table-name/index/idIndex"
           }
