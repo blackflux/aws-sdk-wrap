@@ -13,6 +13,7 @@ describe('Testing sendMessageBatch', {
   envVarsFile: 'config.env.yml'
 }, () => {
   let aws;
+
   before(() => {
     aws = Index({
       logger: console,

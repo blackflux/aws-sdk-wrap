@@ -34,6 +34,7 @@ describe('Testing get-item', {
       await localTable.create();
     };
   });
+
   afterEach(async () => {
     await localTable.delete();
   });

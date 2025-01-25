@@ -23,6 +23,7 @@ describe('Testing create-or-replace', {
       name: 'name'
     };
   });
+
   beforeEach(async () => {
     model = buildModel();
     localTable = LocalTable(model);
@@ -37,6 +38,7 @@ describe('Testing create-or-replace', {
     });
     generateItem = () => model.create(item);
   });
+
   afterEach(async () => {
     await localTable.delete();
   });

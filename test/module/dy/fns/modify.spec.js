@@ -31,6 +31,7 @@ describe('Testing modify', {
       await localTable.create();
     };
   });
+
   afterEach(async () => {
     await localTable.delete();
   });

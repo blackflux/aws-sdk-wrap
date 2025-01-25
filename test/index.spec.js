@@ -12,6 +12,7 @@ describe('Testing index', {
 }, () => {
   let aws;
   let logs;
+
   beforeEach(() => {
     logs = [];
     aws = Index({
