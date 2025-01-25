@@ -49,7 +49,7 @@ export default (cursorSecret) => {
     if (cursor !== null) {
       try {
         cursorPayload = objectDecode(cursor, cursorSecret);
-      } catch (err) {
+      } catch {
         return {};
       }
     }

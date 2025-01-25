@@ -7,6 +7,7 @@ import DocumentClientConstructor from '../../helper/dy-document-client-construct
 
 describe('Testing create-model.js', () => {
   let DocumentClient;
+
   beforeEach(() => {
     DocumentClient = DocumentClientConstructor();
   });

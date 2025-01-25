@@ -29,6 +29,7 @@ describe('Testing lambda Util', {
 }, () => {
   let lambda;
   let scaler;
+
   beforeEach(() => {
     lambda = Lambda({
       call: Index({

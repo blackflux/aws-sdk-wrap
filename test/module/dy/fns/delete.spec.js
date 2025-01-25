@@ -26,6 +26,7 @@ describe('Testing delete', {
       await localTable.create();
     };
   });
+
   afterEach(async () => {
     await localTable.delete();
   });

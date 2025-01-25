@@ -14,6 +14,7 @@ describe('Testing getDeadLetterQueueUrl', {
 }, () => {
   let aws;
   let getDeadLetterQueueUrl;
+
   before(() => {
     aws = Index({
       logger: console,

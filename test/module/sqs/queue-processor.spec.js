@@ -34,6 +34,7 @@ describe('Testing QueueProcessor', {
   let processor;
   let executor;
   let findSymbols;
+
   beforeEach(() => {
     aws = Index({
       logger: console,

@@ -24,6 +24,7 @@ describe('Testing lock-manager.js', {
     localTable = LocalTable(lockManager._model);
     await localTable.create();
   });
+
   afterEach(async () => {
     await localTable.delete();
   });
