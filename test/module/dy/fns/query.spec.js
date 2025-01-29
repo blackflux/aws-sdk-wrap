@@ -34,11 +34,13 @@ describe('Testing query', {
       count: 3, model, primaryKey, sortKey: 'name', age: [10, 20, 30]
     });
   });
+
   beforeEach(async () => {
     model = buildModel();
     localTable = LocalTable(model);
     await localTable.create();
   });
+
   afterEach(async () => {
     await localTable.delete();
   });
@@ -494,6 +496,7 @@ describe('Testing query', {
   describe('Testing paging back and forth', () => {
     let validate;
     let query;
+
     beforeEach(() => {
       validate = (result, item, hasPrev, hasNext, page) => {
         if (Array.isArray(item)) {

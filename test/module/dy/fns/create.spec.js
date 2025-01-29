@@ -39,6 +39,7 @@ describe('Testing create', {
       age: 50
     };
   });
+
   afterEach(async () => {
     await localTable.delete();
   });

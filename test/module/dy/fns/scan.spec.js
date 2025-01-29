@@ -23,11 +23,13 @@ describe('Testing scan', {
       age: age === null ? 50 : age
     });
   });
+
   beforeEach(async () => {
     model = buildModel();
     localTable = LocalTable(model);
     await localTable.create();
   });
+
   afterEach(async () => {
     await localTable.delete();
   });

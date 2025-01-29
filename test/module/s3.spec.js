@@ -22,6 +22,7 @@ describe('Testing s3 Util', {
   let S3;
   let bucket;
   let key;
+
   beforeEach(() => {
     S3 = (opts = {}) => S3Module({
       call: Index({

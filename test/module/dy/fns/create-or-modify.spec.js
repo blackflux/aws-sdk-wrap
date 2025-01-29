@@ -29,6 +29,7 @@ describe('Testing create-or-modify', {
       await localTable.create();
     };
   });
+
   beforeEach(async () => {
     key = {
       id: '123',
@@ -39,6 +40,7 @@ describe('Testing create-or-modify', {
       age: 50
     };
   });
+
   afterEach(async () => {
     await localTable.delete();
   });

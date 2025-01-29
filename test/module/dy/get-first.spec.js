@@ -4,6 +4,7 @@ import getFirst from '../../../src/module/dy/get-first.js';
 
 describe('Testing get-first.js', () => {
   let fn;
+
   before(() => {
     fn = ([k, v]) => v.key === true;
   });

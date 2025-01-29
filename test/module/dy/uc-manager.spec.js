@@ -24,6 +24,7 @@ describe('Testing uc-manager.js', {
     localTable = LocalTable(ucManager._model);
     await localTable.create();
   });
+
   afterEach(async () => {
     await localTable.delete();
   });
