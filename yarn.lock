@@ -5016,10 +5016,10 @@ kind-of@^6.0.2, kind-of@^6.0.3:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-lambda-async@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/lambda-async/-/lambda-async-4.0.1.tgz#37403a5db37915c9949934c1b0fe9140370c7413"
-  integrity sha512-Xc5BNe2s/HL+ixAW2OvBCuc9VjcCRwvva684BWPbFRSbe2Wx4JRgAFgDsJGWiJspqNefw7Xor+7ai0NnNQ9RoQ==
+lambda-async@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/lambda-async/-/lambda-async-5.0.0.tgz#d4054bd937db6a3b63b0958253af86fc39e8a0c0"
+  integrity sha512-J7bVMc6z6MHPzeoHx+EWJpbIjNLZIx4OUyF1IsPSM4DvJknjFbDHpCyJ9PTaTDRyQanp9CkV02Nu2D0/cczMKw==
 
 lambda-monitor-logger@6.0.1:
   version "6.0.1"
