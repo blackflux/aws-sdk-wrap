@@ -137,12 +137,12 @@ describe('Testing QueueProcessor', {
   });
 
   it('Test ingesting into separate queues', async () => {
-    const result = await executor([{ __meta: { trace: ['step3 * 2'] }, name: 'step3', meta: 'meta4' }]);
+    const result = await executor([{ __meta: { trace: ['step3 * 2'] }, name: 'step3', meta: 'meta3' }]);
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [
         { __meta: { trace: ['step3 * 3'] }, name: 'step1', meta: 'meta1' },
-        { __meta: { trace: ['step3 * 3'] }, name: 'step3', meta: 'meta4' }
+        { __meta: { trace: ['step3 * 3'] }, name: 'step3', meta: 'meta3' }
       ]
     });
   });

@@ -13,7 +13,7 @@ export const schema = Joi.object().keys({
 
 export const handler = async (payload, event, context) => [
   { name: 'step1', meta: 'meta1' },
-  { name: 'step3', meta: 'meta4' }
+  { name: 'step3', meta: 'meta3' }
 ];
 
 export const next = ['step1', 'step3'];
