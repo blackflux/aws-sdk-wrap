@@ -11,7 +11,7 @@
           "MessageBody": "{\"name\":\"step2\",\"__meta\":{\"trace\":[\"step1\"]}}"
         }
       ],
-      "QueueUrl": "https://sqs.us-west-2.amazonaws.com/XXXXXXXXXXXX/queueUrlTwo.fifo"
+      "QueueUrl": "https://sqs.us-west-2.amazonaws.com/XXXXXXXXXXXX/queueUrlOne"
     },
     "status": 200,
     "response": {
@@ -21,8 +21,7 @@
           "MessageId": "8085f0e3-a423-447e-9c89-3463acc149ef",
           "MD5OfMessageBody": "d4ca622f9e37a4f8dca1e8ee547262f7"
         }
-      ],
-      "Failed": []
+      ]
     },
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",

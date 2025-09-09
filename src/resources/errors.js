@@ -7,6 +7,14 @@ export class SendMessageBatchError extends Error {
   }
 }
 
+export class MessageConfigurationError extends Error {
+  constructor(message, context) {
+    super(message);
+    this.name = 'MessageConfigurationError';
+    this.context = context;
+  }
+}
+
 export class MessageCollisionError extends Error {
   constructor(message) {
     super(message);

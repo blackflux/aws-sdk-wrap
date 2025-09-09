@@ -17,5 +17,3 @@ export const handler = async (payload, event, context) => [
 ];
 
 export const next = ['step1', 'step3'];
-
-export const delay = 15;
