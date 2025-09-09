@@ -18,7 +18,7 @@ import * as stepGroupIdStep from './queue-processor.spec.js_steps/group-id-step.
 import * as stepParallelStep from './queue-processor.spec.js_steps/parallel-step.js';
 import * as stepStep1 from './queue-processor.spec.js_steps/step1.js';
 import * as stepStep2 from './queue-processor.spec.js_steps/step2.js';
-import * as stepStep4 from './queue-processor.spec.js_steps/step4.js';
+import * as stepStep3 from './queue-processor.spec.js_steps/step3.js';
 import * as stepStepAutoRetry from './queue-processor.spec.js_steps/step-auto-retry.js';
 import * as stepUrgentMessage from './queue-processor.spec.js_steps/step-urgent-message.js';
 import nockReqHeaderOverwrite from '../../req-header-overwrite.js';
@@ -61,7 +61,7 @@ describe('Testing QueueProcessor', {
         stepParallelStep,
         stepStep1,
         stepStep2,
-        stepStep4,
+        stepStep3,
         stepStepAutoRetry,
         stepUrgentMessage
       ]
@@ -137,12 +137,12 @@ describe('Testing QueueProcessor', {
   });
 
   it('Test ingesting into separate queues', async () => {
-    const result = await executor([{ __meta: { trace: ['step4 * 2'] }, name: 'step4', meta: 'meta4' }]);
+    const result = await executor([{ __meta: { trace: ['step3 * 2'] }, name: 'step3', meta: 'meta4' }]);
     expect(result).to.deep.equal({
       batchItemFailures: [],
       __next: [
-        { __meta: { trace: ['step4 * 3'] }, name: 'step1', meta: 'meta1' },
-        { __meta: { trace: ['step4 * 3'] }, name: 'step4', meta: 'meta4' }
+        { __meta: { trace: ['step3 * 3'] }, name: 'step1', meta: 'meta1' },
+        { __meta: { trace: ['step3 * 3'] }, name: 'step3', meta: 'meta4' }
       ]
     });
   });

@@ -22,13 +22,13 @@ digraph G {
     style=filled;
     color="#ffaaaa";
     node [label="node",style=filled,color=white];
-    step4 [label="step4"];
+    step3 [label="step3"];
   }
   
   _ingest [shape=Mdiamond,label=ingest];
   _ingest -> groupIdStep;
   _ingest -> step1;
-  _ingest -> step4;
+  _ingest -> step3;
   _ingest -> stepUrgentMessage;
   
   autoRetry -> autoRetry;
@@ -36,8 +36,8 @@ digraph G {
   badOutput -> step2;
   parallelStep -> parallelStep;
   step1 -> step2;
-  step4 -> step1;
-  step4 -> step4;
+  step3 -> step1;
+  step3 -> step3;
   stepAutoRetry -> stepAutoRetry;
   stepUrgentMessage -> step1;
 }
