@@ -6,7 +6,7 @@ import objectScan from 'object-scan';
 import Joi from 'joi-strict';
 import objectHash from 'object-hash-strict';
 import { getGroupId, getDeduplicationId, getDelaySeconds } from './prepare-message.js';
-import { SendMessageBatchError, MessageCollisionError } from '../../resources/errors.js';
+import { SendMessageBatchError, MessageCollisionError, MessageConfigurationError } from '../../resources/errors.js';
 
 const msgRaw = Symbol('msg-raw');
 
@@ -100,6 +100,12 @@ export default ({ call, getService, logger }) => async (opts) => {
   const maxRetries = get(opts, 'maxRetries', 10);
   const backoffFunction = get(opts, 'backoffFunction', (count) => 30 * (count ** 2));
   const batchDelaySeconds = get(opts, 'delaySeconds', null);
+
+  if (queueUrl.endsWith('.fifo') && (batchDelaySeconds || messages.some((m) => getDeduplicationId(m)))) {
+    throw new MessageConfigurationError('DelaySeconds not allowed for FIFO Queue', {
+      QueueUrl: queueUrl
+    });
+  }
 
   const messageChunks = chunk(transformMessages({ messages, batchDelaySeconds }), batchSize);
   const result = await Promise.all(messageChunks

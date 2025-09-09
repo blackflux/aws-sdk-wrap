@@ -2,7 +2,11 @@ import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import { GetQueueAttributesCommand, SendMessageBatchCommand, SQSClient } from '@aws-sdk/client-sqs';
 import Index from '../../../src/index.js';
-import { MessageCollisionError, SendMessageBatchError } from '../../../src/resources/errors.js';
+import {
+  MessageCollisionError,
+  MessageConfigurationError,
+  SendMessageBatchError
+} from '../../../src/resources/errors.js';
 import nockReqHeaderOverwrite from '../../req-header-overwrite.js';
 
 describe('Testing sendMessageBatch', {
@@ -185,5 +189,20 @@ describe('Testing sendMessageBatch', {
       queueUrl: process.env.QUEUE_URL_ONE
     }));
     expect(err).instanceof(MessageCollisionError);
+  });
+
+  it('Testing delay on fifo', async ({ capture }) => {
+    const err = await capture(() => aws.sqs.sendMessageBatch({
+      messages: [
+        {
+          action: 'delete',
+          type: 'collection',
+          target: '00133a96-01b3-420b-aa4b-68bc84d88b67'
+        }
+      ],
+      queueUrl: process.env.QUEUE_URL_TWO,
+      delaySeconds: 5
+    }));
+    expect(err).instanceof(MessageConfigurationError);
   });
 });
