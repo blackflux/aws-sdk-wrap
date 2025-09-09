@@ -21,8 +21,7 @@
           "MessageId": "8085f0e3-a423-447e-9c89-3463acc149ef",
           "MD5OfMessageBody": "2736e3c31202011128ed21936438e2e0"
         }
-      ],
-      "Failed": []
+      ]
     },
     "reqheaders": {
       "authorization": "^AWS4-HMAC-SHA256 Credential=.+$",

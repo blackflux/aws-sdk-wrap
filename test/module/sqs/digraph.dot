@@ -11,7 +11,9 @@ digraph G {
     delayStep [label="delay-step",color=red];
     disallowedOutput [label="disallowed-output"];
     groupIdStep [label="group-id-step"];
+    parallelStep [label="parallel-step",color=red,shape=doublecircle];
     step1 [label="step1"];
+    step2 [label="step2"];
     stepAutoRetry [label="step-auto-retry"];
     stepUrgentMessage [label="step-urgent-message",color=red];
   }
@@ -20,15 +22,13 @@ digraph G {
     style=filled;
     color="#ffaaaa";
     node [label="node",style=filled,color=white];
-    parallelStep [label="parallel-step",color=red,shape=doublecircle];
-    step2 [label="step2"];
-    step3 [label="step3",shape=doublecircle];
+    step4 [label="step4"];
   }
   
   _ingest [shape=Mdiamond,label=ingest];
   _ingest -> groupIdStep;
   _ingest -> step1;
-  _ingest -> step3;
+  _ingest -> step4;
   _ingest -> stepUrgentMessage;
   
   autoRetry -> autoRetry;
@@ -36,8 +36,8 @@ digraph G {
   badOutput -> step2;
   parallelStep -> parallelStep;
   step1 -> step2;
-  step3 -> step1;
-  step3 -> step3;
+  step4 -> step1;
+  step4 -> step4;
   stepAutoRetry -> stepAutoRetry;
   stepUrgentMessage -> step1;
 }

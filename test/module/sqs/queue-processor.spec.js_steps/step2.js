@@ -2,7 +2,7 @@ import Joi from 'joi-strict';
 
 export const name = 'step2';
 
-export const queue = 'two';
+export const queue = 'one';
 
 export const ingest = false;
 

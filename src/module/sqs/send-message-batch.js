@@ -101,13 +101,14 @@ export default ({ call, getService, logger }) => async (opts) => {
   const backoffFunction = get(opts, 'backoffFunction', (count) => 30 * (count ** 2));
   const batchDelaySeconds = get(opts, 'delaySeconds', null);
 
-  if (queueUrl.endsWith('.fifo') && (batchDelaySeconds || messages.some((m) => getDeduplicationId(m)))) {
+  const messagesTransformed = transformMessages({ messages, batchDelaySeconds });
+  if (queueUrl.endsWith('.fifo') && messagesTransformed.some(({ DelaySeconds }) => DelaySeconds)) {
     throw new MessageConfigurationError('DelaySeconds not allowed for FIFO Queue', {
-      QueueUrl: queueUrl
+      QueueUrl: queueUrl,
+      Messages: messagesTransformed.filter(({ DelaySeconds }) => DelaySeconds)
     });
   }
-
-  const messageChunks = chunk(transformMessages({ messages, batchDelaySeconds }), batchSize);
+  const messageChunks = chunk(messagesTransformed, batchSize);
   const result = await Promise.all(messageChunks
     .map((sqsBatch) => sendBatch(sqsBatch, queueUrl, {
       call,
