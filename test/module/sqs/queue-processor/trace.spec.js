@@ -35,5 +35,11 @@ describe('Testing trace.js', () => {
       const r = getCycleLength(trace);
       expect(r).to.equal(81);
     });
+
+    it('Testing single entry', async () => {
+      const trace = ['a'];
+      const r = getCycleLength(trace);
+      expect(r).to.equal(0);
+    });
   });
 });

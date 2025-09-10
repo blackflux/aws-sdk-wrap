@@ -53,5 +53,5 @@ export const getCycleLength = (trace) => {
     .filter(([k, v]) => v[0] === 0)
     .map(([k, v]) => [k, v, (v[1] - v[0]) * v.length]);
   startCycles.sort((a, b) => b[2] - a[2]);
-  return startCycles[0][2];
+  return startCycles.length === 0 ? 0 : startCycles[0][2];
 };
