@@ -15,6 +15,7 @@ export default async ({
     }
     err = step.retry;
   }
+  const remap = err.remap;
   const maxCycleLength = err.maxCycleLength;
   const maxFailureCount = err.maxFailureCount;
   const maxAgeInSec = err.maxAgeInSec;
@@ -57,7 +58,7 @@ export default async ({
   assert(Array.isArray(msgs), 'onFailure must return array of messages');
   if (target === 'queue') {
     const msg = {
-      ...payload,
+      ...remap(payload),
       [metaKey]: {
         failureCount,
         timestamp

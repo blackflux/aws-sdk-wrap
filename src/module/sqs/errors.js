@@ -14,6 +14,7 @@ export class RetryError extends Error {
         Joi.function()
       ).optional(),
       onFailure: Joi.function().optional(),
+      remap: Joi.function().optional(),
       target: Joi.function().optional()
     }));
 
@@ -34,6 +35,7 @@ export class RetryError extends Error {
         }
         return [];
       },
+      remap = (payload) => payload,
       target = ({ temporary }) => (temporary === false ? 'dlq' : 'queue')
     } = kwargs;
 
@@ -42,6 +44,7 @@ export class RetryError extends Error {
     this.maxAgeInSec = maxAgeInSec;
     this.backoffInSec = backoffInSec;
     this.onFailure = onFailure;
+    this.remap = remap;
     this.target = target;
   }
 }
