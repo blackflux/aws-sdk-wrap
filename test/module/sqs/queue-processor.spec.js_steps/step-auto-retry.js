@@ -7,7 +7,8 @@ export const queue = 'one';
 export const ingest = false;
 
 export const retry = {
-  maxFailureCount: 10
+  maxFailureCount: 10,
+  maxCycleLength: 10
 };
 
 export const schema = Joi.object().keys({
