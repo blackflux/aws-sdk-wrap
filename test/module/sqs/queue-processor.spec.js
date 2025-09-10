@@ -376,11 +376,11 @@ describe('Testing QueueProcessor', {
     });
     expect(recorder.get()).to.deep.equal([
       'Permanent Retry Failure\n{'
-      + '"limits":{"maxFailureCount":10,"maxAgeInSec":9007199254740991},'
+      + '"limits":{"maxCycleLength":100,"maxFailureCount":10,"maxAgeInSec":9007199254740991},'
       + '"meta":{"failureCount":10,"timestamp":"2020-05-15T19:56:35.713Z"},'
       + '"payload":{"name":"auto-retry"}}',
       'Permanent Retry Failure\n{'
-      + '"limits":{"maxFailureCount":10,"maxAgeInSec":60},'
+      + '"limits":{"maxCycleLength":100,"maxFailureCount":10,"maxAgeInSec":60},'
       + '"meta":{"failureCount":2,"timestamp":"2020-05-15T19:55:35.712Z"},'
       + '"payload":{"name":"auto-retry","retrySettings":{"maxAgeInSec":60}}}'
     ]);
@@ -400,7 +400,7 @@ describe('Testing QueueProcessor', {
     expect(result).to.deep.equal({ batchItemFailures: [], __next: [] });
     expect(recorder.get()).to.deep.equal([
       'Permanent Retry Failure\n{'
-      + '"limits":{"maxFailureCount":10,"maxAgeInSec":60},'
+      + '"limits":{"maxCycleLength":100,"maxFailureCount":10,"maxAgeInSec":60},'
       + '"meta":{"failureCount":2,"timestamp":"2020-05-15T19:55:35.712Z"},'
       + '"payload":{"name":"auto-retry","retrySettings":{"maxAgeInSec":60}}}'
     ]);

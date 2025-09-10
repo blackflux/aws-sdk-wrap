@@ -3,6 +3,7 @@ import get from 'lodash.get';
 import { prepareMessage } from '../prepare-message.js';
 import { RetryError } from '../errors.js';
 import { metaKey } from './payload.js';
+import { getCycleLength } from './trace.js';
 
 export default async ({
   error, payload, payloadStripped, e, step, stepBus, dlqBus, logger
@@ -14,10 +15,13 @@ export default async ({
     }
     err = step.retry;
   }
+  const remap = err.remap;
+  const maxCycleLength = err.maxCycleLength;
   const maxFailureCount = err.maxFailureCount;
   const maxAgeInSec = err.maxAgeInSec;
   const backoffInSec = err.backoffInSec;
   const failureCount = get(payload, [metaKey, 'failureCount'], 0) + 1;
+  const cycleLength = getCycleLength(get(payload, [metaKey, 'trace'], []));
   const timestamp = get(
     payload,
     [metaKey, 'timestamp'],
@@ -28,6 +32,7 @@ export default async ({
   const kwargs = {
     logger,
     limits: {
+      maxCycleLength,
       maxFailureCount,
       maxAgeInSec
     },
@@ -41,8 +46,11 @@ export default async ({
   const delaySeconds = typeof backoffInSec === 'function'
     ? backoffInSec(kwargs.meta)
     : backoffInSec;
-  const temporary = failureCount < maxFailureCount
-    && (Date.now() - Date.parse(timestamp)) / 1000 <= maxAgeInSec;
+  const temporary = (
+    cycleLength < maxCycleLength
+    && failureCount < maxFailureCount
+    && (Date.now() - Date.parse(timestamp)) / 1000 <= maxAgeInSec
+  );
   const params = { ...kwargs, temporary };
   const [msgs, target] = await Promise.all([err.onFailure(params), err.target(params)]);
   assert(['queue', 'dlq', null].includes(target), 'Invalid target returned');
@@ -50,7 +58,7 @@ export default async ({
   assert(Array.isArray(msgs), 'onFailure must return array of messages');
   if (target === 'queue') {
     const msg = {
-      ...payload,
+      ...remap(payload),
       [metaKey]: {
         failureCount,
         timestamp
