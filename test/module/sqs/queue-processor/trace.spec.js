@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import { findCycles, countCycles } from '../../../../src/module/sqs/queue-processor/trace.js';
+import { findCycles, getCycleLength } from '../../../../src/module/sqs/queue-processor/trace.js';
 
 describe('Testing trace.js', () => {
   describe('Testing findCycles', () => {
@@ -23,17 +23,17 @@ describe('Testing trace.js', () => {
     });
   });
 
-  describe('Testing countCycles', () => {
+  describe('Testing getCycleLength', () => {
     it('Testing basic', async () => {
-      const trace = ['a * 3', 'b * 2', 'c'];
-      const r = countCycles(trace);
-      expect(r).to.equal(3);
+      const trace = ['a * 3', 'b * 2', 'a * 3', 'b * 2', 'c'];
+      const r = getCycleLength(trace);
+      expect(r).to.equal(10);
     });
 
     it('Testing long', async () => {
       const trace = 'aaabbbcccaaabbbcccaaabbbcccaaabbbcccaaabbbcccaaabbbcccaaabbbcccaaabbbcccaaabbbccc'.split('');
-      const r = countCycles(trace);
-      expect(r).to.equal(9);
+      const r = getCycleLength(trace);
+      expect(r).to.equal(81);
     });
   });
 });

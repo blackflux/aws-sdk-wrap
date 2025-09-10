@@ -39,7 +39,7 @@ export const findCycles = (input) => {
   return hits;
 };
 
-export const countCycles = (trace) => {
+export const getCycleLength = (trace) => {
   const expanded = trace.flatMap((item) => {
     const [i, c] = item.split(' * ');
     if (c === undefined) {
@@ -49,7 +49,9 @@ export const countCycles = (trace) => {
   });
 
   const cycles = findCycles(expanded);
-  const startCycles = Object.entries(cycles).filter(([k, v]) => v[0] === 0);
-  startCycles.sort((a, b) => b[1].length - a[1].length);
-  return startCycles[0][1].length;
+  const startCycles = Object.entries(cycles)
+    .filter(([k, v]) => v[0] === 0)
+    .map(([k, v]) => [k, v, (v[1] - v[0]) * v.length]);
+  startCycles.sort((a, b) => b[2] - a[2]);
+  return startCycles[0][2];
 };
