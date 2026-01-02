@@ -15,6 +15,7 @@ import * as stepBadOutput from './queue-processor.spec.js_steps/bad-output.js';
 import * as stepDelayStep from './queue-processor.spec.js_steps/delay-step.js';
 import * as stepDisallowedOutput from './queue-processor.spec.js_steps/disallowed-output.js';
 import * as stepGroupIdStep from './queue-processor.spec.js_steps/group-id-step.js';
+import * as stepGroupIdStep2 from './queue-processor.spec.js_steps/group-id-step2.js';
 import * as stepParallelStep from './queue-processor.spec.js_steps/parallel-step.js';
 import * as stepStep1 from './queue-processor.spec.js_steps/step1.js';
 import * as stepStep2 from './queue-processor.spec.js_steps/step2.js';
@@ -58,6 +59,7 @@ describe('Testing QueueProcessor', {
         stepDelayStep,
         stepDisallowedOutput,
         stepGroupIdStep,
+        stepGroupIdStep2,
         stepParallelStep,
         stepStep1,
         stepStep2,
@@ -133,6 +135,13 @@ describe('Testing QueueProcessor', {
     const result = await processor.ingest([{ name: 'group-id-step', meta: 'meta1' }]);
     expect(result).to.equal(undefined);
     const r = await executor([{ name: 'group-id-step', meta: 'meta1' }]);
+    expect(r).to.deep.equal({ batchItemFailures: [], __next: [] });
+  });
+
+  it('Testing ingest with groupIdFunction fifo', async () => {
+    const result = await processor.ingest([{ name: 'group-id-step2', meta: 'meta1' }]);
+    expect(result).to.equal(undefined);
+    const r = await executor([{ name: 'group-id-step2', meta: 'meta1' }]);
     expect(r).to.deep.equal({ batchItemFailures: [], __next: [] });
   });
 

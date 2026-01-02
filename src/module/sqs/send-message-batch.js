@@ -46,7 +46,7 @@ const sendBatch = async (sqsBatch, queueUrl, {
   return response;
 };
 
-const transformMessages = ({ messages, batchDelaySeconds }) => {
+const transformMessages = ({ queueUrl, messages, batchDelaySeconds }) => {
   const result = {};
   for (let idx = 0; idx < messages.length; idx += 1) {
     const msg = messages[idx];
@@ -67,10 +67,16 @@ const transformMessages = ({ messages, batchDelaySeconds }) => {
       [msgRaw]: msg,
       ...(msgGroupId === undefined ? {} : {
         MessageGroupId: msgGroupId,
-        MessageDeduplicationId: objectHash({
-          timestamp: new Date().toISOString(),
-          id
-        })
+        ...(
+          queueUrl.endsWith('.fifo')
+            ? {
+              MessageDeduplicationId: objectHash({
+                timestamp: new Date().toISOString(),
+                id
+              })
+            }
+            : {}
+        )
       }),
       ...(msgDeduplicationId === undefined ? {} : {
         MessageDeduplicationId: msgDeduplicationId
@@ -101,7 +107,7 @@ export default ({ call, getService, logger }) => async (opts) => {
   const backoffFunction = get(opts, 'backoffFunction', (count) => 30 * (count ** 2));
   const batchDelaySeconds = get(opts, 'delaySeconds', null);
 
-  const messagesTransformed = transformMessages({ messages, batchDelaySeconds });
+  const messagesTransformed = transformMessages({ queueUrl, messages, batchDelaySeconds });
   if (queueUrl.endsWith('.fifo') && messagesTransformed.some(({ DelaySeconds }) => DelaySeconds)) {
     throw new MessageConfigurationError('DelaySeconds not allowed for FIFO Queue', {
       QueueUrl: queueUrl,
