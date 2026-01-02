@@ -22,11 +22,13 @@ digraph G {
     style=filled;
     color="#ffaaaa";
     node [label="node",style=filled,color=white];
+    groupIdStep2 [label="group-id-step2"];
     step3 [label="step3"];
   }
   
   _ingest [shape=Mdiamond,label=ingest];
   _ingest -> groupIdStep;
+  _ingest -> groupIdStep2;
   _ingest -> step1;
   _ingest -> step3;
   _ingest -> stepUrgentMessage;

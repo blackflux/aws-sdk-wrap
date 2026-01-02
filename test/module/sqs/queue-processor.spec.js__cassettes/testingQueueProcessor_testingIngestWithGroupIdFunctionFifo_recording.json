@@ -6,20 +6,21 @@
     "body": {
       "Entries": [
         {
-          "Id": "e77c6c611d8b711919e71ae6c386311138915ad3",
-          "MessageBody": "{\"name\":\"step1\",\"meta\":\"meta1\"}",
-          "MessageGroupId": "123"
+          "Id": "5ce8fd521fcb762f156f7a7fa4efeff116fa5b90",
+          "MessageBody": "{\"name\":\"group-id-step2\",\"meta\":\"meta1\"}",
+          "MessageDeduplicationId": "21a37ec8ae432c6a67e98384907d9ecdd6a5a479",
+          "MessageGroupId": "5ce8fd521fcb762f156f7a7fa4efeff116fa5b90"
         }
       ],
-      "QueueUrl": "https://sqs.us-west-2.amazonaws.com/XXXXXXXXXXXX/queueUrlOne"
+      "QueueUrl": "https://sqs.us-west-2.amazonaws.com/XXXXXXXXXXXX/queueUrlTwo.fifo"
     },
     "status": 200,
     "response": {
       "Successful": [
         {
-          "Id": "e77c6c611d8b711919e71ae6c386311138915ad3",
+          "Id": "5ce8fd521fcb762f156f7a7fa4efeff116fa5b90",
           "MessageId": "8085f0e3-a423-447e-9c89-3463acc149ef",
-          "MD5OfMessageBody": "5cf7a0e60b3d53cf1f45871b82a59d62"
+          "MD5OfMessageBody": "6511b20d62c9b313b95bbfcc346b427d"
         }
       ]
     },
